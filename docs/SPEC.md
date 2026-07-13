@@ -63,23 +63,37 @@ GEO surface: concrete quotable facts (160 lei/m² price-freeze, 30-year written 
 500+ projects, 7–15 day roof install) in server-rendered text + JSON-LD + expanded FAQs.
 
 ## 5. Redirect map (Tilda → new, implement in RC-401)
-| Old (Tilda) | New |
-|---|---|
-| /1 | /reparatii-la-cheie (confirm mapping Q-02) |
-| /2 | /case-constructii (confirm) |
-| /3 | /fatade (confirm) |
-| /4 | /finisaje (confirm) |
-| /5 | /proiectare-3d (confirm) |
-| /6 | /instalatii (confirm) |
-| /despre-noi | /despre-noi |
-| /portofoliu | /portofoliu |
-| /contacte | /contact |
-| /calcul-acoperis | /calculator-acoperis |
-| /calcul-gard | /calculator-gard |
-| /page53648667.html | / (or its real target — audit Q-02) |
-| /privacypolicy | /politica-de-confidentialitate |
+CONFIRMED 2026-07-13 from the Tilda admin page list (Q-02 resolved — see §7).
+| Old (Tilda) | Tilda page title | New |
+|---|---|---|
+| /1 | Reparatii case la cheie | /reparatii-la-cheie |
+| /2 | Case & Constructii | /case-constructii |
+| /3 | Fatade & Amenajari exterioare | /fatade |
+| /4 | Finisaje | /finisaje |
+| /5 | Proiectare & Design | /proiectare-3d |
+| /6 | Instalatii | /instalatii |
+| /despre-noi | Despre Noi | /despre-noi |
+| /portofoliu | Portofoliu | /portofoliu |
+| /contacte | Contacte | /contact |
+| /calcul-acoperis | Calculare Pret Acoperis | /calculator-acoperis |
+| /calcul-gard | Calculare Pret Gard | /calculator-gard |
+| /page53648667.html | orphan legacy landing ("Rapid Construct", no meta) | / |
+| /privacypolicy | Privacy Policy | /politica-de-confidentialitate |
 
-## 6. Known Tilda-site defects we must NOT reproduce
+## 6. Tilda project audit notes (2026-07-13, from admin)
+- Project id 10384819, plan "Tilda Personal" (max 1 website), 32 pages total.
+- Folder "Rapid Construct MD" = the live site (14 published pages, as in the sitemap).
+- Folder "Rapid Construct FR" is EMPTY. Folder "Bara de meniu" holds 13 legacy pages from an
+  older site version (Case Modulare, Servicii, Preturi, ...) — all verified 404 on the live
+  domain, so NO redirects needed for them.
+- Unpublished drafts in MD folder: "Neactive---", "img" (possible photo stash — check during
+  content export, Q-06), "Acasa1", duplicate "Calculare Pret Acoperis" (/calcul-acoperis1).
+- Live calculator page /calcul-acoperis has unpublished latest changes in Tilda — when
+  porting the calculator (RC-107), read the DRAFT version in admin, not just the live page.
+- Leads are collected in Tilda CRM ("Leads" section) — export them before the Tilda plan
+  is cancelled post-launch.
+
+## 7. Known Tilda-site defects we must NOT reproduce
 - Title "Acasa", missing meta descriptions, no H1, empty `lang`.
 - http:// canonicals and sitemap URLs.
 - Numeric slugs (/1.../6).
