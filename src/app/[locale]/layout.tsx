@@ -7,6 +7,8 @@ import { OG_LOCALE, SITE_URL, localeAlternates } from "@/i18n/metadata";
 import { site } from "@/config/site";
 import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import LocalBusinessJsonLd from "@/components/LocalBusinessJsonLd";
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
 import { serif, sans } from "../fonts";
 import "../globals.css";
 
@@ -82,7 +84,11 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
       <body className="min-h-full flex flex-col">
         {/* Sitewide LocalBusiness structured data — carried by every page. */}
         <LocalBusinessJsonLd />
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          <SiteHeader />
+          {children}
+          <SiteFooter />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

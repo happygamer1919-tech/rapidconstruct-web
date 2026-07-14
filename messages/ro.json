@@ -27,5 +27,207 @@
       "title": "Construcții și renovări la cheie în Chișinău",
       "description": "Acoperișuri, fațade, renovări complete și finisaje în Chișinău, Orhei, Cahul și Costești. Garanție scrisă până la 30 de ani, materiale certificate UE, prețuri de la 160 lei/m²."
     }
+  },
+  "header": {
+    "home": "Acasă",
+    "despre": "Despre Noi",
+    "portofoliu": "Portofoliu",
+    "contact": "Contact",
+    "services": "Servicii",
+    "callNow": "Sună acum",
+    "quote": "Solicită ofertă",
+    "openMenu": "Deschide meniul",
+    "closeMenu": "Închide meniul",
+    "skipToContent": "Sari la conținut"
+  },
+  "services": {
+    "acoperisuri": {
+      "title": "Acoperișuri",
+      "desc": "Șindrilă bituminoasă, țiglă metalică și sisteme pluviale, montate corect și etanș."
+    },
+    "fatade": {
+      "title": "Fațade",
+      "desc": "Termoizolație, tencuieli decorative și placări din piatră naturală pentru un exterior durabil."
+    },
+    "renovari": {
+      "title": "Renovări la cheie",
+      "desc": "De la demolări la finisaje — coordonăm tot procesul, iar tu primești casa gata de locuit."
+    },
+    "finisaje": {
+      "title": "Finisaje",
+      "desc": "Gips-carton, glet, vopsitorii, pardoseli și placări executate curat, la milimetru."
+    },
+    "proiectare": {
+      "title": "Proiectare 3D",
+      "desc": "Vizualizări 3D și planuri detaliate înainte de execuție, ca să știi exact rezultatul."
+    },
+    "instalatii": {
+      "title": "Instalații",
+      "desc": "Electrice, sanitare și termice, dimensionate corect și date în funcțiune cu garanție."
+    }
+  },
+  "footer": {
+    "tagline": "Construcții și renovări la cheie în Chișinău și regiuni, cu garanție scrisă și materiale certificate UE.",
+    "servicesTitle": "Servicii",
+    "companyTitle": "Companie",
+    "contactTitle": "Contact",
+    "hoursLabel": "Program",
+    "hours": "Lun–Sâm 08:00–17:00 · Dum: închis",
+    "socialTitle": "Urmărește-ne",
+    "rights": "© Rapid Construct 2026"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Construcții & Renovări · Chișinău și regiuni",
+      "h1": "Construcții și Renovări complete",
+      "subline": "Case · Renovări · Fațade · Acoperișuri · Finisaje · Instalații · Proiectare 3D · Execuție · Autorizații",
+      "trust": "Garanție scrisă până la 30 de ani • Materiale certificate UE",
+      "ctaCall": "Sună acum",
+      "ctaQuote": "Solicită ofertă gratuită",
+      "photoLabel": "foto proiect"
+    },
+    "badges": {
+      "title": "De ce Rapid Construct",
+      "items": [
+        {
+          "title": "Garanție 30 de ani în contract",
+          "desc": "Garanția e scrisă în contract, nu doar promisă."
+        },
+        {
+          "title": "Materiale certificate UE",
+          "desc": "Produse de la producători cu reputație, potrivite proiectului."
+        },
+        {
+          "title": "Execuție și livrare la timp",
+          "desc": "Termene clare, respectate — planificăm și le ținem."
+        },
+        {
+          "title": "Echipă cu 10+ ani experiență",
+          "desc": "Meșteri specializați pe fiecare tip de lucrare."
+        },
+        {
+          "title": "Prețuri transparente",
+          "desc": "Ce scrie în deviz, aceea plătești — fără costuri ascunse."
+        },
+        {
+          "title": "Suport post-lucrare",
+          "desc": "Rămânem alături de tine și după finalizarea proiectului."
+        }
+      ]
+    },
+    "stats": {
+      "title": "Rezultate care vorbesc",
+      "items": [
+        { "value": "500+", "label": "proiecte finalizate" },
+        { "value": "15+", "label": "ani de experiență" },
+        { "value": "30", "label": "ani garanție scrisă" },
+        { "value": "4.9/5", "label": "din 250+ recenzii" }
+      ]
+    },
+    "servicesSection": {
+      "eyebrow": "Servicii",
+      "title": "Ce construim pentru tine",
+      "intro": "De la structură la ultimul finisaj — o singură echipă răspunde pentru tot proiectul.",
+      "cardCta": "Află mai multe"
+    },
+    "statement": {
+      "text": "Casele se construiesc. Încrederea se câștigă."
+    },
+    "projects": {
+      "eyebrow": "Portofoliu",
+      "title": "Proiecte recente",
+      "photoLabel": "foto proiect",
+      "cta": "Vezi tot portofoliul",
+      "items": [
+        {
+          "location": "Orhei",
+          "size": "100 m²",
+          "work": "Acoperiș din șindrilă bituminoasă + sistem pluvial",
+          "year": "2025"
+        },
+        {
+          "location": "Costești",
+          "size": "320 m²",
+          "work": "Fațadă din piatră naturală + izolare termică",
+          "year": "2025"
+        },
+        {
+          "location": "Cahul",
+          "size": "180 m²",
+          "work": "Acoperiș din țiglă metalică + termoizolație mansardă",
+          "year": "2024"
+        },
+        {
+          "location": "Chișinău",
+          "size": "280 m²",
+          "work": "Renovare completă la cheie",
+          "year": "2024"
+        }
+      ]
+    },
+    "testimonials": {
+      "eyebrow": "Recenzii",
+      "title": "Ce spun clienții",
+      "items": [
+        {
+          "quote": "Acoperișul metalic a fost montat impecabil, la termen și fără costuri surpriză. Recomand cu încredere.",
+          "name": "Ion Miron",
+          "meta": "Chișinău · acoperiș metalic"
+        },
+        {
+          "quote": "Fațada și izolația au schimbat complet casa — mai caldă iarna și mult mai frumoasă. Echipă serioasă.",
+          "name": "Maria Oprea",
+          "meta": "Orhei · fațadă + izolație"
+        },
+        {
+          "quote": "Colaborăm pe mai multe proiecte. Calitate constantă și termene respectate — exact ce cauți la un partener.",
+          "name": "Andrei Condrea",
+          "meta": "Dezvoltator imobiliar"
+        }
+      ]
+    },
+    "faq": {
+      "eyebrow": "Întrebări frecvente",
+      "title": "Ce întreabă clienții cel mai des",
+      "items": [
+        {
+          "q": "Cât durează montajul unui acoperiș?",
+          "a": "În mod normal între 7 și 15 zile, în funcție de suprafață, tipul de învelitoare și complexitatea structurii. Îți dăm un termen exact după evaluarea la fața locului."
+        },
+        {
+          "q": "Ce garanție oferiți?",
+          "a": "Oferim garanție scrisă în contract, de până la 30 de ani, în funcție de tipul lucrării și de materialele alese."
+        },
+        {
+          "q": "Ce materiale folosiți?",
+          "a": "Lucrăm doar cu materiale certificate UE, de la producători cu reputație, alese potrivit proiectului și bugetului tău."
+        },
+        {
+          "q": "Cum se face izolarea unei fațade?",
+          "a": "Aplicăm sisteme termoizolante complete (polistiren sau vată minerală) cu plasă, adeziv și tencuială decorativă — economie la încălzire și un exterior durabil."
+        },
+        {
+          "q": "Cum calculați prețul unei lucrări?",
+          "a": "Prețul se stabilește printr-un deviz transparent: măsurători, materiale și manoperă. Ce scrie în deviz, aceea plătești — fără costuri ascunse. Acoperiș de la 160 lei/m² (preț înghețat pentru 2026)."
+        },
+        {
+          "q": "Lucrați și pe timp rece?",
+          "a": "Da, planificăm lucrările în funcție de sezon și folosim materiale și tehnologii potrivite pentru temperaturi scăzute, fără a compromite calitatea."
+        }
+      ]
+    },
+    "contact": {
+      "eyebrow": "Contact",
+      "title": "Începe proiectul tău",
+      "intro": "Spune-ne ce ai nevoie și primești o ofertă clară, fără obligații.",
+      "promo": "−10% la programări anticipate · Rate 0% la acoperiș · preț înghețat 160 lei/m² pentru 2026",
+      "responsePromise": "Îți răspundem în maximum 2 ore lucrătoare.",
+      "ctaQuote": "Solicită ofertă gratuită",
+      "ctaCall": "Sună acum",
+      "addressLabel": "Adresă",
+      "phoneLabel": "Telefon",
+      "emailLabel": "Email",
+      "hoursLabel": "Program"
+    }
   }
 }
