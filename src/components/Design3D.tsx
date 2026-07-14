@@ -1,6 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useRef } from "react";
+import { useInView } from "motion/react";
 import { Icon } from "@/components/icons";
 
 // 3D canvas is heavy + browser-only → load client-side after paint so it never
@@ -27,6 +29,11 @@ export default function Design3D({
   points: string[];
   hint: string;
 }) {
+  // Render the 3D loop only while the box is near the viewport — keeps the GPU
+  // idle for the rest of the page (perf: page felt laggy on slower machines).
+  const boxRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(boxRef, { margin: "200px 0px" });
+
   return (
     <section
       aria-labelledby="design3d-title"
@@ -56,8 +63,11 @@ export default function Design3D({
           </ul>
         </div>
 
-        <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-neutral-100 to-muted">
-          <Model3D />
+        <div
+          ref={boxRef}
+          className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-neutral-100 to-muted"
+        >
+          <Model3D active={inView} />
           <span className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-ink-950/60 px-3 py-1 text-micro font-medium text-neutral-50 backdrop-blur-sm">
             {hint}
           </span>

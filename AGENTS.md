@@ -55,7 +55,9 @@ what AI engines cite.
 
 ## Language rules
 - RO is the source of truth for copy; RU translations tracked per-page in the backlog.
-- Never machine-translate silently: mark RU strings needing owner review with `// TODO(ru-review)`.
+- Never machine-translate silently: log every machine-drafted RU string set in
+  `docs/RU-REVIEW.md` (owner-reviewed before launch). Do NOT put review markers in
+  user-visible strings — that leaked into titles/UI once (2026-07-14).
 - URLs: RO slugs at root (`/acoperisuri`), RU under `/ru/` with RU slugs (`/ru/kryshi`).
 
 ## Launch constraint

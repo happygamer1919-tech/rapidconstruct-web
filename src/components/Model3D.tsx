@@ -80,14 +80,16 @@ function House() {
   );
 }
 
-export default function Model3D() {
+export default function Model3D({ active = true }: { active?: boolean }) {
   const reduce = useReducedMotion();
 
   return (
     <Canvas
       shadows
-      dpr={[1, 2]}
-      gl={{ antialias: true, alpha: true }}
+      dpr={[1, 1.75]}
+      // Freeze the render loop while the model is off-screen (GPU idle).
+      frameloop={active ? "always" : "never"}
+      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       className="!absolute inset-0"
       aria-label="Model 3D al unei case moderne"
     >

@@ -21,7 +21,7 @@
   },
   "seo": {
     "default": {
-      "description": "Rapid Construct & 3D Design — construcții, renovări la cheie, acoperișuri și fațade în Chișinău și regiuni. Garanție scrisă până la 30 de ani, materiale certificate UE."
+      "description": "Construcții, renovări la cheie, acoperișuri și fațade în Chișinău și regiuni. Garanție scrisă până la 30 de ani și materiale certificate UE."
     },
     "home": {
       "title": "Construcții și renovări la cheie în Chișinău",
@@ -51,7 +51,7 @@
     },
     "renovari": {
       "title": "Renovări la cheie",
-      "desc": "De la demolări la finisaje — coordonăm tot procesul, iar tu primești casa gata de locuit."
+      "desc": "Coordonăm tot procesul, de la demolări până la finisaje. Tu primești casa gata de locuit."
     },
     "finisaje": {
       "title": "Finisaje",
@@ -99,7 +99,7 @@
         },
         {
           "title": "Execuție și livrare la timp",
-          "desc": "Termene clare, respectate — planificăm și le ținem."
+          "desc": "Stabilim termene clare de la început și le respectăm."
         },
         {
           "title": "Echipă cu 10+ ani experiență",
@@ -107,7 +107,7 @@
         },
         {
           "title": "Prețuri transparente",
-          "desc": "Ce scrie în deviz, aceea plătești — fără costuri ascunse."
+          "desc": "Ce scrie în deviz, aceea plătești. Fără costuri ascunse."
         },
         {
           "title": "Suport post-lucrare",
@@ -139,7 +139,7 @@
     "servicesSection": {
       "eyebrow": "Servicii",
       "title": "Ce construim pentru tine",
-      "intro": "De la structură la ultimul finisaj — o singură echipă răspunde pentru tot proiectul.",
+      "intro": "O singură echipă răspunde de tot proiectul, de la structură până la ultimul finisaj.",
       "cardCta": "Află mai multe"
     },
     "story": {
@@ -149,7 +149,7 @@
         {
           "chip": "Fundație",
           "title": "Fundație turnată corect",
-          "caption": "Trasare, cofrare și armare executate după proiect — baza solidă a întregii construcții."
+          "caption": "Trasare, cofrare și armare executate după proiect. Aici se pune baza solidă a casei."
         },
         {
           "chip": "Structură & Acoperiș",
@@ -164,14 +164,14 @@
         {
           "chip": "Predare",
           "title": "Casa finită, la cheie",
-          "caption": "Predăm lucrarea gata de locuit — cu garanție scrisă și suport după finalizare."
+          "caption": "Predăm lucrarea gata de locuit, cu garanție scrisă și suport după finalizare."
         }
       ]
     },
     "design3d": {
       "eyebrow": "PROIECTARE & 3D DESIGN",
       "title": "Vezi casa în 3D înainte s-o construim",
-      "intro": "Proiectăm fiecare lucrare în 3D — așa vezi exact cum va arăta rezultatul, iei decizii din timp și eviți surprizele pe șantier.",
+      "intro": "Proiectăm fiecare lucrare în 3D. Vezi exact cum va arăta rezultatul, iei deciziile din timp și eviți surprizele pe șantier.",
       "points": [
         "Model 3D realist al casei și fațadei",
         "Modificări rapide înainte de execuție",
@@ -224,12 +224,12 @@
           "meta": "Chișinău · acoperiș metalic"
         },
         {
-          "quote": "Fațada și izolația au schimbat complet casa — mai caldă iarna și mult mai frumoasă. Echipă serioasă.",
+          "quote": "Fațada și izolația au schimbat complet casa: mai caldă iarna și mult mai frumoasă. Echipă serioasă.",
           "name": "Maria Oprea",
           "meta": "Orhei · fațadă + izolație"
         },
         {
-          "quote": "Colaborăm pe mai multe proiecte. Calitate constantă și termene respectate — exact ce cauți la un partener.",
+          "quote": "Colaborăm pe mai multe proiecte. Calitate constantă și termene respectate, exact ce cauți la un partener.",
           "name": "Andrei Condrea",
           "meta": "Dezvoltator imobiliar"
         }
@@ -253,11 +253,11 @@
         },
         {
           "q": "Cum se face izolarea unei fațade?",
-          "a": "Aplicăm sisteme termoizolante complete (polistiren sau vată minerală) cu plasă, adeziv și tencuială decorativă — economie la încălzire și un exterior durabil."
+          "a": "Aplicăm sisteme termoizolante complete (polistiren sau vată minerală) cu plasă, adeziv și tencuială decorativă. Faci economie la încălzire și obții un exterior durabil."
         },
         {
           "q": "Cum calculați prețul unei lucrări?",
-          "a": "Prețul se stabilește printr-un deviz transparent: măsurători, materiale și manoperă. Ce scrie în deviz, aceea plătești — fără costuri ascunse. Acoperiș de la 160 lei/m² (preț înghețat pentru 2026)."
+          "a": "Prețul se stabilește printr-un deviz transparent: măsurători, materiale și manoperă. Ce scrie în deviz, aceea plătești, fără costuri ascunse. Acoperiș de la 160 lei/m² (preț înghețat pentru 2026)."
         },
         {
           "q": "Lucrați și pe timp rece?",

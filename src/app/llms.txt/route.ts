@@ -3,9 +3,9 @@ import { site } from "@/config/site";
 
 /**
  * /llms.txt (RC-006) — a concise, plain-text company summary for AI engines
- * (GEO). RO is the source of truth; a short RU line is included and marked
- * TODO(ru-review). Served as text/plain via a Route Handler so the URL and the
- * quotable facts stay in one place and the host follows SITE_URL.
+ * (GEO). RO is the source of truth; a short RU line is included (review status
+ * tracked in docs/RU-REVIEW.md). Served as text/plain via a Route Handler so
+ * the URL and the quotable facts stay in one place and the host follows SITE_URL.
  *
  * Only Q-07-SAFE quotable facts are published here: the price floor, the written
  * warranty term, and the roof-install duration (SPEC §4). Unconfirmed review /
@@ -42,7 +42,7 @@ Program: Luni–Sâmbătă 08:00–17:00
 
 ## RU
 Строительство и ремонт под ключ в Кишинёве: кровля, фасады, отделка,
-проектирование. Цены от 160 лей/м², письменная гарантия до 30 лет. TODO(ru-review)
+проектирование. Цены от 160 лей/м², письменная гарантия до 30 лет.
 `;
 
   return new Response(body, {
