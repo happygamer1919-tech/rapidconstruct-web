@@ -47,6 +47,10 @@ Status legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[B]` blocked (s
 - [ ] **RC-109** About page: team, 15+ ani experience story, guarantees, certifications.
 - [ ] **RC-110** Promo/offer system: dismissible top bar or hero slot for seasonal offers
       (-10% early booking, rate 0%, price-freeze 160 lei/m²), editable in one config file.
+- [ ] **RC-111** "Construction story" scroll section (from design references): 5-6 phase
+      stills (teren → fundație → structură → fațadă → casă finită) with crossfade/parallax
+      on scroll, fixed caption slot + phase chips, reduced-motion static fallback.
+      See docs/DESIGN-REFERENCES.md. Real progress photos pending Q-06 (placeholders OK).
 
 ## P2 — Russian version
 
