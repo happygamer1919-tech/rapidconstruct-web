@@ -118,10 +118,22 @@
     "stats": {
       "title": "Rezultate care vorbesc",
       "items": [
-        { "value": "500+", "label": "proiecte finalizate" },
-        { "value": "15+", "label": "ani de experiență" },
-        { "value": "30", "label": "ani garanție scrisă" },
-        { "value": "4.9/5", "label": "din 250+ recenzii" }
+        {
+          "value": "500+",
+          "label": "proiecte finalizate"
+        },
+        {
+          "value": "15+",
+          "label": "ani de experiență"
+        },
+        {
+          "value": "30",
+          "label": "ani garanție scrisă"
+        },
+        {
+          "value": "4.9/5",
+          "label": "din 250+ recenzii"
+        }
       ]
     },
     "servicesSection": {
@@ -129,6 +141,32 @@
       "title": "Ce construim pentru tine",
       "intro": "De la structură la ultimul finisaj — o singură echipă răspunde pentru tot proiectul.",
       "cardCta": "Află mai multe"
+    },
+    "story": {
+      "eyebrow": "PROCESUL NOSTRU",
+      "title": "Construcția ta, pas cu pas",
+      "phases": [
+        {
+          "chip": "Fundație",
+          "title": "Fundație turnată corect",
+          "caption": "Trasare, cofrare și armare executate după proiect — baza solidă a întregii construcții."
+        },
+        {
+          "chip": "Structură & Acoperiș",
+          "title": "Structură și acoperiș",
+          "caption": "Ridicăm structura și montăm acoperișul cap-coadă, cu sistem pluvial complet."
+        },
+        {
+          "chip": "Fațadă & Finisaje",
+          "title": "Fațadă și finisaje",
+          "caption": "Izolare, fațadă și finisaje realizate cu grijă la fiecare detaliu."
+        },
+        {
+          "chip": "Predare",
+          "title": "Casa finită, la cheie",
+          "caption": "Predăm lucrarea gata de locuit — cu garanție scrisă și suport după finalizare."
+        }
+      ]
     },
     "statement": {
       "text": "Casele se construiesc. Încrederea se câștigă."
