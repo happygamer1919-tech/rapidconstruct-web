@@ -53,10 +53,10 @@ export default function ConstructionStory({
                   className={`relative aspect-[3/2] overflow-hidden rounded-xl border border-inverse-border ${
                     i % 2 === 1 ? "lg:order-2" : ""
                   }`}
-                  initial={reduce ? false : { opacity: 0, scale: 1.06 }}
+                  initial={reduce ? false : { opacity: 0, scale: 1.02 }}
                   whileInView={reduce ? undefined : { opacity: 1, scale: 1 }}
-                  viewport={{ once: true, margin: "0px 0px -100px 0px" }}
-                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                  viewport={{ once: true, margin: "0px 0px -120px 0px" }}
+                  transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
                 >
                   <Image
                     src={phase.image}

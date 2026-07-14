@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Icon, type IconName } from "@/components/icons";
 import Reveal from "@/components/Reveal";
+import Design3D from "@/components/Design3D";
 import ConstructionStory, {
   type StoryPhase,
 } from "@/components/ConstructionStory";
@@ -249,7 +250,16 @@ export default async function Home({ params }: PageProps) {
         </div>
       </section>
 
-      {/* 4b — CONSTRUCTION STORY (signature scroll narrative, design ref Reel 1) */}
+      {/* 4b — 3D DESIGN (interactive 3D model — design ref Reel 1, ties to "& 3D Design") */}
+      <Design3D
+        eyebrow={t("design3d.eyebrow")}
+        title={t("design3d.title")}
+        intro={t("design3d.intro")}
+        points={t.raw("design3d.points") as string[]}
+        hint={t("design3d.hint")}
+      />
+
+      {/* 4c — CONSTRUCTION STORY (signature scroll narrative, design ref Reel 1) */}
       <ConstructionStory
         eyebrow={t("story.eyebrow")}
         title={t("story.title")}

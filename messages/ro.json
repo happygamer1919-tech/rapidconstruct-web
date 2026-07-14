@@ -168,6 +168,17 @@
         }
       ]
     },
+    "design3d": {
+      "eyebrow": "PROIECTARE & 3D DESIGN",
+      "title": "Vezi casa în 3D înainte s-o construim",
+      "intro": "Proiectăm fiecare lucrare în 3D — așa vezi exact cum va arăta rezultatul, iei decizii din timp și eviți surprizele pe șantier.",
+      "points": [
+        "Model 3D realist al casei și fațadei",
+        "Modificări rapide înainte de execuție",
+        "Deviz clar, legat direct de proiect"
+      ],
+      "hint": "Trage pentru a roti · model 3D"
+    },
     "statement": {
       "text": "Casele se construiesc. Încrederea se câștigă."
     },
