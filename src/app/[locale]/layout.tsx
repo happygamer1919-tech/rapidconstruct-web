@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
-import { SITE_URL, localeAlternates } from "@/i18n/metadata";
+import { OG_LOCALE, SITE_URL, localeAlternates } from "@/i18n/metadata";
+import { site } from "@/config/site";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo";
+import LocalBusinessJsonLd from "@/components/LocalBusinessJsonLd";
 import { serif, sans } from "../fonts";
 import "../globals.css";
 
@@ -28,12 +31,35 @@ export async function generateMetadata({
   const safeLocale = hasLocale(routing.locales, locale)
     ? locale
     : routing.defaultLocale;
+  const t = await getTranslations({ locale: safeLocale, namespace: "seo" });
 
   return {
     metadataBase: new URL(SITE_URL),
+    // Fallback title for any segment without its own (a plain string is replaced
+    // by a child page's title). Real pages set their own title — brand suffix
+    // included — via buildMetadata; the suffix is baked there, not via
+    // title.template, because a same-segment layout template does not apply to
+    // the home page (see src/lib/seo.ts).
+    title: site.name,
+    // Site-wide default description; every real page overrides with its own via
+    // buildMetadata (RC-006). Present so nothing is ever description-less.
+    description: t("default.description"),
     // Site-wide reciprocal hreflang (ro, ru, x-default) with absolute URLs.
-    // Per-route pages (later tickets) can override with localeAlternates(locale, pathname).
+    // Per-route pages override with buildMetadata(locale, path).
     alternates: localeAlternates(safeLocale, "/"),
+    // Open Graph / Twitter defaults (absolute branded share image). Real pages
+    // override via buildMetadata; this covers e.g. the not-found page.
+    openGraph: {
+      type: "website",
+      siteName: site.name,
+      locale: OG_LOCALE[safeLocale],
+      url: SITE_URL,
+      images: [DEFAULT_OG_IMAGE],
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: [DEFAULT_OG_IMAGE],
+    },
   };
 }
 
@@ -54,6 +80,8 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
       className={`${serif.variable} ${sans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        {/* Sitewide LocalBusiness structured data — carried by every page. */}
+        <LocalBusinessJsonLd />
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>

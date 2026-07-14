@@ -18,5 +18,14 @@
     "label": "Limbă",
     "ro": "RO",
     "ru": "RU"
+  },
+  "seo": {
+    "default": {
+      "description": "Rapid Construct & 3D Design — construcții, renovări la cheie, acoperișuri și fațade în Chișinău și regiuni. Garanție scrisă până la 30 de ani, materiale certificate UE."
+    },
+    "home": {
+      "title": "Construcții și renovări la cheie în Chișinău",
+      "description": "Acoperișuri, fațade, renovări complete și finisaje în Chișinău, Orhei, Cahul și Costești. Garanție scrisă până la 30 de ani, materiale certificate UE, prețuri de la 160 lei/m²."
+    }
   }
 }
