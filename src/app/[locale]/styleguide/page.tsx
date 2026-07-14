@@ -1,11 +1,35 @@
 import type { Metadata } from "next";
+import { hasLocale } from "next-intl";
+import { routing } from "@/i18n/routing";
+import { buildMetadata } from "@/lib/seo";
 
 // RC-003 styleguide — a temporary dev aid so the design tokens are verifiable
 // in the PR preview. Renders ONLY tokens/utilities from globals.css (no inline
 // hex). Not wired into nav; can be moved/removed once real pages land.
-export const metadata: Metadata = {
-  title: "Styleguide — RapidConstruct design tokens (RC-003)",
-};
+//
+// Uses the RC-006 metadata helper (reference implementation) but is marked
+// noindex + excluded from the sitemap — it is a dev aid, not a public page.
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const safeLocale = hasLocale(routing.locales, locale)
+    ? locale
+    : routing.defaultLocale;
+
+  return {
+    ...buildMetadata({
+      locale: safeLocale,
+      path: "/styleguide",
+      title: "Styleguide — design tokens (RC-003)",
+      description:
+        "Internal design-token reference for the RapidConstruct rebuild. Not a public page.",
+    }),
+    robots: { index: false, follow: false },
+  };
+}
 
 // Class names are written as complete literal strings so Tailwind's source
 // scanner picks them up (no string interpolation on utility names).

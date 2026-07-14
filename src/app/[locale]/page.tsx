@@ -1,9 +1,33 @@
+import type { Metadata } from "next";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
+import { routing } from "@/i18n/routing";
+import { buildMetadata } from "@/lib/seo";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
 };
+
+// Reference implementation of the RC-006 metadata helper: unique title +
+// description (from the `seo.home` message catalog, RO source of truth),
+// absolute https canonical, reciprocal hreflang, and OG/Twitter cards.
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const safeLocale = hasLocale(routing.locales, locale)
+    ? locale
+    : routing.defaultLocale;
+  const t = await getTranslations({ locale: safeLocale, namespace: "seo.home" });
+
+  return buildMetadata({
+    locale: safeLocale,
+    path: "/",
+    title: t("title"),
+    description: t("description"),
+  });
+}
 
 // Scaffolding page for RC-004 (routing only). Real hero/content is a later
 // ticket; this exists so `/` (RO) and `/ru` (RU) are verifiably distinct and the
