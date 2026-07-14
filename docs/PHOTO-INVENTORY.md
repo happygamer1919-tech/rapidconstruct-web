@@ -124,3 +124,52 @@ contacte | 15KB | https://static.tildacdn.net/tild3037-3230-4232-b733-3566313338
 contacte | 127KB | https://static.tildacdn.net/tild3737-3537-4339-a264-393836393965/logo-2.png
 contacte | 154KB | https://static.tildacdn.net/tild6662-3337-4661-a566-373763636237/058-063-RESPONSABILI.jpg
 ```
+
+---
+
+## Hidden "img" page stash (harvested 2026-07-14, owner Tilda login)
+Tilda page `img` (pageid 106732726, unpublished) is a photo dump: **110 content images**.
+MIXED quality — needs owner curation before use:
+- **Real job-site photos** (phone shots, dated filenames `photo_*_2025-11..2026-02`) — genuine
+  RapidConstruct work (roofing installs, facades). These are the portfolio/construction-story
+  candidates.
+- **Material/product swatches** (e.g. `hellenic-mat-ral7024`, `gotic-lucios-ral7016`,
+  `tabla-tip-tigla-meta`, `IZI-ROOF`, and some dated close-ups) — supplier catalog textures,
+  NOT projects. Fine for service-page decoration, NOT for "our work".
+- Hash-named `.jpg` — unclear; verify individually.
+
+ACTION: owner to hand over a curated set of the 10–20 BEST real completed-project photos
+(before/after ideal) for the portfolio + OG image. The stash below is an interim fallback.
+URLs are public Tilda CDN (no auth needed to fetch). Sizes vary (some are small thumbnails —
+originals may exist at higher res via Tilda export).
+
+### High-confidence dated job photos (29)
+- https://static.tildacdn.net/tild3231-6333-4137-b165-643030656235/photo_2026-02-18_00-.jpg
+- https://static.tildacdn.net/tild3466-6565-4132-a263-373239323130/photo_2026-02-18_00-.jpg
+- https://static.tildacdn.net/tild3562-3138-4465-b666-663366623533/photo_9_2026-01-27_0.jpg
+- https://static.tildacdn.net/tild3933-6261-4630-a434-633664303762/photo_2026-01-27_20-.jpg
+- https://static.tildacdn.net/tild6337-3063-4430-b937-643337343966/photo_2_2026-01-22_0.jpg
+- https://static.tildacdn.net/tild6634-3530-4864-a636-363561333334/photo_3_2026-01-22_0.jpg
+- https://static.tildacdn.net/tild3965-3039-4565-b930-313763353464/photo_2026-01-21_16-.jpg
+- https://static.tildacdn.net/tild3131-3564-4832-b465-303838353563/photo_2026-01-19_01-.jpg
+- https://static.tildacdn.net/tild3139-3934-4031-a434-343035343233/2026-01-15_193259.jpg
+- https://static.tildacdn.net/tild3037-6163-4562-a336-653037353932/2026-01-15_041947.jpg
+- https://static.tildacdn.net/tild3435-6565-4464-b837-386436396434/2026-01-15_042141.jpg
+- https://static.tildacdn.net/tild6634-3939-4130-b835-396333313339/2026-01-15_042756.jpg
+- https://static.tildacdn.net/tild3363-3930-4331-a263-633436396438/2026-01-15_042801.jpg
+- https://static.tildacdn.net/tild6338-3337-4164-b165-333736646537/2026-01-16_000518.jpg
+- https://static.tildacdn.net/tild3064-3862-4166-a637-323166336364/photo_2026-01-09_01-.jpg
+- https://static.tildacdn.net/tild6531-3935-4966-a464-356539656361/photo_7_2026-01-09_0.jpg
+- https://static.tildacdn.net/tild6637-3132-4663-b238-373637346531/photo_6_2026-01-09_0.jpg
+- https://static.tildacdn.net/tild6661-6439-4133-a636-336163353535/photo_5_2026-01-09_0.jpg
+- https://static.tildacdn.net/tild6538-3539-4930-b164-626365393337/photo_3_2026-01-09_0.jpg
+- https://static.tildacdn.net/tild3164-3963-4135-b965-346137343035/photo_4_2026-01-09_0.jpg
+- https://static.tildacdn.net/tild6131-3065-4263-a137-356237633065/photo_2_2026-01-09_0.jpg
+- https://static.tildacdn.net/tild3965-3761-4734-a133-333663326430/photo_1_2026-01-09_0.jpg
+- https://static.tildacdn.net/tild6462-3762-4136-b334-613237386438/photo_1_2025-12-03_0.jpg
+- https://static.tildacdn.net/tild6662-3630-4432-a134-303763626538/photo_58_2025-12-03_.jpg
+- https://static.tildacdn.net/tild6533-3366-4533-b935-643933633934/photo_66_2025-12-03_.jpg
+- https://static.tildacdn.net/tild6531-3763-4633-b233-336334653738/photo_14_2025-11-25_.jpg
+- https://static.tildacdn.net/tild3639-6438-4231-a661-383434313733/photo_13_2025-11-25_.jpg
+- https://static.tildacdn.net/tild3966-6432-4536-b964-376233313636/photo_11_2025-11-25_.jpg
+- https://static.tildacdn.net/tild3836-3032-4466-b533-666666373032/photo_2025-11-05_10-.jpg
