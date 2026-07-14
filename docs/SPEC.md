@@ -47,6 +47,9 @@ calcul preț · lucru pe timp rece.
 **Form promise:** response within 2 working hours.
 
 ## 3. Design & motion direction
+See also `docs/DESIGN-REFERENCES.md` — analyzed owner-supplied visual references
+(construction-story scroll narrative, editorial statement sections, project index rows)
+with borrow/skip decisions and guardrail cross-checks.
 - Aesthetic: premium craft — confident, solid, warm. Keep the orange + charcoal brand
   direction from the current logo unless Max wants a refresh (Q-01).
 - Light base (construction clients skew conservative), bold dark hero allowed.
