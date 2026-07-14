@@ -1,0 +1,22 @@
+{
+  "common": {
+    "companyName": "Rapid Construct & 3D Design",
+    "phoneCta": "Позвонить TODO(ru-review)"
+  },
+  "nav": {
+    "reparatiiLaCheie": "Ремонт под ключ TODO(ru-review)",
+    "caseConstructii": "Дома и строительство TODO(ru-review)",
+    "fatade": "Фасады и благоустройство TODO(ru-review)",
+    "finisaje": "Отделочные работы TODO(ru-review)",
+    "proiectare": "Проектирование и дизайн TODO(ru-review)",
+    "instalatii": "Инженерные системы TODO(ru-review)",
+    "despre": "О нас TODO(ru-review)",
+    "portofoliu": "Портфолио TODO(ru-review)",
+    "contact": "Контакты TODO(ru-review)"
+  },
+  "locale": {
+    "label": "Язык TODO(ru-review)",
+    "ro": "RO",
+    "ru": "RU"
+  }
+}

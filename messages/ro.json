@@ -1,0 +1,22 @@
+{
+  "common": {
+    "companyName": "Rapid Construct & 3D Design",
+    "phoneCta": "Sună acum"
+  },
+  "nav": {
+    "reparatiiLaCheie": "Reparații la cheie",
+    "caseConstructii": "Case & Construcții",
+    "fatade": "Fațade & Amenajări exterioare",
+    "finisaje": "Finisaje",
+    "proiectare": "Proiectare & Design",
+    "instalatii": "Instalații",
+    "despre": "Despre Noi",
+    "portofoliu": "Portofoliu",
+    "contact": "Contact"
+  },
+  "locale": {
+    "label": "Limbă",
+    "ro": "RO",
+    "ru": "RU"
+  }
+}
