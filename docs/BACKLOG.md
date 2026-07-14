@@ -11,8 +11,10 @@ Status legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[B]` blocked (s
 
 - [x] **RC-001** Scaffold Next.js app (App Router, TS, Tailwind) via `scripts/setup.sh`;
       commit lockfile; `npm run dev` works. (PR #2)
-- [ ] **RC-002** Vercel project + GitHub repo wired: every PR gets a preview URL; main deploys
-      to a staging domain (production DNS stays on Tilda until launch).
+- [x] **RC-002** Vercel project + GitHub repo wired: every PR gets a preview URL; main deploys
+      to a staging domain (production DNS stays on Tilda until launch). Done via CLI-deploy
+      routine (see AGENTS.md "Deploys & preview URLs"); staging live at
+      rapidconstruct-web.vercel.app. Full per-PR automation pending owner toggle (Q-08).
 - [ ] **RC-003** Design tokens: colors (keep orange/charcoal brand direction — confirm in SPEC §3),
       type scale, spacing, dark-on-light base. One tokens file, no ad-hoc values.
 - [ ] **RC-004** i18n routing with next-intl: `/` RO default, `/ru` mirror; locale switcher;
