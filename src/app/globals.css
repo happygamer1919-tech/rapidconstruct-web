@@ -141,3 +141,17 @@ body {
   color: var(--color-foreground);
   font-family: var(--font-sans);
 }
+
+/* Motion guardrail (AGENTS.md / SPEC §3): honour prefers-reduced-motion
+   everywhere — neutralise transitions, animations and smooth scroll so no
+   effect on the site can trigger motion sickness. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

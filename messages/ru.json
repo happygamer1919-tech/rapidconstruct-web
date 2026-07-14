@@ -27,5 +27,207 @@
       "title": "Строительство и ремонт под ключ в Кишинёве TODO(ru-review)",
       "description": "Кровля, фасады, комплексный ремонт и отделка в Кишинёве, Оргееве, Кагуле и Костештах. Письменная гарантия до 30 лет, сертифицированные материалы ЕС, цены от 160 лей/м². TODO(ru-review)"
     }
+  },
+  "header": {
+    "home": "Главная TODO(ru-review)",
+    "despre": "О нас TODO(ru-review)",
+    "portofoliu": "Портфолио TODO(ru-review)",
+    "contact": "Контакты TODO(ru-review)",
+    "services": "Услуги TODO(ru-review)",
+    "callNow": "Позвонить TODO(ru-review)",
+    "quote": "Запросить смету TODO(ru-review)",
+    "openMenu": "Открыть меню TODO(ru-review)",
+    "closeMenu": "Закрыть меню TODO(ru-review)",
+    "skipToContent": "Перейти к содержимому TODO(ru-review)"
+  },
+  "services": {
+    "acoperisuri": {
+      "title": "Кровля TODO(ru-review)",
+      "desc": "Битумная черепица, металлочерепица и водосточные системы — монтаж качественно и герметично. TODO(ru-review)"
+    },
+    "fatade": {
+      "title": "Фасады TODO(ru-review)",
+      "desc": "Утепление, декоративная штукатурка и облицовка натуральным камнем для долговечного экстерьера. TODO(ru-review)"
+    },
+    "renovari": {
+      "title": "Ремонт под ключ TODO(ru-review)",
+      "desc": "От демонтажа до отделки — мы ведём весь процесс, а вы получаете готовый к жизни дом. TODO(ru-review)"
+    },
+    "finisaje": {
+      "title": "Отделка TODO(ru-review)",
+      "desc": "Гипсокартон, шпаклёвка, покраска, полы и облицовка — чисто и точно. TODO(ru-review)"
+    },
+    "proiectare": {
+      "title": "3D-проектирование TODO(ru-review)",
+      "desc": "3D-визуализации и подробные планы до начала работ, чтобы вы точно знали результат. TODO(ru-review)"
+    },
+    "instalatii": {
+      "title": "Инженерные системы TODO(ru-review)",
+      "desc": "Электрика, сантехника и отопление — правильно рассчитаны и сданы с гарантией. TODO(ru-review)"
+    }
+  },
+  "footer": {
+    "tagline": "Строительство и ремонт под ключ в Кишинёве и регионах, с письменной гарантией и сертифицированными материалами ЕС. TODO(ru-review)",
+    "servicesTitle": "Услуги TODO(ru-review)",
+    "companyTitle": "Компания TODO(ru-review)",
+    "contactTitle": "Контакты TODO(ru-review)",
+    "hoursLabel": "Часы работы TODO(ru-review)",
+    "hours": "Пн–Сб 08:00–17:00 · Вс: выходной TODO(ru-review)",
+    "socialTitle": "Мы в соцсетях TODO(ru-review)",
+    "rights": "© Rapid Construct 2026"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Строительство и ремонт · Кишинёв и регионы TODO(ru-review)",
+      "h1": "Строительство и ремонт под ключ TODO(ru-review)",
+      "subline": "Дома · Ремонт · Фасады · Кровля · Отделка · Инженерия · 3D-проектирование · Исполнение · Разрешения TODO(ru-review)",
+      "trust": "Письменная гарантия до 30 лет • Сертифицированные материалы ЕС TODO(ru-review)",
+      "ctaCall": "Позвонить TODO(ru-review)",
+      "ctaQuote": "Запросить бесплатную смету TODO(ru-review)",
+      "photoLabel": "фото проекта TODO(ru-review)"
+    },
+    "badges": {
+      "title": "Почему Rapid Construct TODO(ru-review)",
+      "items": [
+        {
+          "title": "Гарантия 30 лет в договоре TODO(ru-review)",
+          "desc": "Гарантия прописана в договоре, а не просто на словах. TODO(ru-review)"
+        },
+        {
+          "title": "Сертифицированные материалы ЕС TODO(ru-review)",
+          "desc": "Продукция проверенных производителей, подобранная под проект. TODO(ru-review)"
+        },
+        {
+          "title": "Исполнение и сдача в срок TODO(ru-review)",
+          "desc": "Чёткие сроки, которые мы соблюдаем. TODO(ru-review)"
+        },
+        {
+          "title": "Команда с опытом 10+ лет TODO(ru-review)",
+          "desc": "Мастера, специализирующиеся на каждом виде работ. TODO(ru-review)"
+        },
+        {
+          "title": "Прозрачные цены TODO(ru-review)",
+          "desc": "Что в смете, то и платите — без скрытых расходов. TODO(ru-review)"
+        },
+        {
+          "title": "Поддержка после работ TODO(ru-review)",
+          "desc": "Мы остаёмся на связи и после завершения проекта. TODO(ru-review)"
+        }
+      ]
+    },
+    "stats": {
+      "title": "Результаты, которые говорят сами за себя TODO(ru-review)",
+      "items": [
+        { "value": "500+", "label": "завершённых проектов TODO(ru-review)" },
+        { "value": "15+", "label": "лет опыта TODO(ru-review)" },
+        { "value": "30", "label": "лет письменной гарантии TODO(ru-review)" },
+        { "value": "4.9/5", "label": "по 250+ отзывам TODO(ru-review)" }
+      ]
+    },
+    "servicesSection": {
+      "eyebrow": "Услуги TODO(ru-review)",
+      "title": "Что мы строим для вас TODO(ru-review)",
+      "intro": "От конструкции до последней отделки — за весь проект отвечает одна команда. TODO(ru-review)",
+      "cardCta": "Подробнее TODO(ru-review)"
+    },
+    "statement": {
+      "text": "Дома строятся. Доверие — заслуживается. TODO(ru-review)"
+    },
+    "projects": {
+      "eyebrow": "Портфолио TODO(ru-review)",
+      "title": "Недавние проекты TODO(ru-review)",
+      "photoLabel": "фото проекта TODO(ru-review)",
+      "cta": "Смотреть всё портфолио TODO(ru-review)",
+      "items": [
+        {
+          "location": "Оргеев TODO(ru-review)",
+          "size": "100 м²",
+          "work": "Кровля из битумной черепицы + водосток TODO(ru-review)",
+          "year": "2025"
+        },
+        {
+          "location": "Костешты TODO(ru-review)",
+          "size": "320 м²",
+          "work": "Фасад из натурального камня + утепление TODO(ru-review)",
+          "year": "2025"
+        },
+        {
+          "location": "Кагул TODO(ru-review)",
+          "size": "180 м²",
+          "work": "Кровля из металлочерепицы + утепление мансарды TODO(ru-review)",
+          "year": "2024"
+        },
+        {
+          "location": "Кишинёв TODO(ru-review)",
+          "size": "280 м²",
+          "work": "Полный ремонт под ключ TODO(ru-review)",
+          "year": "2024"
+        }
+      ]
+    },
+    "testimonials": {
+      "eyebrow": "Отзывы TODO(ru-review)",
+      "title": "Что говорят клиенты TODO(ru-review)",
+      "items": [
+        {
+          "quote": "Металлическую кровлю смонтировали безупречно, в срок и без неожиданных расходов. Рекомендую с уверенностью. TODO(ru-review)",
+          "name": "Ион Мирон TODO(ru-review)",
+          "meta": "Кишинёв · металлическая кровля TODO(ru-review)"
+        },
+        {
+          "quote": "Фасад и утепление полностью преобразили дом — теплее зимой и намного красивее. Серьёзная команда. TODO(ru-review)",
+          "name": "Мария Опря TODO(ru-review)",
+          "meta": "Оргеев · фасад + утепление TODO(ru-review)"
+        },
+        {
+          "quote": "Работаем над несколькими проектами. Стабильное качество и соблюдение сроков — именно то, что ищешь в партнёре. TODO(ru-review)",
+          "name": "Андрей Кондря TODO(ru-review)",
+          "meta": "Застройщик TODO(ru-review)"
+        }
+      ]
+    },
+    "faq": {
+      "eyebrow": "Частые вопросы TODO(ru-review)",
+      "title": "Что клиенты спрашивают чаще всего TODO(ru-review)",
+      "items": [
+        {
+          "q": "Сколько длится монтаж кровли? TODO(ru-review)",
+          "a": "Обычно от 7 до 15 дней — в зависимости от площади, типа покрытия и сложности конструкции. Точный срок называем после осмотра на месте. TODO(ru-review)"
+        },
+        {
+          "q": "Какую гарантию вы даёте? TODO(ru-review)",
+          "a": "Даём письменную гарантию в договоре — до 30 лет, в зависимости от вида работ и выбранных материалов. TODO(ru-review)"
+        },
+        {
+          "q": "Какие материалы вы используете? TODO(ru-review)",
+          "a": "Работаем только с сертифицированными материалами ЕС от проверенных производителей, подобранными под проект и бюджет. TODO(ru-review)"
+        },
+        {
+          "q": "Как выполняется утепление фасада? TODO(ru-review)",
+          "a": "Применяем полные системы утепления (пенополистирол или минеральная вата) с сеткой, клеем и декоративной штукатуркой — экономия на отоплении и долговечный экстерьер. TODO(ru-review)"
+        },
+        {
+          "q": "Как вы рассчитываете стоимость работ? TODO(ru-review)",
+          "a": "Цена определяется по прозрачной смете: замеры, материалы и работа. Что в смете, то и платите — без скрытых расходов. Кровля от 160 леев/м² (фиксированная цена на 2026 год). TODO(ru-review)"
+        },
+        {
+          "q": "Работаете ли вы в холодное время года? TODO(ru-review)",
+          "a": "Да, планируем работы по сезону и используем материалы и технологии, подходящие для низких температур, без ущерба качеству. TODO(ru-review)"
+        }
+      ]
+    },
+    "contact": {
+      "eyebrow": "Контакты TODO(ru-review)",
+      "title": "Начните свой проект TODO(ru-review)",
+      "intro": "Расскажите, что вам нужно, и получите понятную смету без обязательств. TODO(ru-review)",
+      "promo": "−10% при ранней записи · Рассрочка 0% на кровлю · фиксированная цена 160 леев/м² на 2026 год TODO(ru-review)",
+      "responsePromise": "Отвечаем в течение 2 рабочих часов. TODO(ru-review)",
+      "ctaQuote": "Запросить бесплатную смету TODO(ru-review)",
+      "ctaCall": "Позвонить TODO(ru-review)",
+      "addressLabel": "Адрес TODO(ru-review)",
+      "phoneLabel": "Телефон TODO(ru-review)",
+      "emailLabel": "Email TODO(ru-review)",
+      "hoursLabel": "Часы работы TODO(ru-review)"
+    }
   }
 }
