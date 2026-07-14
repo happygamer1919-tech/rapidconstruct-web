@@ -51,24 +51,34 @@ test.describe("navigation", () => {
   test("clicking a primary nav link changes the URL", async ({ page }) => {
     await page.goto("/");
 
-    // Primary nav = same-origin links in the header/nav shell (RC-005), excluding
-    // the home link itself (so clicking is guaranteed to change the URL) and any
-    // external links (target=_blank to vercel/nextjs are not in-app navigation).
-    const navLinks = page.locator(
-      'header a[href^="/"]:not([href="/"]), nav a[href^="/"]:not([href="/"])',
-    );
+    // Primary nav = same-origin content links in the header/nav shell, excluding
+    // the home link itself (so a click is guaranteed to change the URL), external
+    // links, and the locale switcher (locale switching has its own test below and
+    // from `/` its RO link is same-page — not "primary nav"). The xpath predicate
+    // drops any link inside [data-testid="locale-switcher"].
+    const navLinks = page
+      .locator(
+        'header a[href^="/"]:not([href="/"]), nav a[href^="/"]:not([href="/"])',
+      )
+      .locator(
+        'xpath=self::*[not(ancestor::*[@data-testid="locale-switcher"])]',
+      );
     const count = await navLinks.count();
 
-    // TODO(RC-005): the header/nav shell isn't built on the base branch yet.
-    // Skip until an in-app nav link exists; this then activates automatically.
+    // TODO(RC-103): real content nav (service pages) isn't built yet — only the
+    // locale switcher exists, which is excluded above. Skip until an in-app
+    // content link exists; this test then activates automatically.
     test.skip(
       count === 0,
-      "no in-app nav links found; unskips once RC-005 (layout shell / header nav) merges",
+      "no in-app content nav links yet; unskips once service-page nav (RC-103) merges",
     );
 
     const before = page.url();
     await navLinks.first().click();
-    await page.waitForLoadState("domcontentloaded");
+
+    // next-intl <Link> navigates client-side, so wait for the URL to actually
+    // change rather than for a full document load (which may not re-fire).
+    await page.waitForURL((url) => url.href !== before, { timeout: 5000 });
 
     // URL changed and the page did not crash — the target may still be a
     // 404/placeholder, which is acceptable per the spec.

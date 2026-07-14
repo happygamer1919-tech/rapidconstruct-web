@@ -19,7 +19,11 @@ export default function LocaleSwitcher() {
   const pathname = usePathname();
 
   return (
-    <nav aria-label={t("label")} className="flex items-center gap-2 text-sm">
+    <nav
+      aria-label={t("label")}
+      data-testid="locale-switcher"
+      className="flex items-center gap-2 text-sm"
+    >
       {routing.locales.map((locale) => {
         const isActive = locale === activeLocale;
         return (

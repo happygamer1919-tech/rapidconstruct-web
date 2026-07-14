@@ -1,24 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { SITE_URL, localeAlternates } from "@/i18n/metadata";
+import { serif, sans } from "../fonts";
 import "../globals.css";
 
-// Minimal font wiring. RC-003 (Playfair Display + Inter + design tokens) had not
-// merged when RC-004 landed; these Geist defaults are a placeholder and must not
-// clobber the RC-003 tokens when it merges.
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// This is the ROOT layout — with the `[locale]` segment there is no separate
+// app/layout.tsx (per the Next 16 i18n guide), so `<html lang={locale}>` lives
+// here. Fonts are RC-003's Playfair Display (--font-serif) + Inter (--font-sans).
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -60,7 +51,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   return (
     <html
       lang={locale}
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${serif.variable} ${sans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
