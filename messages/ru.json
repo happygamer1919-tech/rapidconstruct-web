@@ -118,10 +118,22 @@
     "stats": {
       "title": "Результаты, которые говорят сами за себя TODO(ru-review)",
       "items": [
-        { "value": "500+", "label": "завершённых проектов TODO(ru-review)" },
-        { "value": "15+", "label": "лет опыта TODO(ru-review)" },
-        { "value": "30", "label": "лет письменной гарантии TODO(ru-review)" },
-        { "value": "4.9/5", "label": "по 250+ отзывам TODO(ru-review)" }
+        {
+          "value": "500+",
+          "label": "завершённых проектов TODO(ru-review)"
+        },
+        {
+          "value": "15+",
+          "label": "лет опыта TODO(ru-review)"
+        },
+        {
+          "value": "30",
+          "label": "лет письменной гарантии TODO(ru-review)"
+        },
+        {
+          "value": "4.9/5",
+          "label": "по 250+ отзывам TODO(ru-review)"
+        }
       ]
     },
     "servicesSection": {
@@ -129,6 +141,32 @@
       "title": "Что мы строим для вас TODO(ru-review)",
       "intro": "От конструкции до последней отделки — за весь проект отвечает одна команда. TODO(ru-review)",
       "cardCta": "Подробнее TODO(ru-review)"
+    },
+    "story": {
+      "eyebrow": "НАШ ПРОЦЕСС TODO(ru-review)",
+      "title": "Ваша стройка, шаг за шагом TODO(ru-review)",
+      "phases": [
+        {
+          "chip": "Фундамент TODO(ru-review)",
+          "title": "Правильно залитый фундамент TODO(ru-review)",
+          "caption": "Разметка, опалубка и армирование по проекту — прочная основа всей постройки. TODO(ru-review)"
+        },
+        {
+          "chip": "Каркас и кровля TODO(ru-review)",
+          "title": "Каркас и кровля TODO(ru-review)",
+          "caption": "Возводим конструкцию и монтируем кровлю под ключ, с водосточной системой. TODO(ru-review)"
+        },
+        {
+          "chip": "Фасад и отделка TODO(ru-review)",
+          "title": "Фасад и отделка TODO(ru-review)",
+          "caption": "Утепление, фасад и отделка, выполненные с вниманием к каждой детали. TODO(ru-review)"
+        },
+        {
+          "chip": "Сдача TODO(ru-review)",
+          "title": "Готовый дом под ключ TODO(ru-review)",
+          "caption": "Сдаём работу готовой к проживанию — с письменной гарантией и поддержкой. TODO(ru-review)"
+        }
+      ]
     },
     "statement": {
       "text": "Дома строятся. Доверие — заслуживается. TODO(ru-review)"

@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Icon, type IconName } from "@/components/icons";
+import Reveal from "@/components/Reveal";
+import ConstructionStory, {
+  type StoryPhase,
+} from "@/components/ConstructionStory";
 import { SERVICES } from "@/config/navigation";
 import { site } from "@/config/site";
 import { routing } from "@/i18n/routing";
@@ -59,6 +64,25 @@ export default async function Home({ params }: PageProps) {
   const testimonials = t.raw("testimonials.items") as Testimonial[];
   const faqs = t.raw("faq.items") as Faq[];
 
+  // Construction-story phases: copy from the catalog, photos mapped by index.
+  const STORY_IMAGES = [
+    "/images/projects/phase-foundation.jpg",
+    "/images/projects/roof-install.jpg",
+    "/images/projects/facade-stone.jpg",
+    "/images/projects/hero-house.jpg",
+  ];
+  const storyPhases: StoryPhase[] = (
+    t.raw("story.phases") as Omit<StoryPhase, "image">[]
+  ).map((p, i) => ({ ...p, image: STORY_IMAGES[i] ?? STORY_IMAGES[0] }));
+
+  // Real interim imagery for the project index rows (Q-06 placeholders retired).
+  const PROJECT_IMAGES = [
+    "/images/projects/hero-house.jpg",
+    "/images/projects/facade-stone.jpg",
+    "/images/projects/roof-install.jpg",
+    "/images/projects/finish-terrace.jpg",
+  ];
+
   // FAQPage structured data (GEO surface, AGENTS.md) — built from the same copy
   // rendered below so the visible FAQ and the JSON-LD can never diverge.
   const faqJsonLd = {
@@ -73,22 +97,36 @@ export default async function Home({ params }: PageProps) {
 
   return (
     <main className="flex-1">
-      {/* 1 — HERO (renders instantly, no gating) */}
-      <section className="border-b border-border">
-        <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-gutter py-16 lg:grid-cols-[1.1fr_0.9fr] lg:py-24">
-          <div className="flex flex-col gap-6">
-            <p className="micro-label text-accent-strong">{t("hero.eyebrow")}</p>
-            <h1 className="font-serif text-display-lg text-foreground">
+      {/* 1 — CINEMATIC HERO: full-bleed real project photo, text renders
+          instantly over it (no gating, no preloader). Interim photo — Q-06. */}
+      <section className="relative isolate overflow-hidden border-b border-border">
+        <Image
+          src="/images/projects/hero-house.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="-z-10 object-cover"
+        />
+        {/* Dark gradient keeps the overlaid text ≥ 4.5:1 (WCAG AA). */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 bg-gradient-to-r from-ink-950/92 via-ink-950/75 to-ink-950/35"
+        />
+        <div className="mx-auto w-full max-w-6xl px-gutter py-24 lg:py-32">
+          <div className="flex max-w-2xl flex-col gap-6">
+            <p className="micro-label text-inverse-accent">{t("hero.eyebrow")}</p>
+            <h1 className="font-serif text-display-xl text-neutral-50">
               {t("hero.h1")}
             </h1>
-            <p className="max-w-xl text-body-lg text-muted-foreground">
+            <p className="max-w-xl text-body-lg text-neutral-200">
               {t("hero.subline")}
             </p>
-            <p className="flex items-center gap-2 text-caption font-medium text-foreground">
+            <p className="flex items-center gap-2 text-caption font-medium text-neutral-50">
               <Icon
                 name="shield"
                 size={18}
-                className="shrink-0 text-accent-strong"
+                className="shrink-0 text-inverse-accent"
               />
               {t("hero.trust")}
             </p>
@@ -102,19 +140,13 @@ export default async function Home({ params }: PageProps) {
               </a>
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 rounded-full border border-foreground px-6 py-3 text-body font-semibold text-foreground transition-colors hover:bg-foreground hover:text-background focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong"
+                className="inline-flex items-center gap-2 rounded-full border border-neutral-50 px-6 py-3 text-body font-semibold text-neutral-50 transition-colors hover:bg-neutral-50 hover:text-ink-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inverse-accent"
               >
                 {t("hero.ctaQuote")}
                 <Icon name="arrowRight" size={18} />
               </Link>
             </div>
           </div>
-          {/* Placeholder hero visual — no real photos yet (RC-101 constraint). */}
-          <PlaceholderPhoto
-            label={t("hero.photoLabel")}
-            className="aspect-[4/3] w-full"
-          />
-          {/* TODO(photos): real hero project image */}
         </div>
       </section>
 
@@ -217,13 +249,22 @@ export default async function Home({ params }: PageProps) {
         </div>
       </section>
 
+      {/* 4b — CONSTRUCTION STORY (signature scroll narrative, design ref Reel 1) */}
+      <ConstructionStory
+        eyebrow={t("story.eyebrow")}
+        title={t("story.title")}
+        phases={storyPhases}
+      />
+
       {/* 5 — EDITORIAL STATEMENT beat (dark band) */}
       {/* TODO(copy): final statement copy pending owner approval. */}
       <section className="bg-ink-950 text-inverse-foreground">
         <div className="mx-auto w-full max-w-5xl px-gutter py-24 text-center">
-          <p className="font-serif text-display-xl leading-tight text-inverse-foreground">
-            {t("statement.text")}
-          </p>
+          <Reveal>
+            <p className="font-serif text-display-xl leading-tight text-inverse-foreground">
+              {t("statement.text")}
+            </p>
+          </Reveal>
         </div>
       </section>
 
@@ -254,18 +295,22 @@ export default async function Home({ params }: PageProps) {
             </Link>
           </div>
           <ul className="border-t border-border">
-            {projects.map((p) => (
+            {projects.map((p, i) => (
               <li key={`${p.location}-${p.work}`}>
                 <Link
                   href="/portofoliu"
                   className="group grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-border py-5 transition-colors hover:bg-muted focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent-strong sm:gap-6"
                 >
-                  {/* TODO(photos): real project thumbnail */}
-                  <PlaceholderPhoto
-                    label={t("projects.photoLabel")}
-                    showLabel={false}
-                    className="h-14 w-20 shrink-0 sm:h-16 sm:w-24"
-                  />
+                  {/* Interim real project thumbnail (Q-06) */}
+                  <span className="relative h-14 w-20 shrink-0 overflow-hidden rounded-md border border-border sm:h-16 sm:w-24">
+                    <Image
+                      src={PROJECT_IMAGES[i % PROJECT_IMAGES.length]}
+                      alt=""
+                      fill
+                      sizes="96px"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </span>
                   <div className="flex flex-col gap-1">
                     <span className="flex items-baseline gap-2 font-serif text-h3 text-foreground">
                       {p.location}
@@ -439,37 +484,6 @@ export default async function Home({ params }: PageProps) {
         </div>
       </section>
     </main>
-  );
-}
-
-/**
- * Tasteful placeholder for a not-yet-available project photo (RC-101 constraint:
- * no real photos). A warm charcoal→neutral gradient with an optional small
- * "foto proiect" label. Sized by the caller via className (explicit box → no CLS).
- */
-function PlaceholderPhoto({
-  label,
-  className = "",
-  showLabel = true,
-}: {
-  label: string;
-  className?: string;
-  showLabel?: boolean;
-}) {
-  return (
-    <div
-      style={{
-        backgroundImage:
-          "linear-gradient(135deg, var(--color-ink-800), var(--color-neutral-300))",
-      }}
-      className={`flex items-center justify-center overflow-hidden rounded-lg border border-border ${className}`}
-    >
-      {showLabel && (
-        <span className="micro-label rounded-sm bg-ink-950/40 px-2 py-1 text-neutral-50">
-          {label}
-        </span>
-      )}
-    </div>
   );
 }
 
