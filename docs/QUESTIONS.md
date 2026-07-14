@@ -35,6 +35,17 @@ stock or low-res. Ask Max for a Drive/phone dump of real site photos. Also: the 
 folder has an unpublished page named "img" (pageid 106732726) that may be a photo stash —
 check it during content export. **Blocks:** RC-104 quality (can build with placeholders).
 
+## Q-08 — OPEN — Disable Vercel Deployment Protection (one toggle)
+Per-PR preview links currently require a Vercel login, so Max can't open them. Someone with
+access to the Vercel dashboard (sm33xy account): open vercel.com → team "sm33xy's projects" →
+project **rapidconstruct-web** → Settings → **Deployment Protection** → set **Vercel
+Authentication** to *Disabled*, Save. The site is a public marketing site — nothing secret in
+previews. Until flipped, Max verifies on https://rapidconstruct-web.vercel.app after merge.
+**Optional upgrade at the same time:** install the Vercel GitHub App on the
+happygamer1919-tech account (github.com/apps/vercel) and grant it rapidconstruct-web — then
+every PR gets its preview URL automatically, no CLI step. **Blocks:** nothing (workaround in
+place); improves the review flow for Max.
+
 ## Q-07 — OPEN — Are the claimed numbers accurate?
 "500+ case", "250+ recenzii", "15+ ani", "garanție 30 ani", "160 lei/m²" — we will publish
 these as quotable facts (SEO/GEO), so they must be true and defensible. Confirm with Max.
