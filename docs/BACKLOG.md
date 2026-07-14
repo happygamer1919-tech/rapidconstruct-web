@@ -9,8 +9,8 @@ Status legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[B]` blocked (s
 
 ## P0 — Foundation (repo, scaffold, pipeline)
 
-- [ ] **RC-001** Scaffold Next.js app (App Router, TS, Tailwind) via `scripts/setup.sh`;
-      commit lockfile; `npm run dev` works.
+- [x] **RC-001** Scaffold Next.js app (App Router, TS, Tailwind) via `scripts/setup.sh`;
+      commit lockfile; `npm run dev` works. (PR #2)
 - [ ] **RC-002** Vercel project + GitHub repo wired: every PR gets a preview URL; main deploys
       to a staging domain (production DNS stays on Tilda until launch).
 - [ ] **RC-003** Design tokens: colors (keep orange/charcoal brand direction — confirm in SPEC §3),
