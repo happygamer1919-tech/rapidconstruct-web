@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Icon, type IconName } from "@/components/icons";
 import Reveal from "@/components/Reveal";
-import Design3D from "@/components/Design3D";
+import HouseBuild, { type BuildPhase } from "@/components/HouseBuild";
 import ConstructionStory, {
   type StoryPhase,
 } from "@/components/ConstructionStory";
@@ -250,14 +250,18 @@ export default async function Home({ params }: PageProps) {
         </div>
       </section>
 
-      {/* 4b — 3D DESIGN (interactive 3D model — design ref Reel 1, ties to "& 3D Design") */}
-      <Design3D
-        eyebrow={t("design3d.eyebrow")}
-        title={t("design3d.title")}
-        intro={t("design3d.intro")}
-        points={t.raw("design3d.points") as string[]}
-        hint={t("design3d.hint")}
-      />
+      {/* 4b — DESIGN -> CONSTRUCTION (house builds itself on scroll — owner
+          idea after Reel 1; blueprint turns into the finished house) */}
+      <section className="border-b border-border">
+        <HouseBuild
+          eyebrow={t("build.eyebrow")}
+          title={t("build.title")}
+          intro={t("build.intro")}
+          phases={t.raw("build.phases") as BuildPhase[]}
+          points={t.raw("design3d.points") as string[]}
+          hint={t("design3d.hint")}
+        />
+      </section>
 
       {/* 4c — CONSTRUCTION STORY (signature scroll narrative, design ref Reel 1) */}
       <ConstructionStory
