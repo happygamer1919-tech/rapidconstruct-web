@@ -175,7 +175,11 @@ export default function RoofCutawayScene({
             </mesh>
           ))}
           {[-0.95, -0.55, -0.15, 0.25, 0.65].map((x) => (
-            <mesh key={`ridge${x}`} position={[x * (W / 2.4), 0.05, 0]}>
+            <mesh
+              key={`ridge${x}`}
+              position={[x * (W / 2.4), 0.05, 0]}
+              rotation={[Math.PI / 2, 0, 0]}
+            >
               <cylinderGeometry args={[0.026, 0.026, D, 10]} />
               <meshStandardMaterial
                 color="#3d3934"
