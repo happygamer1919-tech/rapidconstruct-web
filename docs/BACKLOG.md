@@ -56,6 +56,15 @@ _RC-003/004/005/007 shipped together in PR #6 (squash). RC-006 next._
       on scroll, fixed caption slot + phase chips, reduced-motion static fallback.
       See docs/DESIGN-REFERENCES.md. Real progress photos pending Q-06 (placeholders OK).
 
+- [ ] **RC-112** 3D configurator + lead magnet (owner idea 2026-07-15): from the homepage
+      3D model, "Configurează casa ta" opens /configurator — pick house type, floors,
+      roof type, facade finish, approximate m²; a live 3D model updates with each choice
+      and a price range (from the RC-107 calculator logic) recalculates. CTA sends the
+      draft: name+phone required, config JSON + estimate emailed to the business
+      (Q-03 email; Telegram later) so sales can call with full context. Include a
+      lightweight "configurator started/completed" event so we can see drop-off (RC-404
+      analytics). GDPR note: price shown on-page; contact details only on submit.
+
 ## P2 — Russian version
 
 - [ ] **RC-201** RU information architecture: RU slugs map (`/ru/kryshi`, `/ru/fasady`, ...),

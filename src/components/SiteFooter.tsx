@@ -19,7 +19,7 @@ export default async function SiteFooter() {
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-gutter py-14 md:grid-cols-2 lg:grid-cols-4">
         {/* Brand + NAP */}
         <div className="flex flex-col gap-4">
-          <span className="font-serif text-lg font-semibold">
+          <span className="font-serif lining-nums text-lg font-semibold">
             Rapid Construct{" "}
             <span className="text-inverse-accent">
               <span className="font-sans font-normal">&amp;</span> 3D Design

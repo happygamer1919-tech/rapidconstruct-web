@@ -43,7 +43,7 @@
   "services": {
     "acoperisuri": {
       "title": "Acoperișuri",
-      "desc": "Șindrilă bituminoasă, țiglă metalică și sisteme pluviale, montate corect și etanș."
+      "desc": "Țiglă metalică, șindrilă bituminoasă, jgheaburi și burlane. Montate corect, ca să nu curgă niciodată."
     },
     "fatade": {
       "title": "Fațade",
@@ -55,15 +55,15 @@
     },
     "finisaje": {
       "title": "Finisaje",
-      "desc": "Gips-carton, glet, vopsitorii, pardoseli și placări executate curat, la milimetru."
+      "desc": "Gips-carton, glet, vopsit, podele și plăci, totul lucrat curat, la milimetru."
     },
     "proiectare": {
       "title": "Proiectare 3D",
-      "desc": "Vizualizări 3D și planuri detaliate înainte de execuție, ca să știi exact rezultatul."
+      "desc": "Vezi casa în 3D și planurile pe hârtie înainte să începem lucrul, ca să știi exact ce primești."
     },
     "instalatii": {
       "title": "Instalații",
-      "desc": "Electrice, sanitare și termice, dimensionate corect și date în funcțiune cu garanție."
+      "desc": "Curent, apă și căldură, calculate corect și pornite cu garanție."
     }
   },
   "footer": {
@@ -149,12 +149,12 @@
         {
           "chip": "Fundație",
           "title": "Fundație turnată corect",
-          "caption": "Trasare, cofrare și armare executate după proiect. Aici se pune baza solidă a casei."
+          "caption": "Săpăm, punem cofrajul și fierul, turnăm betonul după proiect. Pe asta stă toată casa."
         },
         {
           "chip": "Structură & Acoperiș",
           "title": "Structură și acoperiș",
-          "caption": "Ridicăm structura și montăm acoperișul cap-coadă, cu sistem pluvial complet."
+          "caption": "Ridicăm pereții și montăm acoperișul cap-coadă, cu jgheaburi și burlane cu tot."
         },
         {
           "chip": "Fațadă & Finisaje",
@@ -191,7 +191,7 @@
         {
           "location": "Orhei",
           "size": "100 m²",
-          "work": "Acoperiș din șindrilă bituminoasă + sistem pluvial",
+          "work": "Acoperiș din șindrilă bituminoasă + jgheaburi și burlane",
           "year": "2025"
         },
         {
@@ -219,7 +219,7 @@
       "title": "Ce spun clienții",
       "items": [
         {
-          "quote": "Acoperișul metalic a fost montat impecabil, la termen și fără costuri surpriză. Recomand cu încredere.",
+          "quote": "Acoperișul metalic a fost montat curat, la termen și fără costuri surpriză. Recomand cu încredere.",
           "name": "Ion Miron",
           "meta": "Chișinău · acoperiș metalic"
         },
@@ -253,11 +253,11 @@
         },
         {
           "q": "Cum se face izolarea unei fațade?",
-          "a": "Aplicăm sisteme termoizolante complete (polistiren sau vată minerală) cu plasă, adeziv și tencuială decorativă. Faci economie la încălzire și obții un exterior durabil."
+          "a": "Punem izolație (polistiren sau vată minerală), plasă, adeziv și tencuială decorativă. Casa ține căldura, iar tu plătești mai puțin la încălzire."
         },
         {
           "q": "Cum calculați prețul unei lucrări?",
-          "a": "Prețul se stabilește printr-un deviz transparent: măsurători, materiale și manoperă. Ce scrie în deviz, aceea plătești, fără costuri ascunse. Acoperiș de la 160 lei/m² (preț înghețat pentru 2026)."
+          "a": "Prețul se stabilește printr-un deviz transparent: măsurători, materiale și lucru. Ce scrie în deviz, aceea plătești, fără costuri ascunse. Acoperiș de la 160 lei/m² (preț înghețat pentru 2026)."
         },
         {
           "q": "Lucrați și pe timp rece?",
@@ -277,6 +277,100 @@
       "phoneLabel": "Telefon",
       "emailLabel": "Email",
       "hoursLabel": "Program"
+    }
+  },
+  "roofPage": {
+    "seo": {
+      "title": "Acoperișuri la cheie în Chișinău și Moldova",
+      "description": "Montăm acoperișuri din țiglă metalică și șindrilă bituminoasă, cu jgheaburi și burlane. Prețuri de la 160 lei/m², garanție scrisă până la 30 de ani."
+    },
+    "hero": {
+      "eyebrow": "Acoperișuri · Chișinău și regiuni",
+      "h1": "Acoperișuri făcute corect, cap-coadă",
+      "intro": "Țiglă metalică, șindrilă bituminoasă, jgheaburi și burlane. Montăm corect, la termen, cu garanție scrisă.",
+      "priceChip": "de la 160 lei/m²",
+      "trust": "Garanție scrisă până la 30 de ani",
+      "ctaCall": "Sună acum",
+      "ctaQuote": "Solicită ofertă gratuită"
+    },
+    "cutaway": {
+      "eyebrow": "Cum arată un acoperiș făcut corect",
+      "title": "Straturile care țin casa uscată 30 de ani",
+      "intro": "Un acoperiș bun nu înseamnă doar țigla pe care o vezi. Rotește modelul 3D și desfă straturile ca să vezi ce montăm sub ea și de ce fiecare strat contează.",
+      "sliderLabel": "Desfă straturile",
+      "hint": "Trage pentru a roti · model 3D",
+      "layers": [
+        {
+          "name": "Căpriori",
+          "desc": "Scheletul de lemn al acoperișului. Verificăm și tratăm lemnul înainte de montaj."
+        },
+        {
+          "name": "Termoizolație",
+          "desc": "Vată minerală care ține căldura în casă și taie costurile la încălzire."
+        },
+        {
+          "name": "Membrană anticondens",
+          "desc": "Folia care lasă vaporii să iasă și oprește apa să intre. Fără ea, izolația mucegăiește."
+        },
+        {
+          "name": "Șipci și contrașipci",
+          "desc": "Lasă acoperișul să respire și țin țigla bine prinsă."
+        },
+        {
+          "name": "Țiglă metalică",
+          "desc": "Țigla pe care o vezi. Montată corect, cu jgheaburi și burlane cu tot."
+        }
+      ]
+    },
+    "process": {
+      "eyebrow": "Procesul nostru",
+      "title": "De la măsurători la predare",
+      "steps": [
+        {
+          "title": "Evaluare gratuită",
+          "desc": "Venim la tine, măsurăm și ne uităm în ce stare e acoperișul."
+        },
+        {
+          "title": "Deviz transparent",
+          "desc": "Primești devizul pe puncte: materiale, lucru, termen. Ce scrie, aceea plătești."
+        },
+        {
+          "title": "Montaj",
+          "desc": "Echipa montează totul în ordinea corectă, în 7 până la 15 zile."
+        },
+        {
+          "title": "Predare cu garanție",
+          "desc": "Predăm lucrarea, semnezi garanția în contract și rămânem la un telefon distanță."
+        }
+      ]
+    },
+    "faq": {
+      "eyebrow": "Întrebări frecvente",
+      "title": "Despre acoperișuri",
+      "items": [
+        {
+          "q": "Țiglă metalică sau șindrilă bituminoasă?",
+          "a": "Țigla metalică e mai rapidă la montaj și foarte durabilă. Șindrila bituminoasă e mai silențioasă la ploaie și potrivită formelor complicate. Îți recomandăm varianta potrivită după ce vedem acoperișul."
+        },
+        {
+          "q": "Cât costă un acoperiș nou?",
+          "a": "De la 160 lei/m², preț înghețat pentru 2026. Prețul final depinde de suprafață, învelitoare și complexitate. Devizul e gratuit și transparent."
+        },
+        {
+          "q": "Cât durează montajul?",
+          "a": "În mod normal între 7 și 15 zile lucrătoare, în funcție de suprafață și complexitate."
+        },
+        {
+          "q": "Schimbați și doar țigla, fără tot scheletul?",
+          "a": "Da. Dacă lemnul de dedesubt e sănătos, schimbăm doar straturile de deasupra. Verificarea e inclusă în evaluarea gratuită."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Vrei un acoperiș care nu-ți dă bătăi de cap?",
+      "intro": "Programează evaluarea gratuită. Primești devizul în maximum 2 ore lucrătoare.",
+      "ctaQuote": "Solicită ofertă gratuită",
+      "ctaCall": "Sună acum"
     }
   }
 }
