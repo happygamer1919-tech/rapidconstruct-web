@@ -218,7 +218,7 @@ export default function HouseBuildScene({
       className="!absolute inset-0"
       aria-label="Model 3D: casa se construiește singură, de la proiect la predare"
     >
-      <PerspectiveCamera makeDefault position={[5.0, 2.9, 5.6]} fov={40} />
+      <PerspectiveCamera makeDefault position={[2.6, 1.35, 7.6]} fov={40} />
       <ambientLight intensity={0.3} />
       <directionalLight
         position={[5, 8, 4]}
@@ -251,9 +251,8 @@ export default function HouseBuildScene({
       />
       <OrbitControls
         makeDefault
-        target={[0.8, 0.15, 0]}
-        autoRotate={!reduce}
-        autoRotateSpeed={0.35}
+        target={[0.9, 0.35, 0]}
+        autoRotate={false}
         enableZoom={false}
         enablePan={false}
         minPolarAngle={Math.PI / 5}
