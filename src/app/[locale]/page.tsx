@@ -342,9 +342,8 @@ export default async function Home({ params }: PageProps) {
         </div>
       </section>
 
-      {/* 7 — TESTIMONIALS */}
-      {/* TODO(copy): quotes are provisional — replace with the real reviews from
-          the live site once the owner confirms them (Q-07 class). */}
+      {/* 7 — TESTIMONIALS — VERBATIM quotes as published on the owner's live
+          site rapidconstruct.md (2026-07-13 audit, SPEC §2); RU = translations. */}
       <section
         aria-labelledby="testimonials-title"
         className="border-b border-border bg-muted"

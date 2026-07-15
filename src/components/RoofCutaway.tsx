@@ -35,6 +35,8 @@ export default function RoofCutaway({
   const [explode, setExplode] = useState(reduce ? 1 : 0.65);
   const boxRef = useRef<HTMLDivElement>(null);
   const inView = useInView(boxRef, { margin: "200px 0px" });
+  const [mount3d, setMount3d] = useState(false);
+  if (inView && !mount3d) setMount3d(true); // render-time latch (React docs pattern)
   const sliderId = useId();
 
   return (
@@ -44,7 +46,11 @@ export default function RoofCutaway({
           ref={boxRef}
           className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-neutral-100 to-muted"
         >
-          <RoofCutawayScene explode={explode} active={inView} />
+          {mount3d ? (
+            <RoofCutawayScene explode={explode} active={inView} />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-neutral-100 to-muted" />
+          )}
           <span className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-ink-950/60 px-3 py-1 text-micro font-medium text-neutral-50 backdrop-blur-sm">
             {hint}
           </span>

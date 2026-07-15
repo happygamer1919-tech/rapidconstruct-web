@@ -112,7 +112,7 @@ export default function RoofCutawayScene({
 
         {/* 2 — Mineral wool: soft blocks BETWEEN the rafters */}
         <group position={[0, layerY(1, explode), 0]}>
-          {RAFTER_Z.slice(0, -1).map((z, i) => (
+          {RAFTER_Z.slice(0, -1).map((z) => (
             <mesh key={z} position={[0, 0, z + 0.16]} castShadow>
               <boxGeometry args={[W - 0.06, 0.15, 0.22]} />
               <meshStandardMaterial color="#e3c46b" roughness={1} />
