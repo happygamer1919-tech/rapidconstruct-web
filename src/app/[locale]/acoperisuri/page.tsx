@@ -150,11 +150,7 @@ export default async function AcoperisuriPage({ params }: PageProps) {
               {t("cutaway.intro")}
             </p>
           </div>
-          <RoofCutaway
-            layers={layers}
-            sliderLabel={t("cutaway.sliderLabel")}
-            hint={t("cutaway.hint")}
-          />
+          <RoofCutaway layers={layers} hint={t("cutaway.hint")} />
         </div>
       </section>
 
