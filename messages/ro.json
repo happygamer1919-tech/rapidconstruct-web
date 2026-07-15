@@ -980,5 +980,227 @@
       "successTitle": "Gata, am primit cererea.",
       "successBody": "Te sunăm în maximum 2 ore lucrătoare cu prețul exact."
     }
+  },
+  "cityPages": {
+    "chisinau": {
+      "seo": {
+        "title": "Construcții și renovări în Chișinău, la cheie",
+        "description": "Construcții, acoperișuri, fațade și renovări la cheie în Chișinău. Preț clar din start, garanție scrisă, echipă cu 15 ani experiență."
+      },
+      "hero": {
+        "eyebrow": "Chișinău și suburbii",
+        "h1": "Construcții și renovări în Chișinău",
+        "intro": "Construim și renovăm case și apartamente în Chișinău. Venim, măsurăm gratuit și îți dăm un preț clar din start, cu garanție scrisă în contract.",
+        "chip": "Deviz gratuit",
+        "trust": "Garanție scrisă până la 30 de ani",
+        "ctaCall": "Sună acum",
+        "ctaQuote": "Solicită ofertă gratuită"
+      },
+      "services": {
+        "eyebrow": "Ce facem în Chișinău",
+        "title": "Toate lucrările, o singură echipă",
+        "intro": "Facem tot ce ține de casă în Chișinău: acoperiș, fațadă, renovare, finisaje, instalații și proiectare. Alegi de unde începem.",
+        "calcTitle": "Calculator acoperiș",
+        "calcDesc": "Vezi pe loc cât ar costa acoperișul tău în Chișinău, apoi te sunăm cu prețul exact."
+      },
+      "process": {
+        "eyebrow": "Cum lucrăm în Chișinău",
+        "title": "De la telefon la lucrarea gata",
+        "steps": [
+          {
+            "title": "Ne suni sau lași cerere",
+            "desc": "Ne spui ce ai de făcut. Îți răspundem în maximum 2 ore lucrătoare."
+          },
+          {
+            "title": "Venim și măsurăm gratuit",
+            "desc": "Un om de-al nostru vine la tine în Chișinău, vede lucrarea și îți dă un deviz clar."
+          },
+          {
+            "title": "Lucrăm și predăm cu garanție",
+            "desc": "Facem treaba la termen, curat, și semnezi garanția în contract."
+          }
+        ]
+      },
+      "faq": {
+        "eyebrow": "Întrebări frecvente",
+        "title": "Construcții și renovări în Chișinău",
+        "items": [
+          {
+            "q": "Veniți la măsurători în Chișinău?",
+            "a": "Da. Venim la tine în Chișinău, măsurăm și îți dăm un deviz gratuit, fără nicio obligație."
+          },
+          {
+            "q": "Cât costă deplasarea?",
+            "a": "Deplasarea și măsurătorile în Chișinău sunt gratuite. Plătești doar lucrarea, la prețul din deviz."
+          },
+          {
+            "q": "Lucrați și în suburbiile Chișinăului?",
+            "a": "Da, lucrăm în tot orașul și în satele din jur. Sună-ne cu adresa și îți spunem pe loc când putem veni."
+          },
+          {
+            "q": "Aveți lucrări făcute în Chișinău?",
+            "a": "Da. Am făcut, printre altele, o renovare completă de 280 m2 în Chișinău. Îți arătăm poze când venim."
+          },
+          {
+            "q": "În cât timp răspundeți?",
+            "a": "Răspundem la orice cerere în maximum 2 ore lucrătoare, cu un preț clar din start."
+          },
+          {
+            "q": "Ce garanție dați?",
+            "a": "Dăm garanție scrisă în contract, până la 30 de ani, în funcție de lucrare și materiale."
+          }
+        ]
+      },
+      "cta": {
+        "title": "Ai o lucrare în Chișinău?",
+        "intro": "Sună-ne sau lasă o cerere. Primești devizul în maximum 2 ore lucrătoare, cu preț clar din start.",
+        "ctaQuote": "Solicită ofertă gratuită",
+        "ctaCall": "Sună acum"
+      }
+    },
+    "orhei": {
+      "seo": {
+        "title": "Construcții, acoperișuri și fațade în Orhei",
+        "description": "Lucrăm în Orhei: acoperișuri, fațade și renovări complete. Preț clar din start, garanție scrisă. Am făcut deja case în zonă."
+      },
+      "hero": {
+        "eyebrow": "Orhei și satele din raion",
+        "h1": "Construcții și renovări în Orhei",
+        "intro": "Lucrăm în Orhei și în satele din raion: acoperișuri, fațade și renovări complete. Venim, măsurăm gratuit și îți dăm un preț clar din start.",
+        "chip": "Deviz gratuit",
+        "trust": "Garanție scrisă până la 30 de ani",
+        "ctaCall": "Sună acum",
+        "ctaQuote": "Solicită ofertă gratuită"
+      },
+      "services": {
+        "eyebrow": "Ce facem în Orhei",
+        "title": "Toate lucrările, o singură echipă",
+        "intro": "Facem tot ce ține de casă în Orhei: acoperiș, fațadă, renovare, finisaje, instalații și proiectare. Alegi de unde începem.",
+        "calcTitle": "Calculator acoperiș",
+        "calcDesc": "Vezi pe loc cât ar costa acoperișul tău în Orhei, apoi te sunăm cu prețul exact."
+      },
+      "process": {
+        "eyebrow": "Cum lucrăm în Orhei",
+        "title": "De la telefon la lucrarea gata",
+        "steps": [
+          {
+            "title": "Ne suni sau lași cerere",
+            "desc": "Ne spui ce ai de făcut. Îți răspundem în maximum 2 ore lucrătoare."
+          },
+          {
+            "title": "Venim și măsurăm gratuit",
+            "desc": "Venim la tine în Orhei sau în sat, vedem lucrarea și îți dăm un deviz clar."
+          },
+          {
+            "title": "Lucrăm și predăm cu garanție",
+            "desc": "Facem treaba la termen, curat, și semnezi garanția în contract."
+          }
+        ]
+      },
+      "faq": {
+        "eyebrow": "Întrebări frecvente",
+        "title": "Construcții și renovări în Orhei",
+        "items": [
+          {
+            "q": "Veniți la măsurători în Orhei?",
+            "a": "Da. Venim în Orhei și în satele din raion, măsurăm și îți dăm un deviz gratuit."
+          },
+          {
+            "q": "Lucrați și în satele din raionul Orhei?",
+            "a": "Da, mergem și în satele din jur. Sună-ne cu adresa și îți spunem pe loc când putem veni."
+          },
+          {
+            "q": "Cât costă deplasarea la Orhei?",
+            "a": "Deplasarea și măsurătorile sunt gratuite. Plătești doar lucrarea, la prețul din deviz."
+          },
+          {
+            "q": "Aveți lucrări făcute în zona Orhei?",
+            "a": "Da. Am făcut un acoperiș de 100 m2 din șindrilă bituminoasă, cu jgheaburi și burlane, în Orhei. Îți arătăm poze."
+          },
+          {
+            "q": "Ce garanție dați?",
+            "a": "Dăm garanție scrisă în contract, până la 30 de ani, în funcție de lucrare și materiale."
+          }
+        ]
+      },
+      "cta": {
+        "title": "Ai o lucrare în Orhei?",
+        "intro": "Sună-ne sau lasă o cerere. Primești devizul în maximum 2 ore lucrătoare, cu preț clar din start.",
+        "ctaQuote": "Solicită ofertă gratuită",
+        "ctaCall": "Sună acum"
+      }
+    },
+    "cahul": {
+      "seo": {
+        "title": "Construcții, acoperișuri și fațade în Cahul",
+        "description": "Lucrăm în Cahul: acoperișuri, fațade și renovări complete. Preț clar din start, garanție scrisă. Am făcut deja case în zonă."
+      },
+      "hero": {
+        "eyebrow": "Cahul și satele din raion",
+        "h1": "Construcții și renovări în Cahul",
+        "intro": "Lucrăm în Cahul și în satele din raion: acoperișuri, fațade și renovări complete. Venim, măsurăm gratuit și îți dăm un preț clar din start.",
+        "chip": "Deviz gratuit",
+        "trust": "Garanție scrisă până la 30 de ani",
+        "ctaCall": "Sună acum",
+        "ctaQuote": "Solicită ofertă gratuită"
+      },
+      "services": {
+        "eyebrow": "Ce facem în Cahul",
+        "title": "Toate lucrările, o singură echipă",
+        "intro": "Facem tot ce ține de casă în Cahul: acoperiș, fațadă, renovare, finisaje, instalații și proiectare. Alegi de unde începem.",
+        "calcTitle": "Calculator acoperiș",
+        "calcDesc": "Vezi pe loc cât ar costa acoperișul tău în Cahul, apoi te sunăm cu prețul exact."
+      },
+      "process": {
+        "eyebrow": "Cum lucrăm în Cahul",
+        "title": "De la telefon la lucrarea gata",
+        "steps": [
+          {
+            "title": "Ne suni sau lași cerere",
+            "desc": "Ne spui ce ai de făcut. Îți răspundem în maximum 2 ore lucrătoare."
+          },
+          {
+            "title": "Venim și măsurăm gratuit",
+            "desc": "Venim la tine în Cahul sau în sat, vedem lucrarea și îți dăm un deviz clar."
+          },
+          {
+            "title": "Lucrăm și predăm cu garanție",
+            "desc": "Facem treaba la termen, curat, și semnezi garanția în contract."
+          }
+        ]
+      },
+      "faq": {
+        "eyebrow": "Întrebări frecvente",
+        "title": "Construcții și renovări în Cahul",
+        "items": [
+          {
+            "q": "Veniți la măsurători în Cahul?",
+            "a": "Da. Venim în Cahul și în satele din raion, măsurăm și îți dăm un deviz gratuit."
+          },
+          {
+            "q": "Lucrați și în satele din raionul Cahul?",
+            "a": "Da, mergem și în satele din jur. Sună-ne cu adresa și îți spunem pe loc când putem veni."
+          },
+          {
+            "q": "Cât costă deplasarea la Cahul?",
+            "a": "Deplasarea și măsurătorile sunt gratuite. Plătești doar lucrarea, la prețul din deviz."
+          },
+          {
+            "q": "Aveți lucrări făcute în zona Cahul?",
+            "a": "Da. Am făcut un acoperiș de 180 m2 din țiglă metalică, cu termoizolație la mansardă, în Cahul. Îți arătăm poze."
+          },
+          {
+            "q": "Ce garanție dați?",
+            "a": "Dăm garanție scrisă în contract, până la 30 de ani, în funcție de lucrare și materiale."
+          }
+        ]
+      },
+      "cta": {
+        "title": "Ai o lucrare în Cahul?",
+        "intro": "Sună-ne sau lasă o cerere. Primești devizul în maximum 2 ore lucrătoare, cu preț clar din start.",
+        "ctaQuote": "Solicită ofertă gratuită",
+        "ctaCall": "Sună acum"
+      }
+    }
   }
 }
