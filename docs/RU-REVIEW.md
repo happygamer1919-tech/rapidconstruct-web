@@ -52,3 +52,13 @@ strings. A PR that adds/changes RU strings updates this table.
 Reviewer notes: RU is written for the Moldovan market (Кишинёв, лей/м², Оргеев/Кагул
 city names). Check tone + terminology, especially construction terms.
 | chat (RC-106 floating WhatsApp/Viber widget: labels + prefilled greeting) | 2026-07-14 | NEEDS NATIVE REVIEW before launch |
+
+# RU copy review status
+
+Rule (replaces the old visible `TODO(ru-review)` suffixes, which leaked into the UI —
+owner feedback 2026-07-14): machine-drafted Russian is tracked HERE, not in user-visible
+strings. A PR that adds/changes RU strings updates this table.
+
+Reviewer notes: RU is written for the Moldovan market (Кишинёв, лей/м², Оргеев/Кагул
+city names). Check tone + terminology, especially construction terms.
+| promo namespace (promo bar offer + dismiss label, RC-110) | 2026-07-14 | NEEDS NATIVE REVIEW before launch — offer copy reuses contact promo; "крышу" used instead of banned "кровлю" per copy register |

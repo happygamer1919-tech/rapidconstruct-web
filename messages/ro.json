@@ -19,6 +19,10 @@
     "ro": "RO",
     "ru": "RU"
   },
+  "promo": {
+    "offer2026": "−10% la programări anticipate · Rate 0% la acoperiș · preț înghețat 160 lei/m² pentru 2026",
+    "dismiss": "Închide anunțul"
+  },
   "seo": {
     "default": {
       "description": "Construcții, renovări la cheie, acoperișuri și fațade în Chișinău și regiuni. Garanție scrisă până la 30 de ani și materiale certificate UE."
