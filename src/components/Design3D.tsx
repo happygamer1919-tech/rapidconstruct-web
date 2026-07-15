@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useInView } from "motion/react";
 import { Icon } from "@/components/icons";
 
@@ -33,6 +33,12 @@ export default function Design3D({
   // idle for the rest of the page (perf: page felt laggy on slower machines).
   const boxRef = useRef<HTMLDivElement>(null);
   const inView = useInView(boxRef, { margin: "200px 0px" });
+  // Lighthouse: don't even DOWNLOAD the three.js chunk until the user scrolls
+  // near — next/dynamic otherwise fetches it on page load (~600KB of JS).
+  const [mount3d, setMount3d] = useState(false);
+  useEffect(() => {
+    if (inView) setMount3d(true);
+  }, [inView]);
 
   return (
     <section
@@ -67,7 +73,11 @@ export default function Design3D({
           ref={boxRef}
           className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-neutral-100 to-muted"
         >
-          <Model3D active={inView} />
+          {mount3d ? (
+            <Model3D active={inView} />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-ink-800 to-neutral-300" />
+          )}
           <span className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-ink-950/60 px-3 py-1 text-micro font-medium text-neutral-50 backdrop-blur-sm">
             {hint}
           </span>
