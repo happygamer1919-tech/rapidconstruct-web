@@ -20,7 +20,17 @@ import { getPathname } from "@/i18n/navigation";
  */
 
 /** Un-prefixed route paths that currently resolve and should be indexed. */
-const ROUTES = ["/", "/acoperisuri", "/despre-noi", "/contact"];
+const ROUTES = [
+  "/",
+  "/acoperisuri",
+  "/fatade",
+  "/renovari-la-cheie",
+  "/finisaje",
+  "/proiectare-3d",
+  "/instalatii",
+  "/despre-noi",
+  "/contact",
+];
 
 function absolute(locale: (typeof routing.locales)[number], path: string) {
   // Strip the trailing slash on the root so the sitemap <loc> exactly matches

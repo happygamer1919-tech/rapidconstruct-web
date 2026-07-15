@@ -124,6 +124,43 @@ test.describe("about page (RC-109)", () => {
   });
 });
 
+test.describe("service pages (RC-103)", () => {
+  // Each service page must resolve 200 on both locales with a single H1
+  // (single H1 is an AGENTS.md SEO requirement). The RU path reuses the RO slug
+  // under /ru/ until the RU IA lands (RC-201).
+  const SERVICE_SLUGS = [
+    "/fatade",
+    "/renovari-la-cheie",
+    "/finisaje",
+    "/proiectare-3d",
+    "/instalatii",
+  ];
+
+  for (const slug of SERVICE_SLUGS) {
+    test(`${slug} (RO) responds 200 with an H1`, async ({ page, request }) => {
+      const res = await request.get(slug);
+      expect(res.status(), `${slug} did not respond 200`).toBe(200);
+
+      await page.goto(slug);
+      await expect(page.locator("main")).toBeVisible();
+      await expect(page.locator("h1")).toHaveCount(1);
+    });
+
+    test(`/ru${slug} (RU) responds 200 with lang="ru" and an H1`, async ({
+      page,
+      request,
+    }) => {
+      const res = await request.get(`/ru${slug}`);
+      expect(res.status(), `/ru${slug} did not respond 200`).toBe(200);
+
+      await page.goto(`/ru${slug}`);
+      const lang = await page.locator("html").getAttribute("lang");
+      expect(lang).toBe("ru");
+      await expect(page.locator("h1")).toHaveCount(1);
+    });
+  }
+});
+
 test.describe("locales respond 200", () => {
   test("/ (RO) responds 200", async ({ request }) => {
     const res = await request.get("/");
