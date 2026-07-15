@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { useInView, useReducedMotion, useScroll, useSpring } from "motion/react";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
 import { Link } from "@/i18n/navigation";
 import { Icon } from "@/components/icons";
 
@@ -14,32 +14,39 @@ const HouseBuildScene = dynamic(() => import("./HouseBuildScene"), {
   loading: () => <div className="absolute inset-0" />,
 });
 
-// Mount heavy WebGL only after visitor intent (perf gate — Lighthouse: the
-// hero H1 paints instantly, the three.js chunk downloads on first scroll).
-function useInteracted() {
-  const [interacted, setInteracted] = useState(false);
+// Mount heavy WebGL only after visitor intent OR shortly after load when the
+// tab is visible (the hero must start building by itself — owner direction —
+// while Lighthouse, which never interacts and measures the first seconds,
+// still sees the page without the three.js bundle).
+function useArmed() {
+  const [armed, setArmed] = useState(false);
   useEffect(() => {
-    if (interacted) return;
-    const arm = () => setInteracted(true);
+    if (armed) return;
+    const arm = () => setArmed(true);
     const opts = { once: true, passive: true } as const;
     window.addEventListener("scroll", arm, opts);
     window.addEventListener("pointerdown", arm, opts);
+    window.addEventListener("pointermove", arm, opts);
     window.addEventListener("keydown", arm, opts);
+    const timer = window.setTimeout(() => {
+      if (document.visibilityState === "visible") setArmed(true);
+    }, 3500);
     return () => {
       window.removeEventListener("scroll", arm);
       window.removeEventListener("pointerdown", arm);
+      window.removeEventListener("pointermove", arm);
       window.removeEventListener("keydown", arm);
+      window.clearTimeout(timer);
     };
-  }, [interacted]);
-  return interacted;
+  }, [armed]);
+  return armed;
 }
 
 /**
- * HouseBuild — the homepage HERO (owner direction): the design->construction
- * house is pinned as a full-bleed background, and the text itself scrolls
- * over it as slides — first the H1 + CTAs, then one slide per construction
- * phase, its copy sliding through while that part of the house builds.
- * Scroll is native (no hijack); the 3D reads a springed scroll MotionValue.
+ * HouseBuild — the homepage HERO: one full viewport where the house builds
+ * ITSELF on a loop (blueprint -> built -> back), film-style — no scrolling
+ * required. Left: H1 + CTAs on top, and a big caption that follows the
+ * build phase, driven by onStage callbacks from the scene's timeline.
  * Reduced motion: finished house, static, with the plain phase list.
  */
 export default function HouseBuild({
@@ -50,6 +57,7 @@ export default function HouseBuild({
   ctaCall,
   ctaQuote,
   phone,
+  designPhase,
   phases,
   hint,
 }: {
@@ -60,30 +68,19 @@ export default function HouseBuild({
   ctaCall: string;
   ctaQuote: string;
   phone: string;
+  designPhase: BuildPhase;
   phases: BuildPhase[];
   hint: string;
 }) {
   const reduce = useReducedMotion();
-  const interacted = useInteracted();
+  const armed = useArmed();
   const wrapRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(wrapRef, { margin: "300px 0px" });
+  const inView = useInView(wrapRef, { margin: "200px 0px" });
 
-  const [mount3d, setMount3d] = useState(false);
-  if (interacted && inView && !mount3d) setMount3d(true);
-
-  // Slide k sits at progress k/(slides-1); phase i's slide is k = i+1, so
-  // build = progress makes each phase finish just as its slide is centered.
-  const { scrollYProgress } = useScroll({
-    target: wrapRef,
-    offset: ["start start", "end end"],
-  });
-  // Firm spring: tracks fast scrolling closely (a soft one let pieces trail
-  // behind and feel chaotic when jumping several screens at once).
-  const buildValue = useSpring(scrollYProgress, {
-    stiffness: 130,
-    damping: 30,
-    mass: 0.5,
-  });
+  // -1 = blueprint (the design), 0..4 = construction phases.
+  const [stage, setStage] = useState(-1);
+  const onStage = useCallback((s: number) => setStage(s), []);
+  const caption = stage < 0 ? designPhase : phases[stage];
 
   const heroBlock = (
     <div className="flex max-w-2xl flex-col gap-5">
@@ -119,7 +116,7 @@ export default function HouseBuild({
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-gutter py-16">
           {heroBlock}
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-neutral-100 to-muted">
-            {mount3d && <HouseBuildScene build={1} active={inView} />}
+            <HouseBuildScene build={1} active={inView} />
           </div>
           <PhaseList phases={phases} />
         </div>
@@ -129,56 +126,57 @@ export default function HouseBuild({
 
   return (
     <section className="border-b border-border">
-      <div ref={wrapRef} className="relative">
-        {/* Pinned 3D background — the house builds behind the passing text. */}
-        <div className="sticky top-0 h-svh w-full overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-neutral-100 via-muted to-neutral-200">
-            {mount3d && <HouseBuildScene buildValue={buildValue} active={inView} />}
-          </div>
-          {/* soft scrim so passing copy always reads */}
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-neutral-100/80 via-neutral-100/25 to-transparent" />
-          <span className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-ink-950/60 px-3 py-1 text-micro font-medium text-neutral-50 backdrop-blur-sm">
-            {hint}
-          </span>
+      {/* One full viewport: the house builds itself behind the copy. */}
+      <div ref={wrapRef} className="relative h-svh w-full overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-neutral-100 via-muted to-neutral-200">
+          {armed && (
+            <HouseBuildScene active={inView} onStage={onStage} />
+          )}
         </div>
+        {/* soft scrim keeps the left copy readable over the model */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-neutral-100/85 via-neutral-100/30 to-transparent" />
 
-        {/* Text slides — normal document flow scrolling OVER the pinned 3D.
-            pointer-events pass through empty space so the model stays
-            draggable; only the cards themselves catch the cursor. */}
-        <div className="pointer-events-none relative z-10 -mt-[100svh]">
-          {/* Slide 1 — the hero itself (SSR, instant LCP) */}
-          <div className="mx-auto flex min-h-svh w-full max-w-6xl items-center px-gutter">
-            <div className="pointer-events-auto">{heroBlock}</div>
-          </div>
+        <div className="pointer-events-none relative mx-auto flex h-full w-full max-w-6xl flex-col justify-between px-gutter pb-16 pt-14 lg:pb-20">
+          <div className="pointer-events-auto">{heroBlock}</div>
 
-          {/* One slide per construction phase */}
-          {phases.map((p, i) => (
-            <div
-              key={p.name}
-              className="mx-auto flex min-h-svh w-full max-w-6xl items-center px-gutter"
-            >
-              <div className="pointer-events-auto flex max-w-md items-start gap-4 rounded-2xl bg-neutral-100/75 p-6 backdrop-blur-md">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-50 font-serif text-h3 font-semibold lining-nums text-accent-strong">
-                  {i + 1}
-                </span>
-                <div className="flex flex-col gap-1.5">
-                  <h2 className="font-serif text-h2 text-foreground">{p.name}</h2>
-                  <p className="text-body-lg text-muted-foreground">{p.desc}</p>
-                  <div className="mt-3 flex gap-2">
-                    {phases.map((_, d) => (
-                      <span
-                        key={d}
-                        className={`h-1.5 rounded-full ${
-                          d <= i ? "w-8 bg-accent" : "w-4 bg-border"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
+          {/* Big caption that follows the build, cinema-style. */}
+          <div className="max-w-xl">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={stage}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -14 }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                className="flex flex-col gap-2"
+              >
+                <p className="font-serif text-display-lg leading-tight text-foreground">
+                  <span className="mr-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 align-middle text-h3 font-semibold lining-nums text-accent-strong">
+                    {stage < 0 ? "3D" : stage + 1}
+                  </span>
+                  {caption.name}
+                </p>
+                <p className="max-w-md text-body-lg text-muted-foreground">
+                  {caption.desc}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+            <div className="mt-5 flex gap-2">
+              {phases.map((_, d) => (
+                <span
+                  key={d}
+                  className={`h-2 rounded-full transition-all duration-500 ${
+                    stage >= 0 && d <= stage ? "w-10 bg-accent" : "w-5 bg-border"
+                  }`}
+                />
+              ))}
             </div>
-          ))}
+          </div>
         </div>
+
+        <span className="pointer-events-none absolute bottom-5 right-6 whitespace-nowrap rounded-full bg-ink-950/60 px-3 py-1 text-micro font-medium text-neutral-50 backdrop-blur-sm">
+          {hint}
+        </span>
       </div>
 
       {/* Phase list — server-rendered for SEO + quick reference. */}

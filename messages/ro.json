@@ -347,7 +347,11 @@
           "name": "Ultimele detalii",
           "desc": "Jgheaburi și burlane, apoi predăm cheia. Casa e gata."
         }
-      ]
+      ],
+      "designPhase": {
+        "name": "Proiectul 3D",
+        "desc": "Așa arată casa înainte să punem prima cărămidă."
+      }
     }
   },
   "roofPage": {
