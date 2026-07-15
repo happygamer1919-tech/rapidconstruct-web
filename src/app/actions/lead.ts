@@ -1,6 +1,6 @@
 "use server";
 
-import { deliverLead } from "@/lib/lead";
+import { deliverLead, isValidMdPhone } from "@/lib/lead";
 
 /**
  * Contact-form server action (RC-105).
@@ -22,16 +22,6 @@ export type LeadFormState = {
   /** True when validation passed but delivery failed — show the fallback. */
   deliveryFailed?: boolean;
 };
-
-/**
- * Moldovan phone numbers: `+373` + 8 digits, or a local `0` + 8 digits. We
- * strip everything except digits and a leading `+` first, so the customer can
- * type spaces, dashes or parentheses.
- */
-function isValidMdPhone(raw: string): boolean {
-  const normalized = raw.replace(/[^\d+]/g, "");
-  return /^(\+373\d{8}|0\d{8})$/.test(normalized);
-}
 
 export async function submitLead(
   _prev: LeadFormState,

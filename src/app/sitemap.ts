@@ -23,6 +23,7 @@ import { getPathname } from "@/i18n/navigation";
 const ROUTES = [
   "/",
   "/acoperisuri",
+  "/calculator-acoperis",
   "/fatade",
   "/renovari-la-cheie",
   "/finisaje",

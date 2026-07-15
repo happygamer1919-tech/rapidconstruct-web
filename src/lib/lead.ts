@@ -15,6 +15,28 @@
  * it hangs off the SAME point below, so both channels fire for one lead.
  */
 
+/**
+ * Roof-calculator configuration attached to a lead (RC-107). When a lead comes
+ * from the calculator, the owner needs the exact config the visitor saw so the
+ * sales call is informed (dimensions, chosen material, the shown range). All
+ * numbers are recomputed server-side from the pricing engine, never trusted
+ * from the client. Absent for plain contact-form leads.
+ */
+export type LeadConfig = {
+  /** House footprint length in metres. */
+  lungime: number;
+  /** House footprint width in metres. */
+  latime: number;
+  /** Computed area in m² (from the engine). */
+  area: number;
+  /** Chosen material's display name. */
+  material: string;
+  /** Low end of the shown range (MDL). */
+  low: number;
+  /** High end of the shown range (MDL). */
+  high: number;
+};
+
 export type Lead = {
   /** Customer name (required, already trimmed by the caller). */
   nume: string;
@@ -26,7 +48,20 @@ export type Lead = {
   locale: string;
   /** ISO timestamp stamped by the server action when the lead arrived. */
   receivedAt: string;
+  /** Calculator config, present only for roof-calculator leads (RC-107). */
+  config?: LeadConfig;
 };
+
+/**
+ * Moldovan phone numbers: `+373` + 8 digits, or a local `0` + 8 digits. We
+ * strip everything except digits and a leading `+` first, so the customer can
+ * type spaces, dashes or parentheses. Shared by every lead action so the
+ * accepted format stays identical across forms.
+ */
+export function isValidMdPhone(raw: string): boolean {
+  const normalized = raw.replace(/[^\d+]/g, "");
+  return /^(\+373\d{8}|0\d{8})$/.test(normalized);
+}
 
 /** Where lead emails are delivered (the owner's inbox, SPEC §2 / site.ts). */
 const LEAD_TO = "rapidconstructmd@gmail.com";
@@ -68,6 +103,16 @@ export async function deliverLead(lead: Lead): Promise<void> {
         `Telefon: ${lead.telefon}`,
         `Limba: ${lead.locale}`,
         `Primit: ${lead.receivedAt}`,
+        // Calculator config, when present, so the owner calls back informed.
+        ...(lead.config
+          ? [
+              "",
+              "Calculator acoperiș:",
+              `Dimensiuni: ${lead.config.lungime} x ${lead.config.latime} m (${lead.config.area} m²)`,
+              `Material: ${lead.config.material}`,
+              `Estimare afișată: ${lead.config.low} - ${lead.config.high} lei`,
+            ]
+          : []),
         "",
         "Mesaj:",
         lead.mesaj,
