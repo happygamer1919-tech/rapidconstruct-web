@@ -133,25 +133,15 @@ export default async function AcoperisuriPage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* 3D CUTAWAY — the layers of a roof done right */}
-      <section aria-labelledby="cutaway-title" className="border-b border-border">
-        <div className="mx-auto w-full max-w-6xl px-gutter py-16 lg:py-20">
-          <div className="mb-10 flex flex-col gap-3">
-            <p className="micro-label text-accent-strong">
-              {t("cutaway.eyebrow")}
-            </p>
-            <h2
-              id="cutaway-title"
-              className="max-w-2xl font-serif text-display-lg text-foreground"
-            >
-              {t("cutaway.title")}
-            </h2>
-            <p className="max-w-2xl text-body-lg text-muted-foreground">
-              {t("cutaway.intro")}
-            </p>
-          </div>
-          <RoofCutaway layers={layers} hint={t("cutaway.hint")} />
-        </div>
+      {/* 3D ROOF — built when you reach it, opens layer-by-layer on scroll */}
+      <section className="border-b border-border">
+        <RoofCutaway
+          eyebrow={t("cutaway.eyebrow")}
+          title={t("cutaway.title")}
+          intro={t("cutaway.intro")}
+          layers={layers}
+          hint={t("cutaway.hint")}
+        />
       </section>
 
       {/* PROCESS */}
