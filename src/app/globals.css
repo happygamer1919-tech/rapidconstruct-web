@@ -155,3 +155,25 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Slim, translucent scrollbar — the default macOS dark thumb reads as a
+   "black bar" against the cream background on long scroll runways. */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-foreground) 25%, transparent)
+    transparent;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-foreground) 22%, transparent);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--color-foreground) 38%, transparent);
+}

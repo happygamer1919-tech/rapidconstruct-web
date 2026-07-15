@@ -230,6 +230,9 @@ function Roof({
     root.children.forEach((child, i) => {
       child.position.y = layerY(i, e);
     });
+    // Gentle quarter-turn as it opens — the stack presents itself to the
+    // camera instead of lifting in place (transform-only, composes with drag).
+    root.rotation.y = 0.6 + e * 0.22;
   });
   return (
     <group ref={rootRef} rotation={[-0.19, 0.6, 0]} position={[0, -0.35, 0]}>
@@ -286,12 +289,15 @@ export default function RoofCutawayScene({
         shadow-normalBias={0.02}
       />
       <directionalLight position={[-5, 3, -3]} intensity={0.5} color="#cddcff" />
+      <Roof
+        explodeValue={reduce ? undefined : explodeValue}
+        fallback={reduce ? 1 : explode}
+      />
+      {/* Self-hosted HDR in its OWN Suspense: the roof renders immediately and
+          never waits on the environment (a CDN-hosted preset once rate-limited
+          and blanked the whole scene). */}
       <Suspense fallback={null}>
-        <Roof
-          explodeValue={reduce ? undefined : explodeValue}
-          fallback={reduce ? 1 : explode}
-        />
-        <Environment preset="sunset" />
+        <Environment files="/hdri/venice_sunset_1k.hdr" />
       </Suspense>
       <ContactShadows position={[0, -1.5, 0]} opacity={0.3} scale={12} blur={2.6} far={5} />
       <OrbitControls
