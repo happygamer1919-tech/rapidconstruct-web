@@ -1,0 +1,42 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "npm run start -- --port 3100",
+      "startServerReadyPattern": "Ready in",
+      "startServerReadyTimeout": 60000,
+      "url": [
+        "http://localhost:3100/",
+        "http://localhost:3100/acoperisuri"
+      ],
+      "numberOfRuns": 3
+    },
+    "assert": {
+      "//": "Two-tier budget (RC-305). The WARN group holds the aspirational targets (perf 0.85, seo/a11y 0.95, LCP 2500ms) so they always show up in the report. The ERROR group is the hard CI gate, set at the CURRENT baseline of the live site so PRs pass today but any regression fails. Tighten the error gates toward the warn targets as the site (notably the 3D hero LCP) is optimised. assertMatrix evaluates every matching group, so both tiers apply to each URL.",
+      "assertMatrix": [
+        {
+          "matchingUrlPattern": ".*",
+          "assertions": {
+            "categories:performance": ["error", { "minScore": 0.75 }],
+            "categories:seo": ["error", { "minScore": 0.9 }],
+            "categories:accessibility": ["error", { "minScore": 0.88 }],
+            "largest-contentful-paint": ["error", { "maxNumericValue": 5500 }],
+            "cumulative-layout-shift": ["error", { "maxNumericValue": 0.05 }]
+          }
+        },
+        {
+          "matchingUrlPattern": ".*",
+          "assertions": {
+            "categories:performance": ["warn", { "minScore": 0.85 }],
+            "categories:seo": ["warn", { "minScore": 0.95 }],
+            "categories:accessibility": ["warn", { "minScore": 0.95 }],
+            "largest-contentful-paint": ["warn", { "maxNumericValue": 2500 }]
+          }
+        }
+      ]
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": ".lighthouseci"
+    }
+  }
+}
