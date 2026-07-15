@@ -266,6 +266,46 @@
         {
           "q": "Lucrați și pe timp rece?",
           "a": "Da, planificăm lucrările în funcție de sezon și folosim materiale și tehnologii potrivite pentru temperaturi scăzute, fără a compromite calitatea."
+        },
+        {
+          "q": "În ce localități lucrați?",
+          "a": "Lucrăm în Chișinău și în regiuni: Orhei, Cahul și Costești. Dacă ești în altă zonă, sună-ne și îți spunem dacă ajungem."
+        },
+        {
+          "q": "Cum începe o colaborare cu voi?",
+          "a": "Ne suni sau lași o cerere, venim și măsurăm gratuit, apoi primești un deviz clar. Dacă îți convine, stabilim data și începem."
+        },
+        {
+          "q": "Devizul costă ceva?",
+          "a": "Nu, devizul e gratuit. Venim, măsurăm și îți dăm un preț clar din start, fără să plătești nimic pentru ofertă."
+        },
+        {
+          "q": "În cât timp îmi răspundeți?",
+          "a": "Îți răspundem în maximum 2 ore lucrătoare. Lucrăm de luni până sâmbătă, de la 08:00 la 17:00."
+        },
+        {
+          "q": "Pot veni cu materialele mele?",
+          "a": "Da, putem lucra cu materialele tale. Dacă vrei, îți cumpărăm noi materiale certificate și le trecem clar în deviz."
+        },
+        {
+          "q": "Garanția e scrisă în contract?",
+          "a": "Da. Îți dăm garanție scrisă în contract, până la 30 de ani, în funcție de lucrare și de materiale."
+        },
+        {
+          "q": "Faceți model 3D înainte de lucrare?",
+          "a": "Da, facem proiectare 3D ca să vezi rezultatul înainte să începem. Așa alegi mai ușor culorile și forma."
+        },
+        {
+          "q": "Se poate plăti în rate?",
+          "a": "Da, la acoperiș avem rate 0%. Îți spunem din start condițiile, ca să știi exact cât plătești."
+        },
+        {
+          "q": "Ce lucrări faceți?",
+          "a": "Facem acoperișuri, fațade, renovări la cheie, finisaje, instalații și proiectare 3D. Le facem dintr-o mână, ca să nu alergi după mai multe echipe."
+        },
+        {
+          "q": "Care e programul vostru?",
+          "a": "Lucrăm de luni până sâmbătă, de la 08:00 la 17:00. Duminica e liber, dar poți lăsa o cerere oricând și te sunăm."
         }
       ]
     },
@@ -367,6 +407,46 @@
         {
           "q": "Schimbați și doar țigla, fără tot scheletul?",
           "a": "Da. Dacă lemnul de dedesubt e sănătos, schimbăm doar straturile de deasupra. Verificarea e inclusă în evaluarea gratuită."
+        },
+        {
+          "q": "Ce fel de țiglă folosiți?",
+          "a": "Punem țiglă metalică sau șindrilă bituminoasă, în funcție de casă și de bugetul tău. Ambele sunt certificate și rezistă mulți ani."
+        },
+        {
+          "q": "Cât ține un acoperiș de la voi?",
+          "a": "Un acoperiș bine montat ține zeci de ani. De aceea îți dăm garanție scrisă în contract, până la 30 de ani."
+        },
+        {
+          "q": "Faceți și reparații la acoperiș?",
+          "a": "Da, reparăm acoperișuri, nu doar montăm altele noi. Venim, ne uităm care e problema și îți spunem clar ce e de făcut."
+        },
+        {
+          "q": "Puneți și jgheaburi și burlane?",
+          "a": "Da, punem și jgheaburi și burlane, ca apa de ploaie să meargă unde trebuie. Le trecem clar în deviz de la început."
+        },
+        {
+          "q": "Se poate pune acoperișul iarna?",
+          "a": "Da, se poate lucra și iarna, când vremea permite. Dacă e prea frig sau umed, așteptăm ca lucrul să iasă bun."
+        },
+        {
+          "q": "Cât costă pe metru pătrat?",
+          "a": "Acoperiș de la 160 lei/m², preț înghețat pentru 2026. Prețul final depinde de suprafață, de țiglă și de complexitate, și îl vezi clar în deviz."
+        },
+        {
+          "q": "Izolați și mansarda?",
+          "a": "Da, putem pune și termoizolație la mansardă când refacem acoperișul. Așa casa ține căldura și plătești mai puțin la încălzire."
+        },
+        {
+          "q": "Ce faceți ca acoperișul să nu curgă?",
+          "a": "Montăm straturile în ordine și punem folii și elemente care opresc apa, ca să nu curgă. Verificăm totul înainte să predăm lucrarea."
+        },
+        {
+          "q": "Curățați după montaj?",
+          "a": "Da, strângem resturile și lăsăm curat după noi. Nu rămâi cu gunoi de la lucrare pe lângă casă."
+        },
+        {
+          "q": "Ce garanție dați la acoperiș?",
+          "a": "Îți dăm garanție scrisă în contract, până la 30 de ani, în funcție de țiglă și de lucrare. Ce promitem, scriem în hârtie."
         }
       ]
     },
