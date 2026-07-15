@@ -59,3 +59,6 @@ a free Resend account (resend.com, 100 emails/day free), then set `RESEND_API_KE
 Vercel project env — leads then email to rapidconstructmd@gmail.com automatically (delivery
 seam already wired in src/lib/lead.ts). A Telegram notifier can be added at the same seam
 later (Q-03). **Blocks:** nothing (log fallback in place); improves owner's lead visibility.
+
+## Q-10 — OPEN — Calculator prices need confirmation
+Extracted from your live Tilda calculator (docs/PRICING.md): 13 materials. Confirm: (1) Creaton ceramică 57/58 lei — per BUCATĂ or per m²? (2) what exactly is "160 lei/m² înghețat" (no material matches it)? (3) do prices include jgheaburi/burlane și demontare? **Blocks:** publishing the two ceramic entries; the other 11 ship in the calculator.
