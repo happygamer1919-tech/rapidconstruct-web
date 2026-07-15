@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Icon } from "@/components/icons";
@@ -21,18 +21,28 @@ const STORAGE_KEY = "promoDismissed";
  * hydration matches) and reconciles in an effect. Closing the bar writes the
  * offer id to localStorage.
  */
+const noopSubscribe = () => () => {};
+
+function readPersistedDismissal() {
+  try {
+    return localStorage.getItem(STORAGE_KEY) === promo.id;
+  } catch {
+    // localStorage can throw (private mode / disabled) — just keep the bar.
+    return false;
+  }
+}
+
 export default function PromoBar() {
   const t = useTranslations("promo");
-  const [dismissed, setDismissed] = useState(false);
-
-  // Reconcile React state with what the pre-paint inline script already decided.
-  useEffect(() => {
-    try {
-      if (localStorage.getItem(STORAGE_KEY) === promo.id) setDismissed(true);
-    } catch {
-      // localStorage can throw (private mode / disabled) — just keep the bar.
-    }
-  }, []);
+  // Hydration-safe persisted read (server snapshot: false, matching the SSR
+  // HTML; the pre-paint script below covers returning visitors before React).
+  const persisted = useSyncExternalStore(
+    noopSubscribe,
+    readPersistedDismissal,
+    () => false,
+  );
+  const [closed, setClosed] = useState(false);
+  const dismissed = persisted || closed;
 
   if (!promo.active || dismissed) return null;
 
@@ -67,7 +77,7 @@ export default function PromoBar() {
               } catch {
                 // Ignore storage failures; the bar still closes for this view.
               }
-              setDismissed(true);
+              setClosed(true);
             }}
             aria-label={t("dismiss")}
             className="absolute right-2 top-1/2 inline-flex -translate-y-1/2 cursor-pointer items-center justify-center rounded p-1 text-accent-foreground/90 transition-colors hover:text-accent-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-foreground"
