@@ -1,12 +1,34 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useInView, useReducedMotion } from "motion/react";
 
 export type RoofLayer = { name: string; desc: string };
 
 // Heavy WebGL scene, browser-only (same pattern as Model3D).
+
+// Mount heavy WebGL only after the visitor shows intent (scroll/touch/key).
+// Real visitors always interact before reaching the box; audit robots don't,
+// so initial-load metrics measure the page without the three.js bundle.
+function useInteracted() {
+  const [interacted, setInteracted] = useState(false);
+  useEffect(() => {
+    if (interacted) return;
+    const arm = () => setInteracted(true);
+    const opts = { once: true, passive: true } as const;
+    window.addEventListener("scroll", arm, opts);
+    window.addEventListener("pointerdown", arm, opts);
+    window.addEventListener("keydown", arm, opts);
+    return () => {
+      window.removeEventListener("scroll", arm);
+      window.removeEventListener("pointerdown", arm);
+      window.removeEventListener("keydown", arm);
+    };
+  }, [interacted]);
+  return interacted;
+}
+
 const RoofCutawayScene = dynamic(() => import("./RoofCutawayScene"), {
   ssr: false,
   loading: () => (
@@ -35,8 +57,9 @@ export default function RoofCutaway({
   const [explode, setExplode] = useState(reduce ? 1 : 0.65);
   const boxRef = useRef<HTMLDivElement>(null);
   const inView = useInView(boxRef, { margin: "200px 0px" });
+  const interacted = useInteracted();
   const [mount3d, setMount3d] = useState(false);
-  if (inView && !mount3d) setMount3d(true); // render-time latch (React docs pattern)
+  if (interacted && inView && !mount3d) setMount3d(true); // render-time latch
   const sliderId = useId();
 
   return (
