@@ -43,7 +43,7 @@ export default function SiteHeader() {
         {/* Wordmark */}
         <Link
           href="/"
-          className="font-serif text-lg font-semibold tracking-tight text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+          className="font-serif lining-nums text-lg font-semibold tracking-tight text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
         >
           Rapid Construct{" "}
           <span className="text-accent-strong">

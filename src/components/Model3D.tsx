@@ -21,6 +21,7 @@ const SHELL = "#ece7de"; // warm off-white walls
 const EDGE = "#3a3733"; // charcoal edge lines
 const GLASS = "#8fb3c4";
 const ACCENT = "#f26419"; // brand orange
+const ROOF = "#35322e"; // graphite metal tile (their signature roofs)
 
 function Wing({
   position,
@@ -38,17 +39,45 @@ function Wing({
   );
 }
 
+/**
+ * Gable roof: a 45°-rotated box whose lower half is buried in the wing below,
+ * leaving a clean triangular-prism roofline (their trade is roofs — graphite
+ * like the metal tile they install). `width` is the wing width it must span.
+ */
+function GableRoof({
+  position,
+  width,
+  depth,
+}: {
+  position: [number, number, number]; // center = ridge line at wing-top height
+  width: number;
+  depth: number;
+}) {
+  const side = width / Math.SQRT2;
+  return (
+    <mesh position={position} rotation={[0, 0, Math.PI / 4]} castShadow>
+      <boxGeometry args={[side, side, depth]} />
+      <meshStandardMaterial color={ROOF} roughness={0.7} metalness={0.15} />
+      <Edges threshold={15} color="#1c1a18" />
+    </mesh>
+  );
+}
+
 function House() {
   return (
     <group rotation={[0, -0.6, 0]} position={[0, -0.15, 0]}>
-      {/* Left wing (two-storey block) */}
+      {/* Left wing (two-storey block) + gable roof */}
       <Wing position={[-1.5, 0.5, 0]} size={[1.3, 1.5, 1.7]} />
-      {/* Right wing (single-storey block) */}
+      <GableRoof position={[-1.5, 1.25, 0]} width={1.36} depth={1.8} />
+
+      {/* Right wing (single-storey block) + gable roof */}
       <Wing position={[1.5, 0.25, 0.1]} size={[1.5, 1, 1.9]} />
-      {/* Low front block */}
+      <GableRoof position={[1.5, 0.75, 0.1]} width={1.56} depth={2} />
+
+      {/* Low front block (flat-roof entrance volume) */}
       <Wing position={[0.2, 0.15, 1.1]} size={[1.6, 0.7, 0.8]} />
 
-      {/* Central glass atrium */}
+      {/* Central glass atrium (flat modern contrast between the roofed wings) */}
       <mesh position={[0, 0.55, 0]}>
         <boxGeometry args={[1.5, 1.65, 1.5]} />
         <meshStandardMaterial
@@ -61,10 +90,10 @@ function House() {
         <Edges threshold={15} color="#ffffff" />
       </mesh>
 
-      {/* Orange accent — entrance canopy (brand cue) */}
-      <mesh position={[0, 0.06, 1.55]}>
-        <boxGeometry args={[1.1, 0.08, 0.5]} />
-        <meshStandardMaterial color={ACCENT} roughness={0.6} />
+      {/* Orange front door on the entrance volume (brand accent, clearly a door) */}
+      <mesh position={[0.2, 0.02, 1.505]}>
+        <boxGeometry args={[0.32, 0.46, 0.04]} />
+        <meshStandardMaterial color={ACCENT} roughness={0.55} />
       </mesh>
 
       {/* Ground pad */}

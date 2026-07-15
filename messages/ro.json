@@ -278,5 +278,99 @@
       "emailLabel": "Email",
       "hoursLabel": "Program"
     }
+  },
+  "roofPage": {
+    "seo": {
+      "title": "Acoperișuri la cheie în Chișinău și Moldova",
+      "description": "Montaj acoperișuri din țiglă metalică și șindrilă bituminoasă, cu sistem pluvial complet. Prețuri de la 160 lei/m², garanție scrisă până la 30 de ani."
+    },
+    "hero": {
+      "eyebrow": "Acoperișuri · Chișinău și regiuni",
+      "h1": "Acoperișuri montate corect, cap-coadă",
+      "intro": "Țiglă metalică, șindrilă bituminoasă și sisteme pluviale complete. Montaj etanș, la termen, cu garanție scrisă.",
+      "priceChip": "de la 160 lei/m²",
+      "trust": "Garanție scrisă până la 30 de ani",
+      "ctaCall": "Sună acum",
+      "ctaQuote": "Solicită ofertă gratuită"
+    },
+    "cutaway": {
+      "eyebrow": "Cum arată un acoperiș făcut corect",
+      "title": "Straturile care țin casa uscată 30 de ani",
+      "intro": "Un acoperiș bun nu înseamnă doar țigla pe care o vezi. Rotește modelul 3D și desfă straturile ca să vezi ce montăm sub ea și de ce fiecare strat contează.",
+      "sliderLabel": "Desfă straturile",
+      "hint": "Trage pentru a roti · model 3D",
+      "layers": [
+        {
+          "name": "Căpriori",
+          "desc": "Structura de lemn a acoperișului. Verificăm și tratăm lemnul înainte de montaj."
+        },
+        {
+          "name": "Termoizolație",
+          "desc": "Vată minerală care ține căldura în casă și taie costurile la încălzire."
+        },
+        {
+          "name": "Membrană anticondens",
+          "desc": "Folia care lasă vaporii să iasă și oprește apa să intre. Fără ea, izolația mucegăiește."
+        },
+        {
+          "name": "Șipci și contrașipci",
+          "desc": "Creează spațiul de ventilare al acoperișului și susțin învelitoarea."
+        },
+        {
+          "name": "Țiglă metalică",
+          "desc": "Învelitoarea finală, montată etanș, cu sistem pluvial complet."
+        }
+      ]
+    },
+    "process": {
+      "eyebrow": "Procesul nostru",
+      "title": "De la măsurători la predare",
+      "steps": [
+        {
+          "title": "Evaluare gratuită",
+          "desc": "Venim la fața locului, măsurăm și verificăm structura existentă."
+        },
+        {
+          "title": "Deviz transparent",
+          "desc": "Primești devizul detaliat: materiale, manoperă, termen. Ce scrie, aceea plătești."
+        },
+        {
+          "title": "Montaj",
+          "desc": "Echipa montează straturile în ordinea corectă, în 7 până la 15 zile."
+        },
+        {
+          "title": "Predare cu garanție",
+          "desc": "Recepția lucrării, garanția scrisă în contract și suport după predare."
+        }
+      ]
+    },
+    "faq": {
+      "eyebrow": "Întrebări frecvente",
+      "title": "Despre acoperișuri",
+      "items": [
+        {
+          "q": "Țiglă metalică sau șindrilă bituminoasă?",
+          "a": "Țigla metalică e mai rapidă la montaj și foarte durabilă. Șindrila bituminoasă e mai silențioasă la ploaie și potrivită formelor complicate. Îți recomandăm varianta potrivită după ce vedem acoperișul."
+        },
+        {
+          "q": "Cât costă un acoperiș nou?",
+          "a": "De la 160 lei/m², preț înghețat pentru 2026. Prețul final depinde de suprafață, învelitoare și complexitate. Devizul e gratuit și transparent."
+        },
+        {
+          "q": "Cât durează montajul?",
+          "a": "În mod normal între 7 și 15 zile lucrătoare, în funcție de suprafață și complexitate."
+        },
+        {
+          "q": "Schimbați și doar învelitoarea, fără toată structura?",
+          "a": "Da. Dacă structura de lemn e sănătoasă, înlocuim doar straturile de deasupra ei. Verificarea structurii e inclusă în evaluarea gratuită."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Vrei un acoperiș care nu-ți dă bătăi de cap?",
+      "intro": "Programează evaluarea gratuită. Primești devizul în maximum 2 ore lucrătoare.",
+      "ctaQuote": "Solicită ofertă gratuită",
+      "ctaCall": "Sună acum"
+    }
   }
 }
