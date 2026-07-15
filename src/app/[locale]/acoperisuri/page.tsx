@@ -5,7 +5,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Icon } from "@/components/icons";
 import Reveal from "@/components/Reveal";
-import RoofCutaway, { type RoofLayer } from "@/components/RoofCutaway";
+import { type RoofLayer } from "@/components/RoofCutaway";
+import RoofStructure from "@/components/RoofStructure";
 import { site } from "@/config/site";
 import { routing } from "@/i18n/routing";
 import { buildMetadata } from "@/lib/seo";
@@ -133,25 +134,16 @@ export default async function AcoperisuriPage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* 3D CUTAWAY — the layers of a roof done right */}
-      <section aria-labelledby="cutaway-title" className="border-b border-border">
-        <div className="mx-auto w-full max-w-6xl px-gutter py-16 lg:py-20">
-          <div className="mb-10 flex flex-col gap-3">
-            <p className="micro-label text-accent-strong">
-              {t("cutaway.eyebrow")}
-            </p>
-            <h2
-              id="cutaway-title"
-              className="max-w-2xl font-serif text-display-lg text-foreground"
-            >
-              {t("cutaway.title")}
-            </h2>
-            <p className="max-w-2xl text-body-lg text-muted-foreground">
-              {t("cutaway.intro")}
-            </p>
-          </div>
-          <RoofCutaway layers={layers} hint={t("cutaway.hint")} />
-        </div>
+      {/* 3D ROOF STRUCTURE — full-bleed background (prototype; framed
+          RoofCutaway kept in the codebase as fallback) */}
+      <section className="border-b border-border">
+        <RoofStructure
+          eyebrow={t("cutaway.eyebrow")}
+          title={t("cutaway.title")}
+          intro={t("cutaway.intro")}
+          hint={t("cutaway.hint")}
+          layers={layers}
+        />
       </section>
 
       {/* PROCESS */}
