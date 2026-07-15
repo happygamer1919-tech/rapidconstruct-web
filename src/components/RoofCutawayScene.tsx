@@ -11,15 +11,25 @@ import {
 import { useReducedMotion } from "motion/react";
 
 /**
- * The WebGL scene for RoofCutaway: a pitched roof section built as its 5 real
- * layers (rafters → mineral wool → membrane → battens → metal tile), pulled
- * apart along the roof's normal by `explode` (0..1). Numbered chips match the
- * legend. Same perf pattern as Model3D: frameloop freezes off-screen.
+ * The WebGL scene for RoofCutaway v2 (owner feedback: v1 was basic and drifted
+ * out of frame). The 5 layers explode SYMMETRICALLY around the stack's center,
+ * so the model always stays centered in the canvas; the camera orbits around
+ * that same center. Calmer auto-rotate, denser realistic detail (6 rafters,
+ * insulation between them, counter-battens + battens grid, stepped tile rows).
  */
 
-const W = 2.6; // roof section width (along slope)
-const D = 1.8; // depth (along ridge)
-const PITCH = -0.42; // radians, roof slope
+const W = 2.6; // along slope
+const D = 1.9; // along ridge
+const PITCH = -0.3;
+
+// Assembled Y of each layer's center, bottom to top.
+const BASE_Y = [0, 0.17, 0.3, 0.4, 0.53];
+const MID = 1.5; // explode pivot (between membrane and battens)
+const GAP = 0.46; // extra spacing per index step at full explode
+
+function layerY(i: number, explode: number) {
+  return BASE_Y[i] + (i - MID) * GAP * explode;
+}
 
 function Chip({ n }: { n: number }) {
   return (
@@ -45,6 +55,18 @@ function Chip({ n }: { n: number }) {
   );
 }
 
+function ChipAnchor({ n }: { n: number }) {
+  return (
+    <mesh position={[-W / 2 - 0.22, 0, D / 2 - 0.2]}>
+      <boxGeometry args={[0.001, 0.001, 0.001]} />
+      <meshBasicMaterial visible={false} />
+      <Chip n={n} />
+    </mesh>
+  );
+}
+
+const RAFTER_Z = [-0.8, -0.48, -0.16, 0.16, 0.48, 0.8];
+
 export default function RoofCutawayScene({
   explode,
   active = true,
@@ -53,8 +75,6 @@ export default function RoofCutawayScene({
   active?: boolean;
 }) {
   const reduce = useReducedMotion();
-  // Per-layer lift along Y in exploded state (cumulative spacing).
-  const lift = (i: number) => i * 0.42 * explode;
 
   return (
     <Canvas
@@ -65,116 +85,116 @@ export default function RoofCutawayScene({
       className="!absolute inset-0"
       aria-label="Secțiune 3D prin straturile unui acoperiș"
     >
-      <PerspectiveCamera makeDefault position={[3.6, 2.6, 4.6]} fov={40} />
-      <ambientLight intensity={0.75} />
-      <directionalLight position={[4, 7, 5]} intensity={1.5} castShadow />
+      <PerspectiveCamera makeDefault position={[3.4, 2.3, 4.4]} fov={42} />
+      <ambientLight intensity={0.8} />
+      <directionalLight position={[4, 7, 5]} intensity={1.4} castShadow />
       <directionalLight position={[-5, 3, -3]} intensity={0.35} />
 
-      <group rotation={[0, 0.35, PITCH]} position={[0, 0.1, 0]}>
-        {/* 1 — Rafters (căpriori): five timber beams */}
-        <group position={[0, lift(0), 0]}>
-          {[-0.72, -0.36, 0, 0.36, 0.72].map((z) => (
+      <group rotation={[0, 0.5, PITCH]} position={[0, 0.05, 0]}>
+        {/* 1 — Rafters: six timber beams along the slope */}
+        <group position={[0, layerY(0, explode), 0]}>
+          {RAFTER_Z.map((z) => (
             <mesh key={z} position={[0, 0, z]} castShadow>
-              <boxGeometry args={[W, 0.14, 0.08]} />
+              <boxGeometry args={[W, 0.16, 0.09]} />
               <meshStandardMaterial color="#a9805a" roughness={0.9} />
               <Edges threshold={20} color="#6e4f33" />
             </mesh>
           ))}
-          <mesh position={[-W / 2 - 0.12, 0, 0]}>
-            <boxGeometry args={[0.001, 0.001, 0.001]} />
-            <meshBasicMaterial visible={false} />
-            <Chip n={1} />
-          </mesh>
+          <ChipAnchor n={1} />
         </group>
 
-        {/* 2 — Mineral wool (termoizolație): thick soft slab */}
-        <group position={[0, 0.18 + lift(1), 0]}>
-          <mesh castShadow>
-            <boxGeometry args={[W, 0.18, D]} />
-            <meshStandardMaterial color="#e3c46b" roughness={1} />
-            <Edges threshold={20} color="#b9993f" />
-          </mesh>
-          <mesh position={[-W / 2 - 0.12, 0, 0]}>
-            <boxGeometry args={[0.001, 0.001, 0.001]} />
-            <meshBasicMaterial visible={false} />
-            <Chip n={2} />
-          </mesh>
+        {/* 2 — Mineral wool: soft blocks BETWEEN the rafters */}
+        <group position={[0, layerY(1, explode), 0]}>
+          {RAFTER_Z.slice(0, -1).map((z, i) => (
+            <mesh key={z} position={[0, 0, z + 0.16]} castShadow>
+              <boxGeometry args={[W - 0.06, 0.15, 0.22]} />
+              <meshStandardMaterial color="#e3c46b" roughness={1} />
+              <Edges threshold={20} color="#b9993f" />
+            </mesh>
+          ))}
+          <ChipAnchor n={2} />
         </group>
 
-        {/* 3 — Anti-condensation membrane: thin dark sheet */}
-        <group position={[0, 0.32 + lift(2), 0]}>
+        {/* 3 — Membrane: thin dark sheet with a slight sheen */}
+        <group position={[0, layerY(2, explode), 0]}>
           <mesh castShadow>
             <boxGeometry args={[W, 0.02, D]} />
-            <meshStandardMaterial color="#4b5563" roughness={0.6} />
+            <meshStandardMaterial
+              color="#46525f"
+              roughness={0.45}
+              metalness={0.1}
+            />
             <Edges threshold={20} color="#2f3742" />
           </mesh>
-          <mesh position={[-W / 2 - 0.12, 0, 0]}>
-            <boxGeometry args={[0.001, 0.001, 0.001]} />
-            <meshBasicMaterial visible={false} />
-            <Chip n={3} />
-          </mesh>
+          <ChipAnchor n={3} />
         </group>
 
-        {/* 4 — Battens + counter-battens (șipci): crosswise strips */}
-        <group position={[0, 0.42 + lift(3), 0]}>
-          {[-0.8, -0.4, 0, 0.4, 0.8].map((x) => (
-            <mesh key={x} position={[x, 0, 0]} castShadow>
-              <boxGeometry args={[0.07, 0.06, D]} />
+        {/* 4 — Counter-battens (along slope, over rafters) + battens (across) */}
+        <group position={[0, layerY(3, explode), 0]}>
+          {RAFTER_Z.map((z) => (
+            <mesh key={`c${z}`} position={[0, -0.03, z]} castShadow>
+              <boxGeometry args={[W, 0.05, 0.06]} />
               <meshStandardMaterial color="#b98a5f" roughness={0.9} />
               <Edges threshold={20} color="#7d5c3c" />
             </mesh>
           ))}
-          <mesh position={[-W / 2 - 0.12, 0, 0]}>
-            <boxGeometry args={[0.001, 0.001, 0.001]} />
-            <meshBasicMaterial visible={false} />
-            <Chip n={4} />
-          </mesh>
+          {[-1, -0.6, -0.2, 0.2, 0.6, 1].map((x) => (
+            <mesh key={`b${x}`} position={[x * (W / 2.3), 0.03, 0]} castShadow>
+              <boxGeometry args={[0.07, 0.05, D]} />
+              <meshStandardMaterial color="#c99a6b" roughness={0.9} />
+              <Edges threshold={20} color="#7d5c3c" />
+            </mesh>
+          ))}
+          <ChipAnchor n={4} />
         </group>
 
-        {/* 5 — Metal tile (țiglă metalică): graphite panel with ridges */}
-        <group position={[0, 0.55 + lift(4), 0]}>
-          <mesh castShadow>
-            <boxGeometry args={[W, 0.04, D]} />
-            <meshStandardMaterial
-              color="#35322e"
-              roughness={0.45}
-              metalness={0.5}
-            />
-            <Edges threshold={20} color="#1c1a18" />
-          </mesh>
-          {[-1, -0.6, -0.2, 0.2, 0.6, 1].map((x) => (
-            <mesh key={x} position={[x * (W / 2.3), 0.035, 0]}>
-              <cylinderGeometry args={[0.028, 0.028, D, 10]} />
+        {/* 5 — Metal tile: stepped rows down the slope + rounded ridges */}
+        <group position={[0, layerY(4, explode), 0]}>
+          {[-1, -0.5, 0, 0.5, 1].map((x, i) => (
+            <mesh
+              key={`row${x}`}
+              position={[x * (W / 2.6), 0.02 - i * 0.004, 0]}
+              castShadow
+            >
+              <boxGeometry args={[W / 4.6, 0.035, D]} />
+              <meshStandardMaterial
+                color={i % 2 ? "#3d3934" : "#35322e"}
+                roughness={0.4}
+                metalness={0.5}
+              />
+              <Edges threshold={20} color="#1c1a18" />
+            </mesh>
+          ))}
+          {[-0.95, -0.55, -0.15, 0.25, 0.65].map((x) => (
+            <mesh key={`ridge${x}`} position={[x * (W / 2.4), 0.05, 0]}>
+              <cylinderGeometry args={[0.026, 0.026, D, 10]} />
               <meshStandardMaterial
                 color="#3d3934"
-                roughness={0.4}
+                roughness={0.35}
                 metalness={0.55}
               />
             </mesh>
           ))}
-          <mesh position={[-W / 2 - 0.12, 0, 0]}>
-            <boxGeometry args={[0.001, 0.001, 0.001]} />
-            <meshBasicMaterial visible={false} />
-            <Chip n={5} />
-          </mesh>
+          <ChipAnchor n={5} />
         </group>
       </group>
 
       <ContactShadows
-        position={[0, -0.9, 0]}
-        opacity={0.3}
+        position={[0, -1.15, 0]}
+        opacity={0.28}
         scale={11}
         blur={2.6}
-        far={4}
+        far={5}
       />
       <OrbitControls
         makeDefault
+        target={[0, 0.3, 0]}
         autoRotate={!reduce}
-        autoRotateSpeed={0.5}
+        autoRotateSpeed={0.3}
         enableZoom={false}
         enablePan={false}
-        minPolarAngle={Math.PI / 5}
-        maxPolarAngle={Math.PI / 2.1}
+        minPolarAngle={Math.PI / 4}
+        maxPolarAngle={Math.PI / 2.05}
       />
     </Canvas>
   );
