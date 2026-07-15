@@ -372,5 +372,42 @@
       "ctaQuote": "Solicită ofertă gratuită",
       "ctaCall": "Sună acum"
     }
+  },
+  "contactPage": {
+    "seo": {
+      "title": "Contact și cerere de ofertă",
+      "description": "Sună-ne sau lasă un mesaj și primești o ofertă clară pentru acoperiș, fațadă sau renovare. Îți răspundem în maximum 2 ore lucrătoare."
+    },
+    "hero": {
+      "eyebrow": "Contact",
+      "h1": "Hai să vorbim despre proiectul tău",
+      "intro": "Spune-ne ce ai nevoie și primești o ofertă clară, fără obligații. Poți suna direct sau completa formularul de mai jos."
+    },
+    "response": "Îți răspundem în maximum 2 ore lucrătoare.",
+    "nap": {
+      "title": "Date de contact",
+      "addressLabel": "Adresă",
+      "phoneLabel": "Telefon",
+      "emailLabel": "Email",
+      "hoursLabel": "Program",
+      "hours": "Lun–Sâm 08:00–17:00 · Dum: închis"
+    },
+    "form": {
+      "title": "Lasă-ne un mesaj",
+      "numeLabel": "Nume",
+      "numePlaceholder": "Cum te cheamă",
+      "telefonLabel": "Telefon",
+      "telefonPlaceholder": "+373 ...",
+      "telefonHint": "Te sunăm noi dacă e mai ușor.",
+      "mesajLabel": "Mesaj",
+      "mesajPlaceholder": "Scrie pe scurt ce ai nevoie: acoperiș, fațadă, renovare și adresa lucrării.",
+      "submit": "Trimite mesajul",
+      "sending": "Se trimite...",
+      "errRequired": "Completează acest câmp.",
+      "errPhone": "Scrie un număr de telefon valid din Moldova.",
+      "errGeneric": "Ceva n-a mers. Sună-ne direct și te rezolvăm imediat.",
+      "successTitle": "Mulțumim, am primit mesajul.",
+      "successBody": "Te sunăm în maximum 2 ore lucrătoare. Dacă e urgent, sună-ne direct."
+    }
   }
 }
