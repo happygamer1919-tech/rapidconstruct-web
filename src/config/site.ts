@@ -47,4 +47,16 @@ export const site = {
    * then they flow automatically into `sameAs`.
    */
   social: [] as readonly string[],
+
+  /**
+   * Click-to-chat channels for the floating ChatButtons widget (RC-106). A
+   * channel that is `true` renders a button; `null` means "wired but not live
+   * yet", so Telegram can be switched on later once the owner confirms a
+   * destination (see docs/QUESTIONS.md) without touching the component.
+   */
+  chat: {
+    whatsapp: true,
+    viber: true,
+    telegram: null,
+  },
 } as const;

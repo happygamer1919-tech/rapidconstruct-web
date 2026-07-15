@@ -19,6 +19,10 @@
     "ro": "RO",
     "ru": "RU"
   },
+  "promo": {
+    "offer2026": "−10% la programări anticipate · Rate 0% la acoperiș · preț înghețat 160 lei/m² pentru 2026",
+    "dismiss": "Închide anunțul"
+  },
   "seo": {
     "default": {
       "description": "Construcții, renovări la cheie, acoperișuri și fațade în Chișinău și regiuni. Garanție scrisă până la 30 de ani și materiale certificate UE."
@@ -372,5 +376,111 @@
       "ctaQuote": "Solicită ofertă gratuită",
       "ctaCall": "Sună acum"
     }
+  },
+  "aboutPage": {
+    "seo": {
+      "title": "Despre noi",
+      "description": "Suntem Rapid Construct & 3D Design. De peste 15 ani construim, renovam si punem acoperisuri si fatade in Chisinau, Orhei, Cahul si Costesti. Garantie scrisa in contract."
+    },
+    "hero": {
+      "eyebrow": "Despre noi",
+      "h1": "Construim si renovam in Chisinau de peste 15 ani",
+      "intro": "Suntem Rapid Construct & 3D Design. De peste 15 ani ridicam case, refacem acoperisuri, punem fatade si facem renovari la cheie in Chisinau si in regiuni: Orhei, Cahul, Costesti.",
+      "intro2": "Facem totul dintr-o mana: constructie, renovare, acoperisuri, fatade, finisaje, instalatii si proiectare 3D. Asa nu alergi dupa mai multe echipe, iar toata lucrarea merge dupa un singur plan."
+    },
+    "values": {
+      "eyebrow": "Valorile noastre",
+      "title": "Pe ce te poti baza",
+      "items": [
+        {
+          "title": "Garantie scrisa in contract",
+          "desc": "Garantia o punem pe hartie, in contract, pana la 30 de ani. Nu e doar o vorba."
+        },
+        {
+          "title": "Materiale certificate UE",
+          "desc": "Lucram cu materiale certificate in UE, potrivite pentru fiecare proiect."
+        },
+        {
+          "title": "Preturi transparente",
+          "desc": "Primesti devizul pe puncte. Ce scrie in deviz, aceea platesti. Fara costuri ascunse."
+        },
+        {
+          "title": "Suport dupa predare",
+          "desc": "Dupa ce predam lucrarea ramanem la un telefon distanta. Daca apare ceva, venim."
+        }
+      ]
+    },
+    "process": {
+      "eyebrow": "Cum lucram",
+      "title": "De la prima vizita la predare",
+      "steps": [
+        {
+          "title": "Evaluare gratuita",
+          "desc": "Venim la tine, ne uitam la lucrare si luam masurile. Nu platesti nimic pentru asta."
+        },
+        {
+          "title": "Deviz clar",
+          "desc": "Iti facem devizul pe puncte: materiale, lucru, termen. Vezi din start cat costa."
+        },
+        {
+          "title": "Lucrarea",
+          "desc": "Echipa se apuca de treaba si tine termenul stabilit. Te tinem la curent pe parcurs."
+        },
+        {
+          "title": "Predare cu garantie",
+          "desc": "Iti predam lucrarea, semnezi garantia in contract si ramanem la un telefon distanta."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Hai sa vorbim despre proiectul tau",
+      "intro": "Suna-ne sau lasa o cerere. Iti raspundem in maximum 2 ore lucratoare.",
+      "ctaQuote": "Solicita oferta gratuita",
+      "ctaCall": "Suna acum"
+    }
+  },
+  "contactPage": {
+    "seo": {
+      "title": "Contact și cerere de ofertă",
+      "description": "Sună-ne sau lasă un mesaj și primești o ofertă clară pentru acoperiș, fațadă sau renovare. Îți răspundem în maximum 2 ore lucrătoare."
+    },
+    "hero": {
+      "eyebrow": "Contact",
+      "h1": "Hai să vorbim despre proiectul tău",
+      "intro": "Spune-ne ce ai nevoie și primești o ofertă clară, fără obligații. Poți suna direct sau completa formularul de mai jos."
+    },
+    "response": "Îți răspundem în maximum 2 ore lucrătoare.",
+    "nap": {
+      "title": "Date de contact",
+      "addressLabel": "Adresă",
+      "phoneLabel": "Telefon",
+      "emailLabel": "Email",
+      "hoursLabel": "Program",
+      "hours": "Lun–Sâm 08:00–17:00 · Dum: închis"
+    },
+    "form": {
+      "title": "Lasă-ne un mesaj",
+      "numeLabel": "Nume",
+      "numePlaceholder": "Cum te cheamă",
+      "telefonLabel": "Telefon",
+      "telefonPlaceholder": "+373 ...",
+      "telefonHint": "Te sunăm noi dacă e mai ușor.",
+      "mesajLabel": "Mesaj",
+      "mesajPlaceholder": "Scrie pe scurt ce ai nevoie: acoperiș, fațadă, renovare și adresa lucrării.",
+      "submit": "Trimite mesajul",
+      "sending": "Se trimite...",
+      "errRequired": "Completează acest câmp.",
+      "errPhone": "Scrie un număr de telefon valid din Moldova.",
+      "errGeneric": "Ceva n-a mers. Sună-ne direct și te rezolvăm imediat.",
+      "successTitle": "Mulțumim, am primit mesajul.",
+      "successBody": "Te sunăm în maximum 2 ore lucrătoare. Dacă e urgent, sună-ne direct."
+    }
+  },
+  "chat": {
+    "open": "Deschide chat",
+    "close": "Închide chat",
+    "whatsapp": "Scrie-ne pe WhatsApp",
+    "viber": "Scrie-ne pe Viber",
+    "greeting": "Bună ziua! Vreau o ofertă pentru lucrări la casă."
   }
 }

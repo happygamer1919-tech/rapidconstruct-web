@@ -7,8 +7,10 @@ import { OG_LOCALE, SITE_URL, localeAlternates } from "@/i18n/metadata";
 import { site } from "@/config/site";
 import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import LocalBusinessJsonLd from "@/components/LocalBusinessJsonLd";
+import PromoBar from "@/components/PromoBar";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import ChatButtons from "@/components/ChatButtons";
 import { serif, sans } from "../fonts";
 import "../globals.css";
 
@@ -85,9 +87,12 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         {/* Sitewide LocalBusiness structured data — carried by every page. */}
         <LocalBusinessJsonLd />
         <NextIntlClientProvider>
+          <PromoBar />
           <SiteHeader />
           {children}
           <SiteFooter />
+          {/* Floating click-to-chat widget (RC-106) — sitewide, all pages. */}
+          <ChatButtons />
         </NextIntlClientProvider>
       </body>
     </html>

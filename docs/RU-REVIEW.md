@@ -11,3 +11,54 @@ strings. A PR that adds/changes RU strings updates this table.
 Reviewer notes: RU is written for the Moldovan market (Кишинёв, лей/м², Оргеев/Кагул
 city names). Check tone + terminology, especially construction terms.
 | roofPage (acoperisuri service page, all strings) | 2026-07-15 | NEEDS NATIVE REVIEW before launch |
+| docs/KEYWORD-MAP.md RU titles + descriptions (16 pages, drafted, not yet wired into messages) | 2026-07-15 (RC-301) | NEEDS NATIVE REVIEW before wiring into messages/ru.json |
+
+# RU copy review status
+
+Rule (replaces the old visible `TODO(ru-review)` suffixes, which leaked into the UI —
+owner feedback 2026-07-14): machine-drafted Russian is tracked HERE, not in user-visible
+strings. A PR that adds/changes RU strings updates this table.
+
+Reviewer notes: RU is written for the Moldovan market (Кишинёв, лей/м², Оргеев/Кагул
+city names). Check tone + terminology, especially construction terms.
+| home.testimonials (RU translations of verbatim live-site quotes) | 2026-07-15 | translations of owner-published RO originals; native check before launch |
+
+# RU copy review status
+
+Rule (replaces the old visible `TODO(ru-review)` suffixes, which leaked into the UI —
+owner feedback 2026-07-14): machine-drafted Russian is tracked HERE, not in user-visible
+strings. A PR that adds/changes RU strings updates this table.
+
+Reviewer notes: RU is written for the Moldovan market (Кишинёв, лей/м², Оргеев/Кагул
+city names). Check tone + terminology, especially construction terms.
+| aboutPage (despre-noi page: hero, values, process, cta, seo) | 2026-07-15 | NEEDS NATIVE REVIEW before launch |
+
+# RU copy review status
+
+Rule (replaces the old visible `TODO(ru-review)` suffixes, which leaked into the UI —
+owner feedback 2026-07-14): machine-drafted Russian is tracked HERE, not in user-visible
+strings. A PR that adds/changes RU strings updates this table.
+
+Reviewer notes: RU is written for the Moldovan market (Кишинёв, лей/м², Оргеев/Кагул
+city names). Check tone + terminology, especially construction terms.
+| contactPage (/contact page + lead form, all strings) | 2026-07-14 | NEEDS NATIVE REVIEW before launch |
+
+# RU copy review status
+
+Rule (replaces the old visible `TODO(ru-review)` suffixes, which leaked into the UI —
+owner feedback 2026-07-14): machine-drafted Russian is tracked HERE, not in user-visible
+strings. A PR that adds/changes RU strings updates this table.
+
+Reviewer notes: RU is written for the Moldovan market (Кишинёв, лей/м², Оргеев/Кагул
+city names). Check tone + terminology, especially construction terms.
+| chat (RC-106 floating WhatsApp/Viber widget: labels + prefilled greeting) | 2026-07-14 | NEEDS NATIVE REVIEW before launch |
+
+# RU copy review status
+
+Rule (replaces the old visible `TODO(ru-review)` suffixes, which leaked into the UI —
+owner feedback 2026-07-14): machine-drafted Russian is tracked HERE, not in user-visible
+strings. A PR that adds/changes RU strings updates this table.
+
+Reviewer notes: RU is written for the Moldovan market (Кишинёв, лей/м², Оргеев/Кагул
+city names). Check tone + terminology, especially construction terms.
+| promo namespace (promo bar offer + dismiss label, RC-110) | 2026-07-14 | NEEDS NATIVE REVIEW before launch — offer copy reuses contact promo; "крышу" used instead of banned "кровлю" per copy register |

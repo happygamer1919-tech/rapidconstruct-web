@@ -12,6 +12,7 @@ export type IconName =
   | "menu"
   | "close"
   | "chevronDown"
+  | "chat"
   | "arrowRight"
   | "arrowUpRight"
   | "mapPin"
@@ -43,6 +44,7 @@ const PATHS: Record<IconName, React.ReactNode> = {
   menu: <path d="M4 6h16M4 12h16M4 18h16" />,
   close: <path d="M18 6 6 18M6 6l12 12" />,
   chevronDown: <path d="m6 9 6 6 6-6" />,
+  chat: <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z" />,
   arrowRight: <path d="M5 12h14M12 5l7 7-7 7" />,
   arrowUpRight: <path d="M7 17 17 7M7 7h10v10" />,
   mapPin: (
