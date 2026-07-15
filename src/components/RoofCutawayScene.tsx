@@ -20,7 +20,7 @@ import { useReducedMotion } from "motion/react";
 
 const W = 2.6; // along slope
 const D = 1.9; // along ridge
-const PITCH = -0.3;
+const PITCH = 0; // layers level -> exploded stack is vertical & symmetric (owner)
 
 // Assembled Y of each layer's center, bottom to top.
 const BASE_Y = [0, 0.17, 0.3, 0.4, 0.53];
@@ -90,13 +90,20 @@ export default function RoofCutawayScene({
       <directionalLight position={[4, 7, 5]} intensity={1.4} castShadow />
       <directionalLight position={[-5, 3, -3]} intensity={0.35} />
 
-      <group rotation={[0, 0.5, PITCH]} position={[0, 0.05, 0]}>
+      <group rotation={[0, 0.55, PITCH]} position={[0, -0.15, 0]}>
         {/* 1 — Rafters: six timber beams along the slope */}
         <group position={[0, layerY(0, explode), 0]}>
           {RAFTER_Z.map((z) => (
             <mesh key={z} position={[0, 0, z]} castShadow>
               <boxGeometry args={[W, 0.16, 0.09]} />
               <meshStandardMaterial color="#a9805a" roughness={0.9} />
+              <Edges threshold={20} color="#6e4f33" />
+            </mesh>
+          ))}
+          {RAFTER_Z.slice(0, -1).map((z) => (
+            <mesh key={"blk" + z} position={[0.55, 0, z + 0.16]} castShadow>
+              <boxGeometry args={[0.09, 0.14, 0.23]} />
+              <meshStandardMaterial color="#96714e" roughness={0.9} />
               <Edges threshold={20} color="#6e4f33" />
             </mesh>
           ))}
@@ -115,17 +122,19 @@ export default function RoofCutawayScene({
           <ChipAnchor n={2} />
         </group>
 
-        {/* 3 — Membrane: thin dark sheet with a slight sheen */}
+        {/* 3 — Membrane: three overlapping strips (how it's really laid) */}
         <group position={[0, layerY(2, explode), 0]}>
-          <mesh castShadow>
-            <boxGeometry args={[W, 0.02, D]} />
-            <meshStandardMaterial
-              color="#46525f"
-              roughness={0.45}
-              metalness={0.1}
-            />
-            <Edges threshold={20} color="#2f3742" />
-          </mesh>
+          {[-0.62, 0, 0.62].map((z, i) => (
+            <mesh key={z} position={[0, i * 0.008, z]} castShadow>
+              <boxGeometry args={[W, 0.015, 0.72]} />
+              <meshStandardMaterial
+                color={i % 2 ? "#4b5a68" : "#46525f"}
+                roughness={0.45}
+                metalness={0.1}
+              />
+              <Edges threshold={20} color="#2f3742" />
+            </mesh>
+          ))}
           <ChipAnchor n={3} />
         </group>
 
