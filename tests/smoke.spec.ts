@@ -89,6 +89,41 @@ test.describe("navigation", () => {
   });
 });
 
+test.describe("about page (RC-109)", () => {
+  test("/despre-noi responds 200 and renders an H1", async ({
+    page,
+    request,
+  }) => {
+    const res = await request.get("/despre-noi");
+    expect(res.status(), "/despre-noi did not respond 200").toBe(200);
+
+    await page.goto("/despre-noi");
+    await expect(page.locator("main")).toBeVisible();
+    await expect(page.locator("h1").first()).toBeVisible();
+  });
+
+  test("/ru/despre-noi responds 200 with lang=\"ru\"", async ({
+    page,
+    request,
+  }) => {
+    const res = await request.get("/ru/despre-noi");
+    expect(res.status(), "/ru/despre-noi did not respond 200").toBe(200);
+
+    await page.goto("/ru/despre-noi");
+    const lang = await page.locator("html").getAttribute("lang");
+    expect(lang).toBe("ru");
+    await expect(page.locator("h1").first()).toBeVisible();
+  });
+
+  test("header 'Despre Noi' link resolves (no 404)", async ({ page }) => {
+    await page.goto("/");
+    const link = page.locator('header a[href="/despre-noi"]').first();
+    await expect(link).toHaveCount(1);
+    const res = await page.goto("/despre-noi");
+    expect(res?.status()).toBe(200);
+  });
+});
+
 test.describe("locales respond 200", () => {
   test("/ (RO) responds 200", async ({ request }) => {
     const res = await request.get("/");

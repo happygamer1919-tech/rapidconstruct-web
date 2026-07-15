@@ -20,7 +20,7 @@ import { getPathname } from "@/i18n/navigation";
  */
 
 /** Un-prefixed route paths that currently resolve and should be indexed. */
-const ROUTES = ["/"];
+const ROUTES = ["/", "/despre-noi"];
 
 function absolute(locale: (typeof routing.locales)[number], path: string) {
   // Strip the trailing slash on the root so the sitemap <loc> exactly matches
