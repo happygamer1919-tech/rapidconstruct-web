@@ -11,3 +11,4 @@ strings. A PR that adds/changes RU strings updates this table.
 Reviewer notes: RU is written for the Moldovan market (Кишинёв, лей/м², Оргеев/Кагул
 city names). Check tone + terminology, especially construction terms.
 | roofPage (acoperisuri service page, all strings) | 2026-07-15 | NEEDS NATIVE REVIEW before launch |
+| chat (RC-106 floating WhatsApp/Viber widget: labels + prefilled greeting) | 2026-07-14 | NEEDS NATIVE REVIEW before launch |
