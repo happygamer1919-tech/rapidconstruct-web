@@ -72,10 +72,11 @@ export default function RoofCutaway({
     target: wrapRef,
     offset: ["start start", "end end"],
   });
+  // Soft, slow spring — the roof drifts open rather than snapping.
   const explodeValue = useSpring(scrollYProgress, {
-    stiffness: 90,
-    damping: 24,
-    mass: 0.4,
+    stiffness: 42,
+    damping: 26,
+    mass: 0.9,
   });
 
   // Which layer's card is on screen (0..n-1), derived from progress.
@@ -100,7 +101,7 @@ export default function RoofCutaway({
   return (
     <>
       {/* Scroll runway: ~1 screen per layer keeps the opening comfortable. */}
-      <div ref={wrapRef} className="relative" style={{ height: "360vh" }}>
+      <div ref={wrapRef} className="relative" style={{ height: "520vh" }}>
         <div className="sticky top-0 h-svh w-full overflow-hidden">
           {/* 3D fills the section as a background */}
           <div className="absolute inset-0 bg-gradient-to-br from-neutral-100 via-muted to-neutral-200">
