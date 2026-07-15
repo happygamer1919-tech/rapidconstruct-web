@@ -809,5 +809,69 @@
         "ctaCall": "Sună acum"
       }
     }
+  },
+  "calcPage": {
+    "seo": {
+      "title": "Calculator preț acoperiș, estimare rapidă",
+      "description": "Află cât costă acoperișul tău în câteva minute. Alegi tipul de țiglă și suprafața, vezi estimarea pe loc, apoi te sunăm cu prețul exact."
+    },
+    "hero": {
+      "eyebrow": "Calculator acoperiș",
+      "h1": "Cât costă acoperișul tău?",
+      "intro": "Pune dimensiunile casei și alege țigla. Vezi pe loc o estimare, apoi te sunăm cu prețul exact, gratuit și fără obligații."
+    },
+    "steps": {
+      "dims": "Dimensiuni",
+      "material": "Material",
+      "result": "Rezultat"
+    },
+    "dims": {
+      "title": "Ce dimensiuni are casa?",
+      "hint": "Scrie lungimea și lățimea casei la sol, în metri. Estimarea se face pe loc.",
+      "lungimeLabel": "Lungime (m)",
+      "latimeLabel": "Lățime (m)",
+      "lungimePlaceholder": "ex. 10",
+      "latimePlaceholder": "ex. 8",
+      "errRange": "Scrie lungimea și lățimea în metri, între 1 și 200.",
+      "next": "Alege țigla"
+    },
+    "material": {
+      "title": "Alege tipul de țiglă",
+      "intro": "Prețul de mai jos e pe metru pătrat, cu tot cu lucru.",
+      "perM2": "lei/m²",
+      "back": "Înapoi",
+      "next": "Vezi estimarea"
+    },
+    "result": {
+      "title": "Estimarea ta",
+      "areaLabel": "Suprafață",
+      "areaUnit": "m²",
+      "materialLabel": "Țiglă aleasă",
+      "rangeLabel": "Estimare pentru acoperiș",
+      "between": "între",
+      "and": "și",
+      "currency": "lei",
+      "honest": "E o estimare, ca să ai un punct de plecare. Prețul exact îl stabilim la fața locului, la devizul gratuit. Fără plată și fără obligații.",
+      "changeMaterial": "Schimbă țigla",
+      "changeDims": "Schimbă dimensiunile"
+    },
+    "lead": {
+      "title": "Vrei prețul exact? Te sunăm noi.",
+      "intro": "Lasă un număr și te sunăm cu oferta pentru acoperișul tău.",
+      "numeLabel": "Nume",
+      "numePlaceholder": "Cum te cheamă",
+      "telefonLabel": "Telefon",
+      "telefonPlaceholder": "+373 ...",
+      "telefonHint": "Te sunăm noi, când îți convine.",
+      "mesajLabel": "Mesaj (opțional)",
+      "mesajPlaceholder": "Adaugă adresa lucrării sau alte detalii, dacă vrei.",
+      "submit": "Trimite și te sunăm",
+      "sending": "Se trimite...",
+      "errRequired": "Completează acest câmp.",
+      "errPhone": "Scrie un număr de telefon valid din Moldova.",
+      "errGeneric": "Ceva n-a mers. Sună-ne direct și te rezolvăm imediat.",
+      "successTitle": "Gata, am primit cererea.",
+      "successBody": "Te sunăm în maximum 2 ore lucrătoare cu prețul exact."
+    }
   }
 }
