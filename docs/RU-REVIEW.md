@@ -32,3 +32,13 @@ strings. A PR that adds/changes RU strings updates this table.
 Reviewer notes: RU is written for the Moldovan market (Кишинёв, лей/м², Оргеев/Кагул
 city names). Check tone + terminology, especially construction terms.
 | aboutPage (despre-noi page: hero, values, process, cta, seo) | 2026-07-15 | NEEDS NATIVE REVIEW before launch |
+
+# RU copy review status
+
+Rule (replaces the old visible `TODO(ru-review)` suffixes, which leaked into the UI —
+owner feedback 2026-07-14): machine-drafted Russian is tracked HERE, not in user-visible
+strings. A PR that adds/changes RU strings updates this table.
+
+Reviewer notes: RU is written for the Moldovan market (Кишинёв, лей/м², Оргеев/Кагул
+city names). Check tone + terminology, especially construction terms.
+| contactPage (/contact page + lead form, all strings) | 2026-07-14 | NEEDS NATIVE REVIEW before launch |

@@ -50,3 +50,12 @@ place); improves the review flow for Max.
 "500+ case", "250+ recenzii", "15+ ani", "garanție 30 ani", "160 lei/m²" — we will publish
 these as quotable facts (SEO/GEO), so they must be true and defensible. Confirm with Max.
 **Blocks:** none (build with current claims, confirm before launch RC-402).
+
+## Q-09 — OPEN — Email sending credentials (contact form leads)
+The RC-105 contact form is live and validates leads server-side, but has no email channel
+yet. Until one is set, every lead is written to the Vercel function logs (Vercel → project
+rapidconstruct-web → Logs, grep `[lead]`) so nothing is lost. **Recommended default:** create
+a free Resend account (resend.com, 100 emails/day free), then set `RESEND_API_KEY` in the
+Vercel project env — leads then email to rapidconstructmd@gmail.com automatically (delivery
+seam already wired in src/lib/lead.ts). A Telegram notifier can be added at the same seam
+later (Q-03). **Blocks:** nothing (log fallback in place); improves owner's lead visibility.
