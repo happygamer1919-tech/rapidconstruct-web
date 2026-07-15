@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useInView } from "motion/react";
 import { Icon } from "@/components/icons";
 
@@ -36,9 +36,7 @@ export default function Design3D({
   // Lighthouse: don't even DOWNLOAD the three.js chunk until the user scrolls
   // near — next/dynamic otherwise fetches it on page load (~600KB of JS).
   const [mount3d, setMount3d] = useState(false);
-  useEffect(() => {
-    if (inView) setMount3d(true);
-  }, [inView]);
+  if (inView && !mount3d) setMount3d(true); // render-time latch (React docs pattern)
 
   return (
     <section

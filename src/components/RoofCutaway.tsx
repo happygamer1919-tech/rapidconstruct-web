@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useInView, useReducedMotion } from "motion/react";
 
@@ -36,9 +36,7 @@ export default function RoofCutaway({
   const boxRef = useRef<HTMLDivElement>(null);
   const inView = useInView(boxRef, { margin: "200px 0px" });
   const [mount3d, setMount3d] = useState(false);
-  useEffect(() => {
-    if (inView) setMount3d(true);
-  }, [inView]);
+  if (inView && !mount3d) setMount3d(true); // render-time latch (React docs pattern)
   const sliderId = useId();
 
   return (
