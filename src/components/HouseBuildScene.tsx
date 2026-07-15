@@ -98,10 +98,12 @@ function House({
           mesh,
           real: mesh.material,
           y0: mesh.position.y,
-          // Pieces of a phase start one after another across the first 60%
-          // of the phase window; each drop lasts 40% of the window.
-          start: phase * window + (j / n) * window * 0.6,
-          dur: window * 0.4,
+          // Pieces of a phase start one after another across the first 45%
+          // of the phase window; each drop lasts 55% of it — pieces land
+          // quickly and the phase never trails its text slide (owner: the
+          // first pass took too long).
+          start: phase * window + (j / n) * window * 0.45,
+          dur: window * 0.55,
         });
       });
     });
@@ -122,8 +124,9 @@ function House({
         p.mesh.position.y = p.y0;
       } else {
         if (p.mesh.material !== p.real) p.mesh.material = p.real;
-        // Drop in from slightly above and settle (lego snap).
-        p.mesh.position.y = p.y0 + 0.55 * (1 - easeOutCubic(k));
+        // Drop in from slightly above and settle (lego snap). Short drop so
+        // even a very fast scroll never scatters pieces far off the house.
+        p.mesh.position.y = p.y0 + 0.4 * (1 - easeOutCubic(k));
       }
     }
   });

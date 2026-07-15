@@ -2,15 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import {
-  AnimatePresence,
-  motion,
-  useInView,
-  useMotionValueEvent,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-} from "motion/react";
+import { useInView, useReducedMotion, useScroll, useSpring } from "motion/react";
+import { Link } from "@/i18n/navigation";
 import { Icon } from "@/components/icons";
 
 export type BuildPhase = { name: string; desc: string };
@@ -21,7 +14,8 @@ const HouseBuildScene = dynamic(() => import("./HouseBuildScene"), {
   loading: () => <div className="absolute inset-0" />,
 });
 
-// Mount heavy WebGL only after visitor intent (perf gate — Lighthouse).
+// Mount heavy WebGL only after visitor intent (perf gate — Lighthouse: the
+// hero H1 paints instantly, the three.js chunk downloads on first scroll).
 function useInteracted() {
   const [interacted, setInteracted] = useState(false);
   useEffect(() => {
@@ -41,26 +35,32 @@ function useInteracted() {
 }
 
 /**
- * HouseBuild — homepage design->construction story: the house stands as a
- * translucent 3D blueprint when you reach it, then builds itself piece by
- * piece as you scroll a tall native-scroll runway (no hijack), with the
- * matching construction-phase card per stage. Reduced motion: fully built
- * static view + the plain phase list, no pinning. The phase list is also
- * server-rendered below for SEO and reference.
+ * HouseBuild — the homepage HERO (owner direction): the design->construction
+ * house is pinned as a full-bleed background, and the text itself scrolls
+ * over it as slides — first the H1 + CTAs, then one slide per construction
+ * phase, its copy sliding through while that part of the house builds.
+ * Scroll is native (no hijack); the 3D reads a springed scroll MotionValue.
+ * Reduced motion: finished house, static, with the plain phase list.
  */
 export default function HouseBuild({
   eyebrow,
-  title,
-  intro,
+  h1,
+  subline,
+  trust,
+  ctaCall,
+  ctaQuote,
+  phone,
   phases,
-  points,
   hint,
 }: {
   eyebrow: string;
-  title: string;
-  intro: string;
+  h1: string;
+  subline: string;
+  trust: string;
+  ctaCall: string;
+  ctaQuote: string;
+  phone: string;
   phases: BuildPhase[];
-  points: string[];
   hint: string;
 }) {
   const reduce = useReducedMotion();
@@ -71,159 +71,138 @@ export default function HouseBuild({
   const [mount3d, setMount3d] = useState(false);
   if (interacted && inView && !mount3d) setMount3d(true);
 
-  // Scroll progress across the runway -> build 0..1 (springed for feel).
+  // Slide k sits at progress k/(slides-1); phase i's slide is k = i+1, so
+  // build = progress makes each phase finish just as its slide is centered.
   const { scrollYProgress } = useScroll({
     target: wrapRef,
     offset: ["start start", "end end"],
   });
-  // Soft, slow spring — pieces settle in rather than snapping.
+  // Firm spring: tracks fast scrolling closely (a soft one let pieces trail
+  // behind and feel chaotic when jumping several screens at once).
   const buildValue = useSpring(scrollYProgress, {
-    stiffness: 42,
-    damping: 26,
-    mass: 0.9,
+    stiffness: 130,
+    damping: 30,
+    mass: 0.5,
   });
 
-  // Which phase's card is on screen (0..n-1), derived from progress.
-  const [stage, setStage] = useState(0);
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    const s = Math.min(phases.length - 1, Math.floor(v * phases.length * 1.02));
-    setStage((prev) => (prev === s ? prev : s));
-  });
+  const heroBlock = (
+    <div className="flex max-w-2xl flex-col gap-5">
+      <p className="micro-label text-accent-strong">{eyebrow}</p>
+      <h1 className="font-serif text-display-xl text-foreground">{h1}</h1>
+      <p className="max-w-xl text-body-lg text-muted-foreground">{subline}</p>
+      <p className="flex items-center gap-2 text-caption font-medium text-foreground">
+        <Icon name="shield" size={18} className="shrink-0 text-accent-strong" />
+        {trust}
+      </p>
+      <div className="mt-2 flex flex-wrap gap-3">
+        <a
+          href={`tel:${phone}`}
+          className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-body font-semibold text-accent-foreground transition-colors hover:bg-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong"
+        >
+          <Icon name="phone" size={18} />
+          {ctaCall}
+        </a>
+        <Link
+          href="/contact"
+          className="inline-flex items-center gap-2 rounded-full border border-foreground px-6 py-3 text-body font-semibold text-foreground transition-colors hover:bg-foreground hover:text-background focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong"
+        >
+          {ctaQuote}
+          <Icon name="arrowRight" size={18} />
+        </Link>
+      </div>
+    </div>
+  );
 
   if (reduce) {
     return (
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-gutter py-16">
-        <Header eyebrow={eyebrow} title={title} intro={intro} />
-        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-neutral-100 to-muted">
-          {mount3d && <HouseBuildScene build={1} active={inView} />}
+      <section className="border-b border-border">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-gutter py-16">
+          {heroBlock}
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-neutral-100 to-muted">
+            {mount3d && <HouseBuildScene build={1} active={inView} />}
+          </div>
+          <PhaseList phases={phases} />
         </div>
-        <PhaseList phases={phases} points={points} />
-      </div>
+      </section>
     );
   }
 
   return (
-    <>
-      {/* Scroll runway: ~1 screen per phase keeps the build comfortable. */}
-      <div ref={wrapRef} className="relative" style={{ height: "520vh" }}>
+    <section className="border-b border-border">
+      <div ref={wrapRef} className="relative">
+        {/* Pinned 3D background — the house builds behind the passing text. */}
         <div className="sticky top-0 h-svh w-full overflow-hidden">
-          {/* 3D fills the section as a background */}
           <div className="absolute inset-0 bg-gradient-to-br from-neutral-100 via-muted to-neutral-200">
             {mount3d && <HouseBuildScene buildValue={buildValue} active={inView} />}
           </div>
-
-          {/* legibility scrim (left + bottom) */}
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-neutral-100 via-neutral-100/70 to-transparent md:via-neutral-100/45" />
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-neutral-100/80 to-transparent" />
-
-          {/* heading + active phase card overlaid */}
-          <div className="relative mx-auto flex h-svh w-full max-w-6xl flex-col justify-center gap-6 px-gutter">
-            <Header eyebrow={eyebrow} title={title} intro={intro} className="max-w-lg" />
-
-            <div className="relative min-h-36 max-w-md">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={stage}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -12 }}
-                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                  className="flex items-start gap-4"
-                >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-50 font-serif text-h3 font-semibold lining-nums text-accent-strong">
-                    {stage + 1}
-                  </span>
-                  <div className="flex flex-col gap-1.5">
-                    <h3 className="font-serif text-h2 text-foreground">
-                      {phases[stage].name}
-                    </h3>
-                    <p className="text-body-lg text-muted-foreground">
-                      {phases[stage].desc}
-                    </p>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-
-              <div className="mt-7 flex gap-2">
-                {phases.map((_, i) => (
-                  <span
-                    key={i}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${
-                      i <= stage ? "w-8 bg-accent" : "w-4 bg-border"
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-
+          {/* soft scrim so passing copy always reads */}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-neutral-100/80 via-neutral-100/25 to-transparent" />
           <span className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-ink-950/60 px-3 py-1 text-micro font-medium text-neutral-50 backdrop-blur-sm">
             {hint}
           </span>
         </div>
-      </div>
 
-      {/* Phase list below — server-rendered for SEO + quick reference. */}
-      <div className="mx-auto w-full max-w-6xl px-gutter py-12">
-        <PhaseList phases={phases} points={points} />
-      </div>
-    </>
-  );
-}
+        {/* Text slides — normal document flow scrolling OVER the pinned 3D.
+            pointer-events pass through empty space so the model stays
+            draggable; only the cards themselves catch the cursor. */}
+        <div className="pointer-events-none relative z-10 -mt-[100svh]">
+          {/* Slide 1 — the hero itself (SSR, instant LCP) */}
+          <div className="mx-auto flex min-h-svh w-full max-w-6xl items-center px-gutter">
+            <div className="pointer-events-auto">{heroBlock}</div>
+          </div>
 
-function Header({
-  eyebrow,
-  title,
-  intro,
-  className = "",
-}: {
-  eyebrow: string;
-  title: string;
-  intro: string;
-  className?: string;
-}) {
-  return (
-    <div className={`flex flex-col gap-3 ${className}`}>
-      <p className="micro-label text-accent-strong">{eyebrow}</p>
-      <h2 className="font-serif text-display-lg text-foreground">{title}</h2>
-      <p className="text-body-lg text-muted-foreground">{intro}</p>
-    </div>
-  );
-}
-
-function PhaseList({
-  phases,
-  points,
-}: {
-  phases: BuildPhase[];
-  points: string[];
-}) {
-  return (
-    <div className="flex flex-col gap-8">
-      <ol className="grid gap-x-10 gap-y-4 sm:grid-cols-2">
-        {phases.map((p, i) => (
-          <li key={p.name} className="flex items-start gap-4">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-50 font-serif text-body font-semibold lining-nums text-accent-strong">
-              {i + 1}
-            </span>
-            <div className="flex flex-col gap-1">
-              <h3 className="text-body font-semibold text-foreground">{p.name}</h3>
-              <p className="text-caption text-muted-foreground">{p.desc}</p>
+          {/* One slide per construction phase */}
+          {phases.map((p, i) => (
+            <div
+              key={p.name}
+              className="mx-auto flex min-h-svh w-full max-w-6xl items-center px-gutter"
+            >
+              <div className="pointer-events-auto flex max-w-md items-start gap-4 rounded-2xl bg-neutral-100/75 p-6 backdrop-blur-md">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-50 font-serif text-h3 font-semibold lining-nums text-accent-strong">
+                  {i + 1}
+                </span>
+                <div className="flex flex-col gap-1.5">
+                  <h2 className="font-serif text-h2 text-foreground">{p.name}</h2>
+                  <p className="text-body-lg text-muted-foreground">{p.desc}</p>
+                  <div className="mt-3 flex gap-2">
+                    {phases.map((_, d) => (
+                      <span
+                        key={d}
+                        className={`h-1.5 rounded-full ${
+                          d <= i ? "w-8 bg-accent" : "w-4 bg-border"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
-          </li>
-        ))}
-      </ol>
-      <ul className="flex flex-wrap gap-x-8 gap-y-3">
-        {points.map((point) => (
-          <li
-            key={point}
-            className="inline-flex items-center gap-2 text-caption font-medium text-muted-foreground"
-          >
-            <Icon name="cube" size={16} className="shrink-0 text-accent-strong" />
-            {point}
-          </li>
-        ))}
-      </ul>
-    </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Phase list — server-rendered for SEO + quick reference. */}
+      <div className="mx-auto w-full max-w-6xl px-gutter py-12">
+        <PhaseList phases={phases} />
+      </div>
+    </section>
+  );
+}
+
+function PhaseList({ phases }: { phases: BuildPhase[] }) {
+  return (
+    <ol className="grid gap-x-10 gap-y-4 sm:grid-cols-2">
+      {phases.map((p, i) => (
+        <li key={p.name} className="flex items-start gap-4">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-50 font-serif text-body font-semibold lining-nums text-accent-strong">
+            {i + 1}
+          </span>
+          <div className="flex flex-col gap-1">
+            <h3 className="text-body font-semibold text-foreground">{p.name}</h3>
+            <p className="text-caption text-muted-foreground">{p.desc}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
   );
 }
