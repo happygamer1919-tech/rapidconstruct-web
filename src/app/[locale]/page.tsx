@@ -109,7 +109,6 @@ export default async function Home({ params }: PageProps) {
         ctaCall={t("hero.ctaCall")}
         ctaQuote={t("hero.ctaQuote")}
         phone={site.phone}
-        designPhase={t.raw("build.designPhase") as BuildPhase}
         phases={t.raw("build.phases") as BuildPhase[]}
         hint={t("design3d.hint")}
       />

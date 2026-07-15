@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
+import { useInView, useReducedMotion } from "motion/react";
 import { Link } from "@/i18n/navigation";
 import { Icon } from "@/components/icons";
 
@@ -57,7 +57,6 @@ export default function HouseBuild({
   ctaCall,
   ctaQuote,
   phone,
-  designPhase,
   phases,
   hint,
 }: {
@@ -68,7 +67,6 @@ export default function HouseBuild({
   ctaCall: string;
   ctaQuote: string;
   phone: string;
-  designPhase: BuildPhase;
   phases: BuildPhase[];
   hint: string;
 }) {
@@ -76,11 +74,6 @@ export default function HouseBuild({
   const armed = useArmed();
   const wrapRef = useRef<HTMLDivElement>(null);
   const inView = useInView(wrapRef, { margin: "200px 0px" });
-
-  // -1 = blueprint (the design), 0..4 = construction phases.
-  const [stage, setStage] = useState(-1);
-  const onStage = useCallback((s: number) => setStage(s), []);
-  const caption = stage < 0 ? designPhase : phases[stage];
 
   const heroBlock = (
     <div className="flex max-w-2xl flex-col gap-5">
@@ -129,49 +122,14 @@ export default function HouseBuild({
       {/* One full viewport: the house builds itself behind the copy. */}
       <div ref={wrapRef} className="relative h-svh w-full overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-neutral-100 via-muted to-neutral-200">
-          {armed && (
-            <HouseBuildScene active={inView} onStage={onStage} />
-          )}
+          {armed && <HouseBuildScene active={inView} />}
         </div>
         {/* soft scrim keeps the left copy readable over the model */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-neutral-100/85 via-neutral-100/30 to-transparent" />
 
-        <div className="pointer-events-none relative mx-auto flex h-full w-full max-w-6xl flex-col justify-between px-gutter pb-16 pt-14 lg:pb-20">
+        <div className="pointer-events-none relative mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-gutter">
           <div className="pointer-events-auto">{heroBlock}</div>
 
-          {/* Big caption that follows the build, cinema-style. */}
-          <div className="max-w-xl">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={stage}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -14 }}
-                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                className="flex flex-col gap-2"
-              >
-                <p className="font-serif text-display-lg leading-tight text-foreground">
-                  <span className="mr-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 align-middle text-h3 font-semibold lining-nums text-accent-strong">
-                    {stage < 0 ? "3D" : stage + 1}
-                  </span>
-                  {caption.name}
-                </p>
-                <p className="max-w-md text-body-lg text-muted-foreground">
-                  {caption.desc}
-                </p>
-              </motion.div>
-            </AnimatePresence>
-            <div className="mt-5 flex gap-2">
-              {phases.map((_, d) => (
-                <span
-                  key={d}
-                  className={`h-2 rounded-full transition-all duration-500 ${
-                    stage >= 0 && d <= stage ? "w-10 bg-accent" : "w-5 bg-border"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
         </div>
 
         <span className="pointer-events-none absolute bottom-5 right-6 whitespace-nowrap rounded-full bg-ink-950/60 px-3 py-1 text-micro font-medium text-neutral-50 backdrop-blur-sm">

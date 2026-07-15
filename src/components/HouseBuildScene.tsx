@@ -35,10 +35,10 @@ import {
 const HOUSE_URL = "/models/house.glb";
 
 // Timeline (seconds)
-const T_BLUEPRINT = 2.2; // hold the design
-const T_BUILD = 11; // the build itself
+const T_BLUEPRINT = 1.5; // hold the design
+const T_BUILD = 7; // the build itself (owner: faster)
 const T_DONE = 6; // hold the finished house
-const T_UNBUILD = 1.8; // dissolve back to the blueprint
+const T_UNBUILD = 1.2; // dissolve back to the blueprint
 const T_TOTAL = T_BLUEPRINT + T_BUILD + T_DONE + T_UNBUILD;
 
 // GLB node name -> build phase (0..4). Names come from HomeRC.blend.
@@ -113,18 +113,19 @@ function House({
       if (!m.isMesh) return;
       m.castShadow = true;
       m.receiveShadow = true;
-      // Realistic glass for the window panes (nodes named w*_g) — only if
-      // the GLB didn't already ship real transmissive glass (v5 does).
-      const already = m.material as MeshPhysicalMaterial;
-      if (/^w\d+_g$/.test(m.name) && !(already && already.transmission > 0)) {
+      // Window glass: cheap reflective-transparent material. (True
+      // transmission re-renders the whole scene every frame — it was the
+      // main source of the lag. Dark interior liners in the model make this
+      // read as real glazing.)
+      if (/^w\d+_g$/.test(m.name)) {
         m.material = new MeshPhysicalMaterial({
-          color: "#cfe4f0",
+          color: "#a8c4d8",
           metalness: 0,
           roughness: 0.08,
-          transmission: 0.85,
-          ior: 1.45,
-          thickness: 0.02,
-          envMapIntensity: 1.2,
+          transparent: true,
+          opacity: 0.45,
+          reflectivity: 1,
+          envMapIntensity: 1.4,
         });
       }
       const mat = m.material as MeshStandardMaterial;
@@ -208,7 +209,7 @@ export default function HouseBuildScene({
   return (
     <Canvas
       shadows="soft"
-      dpr={[1, 2]}
+      dpr={[1, 1.5]}
       frameloop={active ? "always" : "never"}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       onCreated={({ gl }) => {
@@ -224,12 +225,11 @@ export default function HouseBuildScene({
         intensity={2.2}
         color="#ffe6c2"
         castShadow
-        shadow-mapSize={[2048, 2048]}
+        shadow-mapSize={[1024, 1024]}
         shadow-bias={-0.0004}
         shadow-normalBias={0.02}
       />
       <directionalLight position={[-6, 3, -4]} intensity={0.5} color="#cddcff" />
-      <directionalLight position={[-3, 5, -6]} intensity={0.7} color="#ffd9a0" />
       <Suspense fallback={null}>
         <House
           playing={!reduce}
@@ -247,6 +247,7 @@ export default function HouseBuildScene({
         scale={14}
         blur={2.4}
         far={5}
+        frames={1}
       />
       <OrbitControls
         makeDefault
