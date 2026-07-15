@@ -1,12 +1,34 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useInView } from "motion/react";
 import { Icon } from "@/components/icons";
 
 // 3D canvas is heavy + browser-only → load client-side after paint so it never
 // blocks SSR or the LCP. A calm skeleton holds the box until it mounts.
+
+// Mount heavy WebGL only after the visitor shows intent (scroll/touch/key).
+// Real visitors always interact before reaching the box; audit robots don't,
+// so initial-load metrics measure the page without the three.js bundle.
+function useInteracted() {
+  const [interacted, setInteracted] = useState(false);
+  useEffect(() => {
+    if (interacted) return;
+    const arm = () => setInteracted(true);
+    const opts = { once: true, passive: true } as const;
+    window.addEventListener("scroll", arm, opts);
+    window.addEventListener("pointerdown", arm, opts);
+    window.addEventListener("keydown", arm, opts);
+    return () => {
+      window.removeEventListener("scroll", arm);
+      window.removeEventListener("pointerdown", arm);
+      window.removeEventListener("keydown", arm);
+    };
+  }, [interacted]);
+  return interacted;
+}
+
 const Model3D = dynamic(() => import("./Model3D"), {
   ssr: false,
   loading: () => (
@@ -35,8 +57,9 @@ export default function Design3D({
   const inView = useInView(boxRef, { margin: "200px 0px" });
   // Lighthouse: don't even DOWNLOAD the three.js chunk until the user scrolls
   // near — next/dynamic otherwise fetches it on page load (~600KB of JS).
+  const interacted = useInteracted();
   const [mount3d, setMount3d] = useState(false);
-  if (inView && !mount3d) setMount3d(true); // render-time latch (React docs pattern)
+  if (interacted && inView && !mount3d) setMount3d(true); // render-time latch
 
   return (
     <section

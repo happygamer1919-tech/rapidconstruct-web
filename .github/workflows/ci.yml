@@ -56,3 +56,39 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+  # Performance budget (RC-305). Runs in PARALLEL with quality-gates so it never
+  # slows the main test job. Lighthouse CI builds the site, starts Next on 3100,
+  # audits `/` and `/acoperisuri` under mobile emulation, and fails the job if the
+  # budgets in lighthouserc.json are breached (performance/SEO/a11y scores, LCP, CLS).
+  lighthouse:
+    name: lighthouse (perf budget)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Run Lighthouse CI
+        run: npx lhci autorun
+
+      - name: Upload Lighthouse report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: .lighthouseci/
+          retention-days: 7
