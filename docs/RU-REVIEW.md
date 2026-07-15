@@ -62,3 +62,4 @@ strings. A PR that adds/changes RU strings updates this table.
 Reviewer notes: RU is written for the Moldovan market (Кишинёв, лей/м², Оргеев/Кагул
 city names). Check tone + terminology, especially construction terms.
 | promo namespace (promo bar offer + dismiss label, RC-110) | 2026-07-14 | NEEDS NATIVE REVIEW before launch — offer copy reuses contact promo; "крышу" used instead of banned "кровлю" per copy register |
+| servicePages namespace (RC-103: fatade, renovari, finisaje, proiectare, instalatii; hero/process/faq/cta + seo title and description for 5 service pages) | 2026-07-15 | NEEDS NATIVE REVIEW before launch. Plain register per owner copy rule; used krysha/stroika, no banned krovlya/germetichnyy; no price invented (Смета бесплатно). |

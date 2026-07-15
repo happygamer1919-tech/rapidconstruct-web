@@ -482,5 +482,332 @@
     "whatsapp": "Scrie-ne pe WhatsApp",
     "viber": "Scrie-ne pe Viber",
     "greeting": "Bună ziua! Vreau o ofertă pentru lucrări la casă."
+  },
+  "servicePages": {
+    "fatade": {
+      "seo": {
+        "title": "Fațade și termoizolație în Chișinău, preț corect",
+        "description": "Fațade și termoizolație pentru case în Chișinău și regiuni. Lucru curat, materiale certificate UE, preț pe care îl vedeți din start."
+      },
+      "hero": {
+        "eyebrow": "Fațade · Chișinău și regiuni",
+        "h1": "Fațade care țin casa caldă și arată bine",
+        "intro": "Termoizolație, tencuială decorativă și piatră naturală. Lucrăm curat, la termen, cu materiale certificate UE.",
+        "chip": "Deviz gratuit",
+        "trust": "Materiale certificate UE",
+        "ctaCall": "Sună acum",
+        "ctaQuote": "Solicită ofertă gratuită"
+      },
+      "process": {
+        "eyebrow": "Procesul nostru",
+        "title": "De la evaluare la fațada gata",
+        "steps": [
+          {
+            "title": "Evaluare gratuită",
+            "desc": "Venim, măsurăm pereții și vedem ce izolație se potrivește."
+          },
+          {
+            "title": "Deviz transparent",
+            "desc": "Primești devizul pe puncte: materiale, lucru, termen. Ce scrie, aceea plătești."
+          },
+          {
+            "title": "Izolare și tencuială",
+            "desc": "Punem termoizolația, apoi tencuiala decorativă sau piatra, strat cu strat."
+          },
+          {
+            "title": "Predare cu garanție",
+            "desc": "Predăm lucrarea curată și semnezi garanția în contract."
+          }
+        ]
+      },
+      "faq": {
+        "eyebrow": "Întrebări frecvente",
+        "title": "Despre fațade",
+        "items": [
+          {
+            "q": "Cât costă izolarea unei fațade?",
+            "a": "Depinde de suprafață, de grosimea izolației și de finisaj. Venim, măsurăm și îți dăm un deviz gratuit, cu preț clar din start."
+          },
+          {
+            "q": "Polistiren sau vată minerală?",
+            "a": "Polistirenul e mai ieftin și ușor de montat. Vata minerală respiră mai bine și nu arde. Îți spunem care se potrivește casei tale după ce vedem pereții."
+          },
+          {
+            "q": "Cât durează lucrarea?",
+            "a": "În mod normal între 1 și 3 săptămâni, în funcție de suprafață și de finisajul ales."
+          },
+          {
+            "q": "Se poate lucra iarna?",
+            "a": "Da, dar cu materiale potrivite pentru frig și când vremea permite. Dacă e prea rece sau umed, așteptăm ca lucrul să iasă bun."
+          }
+        ]
+      },
+      "cta": {
+        "title": "Vrei o fațadă care ține căldura în casă?",
+        "intro": "Programează evaluarea gratuită. Primești devizul în maximum 2 ore lucrătoare.",
+        "ctaQuote": "Solicită ofertă gratuită",
+        "ctaCall": "Sună acum"
+      }
+    },
+    "renovari": {
+      "seo": {
+        "title": "Renovări la cheie în Chișinău, preț transparent",
+        "description": "Renovări complete la cheie pentru case și apartamente în Chișinău. Ce scrie în deviz, aceea plătiți. Predăm lucrarea la termen."
+      },
+      "hero": {
+        "eyebrow": "Renovări la cheie · Chișinău și regiuni",
+        "h1": "Renovări la cheie, de la idee la predare",
+        "intro": "Coordonăm tot: demolare, instalații, finisaje. Un singur contract, o singură echipă, un preț clar din start.",
+        "chip": "Deviz gratuit",
+        "trust": "Un singur contract pentru toată lucrarea",
+        "ctaCall": "Sună acum",
+        "ctaQuote": "Solicită ofertă gratuită"
+      },
+      "process": {
+        "eyebrow": "Procesul nostru",
+        "title": "Cum decurge o renovare la cheie",
+        "steps": [
+          {
+            "title": "Evaluare și idee",
+            "desc": "Venim, vedem spațiul și discutăm ce vrei să obții."
+          },
+          {
+            "title": "Deviz și plan",
+            "desc": "Primești devizul pe puncte și un termen clar. Ce scrie, aceea plătești."
+          },
+          {
+            "title": "Executăm tot",
+            "desc": "Ne ocupăm de demolare, instalații, finisaje. Tu ai un singur om de contact."
+          },
+          {
+            "title": "Predare la cheie",
+            "desc": "Predăm casa gata de locuit și semnezi garanția în contract."
+          }
+        ]
+      },
+      "faq": {
+        "eyebrow": "Întrebări frecvente",
+        "title": "Despre renovări la cheie",
+        "items": [
+          {
+            "q": "Cât durează o renovare completă?",
+            "a": "Depinde de suprafață și de cât de mult schimbi. La un apartament e de la câteva săptămâni la câteva luni. Îți dăm un termen clar în deviz."
+          },
+          {
+            "q": "Cum se stabilește bugetul?",
+            "a": "Venim, măsurăm și facem un deviz pe puncte. Vezi din start cât costă materialele și lucrul, fără surprize pe parcurs."
+          },
+          {
+            "q": "Pot locui în casă în timpul lucrărilor?",
+            "a": "La lucrări mici, de multe ori da. La o renovare completă e mai bine să te muți temporar, ca lucrul să meargă rapid și curat."
+          },
+          {
+            "q": "Cine obține autorizațiile?",
+            "a": "Ne ocupăm noi de actele necesare, acolo unde legea le cere. Îți spunem din start ce autorizații sunt nevoie."
+          }
+        ]
+      },
+      "cta": {
+        "title": "Vrei o renovare fără bătăi de cap?",
+        "intro": "Programează evaluarea gratuită. Primești devizul în maximum 2 ore lucrătoare.",
+        "ctaQuote": "Solicită ofertă gratuită",
+        "ctaCall": "Sună acum"
+      }
+    },
+    "finisaje": {
+      "seo": {
+        "title": "Finisaje interioare în Chișinău, lucru curat",
+        "description": "Finisaje interioare în Chișinău: gletuire, vopsire, gresie și faianță. Lucru curat, la termen, preț pe care îl vedeți din start."
+      },
+      "hero": {
+        "eyebrow": "Finisaje · Chișinău și regiuni",
+        "h1": "Finisaje curate, făcute cu răbdare",
+        "intro": "Gips-carton, glet, vopsit, podele și placări. Lucrăm curat, la termen, cu grijă la detalii.",
+        "chip": "Deviz gratuit",
+        "trust": "Lucru curat, la termen",
+        "ctaCall": "Sună acum",
+        "ctaQuote": "Solicită ofertă gratuită"
+      },
+      "process": {
+        "eyebrow": "Procesul nostru",
+        "title": "De la pereți goi la cameră gata",
+        "steps": [
+          {
+            "title": "Evaluare gratuită",
+            "desc": "Venim, vedem camerele și discutăm ce finisaj vrei."
+          },
+          {
+            "title": "Deviz transparent",
+            "desc": "Primești devizul pe puncte. Ce scrie, aceea plătești."
+          },
+          {
+            "title": "Executăm finisajele",
+            "desc": "Gips-carton, glet, vopsit, podele și placări, în ordinea corectă."
+          },
+          {
+            "title": "Predare curată",
+            "desc": "Curățăm după noi, predăm camera gata și semnezi garanția."
+          }
+        ]
+      },
+      "faq": {
+        "eyebrow": "Întrebări frecvente",
+        "title": "Despre finisaje",
+        "items": [
+          {
+            "q": "Cât costă finisajele pe m²?",
+            "a": "Depinde mult de ce alegi: glet și vopsit costă altfel decât gresie sau parchet. Nu dăm o cifră la nimereală. Venim, măsurăm și îți facem un deviz gratuit."
+          },
+          {
+            "q": "Cât durează finisajele?",
+            "a": "Depinde de suprafață și de ce lucrări intră. Îți dăm un termen clar în deviz, înainte să începem."
+          },
+          {
+            "q": "Lucrați cu materialele clientului?",
+            "a": "Da. Dacă ai deja materialele, lucrăm cu ele. Dacă vrei, le procurăm noi și le trecem în deviz."
+          },
+          {
+            "q": "Ce garanție dați la finisaje?",
+            "a": "Semnăm garanția în contract. Dacă apare o problemă din cauza lucrului nostru, o rezolvăm noi."
+          }
+        ]
+      },
+      "cta": {
+        "title": "Vrei finisaje făcute cu grijă?",
+        "intro": "Programează evaluarea gratuită. Primești devizul în maximum 2 ore lucrătoare.",
+        "ctaQuote": "Solicită ofertă gratuită",
+        "ctaCall": "Sună acum"
+      }
+    },
+    "proiectare": {
+      "seo": {
+        "title": "Proiectare și design 3D casă în Chișinău",
+        "description": "Proiectăm casa ta în 3D înainte de a construi: vezi cum arată, alegi finisajele, primești un preț clar. Chișinău și toată Moldova."
+      },
+      "hero": {
+        "eyebrow": "Proiectare și 3D · Chișinău și regiuni",
+        "h1": "Vezi casa în 3D înainte s-o construim",
+        "intro": "Facem modelul 3D, planurile și actele. Alegi finisajele pe model, nu pe hârtie, și primești un preț clar din start.",
+        "chip": "Deviz gratuit",
+        "trust": "Vezi rezultatul înainte de execuție",
+        "ctaCall": "Sună acum",
+        "ctaQuote": "Solicită ofertă gratuită"
+      },
+      "process": {
+        "eyebrow": "Procesul nostru",
+        "title": "De la schiță la model 3D",
+        "steps": [
+          {
+            "title": "Discutăm ideea",
+            "desc": "Ne spui ce vrei, cu ce buget și pentru ce spațiu."
+          },
+          {
+            "title": "Planuri și măsurători",
+            "desc": "Facem planurile și măsurătorile, ca totul să iasă corect la execuție."
+          },
+          {
+            "title": "Model 3D",
+            "desc": "Vezi casa în 3D, rotești, alegi finisajele și materialele pe model."
+          },
+          {
+            "title": "Acte și preț",
+            "desc": "Pregătim actele necesare și îți dăm un preț clar pentru execuție."
+          }
+        ]
+      },
+      "faq": {
+        "eyebrow": "Întrebări frecvente",
+        "title": "Despre proiectare și 3D",
+        "items": [
+          {
+            "q": "De ce am nevoie de un model 3D?",
+            "a": "Ca să vezi cum arată casa înainte s-o construiești. Schimbi finisaje și forme pe model, nu pe șantier, unde orice modificare costă."
+          },
+          {
+            "q": "Faceți și planurile pentru autorizații?",
+            "a": "Da. Pregătim planurile și actele necesare, acolo unde legea le cere pentru execuție."
+          },
+          {
+            "q": "Pot schimba finisajele pe parcurs?",
+            "a": "Da, pe model le schimbi ușor. De aceea lucrăm 3D întâi: vezi variantele înainte să plătești pentru ele."
+          },
+          {
+            "q": "Construiți și casa după proiect?",
+            "a": "Da. Putem face și proiectul, și execuția, cu un singur contract. Sau doar proiectul, dacă vrei."
+          }
+        ]
+      },
+      "cta": {
+        "title": "Vrei să-ți vezi casa înainte s-o construiești?",
+        "intro": "Programează o discuție gratuită. Îți arătăm cum lucrăm în 3D.",
+        "ctaQuote": "Solicită ofertă gratuită",
+        "ctaCall": "Sună acum"
+      }
+    },
+    "instalatii": {
+      "seo": {
+        "title": "Instalații electrice și sanitare în Chișinău",
+        "description": "Instalații electrice și sanitare pentru case în Chișinău. Lucru făcut corect, la normă, cu garanție scrisă. Preț clar din start."
+      },
+      "hero": {
+        "eyebrow": "Instalații · Chișinău și regiuni",
+        "h1": "Instalații făcute corect, pornite cu garanție",
+        "intro": "Curent, apă și căldură. Calculăm corect, montăm la normă și pornim totul cu garanție scrisă.",
+        "chip": "Deviz gratuit",
+        "trust": "Garanție scrisă în contract",
+        "ctaCall": "Sună acum",
+        "ctaQuote": "Solicită ofertă gratuită"
+      },
+      "process": {
+        "eyebrow": "Procesul nostru",
+        "title": "De la calcul la pornire",
+        "steps": [
+          {
+            "title": "Evaluare și calcul",
+            "desc": "Venim, vedem casa și calculăm de ce ai nevoie pentru curent, apă și căldură."
+          },
+          {
+            "title": "Deviz transparent",
+            "desc": "Primești devizul pe puncte. Ce scrie, aceea plătești."
+          },
+          {
+            "title": "Montaj la normă",
+            "desc": "Montăm instalațiile corect și ordonat, ca să reziste ani buni."
+          },
+          {
+            "title": "Pornire cu garanție",
+            "desc": "Verificăm, pornim totul și semnezi garanția în contract."
+          }
+        ]
+      },
+      "faq": {
+        "eyebrow": "Întrebări frecvente",
+        "title": "Despre instalații",
+        "items": [
+          {
+            "q": "Schimbați instalația într-o casă veche?",
+            "a": "Da. La casele vechi de multe ori merită schimbată toată instalația, ca să fie sigură. Venim, verificăm și îți spunem clar ce e de făcut."
+          },
+          {
+            "q": "Cât durează lucrarea?",
+            "a": "Depinde de mărimea casei și de ce montăm. Îți dăm un termen clar în deviz, înainte să începem."
+          },
+          {
+            "q": "Dați garanție?",
+            "a": "Da, garanție scrisă în contract. Dacă apare o problemă din cauza lucrului nostru, o rezolvăm noi."
+          },
+          {
+            "q": "Faceți și doar reparații mici?",
+            "a": "Da. Venim și pentru o priză, un tablou sau o scurgere. Nu trebuie să fie o lucrare mare."
+          }
+        ]
+      },
+      "cta": {
+        "title": "Vrei instalații care nu-ți dau bătăi de cap?",
+        "intro": "Programează evaluarea gratuită. Primești devizul în maximum 2 ore lucrătoare.",
+        "ctaQuote": "Solicită ofertă gratuită",
+        "ctaCall": "Sună acum"
+      }
+    }
   }
 }
