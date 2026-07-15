@@ -7,8 +7,9 @@ import {
   ContactShadows,
   PerspectiveCamera,
   OrbitControls,
+  Environment,
 } from "@react-three/drei";
-import { useRef } from "react";
+import { Suspense, useRef } from "react";
 import { useReducedMotion, type MotionValue } from "motion/react";
 import type { Group } from "three";
 
@@ -204,17 +205,33 @@ export default function RoofCutawayScene({
 
   return (
     <Canvas
-      shadows
+      shadows="soft"
       dpr={[1, 1.75]}
       frameloop={active ? "always" : "never"}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+      onCreated={({ gl }) => {
+        gl.toneMappingExposure = 1.05;
+      }}
       className="!absolute inset-0"
       aria-label="Secțiune 3D prin straturile unui acoperiș"
     >
       <PerspectiveCamera makeDefault position={[3.4, 2.3, 4.4]} fov={42} />
-      <ambientLight intensity={0.8} />
-      <directionalLight position={[4, 7, 5]} intensity={1.4} castShadow />
-      <directionalLight position={[-5, 3, -3]} intensity={0.35} />
+      {/* Warm low sun as key, cool sky fill, low ambient — form reads instead
+          of washing flat. IBL (sunset) gives the metal tiles real reflections. */}
+      <ambientLight intensity={0.28} />
+      <directionalLight
+        position={[4, 7, 5]}
+        intensity={2.1}
+        color="#ffe6c2"
+        castShadow
+        shadow-mapSize={[2048, 2048]}
+        shadow-bias={-0.0004}
+        shadow-normalBias={0.02}
+      />
+      <directionalLight position={[-5, 3, -3]} intensity={0.5} color="#cddcff" />
+      <Suspense fallback={null}>
+        <Environment preset="sunset" />
+      </Suspense>
 
       <Layers
         explodeValue={reduce ? undefined : explodeValue}

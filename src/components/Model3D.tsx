@@ -40,20 +40,32 @@ export default function Model3D({ active = true }: { active?: boolean }) {
 
   return (
     <Canvas
-      shadows
+      shadows="soft"
       dpr={[1, 1.75]}
       frameloop={active ? "always" : "never"}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+      onCreated={({ gl }) => {
+        gl.toneMappingExposure = 1.05;
+      }}
       className="!absolute inset-0"
       aria-label="Model 3D al unei case moderne"
     >
       <PerspectiveCamera makeDefault position={[4.6, 2.9, 5.4]} fov={40} />
-      <ambientLight intensity={0.55} />
-      <directionalLight position={[5, 8, 4]} intensity={1.5} castShadow />
-      <directionalLight position={[-6, 3, -4]} intensity={0.4} />
+      {/* Warm low sun + cool sky fill + soft IBL — natural golden-hour read. */}
+      <ambientLight intensity={0.3} />
+      <directionalLight
+        position={[5, 8, 4]}
+        intensity={2.2}
+        color="#ffe6c2"
+        castShadow
+        shadow-mapSize={[2048, 2048]}
+        shadow-bias={-0.0004}
+        shadow-normalBias={0.02}
+      />
+      <directionalLight position={[-6, 3, -4]} intensity={0.5} color="#cddcff" />
       <Suspense fallback={null}>
         <House />
-        <Environment preset="city" />
+        <Environment preset="sunset" />
       </Suspense>
       <ContactShadows
         position={[0, -1.16, 0]}
