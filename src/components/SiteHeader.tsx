@@ -46,7 +46,9 @@ export default function SiteHeader() {
           className="font-serif text-lg font-semibold tracking-tight text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
         >
           Rapid Construct{" "}
-          <span className="text-accent-strong">&amp; 3D Design</span>
+          <span className="text-accent-strong">
+            <span className="font-sans font-normal">&amp;</span> 3D Design
+          </span>
         </Link>
 
         {/* Desktop nav */}

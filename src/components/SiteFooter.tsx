@@ -21,7 +21,9 @@ export default async function SiteFooter() {
         <div className="flex flex-col gap-4">
           <span className="font-serif text-lg font-semibold">
             Rapid Construct{" "}
-            <span className="text-inverse-accent">&amp; 3D Design</span>
+            <span className="text-inverse-accent">
+              <span className="font-sans font-normal">&amp;</span> 3D Design
+            </span>
           </span>
           <p className="max-w-xs text-caption text-inverse-muted-foreground">
             {t("tagline")}

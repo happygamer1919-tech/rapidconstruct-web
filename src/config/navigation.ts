@@ -5,7 +5,7 @@ import type { IconName } from "@/components/icons";
  *
  * hrefs and icon keys live in CODE (never translated); the visible labels and
  * descriptions live in the message catalog (`services.*`, `header.*`) so RO stays
- * the source of truth and RU carries TODO(ru-review). Header, footer and the
+ * the source of truth; RU review status lives in docs/RU-REVIEW.md. Header, footer and the
  * homepage services grid all read from THIS list so the six services can never
  * drift out of sync.
  *
