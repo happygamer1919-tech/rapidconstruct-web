@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import {
   useGLTF,
@@ -10,6 +10,7 @@ import {
   Environment,
 } from "@react-three/drei";
 import { useReducedMotion } from "motion/react";
+import { MeshStandardMaterial, type Mesh } from "three";
 
 /**
  * Interactive 3D house — a real model built in Blender (via blender-mcp) and
@@ -23,9 +24,22 @@ const HOUSE_URL = "/models/house.glb";
 
 function House() {
   const { scene } = useGLTF(HOUSE_URL);
+  // Let every surface cast/receive shadows and pick up the environment so the
+  // model reads with real light instead of flat shading.
+  const prepared = useMemo(() => {
+    scene.traverse((o) => {
+      const m = o as Mesh;
+      if (!m.isMesh) return;
+      m.castShadow = true;
+      m.receiveShadow = true;
+      const mat = m.material as MeshStandardMaterial;
+      if (mat && "envMapIntensity" in mat) mat.envMapIntensity = 0.9;
+    });
+    return scene;
+  }, [scene]);
   return (
     <primitive
-      object={scene}
+      object={prepared}
       // Blender scene is ~13.5m wide, ground at y=0 after Y-up export.
       scale={0.3}
       position={[-0.2, -1.15, 0.1]}
@@ -40,20 +54,34 @@ export default function Model3D({ active = true }: { active?: boolean }) {
 
   return (
     <Canvas
-      shadows
+      shadows="soft"
       dpr={[1, 1.75]}
       frameloop={active ? "always" : "never"}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+      onCreated={({ gl }) => {
+        gl.toneMappingExposure = 1.05;
+      }}
       className="!absolute inset-0"
       aria-label="Model 3D al unei case moderne"
     >
       <PerspectiveCamera makeDefault position={[4.6, 2.9, 5.4]} fov={40} />
-      <ambientLight intensity={0.55} />
-      <directionalLight position={[5, 8, 4]} intensity={1.5} castShadow />
-      <directionalLight position={[-6, 3, -4]} intensity={0.4} />
+      {/* warm low sun key + cool sky fill + a soft back-rim to lift the house
+          off the background; low ambient so form reads. */}
+      <ambientLight intensity={0.3} />
+      <directionalLight
+        position={[5, 8, 4]}
+        intensity={2.2}
+        color="#ffe6c2"
+        castShadow
+        shadow-mapSize={[2048, 2048]}
+        shadow-bias={-0.0004}
+        shadow-normalBias={0.02}
+      />
+      <directionalLight position={[-6, 3, -4]} intensity={0.5} color="#cddcff" />
+      <directionalLight position={[-3, 5, -6]} intensity={0.7} color="#ffd9a0" />
       <Suspense fallback={null}>
         <House />
-        <Environment preset="city" />
+        <Environment preset="sunset" />
       </Suspense>
       <ContactShadows
         position={[0, -1.16, 0]}
