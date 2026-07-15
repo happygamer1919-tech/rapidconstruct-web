@@ -321,6 +321,33 @@
       "phoneLabel": "Telefon",
       "emailLabel": "Email",
       "hoursLabel": "Program"
+    },
+    "build": {
+      "eyebrow": "PROIECTARE & CONSTRUCȚIE",
+      "title": "De la proiectul 3D la casa gata",
+      "intro": "Întâi proiectăm casa în 3D, apoi o construim exact așa. Derulează și vezi cum prinde viață, etapă cu etapă.",
+      "phases": [
+        {
+          "name": "Fundația",
+          "desc": "Turnăm fundația după proiect. Pe ea stă toată casa."
+        },
+        {
+          "name": "Pereții",
+          "desc": "Ridicăm pereții casei, exact ca în proiect."
+        },
+        {
+          "name": "Acoperișul",
+          "desc": "Montăm structura de lemn, țigla și coșul. Casa e sub acoperiș."
+        },
+        {
+          "name": "Ferestre și uși",
+          "desc": "Punem ferestrele și ușile, cu pervaze cu tot."
+        },
+        {
+          "name": "Ultimele detalii",
+          "desc": "Jgheaburi și burlane, apoi predăm cheia. Casa e gata."
+        }
+      ]
     }
   },
   "roofPage": {
