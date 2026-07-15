@@ -9,6 +9,7 @@ import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import LocalBusinessJsonLd from "@/components/LocalBusinessJsonLd";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import ChatButtons from "@/components/ChatButtons";
 import { serif, sans } from "../fonts";
 import "../globals.css";
 
@@ -88,6 +89,8 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
           <SiteHeader />
           {children}
           <SiteFooter />
+          {/* Floating click-to-chat widget (RC-106) — sitewide, all pages. */}
+          <ChatButtons />
         </NextIntlClientProvider>
       </body>
     </html>

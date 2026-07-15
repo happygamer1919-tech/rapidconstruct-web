@@ -471,5 +471,12 @@
       "successTitle": "Mulțumim, am primit mesajul.",
       "successBody": "Te sunăm în maximum 2 ore lucrătoare. Dacă e urgent, sună-ne direct."
     }
+  },
+  "chat": {
+    "open": "Deschide chat",
+    "close": "Închide chat",
+    "whatsapp": "Scrie-ne pe WhatsApp",
+    "viber": "Scrie-ne pe Viber",
+    "greeting": "Bună ziua! Vreau o ofertă pentru lucrări la casă."
   }
 }
