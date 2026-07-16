@@ -78,10 +78,10 @@ _RC-003/004/005/007 shipped together in PR #6 (squash). RC-006 next._
 ## P3 — Content, SEO/GEO program
 
 - [ ] **RC-301** Keyword → page map for RO and RU (SPEC §4); adjust titles/H1s accordingly.
-- [ ] **RC-302** FAQ expansion: 10–15 answer-shaped questions per top service (cost of 100m²
-      roof, metal tile vs shingles, permits, winter work) — the GEO citation surface.
-- [ ] **RC-303** City landing pages: Chișinău, Orhei, Cahul (+ others with real projects) —
-      thin-but-real, each anchored by actual portfolio items. areaServed JSON-LD.
+- [x] **RC-302** FAQ expansion done (PR #29): 20 answer-shaped GEO FAQs, RO+RU, FAQPage JSON-LD.
+- [x] **RC-303** City landing pages done (PR #39): `/chisinau` `/orhei` `/cahul`, RO+RU,
+      LocalBusiness + FAQPage JSON-LD, in the sitemap. Slugs reconciled with KEYWORD-MAP in
+      RC-301 (the map had said `/acoperis-chisinau`).
 - [x] **RC-304** Review strategy done (docs/GBP-REVIEWS.md): plain-RO GBP setup + NAP + reviews
       playbook for the owner; respects Q-07 (no unverified 500+/250+ numbers).
 - [ ] **RC-305** Performance budget enforced in CI: LCP < 2.0s mobile, CLS < 0.05, images
@@ -89,7 +89,10 @@ _RC-003/004/005/007 shipped together in PR #6 (squash). RC-006 next._
 
 ## P4 — Launch
 
-- [ ] **RC-401** 301 redirect map from all Tilda URLs (SPEC §5) implemented and tested.
+- [x] **RC-401** 301 redirect map done (PR #31), corrected in RC-301: `/1` pointed at
+      `/reparatii-la-cheie`, a slug that was never built, so it 301'd into a 404. Repointed to
+      `/renovari-la-cheie` and verified 308 → 200. `/2` → `/case-constructii` still 404s on
+      purpose until that page lands. SPEC §5 is stale on the `/1` row; KEYWORD-MAP wins.
 - [ ] **RC-402** Pre-launch audit: Lighthouse ≥ 95 SEO/a11y, both locales, all JSON-LD valid
       (Rich Results test), OG previews checked in FB/Viber/Telegram debuggers.
 - [ ] **RC-403** DNS cutover rapidconstruct.md → Vercel; verify https canonical, old URLs 301,
