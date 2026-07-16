@@ -104,11 +104,9 @@ export default function HouseBuild({
   // is never allowed to depend on WebGL succeeding.
   const [built, setBuilt] = useState(false);
   useEffect(() => {
-    if (skipHeavy3d() || reduce) {
-      setBuilt(true);
-      return;
-    }
-    const t = window.setTimeout(() => setBuilt(true), 9000);
+    // 0 = there will be no build to wait for, so reveal on the next tick.
+    const delay = skipHeavy3d() || reduce ? 0 : 9000;
+    const t = window.setTimeout(() => setBuilt(true), delay);
     return () => window.clearTimeout(t);
   }, [reduce]);
 
