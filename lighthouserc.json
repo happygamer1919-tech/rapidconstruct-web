@@ -5,8 +5,8 @@
       "startServerReadyPattern": "Ready in",
       "startServerReadyTimeout": 60000,
       "url": [
-        "http://localhost:3100/",
-        "http://localhost:3100/acoperisuri"
+        "http://localhost:3100/?no3d=1",
+        "http://localhost:3100/acoperisuri?no3d=1"
       ],
       "numberOfRuns": 3
     },
@@ -16,20 +16,65 @@
         {
           "matchingUrlPattern": ".*",
           "assertions": {
-            "categories:performance": ["error", { "minScore": 0.75 }],
-            "categories:seo": ["error", { "minScore": 0.9 }],
-            "categories:accessibility": ["error", { "minScore": 0.88 }],
-            "largest-contentful-paint": ["error", { "maxNumericValue": 5500 }],
-            "cumulative-layout-shift": ["error", { "maxNumericValue": 0.05 }]
+            "categories:performance": [
+              "error",
+              {
+                "minScore": 0.75
+              }
+            ],
+            "categories:seo": [
+              "error",
+              {
+                "minScore": 0.9
+              }
+            ],
+            "categories:accessibility": [
+              "error",
+              {
+                "minScore": 0.88
+              }
+            ],
+            "largest-contentful-paint": [
+              "error",
+              {
+                "maxNumericValue": 5500
+              }
+            ],
+            "cumulative-layout-shift": [
+              "error",
+              {
+                "maxNumericValue": 0.05
+              }
+            ]
           }
         },
         {
           "matchingUrlPattern": ".*",
           "assertions": {
-            "categories:performance": ["warn", { "minScore": 0.85 }],
-            "categories:seo": ["warn", { "minScore": 0.95 }],
-            "categories:accessibility": ["warn", { "minScore": 0.95 }],
-            "largest-contentful-paint": ["warn", { "maxNumericValue": 2500 }]
+            "categories:performance": [
+              "warn",
+              {
+                "minScore": 0.85
+              }
+            ],
+            "categories:seo": [
+              "warn",
+              {
+                "minScore": 0.95
+              }
+            ],
+            "categories:accessibility": [
+              "warn",
+              {
+                "minScore": 0.95
+              }
+            ],
+            "largest-contentful-paint": [
+              "warn",
+              {
+                "maxNumericValue": 2500
+              }
+            ]
           }
         }
       ]

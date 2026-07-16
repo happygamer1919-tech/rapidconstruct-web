@@ -5,7 +5,7 @@
       "startServerReadyPattern": "Ready in",
       "startServerReadyTimeout": 60000,
       "url": [
-        "http://localhost:3100/?3d=1"
+        "http://localhost:3100/"
       ],
       "numberOfRuns": 1
     },

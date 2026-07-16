@@ -124,8 +124,13 @@ jobs:
       - name: Build
         run: npm run build
 
+      # No `|| true` here. An earlier version had it AND continue-on-error, so
+      # the step could never fail and the job reported green even when the run
+      # crashed — a check that cannot fail is worse than no check, because its
+      # green gets read as evidence. continue-on-error alone keeps it from
+      # blocking a PR while still recording what really happened.
       - name: Run Lighthouse CI against the real 3D hero
-        run: npx lhci autorun --config=lighthouserc.3d.json || true
+        run: npx lhci autorun --config=lighthouserc.3d.json
 
       - name: Upload 3D Lighthouse report
         if: ${{ always() }}

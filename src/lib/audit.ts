@@ -1,43 +1,31 @@
 /**
- * Is this page being loaded by an automated performance audit rather than a
- * real visitor?
+ * Should this page skip mounting the heavy 3D hero?
  *
- * WHY (RC-305, 2026-07-16): the hero mounts heavy WebGL on a 2.5s timer so the
- * house builds itself on load (owner direction). The old code assumed Lighthouse
- * was excluded from that timer — it is not. Lighthouse runs with
- * `visibilityState === "visible"`, so the timer fired, the 1.15 MB model loaded
- * and animated under Lighthouse's 4x CPU throttle, and the RUN ITSELF crashed:
- * `PAGE_HUNG` and `Network.getResponseBody` timeouts, not a budget breach. The
- * perf gate was red on main from PR #37 (2026-07-16 01:11) until this landed.
+ * WHY (RC-305, 2026-07-16): the hero mounts WebGL on a 2.5s timer so the house
+ * builds itself on load (owner direction). Under Lighthouse that timer fires
+ * too — `visibilityState` is "visible" — so the 1.15 MB model loaded and ran
+ * under a 4x CPU throttle and the audit RUN ITSELF died (PAGE_HUNG /
+ * Network.getResponseBody timeout), rather than merely scoring badly. The perf
+ * gate was red on main from PR #37 (2026-07-16 01:11) onwards.
  *
- * Owner decision (2026-07-16): real visitors keep the build-on-load exactly as
- * it is; only the audit robot skips the 3D. That is the behaviour the code
- * already believed it had.
+ * Owner decision (2026-07-16): real visitors keep the build-on-load untouched;
+ * only the speed test skips the 3D.
  *
- * HONEST CAVEAT: this means the blocking budget no longer measures the hero's
- * real cost. That is a deliberate trade, not a free win — so CI also runs a
- * SEPARATE, NON-BLOCKING job against `/?3d=1`, which forces the 3D on and
- * reports the true number. See .github/workflows/ci.yml and lighthouserc.3d.json.
+ * HOW — and why NOT user-agent sniffing. The first attempt keyed off a
+ * "Chrome-Lighthouse" UA suffix. That string does not exist in Lighthouse 12
+ * (its UA is a plain `moto g power` string), so the check never once matched and
+ * the model kept loading through every audit. Worse, the "proof" it worked came
+ * from a probe using a hand-written fake UA — it only ever tested the regex
+ * against itself. Verified for real via the audit's own network log: house.glb,
+ * 925 KB, requested every run.
  *
- * This is not cloaking: it hides no content from Googlebot (whose UA does not
- * match), changes no text, markup, or links, and the escape hatch below lets
- * anyone — including us — measure the real thing on demand.
+ * So the opt-out is EXPLICIT instead of sniffed: CI asks for `?no3d=1`
+ * (see lighthouserc.json). It cannot silently stop matching, it is visible in
+ * the URL of every report, and it is impossible to mistake for cloaking —
+ * nothing keys off who is asking. Real visitors, Googlebot and PageSpeed all hit
+ * the normal URL and get the real 3D hero.
  */
-export function isAuditRobot(): boolean {
-  if (typeof navigator === "undefined") return false;
-  return /Chrome-Lighthouse|PageSpeed|PTST/i.test(navigator.userAgent);
-}
-
-/**
- * `?3d=1` forces the 3D on even for an audit robot, so the non-blocking CI job
- * (and anyone spot-checking) can measure the hero as visitors actually get it.
- */
-export function force3d(): boolean {
-  if (typeof window === "undefined") return false;
-  return new URLSearchParams(window.location.search).has("3d");
-}
-
-/** Skip mounting heavy WebGL for audit robots, unless `?3d=1` overrides. */
 export function skipHeavy3d(): boolean {
-  return isAuditRobot() && !force3d();
+  if (typeof window === "undefined") return false;
+  return new URLSearchParams(window.location.search).has("no3d");
 }
