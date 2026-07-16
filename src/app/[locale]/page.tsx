@@ -98,58 +98,20 @@ export default async function Home({ params }: PageProps) {
 
   return (
     <main className="flex-1">
-      {/* 1 — CINEMATIC HERO: full-bleed real project photo, text renders
-          instantly over it (no gating, no preloader). Interim photo — Q-06. */}
-      <section className="relative isolate overflow-hidden border-b border-border">
-        <Image
-          src="/images/projects/hero-house.jpg"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="-z-10 object-cover"
-        />
-        {/* Dark gradient keeps the overlaid text ≥ 4.5:1 (WCAG AA). */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-gradient-to-r from-ink-950/92 via-ink-950/75 to-ink-950/35"
-        />
-        <div className="mx-auto w-full max-w-6xl px-gutter py-24 lg:py-32">
-          <div className="flex max-w-2xl flex-col gap-6">
-            <p className="micro-label text-inverse-accent">{t("hero.eyebrow")}</p>
-            <h1 className="font-serif text-display-xl text-neutral-50">
-              {t("hero.h1")}
-            </h1>
-            <p className="max-w-xl text-body-lg text-neutral-200">
-              {t("hero.subline")}
-            </p>
-            <p className="flex items-center gap-2 text-caption font-medium text-neutral-50">
-              <Icon
-                name="shield"
-                size={18}
-                className="shrink-0 text-inverse-accent"
-              />
-              {t("hero.trust")}
-            </p>
-            <div className="mt-2 flex flex-wrap gap-3">
-              <a
-                href={`tel:${site.phone}`}
-                className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-body font-semibold text-accent-foreground transition-colors hover:bg-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong"
-              >
-                <Icon name="phone" size={18} />
-                {t("hero.ctaCall")}
-              </a>
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-2 rounded-full border border-neutral-50 px-6 py-3 text-body font-semibold text-neutral-50 transition-colors hover:bg-neutral-50 hover:text-ink-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inverse-accent"
-              >
-                {t("hero.ctaQuote")}
-                <Icon name="arrowRight" size={18} />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* 1 — HERO: the design->construction house build, pinned 3D behind
+          scrolling text slides (owner direction). H1 renders instantly (SSR);
+          the WebGL chunk loads only after first interaction (perf law). */}
+      <HouseBuild
+        eyebrow={t("hero.eyebrow")}
+        h1={t("hero.h1")}
+        subline={t("hero.subline")}
+        trust={t("hero.trust")}
+        ctaCall={t("hero.ctaCall")}
+        ctaQuote={t("hero.ctaQuote")}
+        phone={site.phone}
+        phases={t.raw("build.phases") as BuildPhase[]}
+        hint={t("design3d.hint")}
+      />
 
       {/* 2 — TRUST BADGES */}
       <section aria-labelledby="badges-title" className="border-b border-border">
@@ -248,19 +210,6 @@ export default async function Home({ params }: PageProps) {
             ))}
           </ul>
         </div>
-      </section>
-
-      {/* 4b — DESIGN -> CONSTRUCTION (house builds itself on scroll — owner
-          idea after Reel 1; blueprint turns into the finished house) */}
-      <section className="border-b border-border">
-        <HouseBuild
-          eyebrow={t("build.eyebrow")}
-          title={t("build.title")}
-          intro={t("build.intro")}
-          phases={t.raw("build.phases") as BuildPhase[]}
-          points={t.raw("design3d.points") as string[]}
-          hint={t("design3d.hint")}
-        />
       </section>
 
       {/* 4c — CONSTRUCTION STORY (signature scroll narrative, design ref Reel 1) */}

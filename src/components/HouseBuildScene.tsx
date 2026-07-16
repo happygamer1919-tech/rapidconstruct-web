@@ -9,83 +9,116 @@ import {
   Environment,
 } from "@react-three/drei";
 import { Suspense, useMemo, useRef } from "react";
-import { useReducedMotion, type MotionValue } from "motion/react";
+import { useReducedMotion } from "motion/react";
 import {
+  Color,
   MeshBasicMaterial,
+  MeshPhysicalMaterial,
+  MeshStandardMaterial,
   type Group,
   type Mesh,
   type Material,
-  type MeshStandardMaterial,
 } from "three";
 
 /**
- * HouseBuildScene — the homepage house as a DESIGN -> CONSTRUCTION story
- * (owner idea, after the two reference reels): at build = 0 the whole house
- * stands as a translucent blueprint (the 3D design); as the visitor scrolls,
- * each piece drops into place and turns real, phase by phase, lego-style:
- *   0 foundation -> 1 walls -> 2 roof -> 3 windows/doors -> 4 gutters/details.
- *
- * The build amount arrives as a MotionValue read inside useFrame, so scroll
- * updates never re-render the React tree. Pieces are the GLB's own named
- * nodes (plinth, main, roof_main, w1_f, gutter_e, ...) — no extra assets.
- * Reduced motion: rendered fully built, static (drag to rotate still works).
+ * HouseBuildScene v3 — the hero house builds itself ONCE, lego-style, then
+ * STAYS built (owner: no loop, no text during the build). Per-phase motion:
+ *   0 foundation: slabs drop + settle
+ *   1 walls: rise up out of the ground
+ *   2 roof: pieces drop from the sky with a lego-snap
+ *   3 windows/doors: pop-scale into their openings
+ *   4 gutters/details: short drop, last click
+ * onDone fires once when the build finishes (parent fades its text in).
+ * highlightPhase (from the scroll story) keeps that phase full-colour and
+ * fades the rest toward the page tone. Reduced motion: fully built, static.
  */
 
 const HOUSE_URL = "/models/house.glb";
 
+const T_BLUEPRINT = 0.8; // brief blueprint hold before pieces land
+const T_BUILD = 6.5; // the build itself
+
 // GLB node name -> build phase (0..4). Names come from HomeRC.blend.
 const PHASES: RegExp[] = [
-  /^(plinth)$/, // 0 fundația
-  /^(main|wing|entry)$/, // 1 pereții
-  /^(roof_|ridge_|entry_roof|chimney)/, // 2 acoperișul
-  /^(w\d+_|sill|door|handle)/, // 3 ferestre + uși
-  /^(gutter_|ds\d)/, // 4 jgheaburi + detalii
+  /^plinth/, // incl. plinth_lawn
+  /^(main|wing|entry)$|_interior$/,
+  /^(roof_|ridge_|entry_roof|chimney)/,
+  /^(w\d+_|sill|door|handle)/,
+  /^(gutter_|ds\d)/,
 ];
 const PHASE_COUNT = PHASES.length;
 
 function phaseOf(name: string) {
   for (let i = 0; i < PHASE_COUNT; i++) if (PHASES[i].test(name)) return i;
-  return 1; // unknown pieces rise with the walls
+  return 1;
 }
 
+type PieceColor = { mat: MeshStandardMaterial; orig: Color };
 type Piece = {
   mesh: Mesh;
-  real: Material | Material[];
+  phase: number;
   y0: number;
-  start: number; // build progress at which this piece starts
-  dur: number; // how much progress its drop takes
+  s0: [number, number, number];
+  start: number; // 0..1 within the build
+  dur: number;
+  real: Material | Material[];
+  colors: PieceColor[];
 };
 
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+// lego-snap overshoot on landing
+function easeOutBack(t: number) {
+  const c1 = 1.2;
+  const c3 = c1 + 1;
+  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+}
+
+const FADE = new Color("#e7e1d6"); // page-ish tone for de-highlighted phases
 
 function House({
-  buildValue,
-  fallback,
+  playing,
+  highlightPhase,
+  onDone,
 }: {
-  buildValue?: MotionValue<number>;
-  fallback: number;
+  playing: boolean;
+  highlightPhase: number; // -1 = none
+  onDone?: () => void;
 }) {
   const { scene } = useGLTF(HOUSE_URL);
   const rootRef = useRef<Group>(null);
+  const clockRef = useRef(0);
+  const doneRef = useRef(false);
 
   const { prepared, pieces, ghost } = useMemo(() => {
-    // Shared blueprint material: technical wireframe, reads as "the design".
     const ghostMat = new MeshBasicMaterial({
-      color: "#5e7fa2",
+      color: "#4f7dbd",
       wireframe: true,
       transparent: true,
-      opacity: 0.32,
+      opacity: 0.5,
     });
 
-    // Bucket meshes per phase first so we can stagger inside each phase.
     const buckets: Mesh[][] = Array.from({ length: PHASE_COUNT }, () => []);
     scene.traverse((o) => {
       const m = o as Mesh;
       if (!m.isMesh) return;
       m.castShadow = true;
       m.receiveShadow = true;
-      const mat = m.material as MeshStandardMaterial;
-      if (mat && "envMapIntensity" in mat) mat.envMapIntensity = 0.9;
+      // Cheap reflective glass (real transmission re-rendered the scene every
+      // frame — the lag source). Dark interior liners sell it as real glazing.
+      if (/^w\d+_g$/.test(m.name)) {
+        m.material = new MeshPhysicalMaterial({
+          color: "#a8c4d8",
+          metalness: 0,
+          roughness: 0.08,
+          transparent: true,
+          opacity: 0.45,
+          reflectivity: 1,
+          envMapIntensity: 1.4,
+        });
+      }
+      const mat0 = m.material as MeshStandardMaterial;
+      if (mat0 && "envMapIntensity" in mat0 && !mat0.transparent)
+        mat0.envMapIntensity = 0.9;
       buckets[phaseOf(m.name)].push(m);
     });
 
@@ -94,36 +127,75 @@ function House({
     buckets.forEach((bucket, phase) => {
       const n = bucket.length || 1;
       bucket.forEach((mesh, j) => {
+        // Clone materials per piece so highlight fading is independent.
+        const mats = Array.isArray(mesh.material)
+          ? mesh.material
+          : [mesh.material];
+        const colors: PieceColor[] = [];
+        const cloned = mats.map((mm) => {
+          const c = (mm as MeshStandardMaterial).clone();
+          if ((c as MeshStandardMaterial).color)
+            colors.push({ mat: c, orig: c.color.clone() });
+          return c;
+        });
+        mesh.material = Array.isArray(mesh.material) ? cloned : cloned[0];
         list.push({
           mesh,
-          real: mesh.material,
+          phase,
           y0: mesh.position.y,
-          // Pieces of a phase start one after another across the first 60%
-          // of the phase window; each drop lasts 40% of the window.
-          start: phase * window + (j / n) * window * 0.6,
-          dur: window * 0.4,
+          s0: [mesh.scale.x, mesh.scale.y, mesh.scale.z],
+          start: phase * window + (j / n) * window * 0.45,
+          dur: window * 0.55,
+          real: mesh.material,
+          colors,
         });
       });
     });
     return { prepared: scene, pieces: list, ghost: ghostMat };
   }, [scene]);
 
-  // useFrame mutates the three.js meshes directly every frame (the R3F
-  // imperative pattern — no React re-renders on scroll), which the react
-  // compiler's immutability lint cannot model.
   /* eslint-disable react-hooks/immutability */
-  useFrame(() => {
-    const b = buildValue ? buildValue.get() : fallback;
+  useFrame((_, dt) => {
+    let build = 1;
+    if (playing && !doneRef.current) {
+      clockRef.current += dt;
+      const t = clockRef.current;
+      build = t < T_BLUEPRINT ? 0 : Math.min(1, (t - T_BLUEPRINT) / T_BUILD);
+      if (build >= 1) {
+        doneRef.current = true;
+        onDone?.();
+      }
+    } else if (!doneRef.current) {
+      doneRef.current = true;
+      onDone?.();
+    }
+
+    const hl = highlightPhase;
     for (const p of pieces) {
-      const k = Math.min(1, Math.max(0, (b - p.start) / p.dur));
+      const k = Math.min(1, Math.max(0, (build - p.start) / p.dur));
       if (k <= 0) {
-        // Still on the drawing board: blueprint lines, exact position.
         if (p.mesh.material !== ghost) p.mesh.material = ghost;
         p.mesh.position.y = p.y0;
+        p.mesh.scale.set(p.s0[0], p.s0[1], p.s0[2]);
+        continue;
+      }
+      if (p.mesh.material !== p.real) p.mesh.material = p.real;
+
+      if (p.phase === 1) {
+        p.mesh.position.y = p.y0 - 0.7 * (1 - easeOutCubic(k)); // walls rise
+      } else if (p.phase === 2) {
+        p.mesh.position.y = p.y0 + 1.1 * (1 - easeOutBack(k)); // roof drops
+      } else if (p.phase === 3) {
+        const s = 0.5 + 0.5 * easeOutBack(k); // windows/doors pop
+        p.mesh.scale.set(p.s0[0] * s, p.s0[1] * s, p.s0[2] * s);
+        p.mesh.position.y = p.y0;
       } else {
-        if (p.mesh.material !== p.real) p.mesh.material = p.real;
-        // Drop in from slightly above and settle (lego snap).
-        p.mesh.position.y = p.y0 + 0.55 * (1 - easeOutCubic(k));
+        p.mesh.position.y = p.y0 + 0.3 * (1 - easeOutCubic(k)); // foundation/details
+      }
+
+      if (p.colors.length) {
+        const dim = hl >= 0 && p.phase !== hl;
+        for (const c of p.colors) c.mat.color.lerp(dim ? FADE : c.orig, 0.1);
       }
     }
   });
@@ -131,12 +203,7 @@ function House({
 
   return (
     <group ref={rootRef}>
-      <primitive
-        object={prepared}
-        // Blender scene is ~13.5m wide, ground at y=0 after Y-up export.
-        scale={0.3}
-        position={[-0.2, -1.15, 0.1]}
-      />
+      <primitive object={prepared} scale={0.32} position={[1.15, -1.45, 0.1]} />
     </group>
   );
 }
@@ -144,46 +211,45 @@ function House({
 useGLTF.preload(HOUSE_URL);
 
 export default function HouseBuildScene({
-  buildValue,
-  build = 0,
   active = true,
+  highlightPhase = -1,
+  onDone,
 }: {
-  buildValue?: MotionValue<number>;
-  build?: number; // static fallback (reduced motion => fully built)
   active?: boolean;
+  highlightPhase?: number;
+  onDone?: () => void;
 }) {
   const reduce = useReducedMotion();
 
   return (
     <Canvas
       shadows="soft"
-      dpr={[1, 1.75]}
+      dpr={[1, 1.5]}
       frameloop={active ? "always" : "never"}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       onCreated={({ gl }) => {
         gl.toneMappingExposure = 1.05;
       }}
       className="!absolute inset-0"
-      aria-label="Model 3D: casa se construiește etapă cu etapă, de la proiect la predare"
+      aria-label="Model 3D: casa se construiește singură, etapă cu etapă"
     >
-      <PerspectiveCamera makeDefault position={[4.6, 2.9, 5.4]} fov={40} />
-      {/* Warm low sun + cool sky fill + soft rim — the golden-hour rig. */}
+      <PerspectiveCamera makeDefault position={[2.6, 1.35, 7.6]} fov={40} />
       <ambientLight intensity={0.3} />
       <directionalLight
         position={[5, 8, 4]}
         intensity={2.2}
         color="#ffe6c2"
         castShadow
-        shadow-mapSize={[2048, 2048]}
+        shadow-mapSize={[1024, 1024]}
         shadow-bias={-0.0004}
         shadow-normalBias={0.02}
       />
       <directionalLight position={[-6, 3, -4]} intensity={0.5} color="#cddcff" />
-      <directionalLight position={[-3, 5, -6]} intensity={0.7} color="#ffd9a0" />
       <Suspense fallback={null}>
         <House
-          buildValue={reduce ? undefined : buildValue}
-          fallback={reduce ? 1 : build}
+          playing={!reduce}
+          highlightPhase={highlightPhase}
+          onDone={onDone}
         />
       </Suspense>
       {/* Self-hosted HDR in its OWN Suspense so the house never waits on it. */}
@@ -191,17 +257,17 @@ export default function HouseBuildScene({
         <Environment files="/hdri/venice_sunset_1k.hdr" />
       </Suspense>
       <ContactShadows
-        position={[0, -1.16, 0]}
+        position={[0, -1.51, 0]}
         opacity={0.35}
-        scale={12}
+        scale={14}
         blur={2.4}
         far={5}
+        frames={1}
       />
       <OrbitControls
         makeDefault
-        target={[0, 0.15, 0]}
-        autoRotate={!reduce}
-        autoRotateSpeed={0.4}
+        target={[0.9, 0.35, 0]}
+        autoRotate={false}
         enableZoom={false}
         enablePan={false}
         minPolarAngle={Math.PI / 5}
