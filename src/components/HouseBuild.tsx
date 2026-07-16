@@ -16,6 +16,20 @@ const HouseBuildScene = dynamic(() => import("./HouseBuildScene"), {
 // load — owner direction), or on first interaction. Lighthouse (which never
 // interacts and measures the first seconds) still gets the page bundle-free
 // via the short visible-tab timer.
+// The hero frames the house differently on a phone (below the copy) than on a
+// desktop (beside it) — that is a camera/position change, not just CSS.
+function useIsNarrow() {
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1023px)");
+    const sync = () => setNarrow(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+  return narrow;
+}
+
 function useArmed() {
   const [armed, setArmed] = useState(false);
   useEffect(() => {
@@ -68,6 +82,7 @@ export default function HouseBuild({
 }) {
   const reduce = useReducedMotion();
   const armed = useArmed();
+  const narrow = useIsNarrow();
   const wrapRef = useRef<HTMLDivElement>(null);
   const inView = useInView(wrapRef, { margin: "200px 0px" });
   const [built, setBuilt] = useState(false);
@@ -76,7 +91,9 @@ export default function HouseBuild({
     <div className="flex max-w-2xl flex-col gap-5">
       <p className="micro-label text-accent-strong">{eyebrow}</p>
       <h1 className="font-serif text-display-xl text-foreground">{h1}</h1>
-      <p className="max-w-xl text-body-lg text-muted-foreground">{subline}</p>
+      {/* max-w-md, not -xl: the long service list used to run out past the
+          scrim onto the beige wall, where muted grey stopped reading. */}
+      <p className="max-w-md text-body-lg text-muted-foreground">{subline}</p>
       <p className="flex items-center gap-2 text-caption font-medium text-foreground">
         <Icon name="shield" size={18} className="shrink-0 text-accent-strong" />
         {trust}
@@ -120,13 +137,20 @@ export default function HouseBuild({
     >
       <div className="absolute inset-0 bg-gradient-to-br from-neutral-100 via-muted to-neutral-200">
         {armed && (
-          <HouseBuildScene active={inView} onDone={() => setBuilt(true)} />
+          <HouseBuildScene
+            active={inView}
+            layout={narrow ? "heroMobile" : "hero"}
+            onDone={() => setBuilt(true)}
+          />
         )}
       </div>
-      {/* left scrim so copy always reads over the model */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-neutral-100/85 via-neutral-100/25 to-transparent" />
+      {/* Scrim so the copy always reads over the model. Muted grey text on the
+          beige wall measured ~1:1 — invisible. Desktop gets a LEFT scrim (copy
+          left, house right); a phone has no side space, so it gets a TOP-DOWN
+          scrim instead and the copy sits up top, clear of the house. */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-neutral-100 from-38% via-neutral-100/60 via-50% to-transparent to-58% lg:bg-gradient-to-r lg:from-15% lg:via-neutral-100/70 lg:via-45% lg:to-70%" />
 
-      <div className="pointer-events-none relative mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-gutter">
+      <div className="pointer-events-none relative mx-auto flex h-full w-full max-w-6xl flex-col justify-start px-gutter pt-20 lg:justify-center lg:pt-0">
         {/* Hero copy — slides in only once the build has finished. */}
         <motion.div
           initial={{ opacity: 0, y: 18 }}

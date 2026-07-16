@@ -227,16 +227,30 @@ useGLTF.preload(HOUSE_URL);
  */
 const LAYOUT = {
   hero: {
-    scale: 0.32,
-    position: [1.15, -1.45, 0.1] as [number, number, number],
+    scale: 0.28,
+    position: [3, -0.75, 0.1] as [number, number, number],
     camera: [2.6, 1.35, 7.6] as [number, number, number],
-    target: [0.9, 0.35, 0] as [number, number, number],
+    target: [2.4, 0.3, 0] as [number, number, number],
+    shadowY: -0.81, // must track position.y or the house floats off its shadow
+  },
+  // A phone has no room beside the copy, so the house drops into the bottom
+  // half and the copy takes the top — no scrim heavy enough to fix the overlap
+  // would leave the house visible, and the house is the point of the hero.
+  heroMobile: {
+    scale: 0.3,
+    position: [0.15, -2.1, 0.1] as [number, number, number],
+    // Pulled back hard: at a 390px width the 40deg VERTICAL fov leaves only
+    // ~19deg horizontally, so the desktop camera crops the house to a wall.
+    camera: [2.2, 1.1, 13.5] as [number, number, number],
+    target: [0.15, -1.3, 0] as [number, number, number],
+    shadowY: -2.16,
   },
   box: {
     scale: 0.3,
     position: [0, -1.35, 0.1] as [number, number, number],
     camera: [3.4, 1.9, 7.2] as [number, number, number],
     target: [0, 0.3, 0] as [number, number, number],
+    shadowY: -1.41,
   },
 };
 
@@ -295,7 +309,7 @@ export default function HouseBuildScene({
         <Environment files="/hdri/venice_sunset_1k.hdr" />
       </Suspense>
       <ContactShadows
-        position={[0, -1.51, 0]}
+        position={[0, L.shadowY, 0]}
         opacity={0.35}
         scale={14}
         blur={2.4}
