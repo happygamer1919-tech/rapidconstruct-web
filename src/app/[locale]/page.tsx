@@ -5,7 +5,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Icon, type IconName } from "@/components/icons";
 import Reveal from "@/components/Reveal";
-import HouseBuild, { type BuildPhase } from "@/components/HouseBuild";
+import HouseBuild from "@/components/HouseBuild";
+import HouseTour, { type BuildPhase } from "@/components/HouseTour";
 import ConstructionStory, {
   type StoryPhase,
 } from "@/components/ConstructionStory";
@@ -98,9 +99,9 @@ export default async function Home({ params }: PageProps) {
 
   return (
     <main className="flex-1">
-      {/* 1 — HERO: the design->construction house build, pinned 3D behind
-          scrolling text slides (owner direction). H1 renders instantly (SSR);
-          the WebGL chunk loads only after first interaction (perf law). */}
+      {/* 1 — HERO: one screen. The house builds itself once, then the headline
+          + CTAs slide in (owner direction). H1 renders instantly (SSR); the
+          WebGL chunk loads only after first interaction (perf law). */}
       <HouseBuild
         eyebrow={t("hero.eyebrow")}
         h1={t("hero.h1")}
@@ -109,11 +110,19 @@ export default async function Home({ params }: PageProps) {
         ctaCall={t("hero.ctaCall")}
         ctaQuote={t("hero.ctaQuote")}
         phone={site.phone}
+        hint={t("hero.scrollHint")}
+      />
+
+      {/* 2 — HOUSE TOUR: the scroll story, boxed, directly under the hero. */}
+      <HouseTour
+        eyebrow={t("build.eyebrow")}
+        title={t("build.title")}
+        intro={t("build.intro")}
         phases={t.raw("build.phases") as BuildPhase[]}
         hint={t("design3d.hint")}
       />
 
-      {/* 2 — TRUST BADGES */}
+      {/* 3 — TRUST BADGES */}
       <section aria-labelledby="badges-title" className="border-b border-border">
         <div className="mx-auto w-full max-w-6xl px-gutter py-14">
           <h2 id="badges-title" className="sr-only">

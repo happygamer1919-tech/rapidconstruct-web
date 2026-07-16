@@ -35,8 +35,8 @@ import {
 
 const HOUSE_URL = "/models/house.glb";
 
-const T_BLUEPRINT = 0.8; // brief blueprint hold before pieces land
-const T_BUILD = 6.5; // the build itself
+const T_BLUEPRINT = 0.35; // brief blueprint hold before pieces land
+const T_BUILD = 3; // the build itself (owner: faster)
 
 // GLB node name -> build phase (0..4). Names come from HomeRC.blend.
 const PHASES: RegExp[] = [
@@ -79,17 +79,28 @@ function House({
   playing,
   highlightPhase,
   onDone,
+  scale,
+  position,
 }: {
   playing: boolean;
   highlightPhase: number; // -1 = none
   onDone?: () => void;
+  scale: number;
+  position: [number, number, number];
 }) {
-  const { scene } = useGLTF(HOUSE_URL);
+  const { scene: cached } = useGLTF(HOUSE_URL);
   const rootRef = useRef<Group>(null);
   const clockRef = useRef(0);
   const doneRef = useRef(false);
 
   const { prepared, pieces, ghost } = useMemo(() => {
+    // useGLTF caches ONE scene per URL, and this component now mounts twice on
+    // the homepage (hero + tour). Both instances animate positions and lerp
+    // material colours every frame, so sharing the graph makes them fight —
+    // the tour's phase dimming bled onto the hero. Clone per instance; geometry
+    // is still shared by reference, and materials get cloned per piece below.
+    const scene = cached.clone(true);
+
     const ghostMat = new MeshBasicMaterial({
       color: "#4f7dbd",
       wireframe: true,
@@ -152,7 +163,7 @@ function House({
       });
     });
     return { prepared: scene, pieces: list, ghost: ghostMat };
-  }, [scene]);
+  }, [cached]);
 
   /* eslint-disable react-hooks/immutability */
   useFrame((_, dt) => {
@@ -203,23 +214,62 @@ function House({
 
   return (
     <group ref={rootRef}>
-      <primitive object={prepared} scale={0.32} position={[1.15, -1.45, 0.1]} />
+      <primitive object={prepared} scale={scale} position={position} />
     </group>
   );
 }
 
 useGLTF.preload(HOUSE_URL);
 
+/**
+ * layout "hero" offsets the house right so the headline has clear space on the
+ * left; "box" centres it for the boxed scroll tour, which has its own column.
+ */
+const LAYOUT = {
+  hero: {
+    scale: 0.28,
+    position: [3, -0.75, 0.1] as [number, number, number],
+    camera: [2.6, 1.35, 7.6] as [number, number, number],
+    target: [2.4, 0.3, 0] as [number, number, number],
+    shadowY: -0.81, // must track position.y or the house floats off its shadow
+  },
+  // A phone has no room beside the copy, so the house drops into the bottom
+  // half and the copy takes the top — no scrim heavy enough to fix the overlap
+  // would leave the house visible, and the house is the point of the hero.
+  heroMobile: {
+    scale: 0.3,
+    position: [0.15, -2.1, 0.1] as [number, number, number],
+    // Pulled back hard: at a 390px width the 40deg VERTICAL fov leaves only
+    // ~19deg horizontally, so the desktop camera crops the house to a wall.
+    camera: [2.2, 1.1, 13.5] as [number, number, number],
+    target: [0.15, -1.3, 0] as [number, number, number],
+    shadowY: -2.16,
+  },
+  box: {
+    scale: 0.3,
+    position: [0, -1.35, 0.1] as [number, number, number],
+    camera: [3.4, 1.9, 7.2] as [number, number, number],
+    target: [0, 0.3, 0] as [number, number, number],
+    shadowY: -1.41,
+  },
+};
+
 export default function HouseBuildScene({
   active = true,
   highlightPhase = -1,
   onDone,
+  play = true,
+  layout = "hero",
 }: {
   active?: boolean;
   highlightPhase?: number;
   onDone?: () => void;
+  /** false = skip the build, render the finished house (the boxed tour). */
+  play?: boolean;
+  layout?: keyof typeof LAYOUT;
 }) {
   const reduce = useReducedMotion();
+  const L = LAYOUT[layout];
 
   return (
     <Canvas
@@ -233,7 +283,7 @@ export default function HouseBuildScene({
       className="!absolute inset-0"
       aria-label="Model 3D: casa se construiește singură, etapă cu etapă"
     >
-      <PerspectiveCamera makeDefault position={[2.6, 1.35, 7.6]} fov={40} />
+      <PerspectiveCamera makeDefault position={L.camera} fov={40} />
       <ambientLight intensity={0.3} />
       <directionalLight
         position={[5, 8, 4]}
@@ -247,9 +297,11 @@ export default function HouseBuildScene({
       <directionalLight position={[-6, 3, -4]} intensity={0.5} color="#cddcff" />
       <Suspense fallback={null}>
         <House
-          playing={!reduce}
+          playing={play && !reduce}
           highlightPhase={highlightPhase}
           onDone={onDone}
+          scale={L.scale}
+          position={L.position}
         />
       </Suspense>
       {/* Self-hosted HDR in its OWN Suspense so the house never waits on it. */}
@@ -257,7 +309,7 @@ export default function HouseBuildScene({
         <Environment files="/hdri/venice_sunset_1k.hdr" />
       </Suspense>
       <ContactShadows
-        position={[0, -1.51, 0]}
+        position={[0, L.shadowY, 0]}
         opacity={0.35}
         scale={14}
         blur={2.4}
@@ -266,7 +318,7 @@ export default function HouseBuildScene({
       />
       <OrbitControls
         makeDefault
-        target={[0.9, 0.35, 0]}
+        target={L.target}
         autoRotate={false}
         enableZoom={false}
         enablePan={false}
