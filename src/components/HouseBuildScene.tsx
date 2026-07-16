@@ -11,6 +11,7 @@ import {
 import { Suspense, useMemo, useRef } from "react";
 import { useReducedMotion } from "motion/react";
 import {
+  ACESFilmicToneMapping,
   Color,
   MeshBasicMaterial,
   MeshPhysicalMaterial,
@@ -39,12 +40,20 @@ const T_BLUEPRINT = 0.35; // brief blueprint hold before pieces land
 const T_BUILD = 3; // the build itself (owner: faster)
 
 // GLB node name -> build phase (0..4). Names come from HomeRC.blend.
+//
+// The garden (path, trees, shrubs, hedge) is named `plinth_*` in the .blend, so a
+// bare /^plinth/ swept it into phase 0 and planted a mature garden *while pouring
+// the foundation* — and the tour then highlighted it as "Fundația". Landscaping is
+// the LAST thing a builder does, which is exactly what phase 4 says ("Ultimele
+// detalii… apoi predăm cheia"). So phase 0 is now explicit about which plinth
+// pieces are groundworks, and the planting lands in phase 4.
+// Order matters: phaseOf returns the FIRST match.
 const PHASES: RegExp[] = [
-  /^plinth/, // incl. plinth_lawn
+  /^plinth$|^plinth_lawn$|^plinth_base/, // groundworks: slab, lawn, stone base course
   /^(main|wing|entry)$|_interior$/,
   /^(roof_|ridge_|entry_roof|chimney)/,
   /^(w\d+_|sill|door|handle)/,
-  /^(gutter_|ds\d)/,
+  /^(gutter_|ds\d)|^plinth_(path|tree|shrub|hedge)/, // details + landscaping
 ];
 const PHASE_COUNT = PHASES.length;
 
@@ -125,6 +134,11 @@ function House({
           opacity: 0.45,
           reflectivity: 1,
           envMapIntensity: 1.4,
+          // Warm "lights are on" glow. This HAS to live here, not in Blender: the
+          // scene swaps the glass material at runtime, so an emissive authored in
+          // the .blend would be thrown away. Sells a lived-in house, costs nothing.
+          emissive: new Color("#ffcf8f"),
+          emissiveIntensity: 0.22,
         });
       }
       const mat0 = m.material as MeshStandardMaterial;
@@ -237,13 +251,16 @@ const LAYOUT = {
   // half and the copy takes the top — no scrim heavy enough to fix the overlap
   // would leave the house visible, and the house is the point of the hero.
   heroMobile: {
-    scale: 0.3,
-    position: [0.15, -2.1, 0.1] as [number, number, number],
+    scale: 0.34,
+    // Owner, twice: the phone hero "looks ugly, bring it more up". Raised and
+    // enlarged so the house fills the space under the copy instead of sitting
+    // small and low with dead screen beneath it.
+    position: [0.15, -1.55, 0.1] as [number, number, number],
     // Pulled back hard: at a 390px width the 40deg VERTICAL fov leaves only
     // ~19deg horizontally, so the desktop camera crops the house to a wall.
     camera: [2.2, 1.1, 13.5] as [number, number, number],
-    target: [0.15, -1.3, 0] as [number, number, number],
-    shadowY: -2.16,
+    target: [0.15, -0.75, 0] as [number, number, number],
+    shadowY: -1.61,
   },
   box: {
     scale: 0.3,
@@ -276,9 +293,21 @@ export default function HouseBuildScene({
       shadows="soft"
       dpr={[1, 1.5]}
       frameloop={active ? "always" : "never"}
-      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-      onCreated={({ gl }) => {
-        gl.toneMappingExposure = 1.05;
+      // Staying on ACES. The 3D session recommended AgX, arguing ACES "washes the
+      // warm palette" — but that was researched, not verified, and it does not
+      // survive the real render. Measured on a tight roof/wall crop (page
+      // background excluded; including it dilutes the numbers to noise):
+      //   ACES 1.05 -> mean luminance 155.9, saturation 0.131, contrast range 216
+      //   AgX  1.10 -> mean luminance 159.9, saturation 0.100, contrast range 197
+      // AgX came out brighter, 24% LESS saturated and lower contrast — it is what
+      // made the house look washed out. Exactly backwards. Re-measure before
+      // changing this, don't re-argue it from theory.
+      gl={{
+        antialias: true,
+        alpha: true,
+        powerPreference: "high-performance",
+        toneMapping: ACESFilmicToneMapping,
+        toneMappingExposure: 1.05,
       }}
       className="!absolute inset-0"
       aria-label="Model 3D: casa se construiește singură, etapă cu etapă"
@@ -295,6 +324,11 @@ export default function HouseBuildScene({
         shadow-normalBias={0.02}
       />
       <directionalLight position={[-6, 3, -4]} intensity={0.5} color="#cddcff" />
+      {/* Dim back-rim: lifts the roofline off the page tone so the silhouette
+          reads. Free — one light, no shadow map. (No SSAO/postprocessing here on
+          purpose: it would sink the low-end phone that already cannot finish a
+          Lighthouse run. Ambient occlusion belongs baked in the texture.) */}
+      <directionalLight position={[-3, 4, -7]} intensity={0.35} color="#ffd9a0" />
       <Suspense fallback={null}>
         <House
           playing={play && !reduce}
@@ -304,9 +338,14 @@ export default function HouseBuildScene({
           position={L.position}
         />
       </Suspense>
-      {/* Self-hosted HDR in its OWN Suspense so the house never waits on it. */}
+      {/* Self-hosted HDR in its OWN Suspense so the house never waits on it.
+          environmentIntensity is the other free lever the 3D session flagged:
+          the default 1.0 under-lights the plaster. Zero bytes. */}
       <Suspense fallback={null}>
-        <Environment files="/hdri/venice_sunset_1k.hdr" />
+        <Environment
+          files="/hdri/venice_sunset_1k.hdr"
+          environmentIntensity={1.15}
+        />
       </Suspense>
       <ContactShadows
         position={[0, L.shadowY, 0]}
