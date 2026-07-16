@@ -1,0 +1,51 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "npm run start -- --port 3100",
+      "startServerReadyPattern": "Ready in",
+      "startServerReadyTimeout": 60000,
+      "url": [
+        "http://localhost:3100/"
+      ],
+      "numberOfRuns": 1
+    },
+    "assert": {
+      "//": "RC-305: NON-BLOCKING. The blocking gate (lighthouserc.json) skips the 3D for audit robots by owner decision (2026-07-16), so it does NOT measure the hero. This run forces the 3D on via ?3d=1 and reports the REAL number, warn-only, so the trade stays visible instead of silently pretending the hero is free.",
+      "assertMatrix": [
+        {
+          "matchingUrlPattern": ".*",
+          "assertions": {
+            "categories:performance": [
+              "warn",
+              {
+                "minScore": 0.85
+              }
+            ],
+            "largest-contentful-paint": [
+              "warn",
+              {
+                "maxNumericValue": 2500
+              }
+            ],
+            "cumulative-layout-shift": [
+              "warn",
+              {
+                "maxNumericValue": 0.05
+              }
+            ],
+            "total-blocking-time": [
+              "warn",
+              {
+                "maxNumericValue": 600
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": ".lighthouseci"
+    }
+  }
+}

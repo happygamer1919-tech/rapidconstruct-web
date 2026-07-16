@@ -8,12 +8,17 @@ const nextConfig: NextConfig = {
    * the new site; the real domain still points at Tilda, so shipping them now
    * is safe. `permanent: true` makes Next emit a 308 permanent redirect.
    *
-   * Destinations follow SPEC exactly and stay locale-agnostic: `ro` is the
-   * default locale, served with no prefix (src/i18n/routing.ts), so we do NOT
-   * hardcode `/ro/...`. Several destinations (e.g. /reparatii-la-cheie,
-   * /case-constructii, /portofoliu, /calculator-gard,
+   * Destinations stay locale-agnostic: `ro` is the default locale, served with
+   * no prefix (src/i18n/routing.ts), so we do NOT hardcode `/ro/...`. Several
+   * destinations (/case-constructii, /calculator-gard,
    * /politica-de-confidentialitate) are pages delivered by later tickets; each
    * redirect is still correct and starts working the moment its page lands.
+   *
+   * RC-301: `/1` follows docs/KEYWORD-MAP.md, NOT SPEC §5. SPEC sends it to
+   * `/reparatii-la-cheie`, but that slug was never built and never will be:
+   * KEYWORD-MAP settled on `renovari-la-cheie` (per RC-103) and told us to
+   * "repoint the 301", which nobody did. So `/1` — a real Tilda URL — was
+   * permanently redirecting into a 404 and throwing away its link equity.
    *
    * NOTE: SPEC section 5 also lists /despre-noi and /portofoliu mapping to the
    * SAME slug. A path that redirects to itself is an infinite loop in Next
@@ -24,7 +29,7 @@ const nextConfig: NextConfig = {
    */
   async redirects() {
     return [
-      { source: "/1", destination: "/reparatii-la-cheie", permanent: true },
+      { source: "/1", destination: "/renovari-la-cheie", permanent: true },
       { source: "/2", destination: "/case-constructii", permanent: true },
       { source: "/3", destination: "/fatade", permanent: true },
       { source: "/4", destination: "/finisaje", permanent: true },
