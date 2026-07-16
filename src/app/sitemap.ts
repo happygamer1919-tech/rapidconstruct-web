@@ -31,6 +31,9 @@ const ROUTES = [
   "/instalatii",
   "/despre-noi",
   "/contact",
+  "/chisinau",
+  "/orhei",
+  "/cahul",
 ];
 
 function absolute(locale: (typeof routing.locales)[number], path: string) {

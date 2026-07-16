@@ -82,8 +82,8 @@ _RC-003/004/005/007 shipped together in PR #6 (squash). RC-006 next._
       roof, metal tile vs shingles, permits, winter work) — the GEO citation surface.
 - [ ] **RC-303** City landing pages: Chișinău, Orhei, Cahul (+ others with real projects) —
       thin-but-real, each anchored by actual portfolio items. areaServed JSON-LD.
-- [ ] **RC-304** Review strategy: aggregate rating markup fed by real review sources; funnel
-      to Google Business Profile; consistency check site ↔ GBP ↔ socials (entity footprint).
+- [x] **RC-304** Review strategy done (docs/GBP-REVIEWS.md): plain-RO GBP setup + NAP + reviews
+      playbook for the owner; respects Q-07 (no unverified 500+/250+ numbers).
 - [ ] **RC-305** Performance budget enforced in CI: LCP < 2.0s mobile, CLS < 0.05, images
       AVIF/WebP with explicit dimensions, fonts self-hosted.
 
