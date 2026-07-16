@@ -11,40 +11,37 @@ import {
 import { Suspense, useMemo, useRef } from "react";
 import { useReducedMotion } from "motion/react";
 import {
+  Color,
   MeshBasicMaterial,
   MeshPhysicalMaterial,
+  MeshStandardMaterial,
   type Group,
   type Mesh,
   type Material,
-  type MeshStandardMaterial,
 } from "three";
 
 /**
- * HouseBuildScene — the homepage hero house that BUILDS ITSELF (owner
- * direction: "the home should motion by itself", no scroll needed). A looping
- * timeline plays like a short film:
- *   blueprint hold -> pieces drop in phase by phase -> finished house holds
- *   and rotates -> quick un-build back to blueprint -> repeat.
- *
- * Phases (GLB node names from HomeRC.blend):
- *   0 foundation -> 1 walls -> 2 roof -> 3 windows/doors -> 4 gutters/details.
- * The parent gets onStage(stage) callbacks (-1 = blueprint) to sync its big
- * caption. Reduced motion: fully built, static (drag to rotate still works).
+ * HouseBuildScene v3 — the hero house builds itself ONCE, lego-style, then
+ * STAYS built (owner: no loop, no text during the build). Per-phase motion:
+ *   0 foundation: slabs drop + settle
+ *   1 walls: rise up out of the ground
+ *   2 roof: pieces drop from the sky with a lego-snap
+ *   3 windows/doors: pop-scale into their openings
+ *   4 gutters/details: short drop, last click
+ * onDone fires once when the build finishes (parent fades its text in).
+ * highlightPhase (from the scroll story) keeps that phase full-colour and
+ * fades the rest toward the page tone. Reduced motion: fully built, static.
  */
 
 const HOUSE_URL = "/models/house.glb";
 
-// Timeline (seconds)
-const T_BLUEPRINT = 1.5; // hold the design
-const T_BUILD = 7; // the build itself (owner: faster)
-const T_DONE = 6; // hold the finished house
-const T_UNBUILD = 1.2; // dissolve back to the blueprint
-const T_TOTAL = T_BLUEPRINT + T_BUILD + T_DONE + T_UNBUILD;
+const T_BLUEPRINT = 0.8; // brief blueprint hold before pieces land
+const T_BUILD = 6.5; // the build itself
 
 // GLB node name -> build phase (0..4). Names come from HomeRC.blend.
 const PHASES: RegExp[] = [
   /^plinth/, // incl. plinth_lawn
-  /^(main|wing|entry)$/,
+  /^(main|wing|entry)$|_interior$/,
   /^(roof_|ridge_|entry_roof|chimney)/,
   /^(w\d+_|sill|door|handle)/,
   /^(gutter_|ds\d)/,
@@ -56,50 +53,43 @@ function phaseOf(name: string) {
   return 1;
 }
 
+type PieceColor = { mat: MeshStandardMaterial; orig: Color };
 type Piece = {
   mesh: Mesh;
-  real: Material | Material[];
+  phase: number;
   y0: number;
-  start: number;
+  s0: [number, number, number];
+  start: number; // 0..1 within the build
   dur: number;
+  real: Material | Material[];
+  colors: PieceColor[];
 };
 
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
-
-/** Timeline position (s) -> build progress 0..1 and stage (-1..4). */
-function timeline(t: number): { build: number; stage: number } {
-  const tt = t % T_TOTAL;
-  if (tt < T_BLUEPRINT) return { build: 0, stage: -1 };
-  if (tt < T_BLUEPRINT + T_BUILD) {
-    const b = (tt - T_BLUEPRINT) / T_BUILD;
-    return {
-      build: b,
-      stage: Math.min(PHASE_COUNT - 1, Math.floor(b * PHASE_COUNT)),
-    };
-  }
-  if (tt < T_BLUEPRINT + T_BUILD + T_DONE)
-    return { build: 1, stage: PHASE_COUNT - 1 };
-  const back = (tt - T_BLUEPRINT - T_BUILD - T_DONE) / T_UNBUILD;
-  return { build: 1 - back, stage: -1 };
+// lego-snap overshoot on landing
+function easeOutBack(t: number) {
+  const c1 = 1.2;
+  const c3 = c1 + 1;
+  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
 }
+
+const FADE = new Color("#e7e1d6"); // page-ish tone for de-highlighted phases
 
 function House({
   playing,
-  fallback,
-  onStage,
+  highlightPhase,
+  onDone,
 }: {
   playing: boolean;
-  fallback: number;
-  onStage?: (stage: number) => void;
+  highlightPhase: number; // -1 = none
+  onDone?: () => void;
 }) {
   const { scene } = useGLTF(HOUSE_URL);
   const rootRef = useRef<Group>(null);
   const clockRef = useRef(0);
-  const stageRef = useRef(-2);
+  const doneRef = useRef(false);
 
   const { prepared, pieces, ghost } = useMemo(() => {
-    // Blueprint material: brighter technical wireframe (owner liked the blue
-    // line look — make it clearly visible on big screens).
     const ghostMat = new MeshBasicMaterial({
       color: "#4f7dbd",
       wireframe: true,
@@ -113,10 +103,8 @@ function House({
       if (!m.isMesh) return;
       m.castShadow = true;
       m.receiveShadow = true;
-      // Window glass: cheap reflective-transparent material. (True
-      // transmission re-renders the whole scene every frame — it was the
-      // main source of the lag. Dark interior liners in the model make this
-      // read as real glazing.)
+      // Cheap reflective glass (real transmission re-rendered the scene every
+      // frame — the lag source). Dark interior liners sell it as real glazing.
       if (/^w\d+_g$/.test(m.name)) {
         m.material = new MeshPhysicalMaterial({
           color: "#a8c4d8",
@@ -128,9 +116,9 @@ function House({
           envMapIntensity: 1.4,
         });
       }
-      const mat = m.material as MeshStandardMaterial;
-      if (mat && "envMapIntensity" in mat && !("transmission" in mat))
-        mat.envMapIntensity = 0.9;
+      const mat0 = m.material as MeshStandardMaterial;
+      if (mat0 && "envMapIntensity" in mat0 && !mat0.transparent)
+        mat0.envMapIntensity = 0.9;
       buckets[phaseOf(m.name)].push(m);
     });
 
@@ -139,43 +127,75 @@ function House({
     buckets.forEach((bucket, phase) => {
       const n = bucket.length || 1;
       bucket.forEach((mesh, j) => {
+        // Clone materials per piece so highlight fading is independent.
+        const mats = Array.isArray(mesh.material)
+          ? mesh.material
+          : [mesh.material];
+        const colors: PieceColor[] = [];
+        const cloned = mats.map((mm) => {
+          const c = (mm as MeshStandardMaterial).clone();
+          if ((c as MeshStandardMaterial).color)
+            colors.push({ mat: c, orig: c.color.clone() });
+          return c;
+        });
+        mesh.material = Array.isArray(mesh.material) ? cloned : cloned[0];
         list.push({
           mesh,
-          real: mesh.material,
+          phase,
           y0: mesh.position.y,
+          s0: [mesh.scale.x, mesh.scale.y, mesh.scale.z],
           start: phase * window + (j / n) * window * 0.45,
           dur: window * 0.55,
+          real: mesh.material,
+          colors,
         });
       });
     });
     return { prepared: scene, pieces: list, ghost: ghostMat };
   }, [scene]);
 
-  // useFrame mutates the three.js meshes directly every frame (the R3F
-  // imperative pattern — no React re-renders), which the react compiler's
-  // immutability lint cannot model.
   /* eslint-disable react-hooks/immutability */
   useFrame((_, dt) => {
-    let build = fallback;
-    let stage = PHASE_COUNT - 1;
-    if (playing) {
+    let build = 1;
+    if (playing && !doneRef.current) {
       clockRef.current += dt;
-      const s = timeline(clockRef.current);
-      build = s.build;
-      stage = s.stage;
+      const t = clockRef.current;
+      build = t < T_BLUEPRINT ? 0 : Math.min(1, (t - T_BLUEPRINT) / T_BUILD);
+      if (build >= 1) {
+        doneRef.current = true;
+        onDone?.();
+      }
+    } else if (!doneRef.current) {
+      doneRef.current = true;
+      onDone?.();
     }
-    if (onStage && stage !== stageRef.current) {
-      stageRef.current = stage;
-      onStage(stage);
-    }
+
+    const hl = highlightPhase;
     for (const p of pieces) {
       const k = Math.min(1, Math.max(0, (build - p.start) / p.dur));
       if (k <= 0) {
         if (p.mesh.material !== ghost) p.mesh.material = ghost;
         p.mesh.position.y = p.y0;
+        p.mesh.scale.set(p.s0[0], p.s0[1], p.s0[2]);
+        continue;
+      }
+      if (p.mesh.material !== p.real) p.mesh.material = p.real;
+
+      if (p.phase === 1) {
+        p.mesh.position.y = p.y0 - 0.7 * (1 - easeOutCubic(k)); // walls rise
+      } else if (p.phase === 2) {
+        p.mesh.position.y = p.y0 + 1.1 * (1 - easeOutBack(k)); // roof drops
+      } else if (p.phase === 3) {
+        const s = 0.5 + 0.5 * easeOutBack(k); // windows/doors pop
+        p.mesh.scale.set(p.s0[0] * s, p.s0[1] * s, p.s0[2] * s);
+        p.mesh.position.y = p.y0;
       } else {
-        if (p.mesh.material !== p.real) p.mesh.material = p.real;
-        p.mesh.position.y = p.y0 + 0.4 * (1 - easeOutCubic(k));
+        p.mesh.position.y = p.y0 + 0.3 * (1 - easeOutCubic(k)); // foundation/details
+      }
+
+      if (p.colors.length) {
+        const dim = hl >= 0 && p.phase !== hl;
+        for (const c of p.colors) c.mat.color.lerp(dim ? FADE : c.orig, 0.1);
       }
     }
   });
@@ -183,12 +203,7 @@ function House({
 
   return (
     <group ref={rootRef}>
-      <primitive
-        object={prepared}
-        // Bigger on screen (full-viewport hero), shifted right of the copy.
-        scale={0.32}
-        position={[1.15, -1.45, 0.1]}
-      />
+      <primitive object={prepared} scale={0.32} position={[1.15, -1.45, 0.1]} />
     </group>
   );
 }
@@ -196,13 +211,13 @@ function House({
 useGLTF.preload(HOUSE_URL);
 
 export default function HouseBuildScene({
-  build = 0,
   active = true,
-  onStage,
+  highlightPhase = -1,
+  onDone,
 }: {
-  build?: number; // static fallback when not playing (reduced motion => 1)
   active?: boolean;
-  onStage?: (stage: number) => void;
+  highlightPhase?: number;
+  onDone?: () => void;
 }) {
   const reduce = useReducedMotion();
 
@@ -216,7 +231,7 @@ export default function HouseBuildScene({
         gl.toneMappingExposure = 1.05;
       }}
       className="!absolute inset-0"
-      aria-label="Model 3D: casa se construiește singură, de la proiect la predare"
+      aria-label="Model 3D: casa se construiește singură, etapă cu etapă"
     >
       <PerspectiveCamera makeDefault position={[2.6, 1.35, 7.6]} fov={40} />
       <ambientLight intensity={0.3} />
@@ -233,8 +248,8 @@ export default function HouseBuildScene({
       <Suspense fallback={null}>
         <House
           playing={!reduce}
-          fallback={reduce ? 1 : build}
-          onStage={onStage}
+          highlightPhase={highlightPhase}
+          onDone={onDone}
         />
       </Suspense>
       {/* Self-hosted HDR in its OWN Suspense so the house never waits on it. */}
