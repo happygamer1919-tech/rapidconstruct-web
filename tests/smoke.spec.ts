@@ -161,6 +161,42 @@ test.describe("service pages (RC-103)", () => {
   }
 });
 
+test.describe("city pages (RC-303)", () => {
+  // Each city landing page must resolve 200 on both locales with a single H1
+  // and carry LocalBusiness + FAQPage JSON-LD (the GEO surface this ticket adds).
+  const CITY_SLUGS = ["/chisinau", "/orhei", "/cahul"];
+
+  for (const slug of CITY_SLUGS) {
+    test(`${slug} (RO) responds 200 with an H1 and city JSON-LD`, async ({
+      page,
+      request,
+    }) => {
+      const res = await request.get(slug);
+      expect(res.status(), `${slug} did not respond 200`).toBe(200);
+      const html = await res.text();
+      expect(html).toContain('"@type":"HomeAndConstructionBusiness"');
+      expect(html).toContain('"@type":"FAQPage"');
+
+      await page.goto(slug);
+      await expect(page.locator("main")).toBeVisible();
+      await expect(page.locator("h1")).toHaveCount(1);
+    });
+
+    test(`/ru${slug} (RU) responds 200 with lang="ru" and an H1`, async ({
+      page,
+      request,
+    }) => {
+      const res = await request.get(`/ru${slug}`);
+      expect(res.status(), `/ru${slug} did not respond 200`).toBe(200);
+
+      await page.goto(`/ru${slug}`);
+      const lang = await page.locator("html").getAttribute("lang");
+      expect(lang).toBe("ru");
+      await expect(page.locator("h1")).toHaveCount(1);
+    });
+  }
+});
+
 test.describe("locales respond 200", () => {
   test("/ (RO) responds 200", async ({ request }) => {
     const res = await request.get("/");
