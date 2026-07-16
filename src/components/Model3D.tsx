@@ -14,8 +14,9 @@ import { MeshStandardMaterial, type Mesh } from "three";
 
 /**
  * Interactive 3D house — a real model built in Blender (via blender-mcp) and
- * exported as /public/models/house.glb (~65 KB): two-storey volume + wing,
- * gable roofs with true overhangs, framed windows, orange door, chimney.
+ * exported as /public/models/house.glb (~1.15 MB): two-storey volume + wing,
+ * anthracite metal-tile hip roofs, white quoins and window surrounds, dark
+ * bronze muntin windows, a timber entry gablet and a stone base course.
  * Auto-rotates slowly; drag to spin. prefers-reduced-motion stops rotation.
  * Loaded client-only by Design3D (next/dynamic), frameloop freezes off-screen.
  */
@@ -79,9 +80,14 @@ export default function Model3D({ active = true }: { active?: boolean }) {
       />
       <directionalLight position={[-6, 3, -4]} intensity={0.5} color="#cddcff" />
       <directionalLight position={[-3, 5, -6]} intensity={0.7} color="#ffd9a0" />
+      {/* Environment gets its OWN Suspense and a self-hosted HDR: drei's
+          `preset` pulls from a CDN that rate-limits and returns 0 bytes, and a
+          SHARED Suspense would then blank the whole house with no error. */}
       <Suspense fallback={null}>
         <House />
-        <Environment preset="sunset" />
+      </Suspense>
+      <Suspense fallback={null}>
+        <Environment files="/hdri/venice_sunset_1k.hdr" />
       </Suspense>
       <ContactShadows
         position={[0, -1.16, 0]}

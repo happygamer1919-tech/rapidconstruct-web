@@ -286,12 +286,17 @@ export default function RoofCutawayScene({
         shadow-normalBias={0.02}
       />
       <directionalLight position={[-5, 3, -3]} intensity={0.5} color="#cddcff" />
+      {/* Environment gets its OWN Suspense and a self-hosted HDR: drei's
+          `preset` pulls from a CDN that rate-limits and returns 0 bytes, and a
+          SHARED Suspense would then blank the whole roof with no error. */}
       <Suspense fallback={null}>
         <Roof
           explodeValue={reduce ? undefined : explodeValue}
           fallback={reduce ? 1 : explode}
         />
-        <Environment preset="sunset" />
+      </Suspense>
+      <Suspense fallback={null}>
+        <Environment files="/hdri/venice_sunset_1k.hdr" />
       </Suspense>
       <ContactShadows position={[0, -1.5, 0]} opacity={0.3} scale={12} blur={2.6} far={5} />
       <OrbitControls
