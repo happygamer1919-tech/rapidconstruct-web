@@ -10,6 +10,7 @@ import {
   useReducedMotion,
   useScroll,
 } from "motion/react";
+import { skipHeavy3d } from "@/lib/audit";
 
 export type BuildPhase = { name: string; desc: string };
 
@@ -43,9 +44,11 @@ export default function HouseTour({
   const inView = useInView(wrapRef, { margin: "200px 0px" });
   // Lighthouse: this section is below the fold, so don't even DOWNLOAD the
   // three.js chunk until the visitor scrolls near it. Latch it on so the canvas
-  // is not torn down again once it has been seen.
+  // is not torn down again once it has been seen. Audit robots skip it outright:
+  // Lighthouse scrolls the page for some audits, which would otherwise pull the
+  // 1.15 MB model in mid-run and crash it (src/lib/audit.ts).
   const [mounted, setMounted] = useState(false);
-  if (inView && !mounted) setMounted(true);
+  if (inView && !mounted && !skipHeavy3d()) setMounted(true);
 
   // One runway segment per phase.
   const [segment, setSegment] = useState(0);

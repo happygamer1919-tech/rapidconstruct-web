@@ -92,3 +92,45 @@ jobs:
           name: lighthouse-report
           path: .lighthouseci/
           retention-days: 7
+
+  # The honest half of the RC-305 trade (owner decision 2026-07-16). The gate
+  # above no longer measures the hero, because audit robots now skip the 3D —
+  # that is what stops the run crashing (PAGE_HUNG / Network.getResponseBody).
+  # This job forces the 3D ON via `?3d=1` and reports the hero's REAL cost.
+  #
+  # continue-on-error: it must NEVER block a PR. It exists so the number stays
+  # visible, instead of the gate quietly implying a 3D hero is free. If THIS job
+  # starts crashing, that is the signal the hero has grown too heavy for real
+  # low-end phones — read the artifact, do not just mute it.
+  lighthouse-3d:
+    name: lighthouse (3D hero, report only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    continue-on-error: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Run Lighthouse CI against the real 3D hero
+        run: npx lhci autorun --config=lighthouserc.3d.json || true
+
+      - name: Upload 3D Lighthouse report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report-3d
+          path: .lighthouseci/
+          retention-days: 7

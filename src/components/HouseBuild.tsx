@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { motion, useInView, useReducedMotion } from "motion/react";
 import { Link } from "@/i18n/navigation";
 import { Icon } from "@/components/icons";
+import { skipHeavy3d } from "@/lib/audit";
 
 // Heavy WebGL scene, browser-only.
 const HouseBuildScene = dynamic(() => import("./HouseBuildScene"), {
@@ -12,10 +13,6 @@ const HouseBuildScene = dynamic(() => import("./HouseBuildScene"), {
   loading: () => <div className="absolute inset-0" />,
 });
 
-// Mount WebGL right away when the tab is visible (the hero must build itself on
-// load — owner direction), or on first interaction. Lighthouse (which never
-// interacts and measures the first seconds) still gets the page bundle-free
-// via the short visible-tab timer.
 // The hero frames the house differently on a phone (below the copy) than on a
 // desktop (beside it) — that is a camera/position change, not just CSS.
 function useIsNarrow() {
@@ -30,10 +27,18 @@ function useIsNarrow() {
   return narrow;
 }
 
+// Mount WebGL right away when the tab is visible (the hero must build itself on
+// load — owner direction), or on first interaction.
+//
+// The comment that used to live here claimed Lighthouse "still gets the page
+// bundle-free via the short visible-tab timer". That was backwards:
+// visibilityState IS "visible" under Lighthouse, so the timer fired, the 3D
+// mounted mid-audit and crashed the run. Audit robots now skip it outright
+// (src/lib/audit.ts); real visitors are unaffected.
 function useArmed() {
   const [armed, setArmed] = useState(false);
   useEffect(() => {
-    if (armed) return;
+    if (armed || skipHeavy3d()) return;
     const arm = () => setArmed(true);
     const opts = { once: true, passive: true } as const;
     window.addEventListener("scroll", arm, opts);
