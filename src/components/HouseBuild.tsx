@@ -90,7 +90,27 @@ export default function HouseBuild({
   const narrow = useIsNarrow();
   const wrapRef = useRef<HTMLDivElement>(null);
   const inView = useInView(wrapRef, { margin: "200px 0px" });
+
+  // The headline + CTAs are hidden until the build finishes, and `built` is
+  // flipped by the scene's onDone. So if the scene never mounts or never
+  // finishes, the hero copy stays invisible FOREVER — no headline, no CTAs.
+  // That bites in two real cases:
+  //   1. audit robots, which now skip the 3D (they measured a hero with no text
+  //      and picked the tour heading further down as the LCP element);
+  //   2. any visitor whose WebGL fails or is blocked — a phone, a locked-down
+  //      browser — who would just never see the hero copy at all.
+  // So: reveal immediately when there will be no build, and keep a safety net
+  // that reveals the copy regardless if onDone has not fired in time. The copy
+  // is never allowed to depend on WebGL succeeding.
   const [built, setBuilt] = useState(false);
+  useEffect(() => {
+    if (skipHeavy3d() || reduce) {
+      setBuilt(true);
+      return;
+    }
+    const t = window.setTimeout(() => setBuilt(true), 9000);
+    return () => window.clearTimeout(t);
+  }, [reduce]);
 
   const heroBlock = (
     <div className="flex max-w-2xl flex-col gap-5">
