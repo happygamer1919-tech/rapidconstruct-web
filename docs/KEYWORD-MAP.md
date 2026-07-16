@@ -52,9 +52,9 @@ Apply these two in a follow-up code ticket by editing `roofPage.seo.title` in
 | Contact `/contact` | planned | contact rapid construct | firma acoperisuri chisinau contact; oferta constructii chisinau | (none) | Contact: sună sau cere ofertă în Chișinău | Sună la +373 76 837 180 sau lasă o cerere. Îți răspundem în 2 ore lucrătoare cu un preț clar. Chișinău, str. Nicolae Zelinski 24. | L |
 | Calculator acoperiș `/calculator-acoperis` | planned | calcul pret acoperis | cat costa un acoperis moldova; pret acoperis la cheie | (none) | Calculator preț acoperiș, estimare rapidă | Află cât costă acoperișul tău în câteva minute. Alegi tipul de țiglă și suprafața, primești o estimare și oferta pe WhatsApp. | M |
 | Calculator gard `/calculator-gard` | planned | calcul pret gard | cat costa un gard moldova; pret gard metalic | (none) | Calculator preț gard, estimare în 1 minut | Calculează prețul gardului tău în 1 minut. Alegi tipul și lungimea, primești o estimare rapidă și oferta pe WhatsApp. | L |
-| Chișinău (oraș) `/acoperis-chisinau` | planned | constructii renovari chisinau | acoperisuri fatade chisinau; firma constructii chisinau | (none) | Construcții și renovări în Chișinău, la cheie | Construcții, acoperișuri, fațade și renovări la cheie în Chișinău. Preț clar din start, garanție scrisă, echipă cu 15 ani experiență. | M |
-| Orhei (oraș) `/orhei` | planned | constructii acoperis orhei | renovari case orhei; fatade orhei | (none) | Construcții, acoperișuri și fațade în Orhei | Lucrăm în Orhei: acoperișuri, fațade și renovări complete. Preț clar din start, garanție scrisă. Am făcut deja case în zonă. | L |
-| Cahul (oraș) `/cahul` | planned | constructii acoperis cahul | renovari case cahul; fatade cahul | (none) | Construcții, acoperișuri și fațade în Cahul | Lucrăm în Cahul: acoperișuri, fațade și renovări complete. Preț clar din start, garanție scrisă. Am făcut deja case în zonă. | L |
+| Chișinău (oraș) `/chisinau` | LIVE | constructii renovari chisinau | acoperisuri fatade chisinau; firma constructii chisinau | (none) | Construcții și renovări în Chișinău, la cheie | Construcții, acoperișuri, fațade și renovări la cheie în Chișinău. Preț clar din start, garanție scrisă, echipă cu 15 ani experiență. | M |
+| Orhei (oraș) `/orhei` | LIVE | constructii acoperis orhei | renovari case orhei; fatade orhei | (none) | Construcții, acoperișuri și fațade în Orhei | Lucrăm în Orhei: acoperișuri, fațade și renovări complete. Preț clar din start, garanție scrisă. Am făcut deja case în zonă. | L |
+| Cahul (oraș) `/cahul` | LIVE | constructii acoperis cahul | renovari case cahul; fatade cahul | (none) | Construcții, acoperișuri și fațade în Cahul | Lucrăm în Cahul: acoperișuri, fațade și renovări complete. Preț clar din start, garanție scrisă. Am făcut deja case în zonă. | L |
 
 ## RU master table (rows = pages, RU keywords + RU title/description)
 
@@ -76,7 +76,7 @@ column because it is a real search term.
 | Контакты `/contact` | `/ru/kontakty` | контакты рапид констракт | строительная компания кишинев телефон; заказать смету кишинев | (none) | Контакты: позвоните или закажите смету | Звоните +373 76 837 180 или оставьте заявку. Ответим за 2 рабочих часа с понятной ценой. Кишинёв, ул. Николае Зелински 24. | L |
 | Калькулятор крыши `/calculator-acoperis` | `/ru/kalkulyator-kryshi` | рассчитать цену крыши | сколько стоит крыша молдова; цена крыши под ключ | (none) | Калькулятор цены крыши, быстрый расчёт | Узнайте, сколько стоит ваша крыша, за пару минут. Выбираете черепицу и площадь, получаете расчёт и смету в WhatsApp. | M |
 | Калькулятор забора `/calculator-gard` | `/ru/kalkulyator-zabora` | рассчитать цену забора | сколько стоит забор молдова; цена забора под ключ | (none) | Калькулятор цены забора, расчёт за минуту | Посчитайте цену забора за минуту. Выбираете тип и длину, получаете быстрый расчёт и смету в WhatsApp. | L |
-| Кишинёв (город) `/acoperis-chisinau` | `/ru/kishinev` | строительство ремонт кишинев | крыши фасады кишинев; строительная компания кишинев | (none) | Строительство и ремонт в Кишинёве, под ключ | Строительство, крыши, фасады и ремонт под ключ в Кишинёве. Понятная цена сразу, письменная гарантия, опыт 15 лет. | M |
+| Кишинёв (город) `/chisinau` | `/ru/kishinev` | строительство ремонт кишинев | крыши фасады кишинев; строительная компания кишинев | (none) | Строительство и ремонт в Кишинёве, под ключ | Строительство, крыши, фасады и ремонт под ключ в Кишинёве. Понятная цена сразу, письменная гарантия, опыт 15 лет. | M |
 | Оргеев (город) `/orhei` | `/ru/orhei` | строительство крыша оргеев | ремонт домов оргеев; фасады оргеев | (none) | Строительство, крыши и фасады в Оргееве | Работаем в Оргееве: крыши, фасады и комплексный ремонт. Понятная цена сразу, письменная гарантия. Уже строили дома в районе. | L |
 | Кагул (город) `/cahul` | `/ru/cahul` | строительство крыша кагул | ремонт домов кагул; фасады кагул | (none) | Строительство, крыши и фасады в Кагуле | Работаем в Кагуле: крыши, фасады и комплексный ремонт. Понятная цена сразу, письменная гарантия. Уже строили дома в районе. | L |
 
@@ -87,12 +87,19 @@ column because it is a real search term.
   service titles that target price queries (acoperisuri, fatade, calculators).
 - **RC-201 (RU IA):** the RU slug column above is a proposal, not final. Confirm slugs against
   the redirect plan before shipping.
-- **RC-301 follow-up:** slug naming has one open inconsistency to resolve before RC-103.
-  `docs/SPEC.md` §5 maps the Tilda page `/1` (Reparatii case la cheie) to `/reparatii-la-cheie`
-  and `/2` (Case & Constructii) to `/case-constructii`, while `docs/BACKLOG.md` RC-103 lists the
-  service slug as `renovari-la-cheie`. This map uses `renovari-la-cheie` (per RC-103) plus a
-  separate `case-constructii` page. If the owner wants a single "reparatii la cheie" page, drop
-  one row and repoint the 301. Left as a note, not a decision.
+- **RC-301 follow-up — RESOLVED 2026-07-16.** `docs/SPEC.md` §5 maps the Tilda page `/1`
+  (Reparatii case la cheie) to `/reparatii-la-cheie`, while this map and `docs/BACKLOG.md`
+  RC-103 use `renovari-la-cheie`. `/reparatii-la-cheie` was never built and is not planned, so
+  the `/1` redirect in `next.config.ts` was permanently sending a real Tilda URL into a 404.
+  The 301 is now repointed to `/renovari-la-cheie` (the page that exists, and the slug that
+  matches the target keyword "renovari la cheie chisinau"). `/2` → `/case-constructii` stays as
+  is: that page is genuinely still to come. **SPEC §5 is now stale on this row** — treat this
+  map as the source of truth for slugs.
+- **City slugs — RECONCILED 2026-07-16.** RC-303 shipped `/chisinau`, `/orhei`, `/cahul`. This
+  map previously listed the Chișinău row as `/acoperis-chisinau`, which matched neither what
+  shipped nor its own sibling rows (Orhei/Cahul were already bare city slugs) nor its own target
+  keyword ("constructii renovari chisinau" is broader than roofing). Map now says `/chisinau`.
+  No redirect existed for the old slug, so nothing was broken and nothing needs one.
 - **City pages (RC-303):** only build city pages backed by real portfolio projects (Chișinău,
   Orhei, Cahul, Costești). Thin pages without real work hurt more than help.
 - **GEO surface:** keep the quotable facts (160 lei/m², garanție 30 ani, 500+ case, montaj 7–15
