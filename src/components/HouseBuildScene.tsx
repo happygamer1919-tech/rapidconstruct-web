@@ -42,7 +42,7 @@ const HOUSE_URL = "/models/house.glb";
 // and the not-yet-placed ones still read as the blueprint ghost, which is the
 // look we wanted from the hold anyway, without stopping the build.
 const T_BLUEPRINT = 0;
-const T_BUILD = 2.2; // was 3
+const T_BUILD = 1.2; // owner, four times now: faster. 6.5 -> 3 -> 2.2 -> 1.6 -> 1.2
 
 // Fraction of the build each piece spends in flight. With ~84 pieces on an even
 // conveyor this keeps roughly a dozen bricks in the air at any instant — the
