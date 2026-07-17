@@ -45,9 +45,15 @@ function useArmed() {
     window.addEventListener("pointerdown", arm, opts);
     window.addEventListener("pointermove", arm, opts);
     window.addEventListener("keydown", arm, opts);
+    // 250ms, not 2500. The long wait only ever existed to keep the 3D out of a
+    // Lighthouse run, and it never worked (Lighthouse waits far longer than
+    // 2.5s) — audit robots are now excluded explicitly via ?no3d=1, so the delay
+    // is pure dead time before the build starts. It cost the visitor 2.5s of
+    // staring at an empty hero, on top of the build itself, before any headline
+    // appeared. Short enough to let first paint land, long enough not to fight it.
     const t = window.setTimeout(() => {
       if (document.visibilityState === "visible") setArmed(true);
-    }, 2500);
+    }, 250);
     return () => {
       window.removeEventListener("scroll", arm);
       window.removeEventListener("pointerdown", arm);

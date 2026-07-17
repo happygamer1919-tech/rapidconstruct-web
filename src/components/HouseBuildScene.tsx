@@ -42,7 +42,18 @@ const HOUSE_URL = "/models/house.glb";
 // and the not-yet-placed ones still read as the blueprint ghost, which is the
 // look we wanted from the hold anyway, without stopping the build.
 const T_BLUEPRINT = 0;
-const T_BUILD = 1.2; // owner, four times now: faster. 6.5 -> 3 -> 2.2 -> 1.6 -> 1.2
+// 4s, deliberately SLOWER than the 1.2s it was. Owner asked for "faster" four
+// times (6.5 -> 3 -> 2.2 -> 1.6 -> 1.2) while the model grew 84 -> 313 pieces.
+// Together those made the thing he actually wanted — watching it build piece by
+// piece — physically impossible: at 1.2s a piece started every 3.2ms, i.e. ~5 per
+// 16.7ms frame, so the roof assembled in 0.27s and read as a sheet appearing
+// rather than assembly. He picked seeing every piece over raw speed.
+//   1.2s -> 3.2ms apart, 5.2 pieces/frame, roof in 0.27s  (blur)
+//   4.0s -> 10.8ms apart, 1.6 pieces/frame, roof in 0.89s (nearly one-by-one)
+// Literal one-piece-per-frame needs ~6.3s at 313 pieces — the speed he rejected.
+// If piece count changes a lot, re-do this arithmetic; it is what makes or breaks
+// the whole effect.
+const T_BUILD = 4;
 
 // Fraction of the build each piece spends in flight. With ~84 pieces on an even
 // conveyor this keeps roughly a dozen bricks in the air at any instant — the
