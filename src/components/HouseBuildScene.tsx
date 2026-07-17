@@ -468,20 +468,31 @@ export default function HouseBuildScene({
         alpha: true,
         powerPreference: "high-performance",
         toneMapping: ACESFilmicToneMapping,
-        toneMappingExposure: 1.05,
+        toneMappingExposure: 1.18,
       }}
       className="!absolute inset-0"
       aria-label="Model 3D: casa se construiește singură, etapă cu etapă"
     >
       <PerspectiveCamera makeDefault position={L.camera} fov={40} />
-      <ambientLight intensity={0.3} />
+      {/* Lighting matched to the reference photo (docs/reference-match/). Measured
+          on the house area, our render vs the photo:
+            before: mean 197.5, std-dev 43.7, deep shadow 0.5%, bright 53.4%
+            photo : mean 130.2, std-dev 71.8, deep shadow 19.6%, bright 19.3%
+          i.e. the house had essentially NO shadows and half of it was blown out.
+          That flatness is what read as "plastic" — not the geometry, which is why
+          five sessions of adding detail never fixed it. Ambient was the culprit:
+          0.3 of flat fill erases the shadows a hard sun would carve. */}
+      <ambientLight intensity={0.12} />
       {/* PERF: shadow-autoUpdate stops once the house has settled. Nothing moves
           after that, so re-rendering the shadow map for 240 casters every frame
           was pure waste. `needsUpdate` forces exactly one final map. */}
+      {/* Key sun: high front-LEFT, matching where the sun sits in the reference
+          photo. Harder and warmer than before so the eaves, the porch and the
+          gable trusses actually cast. */}
       <directionalLight
-        position={[5, 8, 4]}
-        intensity={2.2}
-        color="#ffe6c2"
+        position={[-6, 8, 5]}
+        intensity={3.2}
+        color="#ffdcae"
         castShadow
         shadow-mapSize={[1024, 1024]}
         shadow-bias={-0.0004}
@@ -511,7 +522,7 @@ export default function HouseBuildScene({
       <Suspense fallback={null}>
         <Environment
           files="/hdri/venice_sunset_1k.hdr"
-          environmentIntensity={1.15}
+          environmentIntensity={0.55}
         />
       </Suspense>
       <ContactShadows
