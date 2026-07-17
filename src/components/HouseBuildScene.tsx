@@ -53,7 +53,12 @@ const T_BLUEPRINT = 0;
 // Literal one-piece-per-frame needs ~6.3s at 313 pieces — the speed he rejected.
 // If piece count changes a lot, re-do this arithmetic; it is what makes or breaks
 // the whole effect.
-const T_BUILD = 4;
+//
+// 3.4s: he asked to "speed up a little" once the 4s build was readable. This is
+// as far as it goes without undoing that — the visibility cliff is right here:
+//   3.4s -> 9.2ms apart, 1.8/frame, roof 0.76s (still reads as assembly)
+//   3.0s -> 8.1ms apart, 2.1/frame, roof 0.67s (starts to blur again)
+const T_BUILD = 3.4;
 
 // Fraction of the build each piece spends in flight. With ~84 pieces on an even
 // conveyor this keeps roughly a dozen bricks in the air at any instant — the
