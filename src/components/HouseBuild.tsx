@@ -179,7 +179,11 @@ export default function HouseBuild({
           initial={{ opacity: 0, y: 18 }}
           animate={built ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="pointer-events-auto"
+          // w-fit is load-bearing: as a plain flex child this div stretched the
+          // full container width and swallowed every pointer event over the
+          // house, so "Trage pentru a roti" did nothing across most of the hero.
+          // Only the copy itself should capture clicks.
+          className="pointer-events-auto w-fit"
         >
           {heroBlock}
         </motion.div>

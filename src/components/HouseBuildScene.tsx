@@ -1,6 +1,6 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   useGLTF,
   ContactShadows,
@@ -8,7 +8,7 @@ import {
   OrbitControls,
   Environment,
 } from "@react-three/drei";
-import { Suspense, useMemo, useRef } from "react";
+import { Suspense, useMemo, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 import {
   ACESFilmicToneMapping,
@@ -106,12 +106,15 @@ function House({
   playing,
   highlightPhase,
   onDone,
+  onRest,
   scale,
   position,
 }: {
   playing: boolean;
   highlightPhase: number; // -1 = none
   onDone?: () => void;
+  /** fires when nothing is animating any more, so the canvas can stop drawing */
+  onRest?: () => void;
   scale: number;
   position: [number, number, number];
 }) {
@@ -119,6 +122,7 @@ function House({
   const rootRef = useRef<Group>(null);
   const clockRef = useRef(0);
   const doneRef = useRef(false);
+  const restedRef = useRef(false);
 
   const { prepared, pieces, ghost } = useMemo(() => {
     // useGLTF caches ONE scene per URL, and this component now mounts twice on
@@ -285,6 +289,15 @@ function House({
         for (const c of p.colors) c.mat.color.lerp(dim ? FADE : c.orig, 0.1);
       }
     }
+
+    // PERF: once the build has settled and no phase highlight is lerping, this
+    // scene is a STILL IMAGE — but the canvas was re-rendering it forever at full
+    // rate, shadow pass and all, for 240 meshes. That was the lag. Hand control
+    // back to the parent, which drops the loop to on-demand.
+    if (doneRef.current && hl < 0 && !restedRef.current) {
+      restedRef.current = true;
+      onRest?.();
+    }
   });
   /* eslint-enable react-hooks/immutability */
 
@@ -350,11 +363,20 @@ export default function HouseBuildScene({
   const reduce = useReducedMotion();
   const L = LAYOUT[layout];
 
+  // PERF: the hero was rendering a FINISHED, motionless house forever at full
+  // rate — 240 meshes plus a shadow pass, every frame, for a still image. That
+  // was the lag. Once the build settles we drop to "demand": R3F only redraws
+  // when something asks it to, and drei's OrbitControls invalidates on drag, so
+  // spinning the house still works. The tour keeps looping while it is on screen
+  // because its phase highlight is always lerping.
+  const [rested, setRested] = useState(false);
+  const frameloop = !active ? "never" : rested ? "demand" : "always";
+
   return (
     <Canvas
+      frameloop={frameloop}
       shadows="soft"
       dpr={[1, 1.5]}
-      frameloop={active ? "always" : "never"}
       // Staying on ACES. The 3D session recommended AgX, arguing ACES "washes the
       // warm palette" — but that was researched, not verified, and it does not
       // survive the real render. Measured on a tight roof/wall crop (page
@@ -376,6 +398,9 @@ export default function HouseBuildScene({
     >
       <PerspectiveCamera makeDefault position={L.camera} fov={40} />
       <ambientLight intensity={0.3} />
+      {/* PERF: shadow-autoUpdate stops once the house has settled. Nothing moves
+          after that, so re-rendering the shadow map for 240 casters every frame
+          was pure waste. `needsUpdate` forces exactly one final map. */}
       <directionalLight
         position={[5, 8, 4]}
         intensity={2.2}
@@ -384,6 +409,8 @@ export default function HouseBuildScene({
         shadow-mapSize={[1024, 1024]}
         shadow-bias={-0.0004}
         shadow-normalBias={0.02}
+        shadow-autoUpdate={!rested}
+        shadow-needsUpdate={rested}
       />
       <directionalLight position={[-6, 3, -4]} intensity={0.5} color="#cddcff" />
       {/* Dim back-rim: lifts the roofline off the page tone so the silhouette
@@ -396,6 +423,7 @@ export default function HouseBuildScene({
           playing={play && !reduce}
           highlightPhase={highlightPhase}
           onDone={onDone}
+          onRest={() => setRested(true)}
           scale={L.scale}
           position={L.position}
         />
@@ -417,15 +445,32 @@ export default function HouseBuildScene({
         far={5}
         frames={1}
       />
-      <OrbitControls
-        makeDefault
-        target={L.target}
-        autoRotate={false}
-        enableZoom={false}
-        enablePan={false}
-        minPolarAngle={Math.PI / 5}
-        maxPolarAngle={Math.PI / 2.15}
-      />
+      <Controls target={L.target} />
     </Canvas>
+  );
+}
+
+/**
+ * OrbitControls that explicitly redraws on drag.
+ *
+ * Once the build settles the canvas drops to frameloop="demand", and dragging
+ * silently stopped rotating the house — the controls moved the camera but
+ * nothing asked for a new frame, so the picture never changed. Caught by driving
+ * a real drag and diffing the pixels; it would have shipped as "the house is
+ * frozen". invalidate() on change is what makes on-demand rendering interactive.
+ */
+function Controls({ target }: { target: [number, number, number] }) {
+  const invalidate = useThree((s) => s.invalidate);
+  return (
+    <OrbitControls
+      makeDefault
+      target={target}
+      onChange={() => invalidate()}
+      autoRotate={false}
+      enableZoom={false}
+      enablePan={false}
+      minPolarAngle={Math.PI / 5}
+      maxPolarAngle={Math.PI / 2.15}
+    />
   );
 }
