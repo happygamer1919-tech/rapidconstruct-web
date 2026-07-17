@@ -49,6 +49,12 @@ const T_BUILD = 2.2; // was 3
 // "every brick in motion" look — instead of five sequential bursts.
 const PIECE_DUR = 0.16;
 
+// Owner: "I want the blue lines to stay a bit longer". Each piece keeps the
+// blueprint-wireframe material through the first part of its FLIGHT and only
+// materialises at this fraction of it — so the blue lingers on screen well into
+// the build without slowing anything down (motion is untouched).
+const GHOST_UNTIL = 0.55;
+
 // GLB node name -> build phase (0..4). Names come from HomeRC.blend.
 //
 // The garden (path, trees, shrubs, hedge) is named `plinth_*` in the .blend, so a
@@ -247,7 +253,10 @@ function House({
         p.mesh.rotation.set(p.r0[0], p.r0[1], p.r0[2]);
         continue;
       }
-      if (p.mesh.material !== p.real) p.mesh.material = p.real;
+      // Materialise mid-flight (GHOST_UNTIL), not at launch: the piece flies in
+      // as blue wireframe first, then becomes real as it settles.
+      const want = k < GHOST_UNTIL && !doneRef.current ? ghost : p.real;
+      if (p.mesh.material !== want) p.mesh.material = want;
 
       // Every piece now FLIES IN and snaps — the lego read the owner asked for.
       // Walls still rise out of the ground (a wall does not fall from the sky);
