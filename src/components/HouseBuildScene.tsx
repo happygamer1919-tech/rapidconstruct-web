@@ -54,16 +54,28 @@ const T_BLUEPRINT = 0;
 // If piece count changes a lot, re-do this arithmetic; it is what makes or breaks
 // the whole effect.
 //
-// 3.4s: he asked to "speed up a little" once the 4s build was readable. This is
-// as far as it goes without undoing that — the visibility cliff is right here:
-//   3.4s -> 9.2ms apart, 1.8/frame, roof 0.76s (still reads as assembly)
-//   3.0s -> 8.1ms apart, 2.1/frame, roof 0.67s (starts to blur again)
-const T_BUILD = 3.4;
+// 2.2s. Getting here meant noticing the knob I had been ignoring: what makes the
+// build read as a WAVE is not its length, it is how many pieces are in the air at
+// once (= flight / spacing). At 3.4s with a 544ms flight, 59 pieces were airborne
+// simultaneously — a swarm. Shorten each piece's FLIGHT and the same build reads
+// as distinct pieces landing, which frees the total to come down:
+//   3.4s, flight 544ms -> 59 airborne, roof 0.76s (wave)
+//   2.2s, flight 110ms -> 16 airborne, roof 0.56s (distinct pieces, and faster)
+// Floor: below ~100ms of flight the piece is gone before the eye catches it (~6
+// frames), so do not chase speed by cutting PIECE_DUR further — cut piece count
+// or accept the blur.
+const T_BUILD = 2.2;
 
-// Fraction of the build each piece spends in flight. With ~84 pieces on an even
-// conveyor this keeps roughly a dozen bricks in the air at any instant — the
-// "every brick in motion" look — instead of five sequential bursts.
-const PIECE_DUR = 0.16;
+// Fraction of the build each piece spends in flight. 0.05 of 2.2s = ~110ms, about
+// 6 frames — brief, but enough to see the piece travel and snap.
+//
+// This was 0.16 (a 544ms flight) and that was the real bug behind "it doesn't
+// build like the walls". Flight/spacing = how many pieces are airborne at once:
+// 0.16 put 59 in the air simultaneously, so the eye saw a moving cloud instead of
+// pieces landing. 0.05 puts 16 up — the same "every brick in motion" feel the
+// owner asked for, but legible as a sequence. Raising this back up makes the
+// build mushier, not richer.
+const PIECE_DUR = 0.05;
 
 // Owner: "I want the blue lines to stay a bit longer". Each piece keeps the
 // blueprint-wireframe material through the first part of its FLIGHT and only
@@ -139,6 +151,7 @@ function House({
   const clockRef = useRef(0);
   const doneRef = useRef(false);
   const restedRef = useRef(false);
+  const prevHlRef = useRef(highlightPhase);
 
   const { prepared, pieces, ghost } = useMemo(() => {
     // useGLTF caches ONE scene per URL, and this component now mounts twice on
@@ -274,6 +287,13 @@ function House({
     }
 
     const hl = highlightPhase;
+    // A new highlight means the colours must travel again — un-rest so the parent
+    // puts the loop back to "always" until they settle.
+    if (hl !== prevHlRef.current) {
+      prevHlRef.current = hl;
+      restedRef.current = false;
+    }
+    let maxColorDelta = 0;
     for (const p of pieces) {
       const k = Math.min(1, Math.max(0, (build - p.start) / p.dur));
       if (k <= 0) {
@@ -313,15 +333,33 @@ function House({
 
       if (p.colors.length) {
         const dim = hl >= 0 && p.phase !== hl;
-        for (const c of p.colors) c.mat.color.lerp(dim ? FADE : c.orig, 0.1);
+        for (const c of p.colors) {
+          const target = dim ? FADE : c.orig;
+          c.mat.color.lerp(target, 0.1);
+          // how far this colour still has to travel — drives the rest check below
+          const d =
+            Math.abs(c.mat.color.r - target.r) +
+            Math.abs(c.mat.color.g - target.g) +
+            Math.abs(c.mat.color.b - target.b);
+          if (d > maxColorDelta) maxColorDelta = d;
+        }
       }
     }
 
-    // PERF: once the build has settled and no phase highlight is lerping, this
-    // scene is a STILL IMAGE — but the canvas was re-rendering it forever at full
-    // rate, shadow pass and all, for 240 meshes. That was the lag. Hand control
-    // back to the parent, which drops the loop to on-demand.
-    if (doneRef.current && hl < 0 && !restedRef.current) {
+    // PERF: once the build has settled and the colours have stopped moving, this
+    // scene is a STILL IMAGE — but the canvas kept re-rendering it forever at full
+    // rate, shadow pass and all, for 313 meshes. That was the lag.
+    //
+    // The old check was `hl < 0`, which only ever let the HERO rest. The tour
+    // passes highlightPhase={segment} — 0 on arrival — so it never rested, and it
+    // mounts at page load (useInView has a 200px margin, so it is "in view" behind
+    // the hero). Two 313-mesh canvases, both looping, from the first second.
+    //
+    // A lerp toward a target never mathematically arrives, so waiting for hl < 0
+    // was never going to work for the tour. Instead: rest when every colour is
+    // within a delta nobody can see. A new highlight re-arms it (below).
+    const settled = maxColorDelta < 0.004;
+    if (doneRef.current && settled && !restedRef.current) {
       restedRef.current = true;
       onRest?.();
     }
@@ -390,13 +428,25 @@ export default function HouseBuildScene({
   const reduce = useReducedMotion();
   const L = LAYOUT[layout];
 
-  // PERF: the hero was rendering a FINISHED, motionless house forever at full
-  // rate — 240 meshes plus a shadow pass, every frame, for a still image. That
-  // was the lag. Once the build settles we drop to "demand": R3F only redraws
-  // when something asks it to, and drei's OrbitControls invalidates on drag, so
-  // spinning the house still works. The tour keeps looping while it is on screen
-  // because its phase highlight is always lerping.
+  // PERF: a FINISHED, motionless house was rendering forever at full rate — 313
+  // meshes plus a shadow pass, every frame, for a still image. That was the lag.
+  // Once the build settles AND the phase colours stop moving we drop to "demand":
+  // R3F only redraws when asked, and drei's OrbitControls invalidates on drag, so
+  // spinning the house still works.
+  //
+  // This used to rest the hero only. The tour never rested (its highlight is
+  // always set), and it MOUNTS AT PAGE LOAD — useInView's 200px margin makes it
+  // "in view" right behind the hero — so two 313-mesh canvases looped from the
+  // first second. Changing the highlight re-arms the loop below.
   const [rested, setRested] = useState(false);
+  // React's "adjust state when a prop changes" pattern (previous value in state,
+  // not a ref — refs may not be read during render). A new phase means the colours
+  // must travel again, so re-arm the loop.
+  const [seenHl, setSeenHl] = useState(highlightPhase);
+  if (seenHl !== highlightPhase) {
+    setSeenHl(highlightPhase);
+    if (rested) setRested(false);
+  }
   const frameloop = !active ? "never" : rested ? "demand" : "always";
 
   return (
