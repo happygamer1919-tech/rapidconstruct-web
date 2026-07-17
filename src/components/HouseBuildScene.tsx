@@ -149,7 +149,7 @@ function House({
           metalness: 0,
           roughness: 0.08,
           transparent: true,
-          opacity: 0.45,
+          opacity: 0.3,
           reflectivity: 1,
           envMapIntensity: 1.4,
           // Warm "lights are on" glow. This HAS to live here, not in Blender: the
