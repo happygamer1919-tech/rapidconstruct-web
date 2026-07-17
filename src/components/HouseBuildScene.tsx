@@ -191,11 +191,22 @@ function House({
       return c.applyMatrix4(m.matrixWorld).y;
     };
 
+    // Ridge/hip caps go on LAST, after the slope courses they sit on — that is
+    // the order a real roofer works in: tile up the slope, then cap the hips.
+    // Height alone interleaves them, because a hip cap runs UP the hip so its
+    // centre sits mid-slope. (The 3D session flagged this as an alphabetical
+    // sort problem — it isn't, we never sort by name — but it was right that caps
+    // were landing among the courses.)
+    const isCap = (m: Mesh) => /^(ridge_|chimney_cap)/.test(m.name);
+
     const ordered: { mesh: Mesh; phase: number }[] = [];
     buckets.forEach((bucket, phase) => {
       bucket
         .slice()
-        .sort((a, b) => centreY(a) - centreY(b))
+        .sort(
+          (a, b) =>
+            Number(isCap(a)) - Number(isCap(b)) || centreY(a) - centreY(b),
+        )
         .forEach((mesh) => ordered.push({ mesh, phase }));
     });
 
