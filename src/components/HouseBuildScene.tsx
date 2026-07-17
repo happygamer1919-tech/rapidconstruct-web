@@ -11,10 +11,12 @@ import {
 import { Suspense, useMemo, useRef } from "react";
 import { useReducedMotion } from "motion/react";
 import {
+  ACESFilmicToneMapping,
   Color,
   MeshBasicMaterial,
   MeshPhysicalMaterial,
   MeshStandardMaterial,
+  Vector3,
   type Group,
   type Mesh,
   type Material,
@@ -35,16 +37,39 @@ import {
 
 const HOUSE_URL = "/models/house.glb";
 
-const T_BLUEPRINT = 0.35; // brief blueprint hold before pieces land
-const T_BUILD = 3; // the build itself (owner: faster)
+// Owner: "without pauses, more faster". The blueprint hold was a literal dead
+// beat — 0.35s where nothing moved — so it is gone: pieces start landing at once
+// and the not-yet-placed ones still read as the blueprint ghost, which is the
+// look we wanted from the hold anyway, without stopping the build.
+const T_BLUEPRINT = 0;
+const T_BUILD = 2.2; // was 3
+
+// Fraction of the build each piece spends in flight. With ~84 pieces on an even
+// conveyor this keeps roughly a dozen bricks in the air at any instant — the
+// "every brick in motion" look — instead of five sequential bursts.
+const PIECE_DUR = 0.16;
+
+// Owner: "I want the blue lines to stay a bit longer". Each piece keeps the
+// blueprint-wireframe material through the first part of its FLIGHT and only
+// materialises at this fraction of it — so the blue lingers on screen well into
+// the build without slowing anything down (motion is untouched).
+const GHOST_UNTIL = 0.55;
 
 // GLB node name -> build phase (0..4). Names come from HomeRC.blend.
+//
+// The garden (path, trees, shrubs, hedge) is named `plinth_*` in the .blend, so a
+// bare /^plinth/ swept it into phase 0 and planted a mature garden *while pouring
+// the foundation* — and the tour then highlighted it as "Fundația". Landscaping is
+// the LAST thing a builder does, which is exactly what phase 4 says ("Ultimele
+// detalii… apoi predăm cheia"). So phase 0 is now explicit about which plinth
+// pieces are groundworks, and the planting lands in phase 4.
+// Order matters: phaseOf returns the FIRST match.
 const PHASES: RegExp[] = [
-  /^plinth/, // incl. plinth_lawn
+  /^plinth$|^plinth_lawn$|^plinth_base/, // groundworks: slab, lawn, stone base course
   /^(main|wing|entry)$|_interior$/,
   /^(roof_|ridge_|entry_roof|chimney)/,
   /^(w\d+_|sill|door|handle)/,
-  /^(gutter_|ds\d)/,
+  /^(gutter_|ds\d)|^plinth_(path|tree|shrub|hedge)/, // details + landscaping
 ];
 const PHASE_COUNT = PHASES.length;
 
@@ -59,6 +84,8 @@ type Piece = {
   phase: number;
   y0: number;
   s0: [number, number, number];
+  r0: [number, number, number];
+  spin: number; // deterministic tumble, settles to r0 on landing
   start: number; // 0..1 within the build
   dur: number;
   real: Material | Material[];
@@ -125,6 +152,11 @@ function House({
           opacity: 0.45,
           reflectivity: 1,
           envMapIntensity: 1.4,
+          // Warm "lights are on" glow. This HAS to live here, not in Blender: the
+          // scene swaps the glass material at runtime, so an emissive authored in
+          // the .blend would be thrown away. Sells a lived-in house, costs nothing.
+          emissive: new Color("#ffcf8f"),
+          emissiveIntensity: 0.22,
         });
       }
       const mat0 = m.material as MeshStandardMaterial;
@@ -133,33 +165,62 @@ function House({
       buckets[phaseOf(m.name)].push(m);
     });
 
-    const window = 1 / PHASE_COUNT;
-    const list: Piece[] = [];
+    // CONVEYOR TIMING (owner: "more lego, without pauses, every brick in motion").
+    //
+    // The old scheme gave every phase a fixed 1/5 of the build no matter how many
+    // pieces it held — phase 0 has 5 pieces, phase 3 has 46. So the sparse phases
+    // crawled and the dense ones rushed, which is what read as pauses.
+    //
+    // Now every piece gets the SAME short flight and starts are spread evenly
+    // across the whole build, so the number of bricks in the air stays roughly
+    // constant end to end: a conveyor, not five bursts. Story order is preserved
+    // (foundation -> walls -> roof -> openings -> details) and, within a phase,
+    // pieces land BOTTOM-UP like real courses.
+    //
+    // Order by world-space bounding-box centre, not node.position: only 52 of the
+    // 84 nodes carry a translation — the other 32 have their transform baked into
+    // the geometry and would all sort as y=0.
+    scene.updateMatrixWorld(true);
+    const centreY = (m: Mesh) => {
+      if (!m.geometry.boundingBox) m.geometry.computeBoundingBox();
+      const c = m.geometry.boundingBox!.getCenter(new Vector3());
+      return c.applyMatrix4(m.matrixWorld).y;
+    };
+
+    const ordered: { mesh: Mesh; phase: number }[] = [];
     buckets.forEach((bucket, phase) => {
-      const n = bucket.length || 1;
-      bucket.forEach((mesh, j) => {
-        // Clone materials per piece so highlight fading is independent.
-        const mats = Array.isArray(mesh.material)
-          ? mesh.material
-          : [mesh.material];
-        const colors: PieceColor[] = [];
-        const cloned = mats.map((mm) => {
-          const c = (mm as MeshStandardMaterial).clone();
-          if ((c as MeshStandardMaterial).color)
-            colors.push({ mat: c, orig: c.color.clone() });
-          return c;
-        });
-        mesh.material = Array.isArray(mesh.material) ? cloned : cloned[0];
-        list.push({
-          mesh,
-          phase,
-          y0: mesh.position.y,
-          s0: [mesh.scale.x, mesh.scale.y, mesh.scale.z],
-          start: phase * window + (j / n) * window * 0.45,
-          dur: window * 0.55,
-          real: mesh.material,
-          colors,
-        });
+      bucket
+        .slice()
+        .sort((a, b) => centreY(a) - centreY(b))
+        .forEach((mesh) => ordered.push({ mesh, phase }));
+    });
+
+    const list: Piece[] = [];
+    const last = Math.max(1, ordered.length - 1);
+    ordered.forEach(({ mesh, phase }, i) => {
+      // Clone materials per piece so highlight fading is independent.
+      const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+      const colors: PieceColor[] = [];
+      const cloned = mats.map((mm) => {
+        const c = (mm as MeshStandardMaterial).clone();
+        if ((c as MeshStandardMaterial).color)
+          colors.push({ mat: c, orig: c.color.clone() });
+        return c;
+      });
+      mesh.material = Array.isArray(mesh.material) ? cloned : cloned[0];
+      list.push({
+        mesh,
+        phase,
+        y0: mesh.position.y,
+        s0: [mesh.scale.x, mesh.scale.y, mesh.scale.z],
+        r0: [mesh.rotation.x, mesh.rotation.y, mesh.rotation.z],
+        // deterministic per-piece tumble — no Math.random, so every visitor and
+        // every screenshot sees the identical build
+        spin: (((i * 2654435761) % 1000) / 1000 - 0.5) * 0.5,
+        start: (i / last) * (1 - PIECE_DUR),
+        dur: PIECE_DUR,
+        real: mesh.material,
+        colors,
       });
     });
     return { prepared: scene, pieces: list, ghost: ghostMat };
@@ -185,23 +246,38 @@ function House({
     for (const p of pieces) {
       const k = Math.min(1, Math.max(0, (build - p.start) / p.dur));
       if (k <= 0) {
+        // not placed yet: sits as the blueprint ghost, in its authored pose
         if (p.mesh.material !== ghost) p.mesh.material = ghost;
         p.mesh.position.y = p.y0;
         p.mesh.scale.set(p.s0[0], p.s0[1], p.s0[2]);
+        p.mesh.rotation.set(p.r0[0], p.r0[1], p.r0[2]);
         continue;
       }
-      if (p.mesh.material !== p.real) p.mesh.material = p.real;
+      // Materialise mid-flight (GHOST_UNTIL), not at launch: the piece flies in
+      // as blue wireframe first, then becomes real as it settles.
+      const want = k < GHOST_UNTIL && !doneRef.current ? ghost : p.real;
+      if (p.mesh.material !== want) p.mesh.material = want;
 
+      // Every piece now FLIES IN and snaps — the lego read the owner asked for.
+      // Walls still rise out of the ground (a wall does not fall from the sky);
+      // everything else drops from above with an overshoot click.
+      const settle = 1 - easeOutBack(k);
       if (p.phase === 1) {
         p.mesh.position.y = p.y0 - 0.7 * (1 - easeOutCubic(k)); // walls rise
       } else if (p.phase === 2) {
-        p.mesh.position.y = p.y0 + 1.1 * (1 - easeOutBack(k)); // roof drops
+        p.mesh.position.y = p.y0 + 1.4 * settle; // roof drops
       } else if (p.phase === 3) {
-        const s = 0.5 + 0.5 * easeOutBack(k); // windows/doors pop
+        const s = 0.55 + 0.45 * easeOutBack(k); // openings pop into their holes
         p.mesh.scale.set(p.s0[0] * s, p.s0[1] * s, p.s0[2] * s);
-        p.mesh.position.y = p.y0;
+        p.mesh.position.y = p.y0 + 0.5 * settle;
       } else {
-        p.mesh.position.y = p.y0 + 0.3 * (1 - easeOutCubic(k)); // foundation/details
+        p.mesh.position.y = p.y0 + 0.6 * settle; // groundworks + details/garden
+      }
+      // Tumble that settles exactly onto the authored rotation. Walls are left
+      // alone: a rotating wall reads as broken, not as assembly.
+      if (p.phase !== 1) {
+        const t = p.spin * settle;
+        p.mesh.rotation.set(p.r0[0] + t, p.r0[1], p.r0[2] + t);
       }
 
       if (p.colors.length) {
@@ -237,13 +313,16 @@ const LAYOUT = {
   // half and the copy takes the top — no scrim heavy enough to fix the overlap
   // would leave the house visible, and the house is the point of the hero.
   heroMobile: {
-    scale: 0.3,
-    position: [0.15, -2.1, 0.1] as [number, number, number],
+    scale: 0.34,
+    // Owner, twice: the phone hero "looks ugly, bring it more up". Raised and
+    // enlarged so the house fills the space under the copy instead of sitting
+    // small and low with dead screen beneath it.
+    position: [0.15, -1.55, 0.1] as [number, number, number],
     // Pulled back hard: at a 390px width the 40deg VERTICAL fov leaves only
     // ~19deg horizontally, so the desktop camera crops the house to a wall.
     camera: [2.2, 1.1, 13.5] as [number, number, number],
-    target: [0.15, -1.3, 0] as [number, number, number],
-    shadowY: -2.16,
+    target: [0.15, -0.75, 0] as [number, number, number],
+    shadowY: -1.61,
   },
   box: {
     scale: 0.3,
@@ -276,9 +355,21 @@ export default function HouseBuildScene({
       shadows="soft"
       dpr={[1, 1.5]}
       frameloop={active ? "always" : "never"}
-      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-      onCreated={({ gl }) => {
-        gl.toneMappingExposure = 1.05;
+      // Staying on ACES. The 3D session recommended AgX, arguing ACES "washes the
+      // warm palette" — but that was researched, not verified, and it does not
+      // survive the real render. Measured on a tight roof/wall crop (page
+      // background excluded; including it dilutes the numbers to noise):
+      //   ACES 1.05 -> mean luminance 155.9, saturation 0.131, contrast range 216
+      //   AgX  1.10 -> mean luminance 159.9, saturation 0.100, contrast range 197
+      // AgX came out brighter, 24% LESS saturated and lower contrast — it is what
+      // made the house look washed out. Exactly backwards. Re-measure before
+      // changing this, don't re-argue it from theory.
+      gl={{
+        antialias: true,
+        alpha: true,
+        powerPreference: "high-performance",
+        toneMapping: ACESFilmicToneMapping,
+        toneMappingExposure: 1.05,
       }}
       className="!absolute inset-0"
       aria-label="Model 3D: casa se construiește singură, etapă cu etapă"
@@ -295,6 +386,11 @@ export default function HouseBuildScene({
         shadow-normalBias={0.02}
       />
       <directionalLight position={[-6, 3, -4]} intensity={0.5} color="#cddcff" />
+      {/* Dim back-rim: lifts the roofline off the page tone so the silhouette
+          reads. Free — one light, no shadow map. (No SSAO/postprocessing here on
+          purpose: it would sink the low-end phone that already cannot finish a
+          Lighthouse run. Ambient occlusion belongs baked in the texture.) */}
+      <directionalLight position={[-3, 4, -7]} intensity={0.35} color="#ffd9a0" />
       <Suspense fallback={null}>
         <House
           playing={play && !reduce}
@@ -304,9 +400,14 @@ export default function HouseBuildScene({
           position={L.position}
         />
       </Suspense>
-      {/* Self-hosted HDR in its OWN Suspense so the house never waits on it. */}
+      {/* Self-hosted HDR in its OWN Suspense so the house never waits on it.
+          environmentIntensity is the other free lever the 3D session flagged:
+          the default 1.0 under-lights the plaster. Zero bytes. */}
       <Suspense fallback={null}>
-        <Environment files="/hdri/venice_sunset_1k.hdr" />
+        <Environment
+          files="/hdri/venice_sunset_1k.hdr"
+          environmentIntensity={1.15}
+        />
       </Suspense>
       <ContactShadows
         position={[0, L.shadowY, 0]}
