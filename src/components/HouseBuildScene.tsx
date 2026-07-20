@@ -1,6 +1,6 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   useGLTF,
   ContactShadows,
@@ -8,7 +8,7 @@ import {
   OrbitControls,
   Environment,
 } from "@react-three/drei";
-import { Suspense, useMemo, useRef } from "react";
+import { Suspense, useMemo, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 import {
   ACESFilmicToneMapping,
@@ -42,12 +42,40 @@ const HOUSE_URL = "/models/house.glb";
 // and the not-yet-placed ones still read as the blueprint ghost, which is the
 // look we wanted from the hold anyway, without stopping the build.
 const T_BLUEPRINT = 0;
-const T_BUILD = 2.2; // was 3
+// 4s, deliberately SLOWER than the 1.2s it was. Owner asked for "faster" four
+// times (6.5 -> 3 -> 2.2 -> 1.6 -> 1.2) while the model grew 84 -> 313 pieces.
+// Together those made the thing he actually wanted — watching it build piece by
+// piece — physically impossible: at 1.2s a piece started every 3.2ms, i.e. ~5 per
+// 16.7ms frame, so the roof assembled in 0.27s and read as a sheet appearing
+// rather than assembly. He picked seeing every piece over raw speed.
+//   1.2s -> 3.2ms apart, 5.2 pieces/frame, roof in 0.27s  (blur)
+//   4.0s -> 10.8ms apart, 1.6 pieces/frame, roof in 0.89s (nearly one-by-one)
+// Literal one-piece-per-frame needs ~6.3s at 313 pieces — the speed he rejected.
+// If piece count changes a lot, re-do this arithmetic; it is what makes or breaks
+// the whole effect.
+//
+// 2.2s. Getting here meant noticing the knob I had been ignoring: what makes the
+// build read as a WAVE is not its length, it is how many pieces are in the air at
+// once (= flight / spacing). At 3.4s with a 544ms flight, 59 pieces were airborne
+// simultaneously — a swarm. Shorten each piece's FLIGHT and the same build reads
+// as distinct pieces landing, which frees the total to come down:
+//   3.4s, flight 544ms -> 59 airborne, roof 0.76s (wave)
+//   2.2s, flight 110ms -> 16 airborne, roof 0.56s (distinct pieces, and faster)
+// Floor: below ~100ms of flight the piece is gone before the eye catches it (~6
+// frames), so do not chase speed by cutting PIECE_DUR further — cut piece count
+// or accept the blur.
+const T_BUILD = 2.2;
 
-// Fraction of the build each piece spends in flight. With ~84 pieces on an even
-// conveyor this keeps roughly a dozen bricks in the air at any instant — the
-// "every brick in motion" look — instead of five sequential bursts.
-const PIECE_DUR = 0.16;
+// Fraction of the build each piece spends in flight. 0.05 of 2.2s = ~110ms, about
+// 6 frames — brief, but enough to see the piece travel and snap.
+//
+// This was 0.16 (a 544ms flight) and that was the real bug behind "it doesn't
+// build like the walls". Flight/spacing = how many pieces are airborne at once:
+// 0.16 put 59 in the air simultaneously, so the eye saw a moving cloud instead of
+// pieces landing. 0.05 puts 16 up — the same "every brick in motion" feel the
+// owner asked for, but legible as a sequence. Raising this back up makes the
+// build mushier, not richer.
+const PIECE_DUR = 0.05;
 
 // Owner: "I want the blue lines to stay a bit longer". Each piece keeps the
 // blueprint-wireframe material through the first part of its FLIGHT and only
@@ -106,12 +134,15 @@ function House({
   playing,
   highlightPhase,
   onDone,
+  onRest,
   scale,
   position,
 }: {
   playing: boolean;
   highlightPhase: number; // -1 = none
   onDone?: () => void;
+  /** fires when nothing is animating any more, so the canvas can stop drawing */
+  onRest?: () => void;
   scale: number;
   position: [number, number, number];
 }) {
@@ -119,6 +150,8 @@ function House({
   const rootRef = useRef<Group>(null);
   const clockRef = useRef(0);
   const doneRef = useRef(false);
+  const restedRef = useRef(false);
+  const prevHlRef = useRef(highlightPhase);
 
   const { prepared, pieces, ghost } = useMemo(() => {
     // useGLTF caches ONE scene per URL, and this component now mounts twice on
@@ -149,7 +182,7 @@ function House({
           metalness: 0,
           roughness: 0.08,
           transparent: true,
-          opacity: 0.45,
+          opacity: 0.3,
           reflectivity: 1,
           envMapIntensity: 1.4,
           // Warm "lights are on" glow. This HAS to live here, not in Blender: the
@@ -187,11 +220,22 @@ function House({
       return c.applyMatrix4(m.matrixWorld).y;
     };
 
+    // Ridge/hip caps go on LAST, after the slope courses they sit on — that is
+    // the order a real roofer works in: tile up the slope, then cap the hips.
+    // Height alone interleaves them, because a hip cap runs UP the hip so its
+    // centre sits mid-slope. (The 3D session flagged this as an alphabetical
+    // sort problem — it isn't, we never sort by name — but it was right that caps
+    // were landing among the courses.)
+    const isCap = (m: Mesh) => /^(ridge_|chimney_cap)/.test(m.name);
+
     const ordered: { mesh: Mesh; phase: number }[] = [];
     buckets.forEach((bucket, phase) => {
       bucket
         .slice()
-        .sort((a, b) => centreY(a) - centreY(b))
+        .sort(
+          (a, b) =>
+            Number(isCap(a)) - Number(isCap(b)) || centreY(a) - centreY(b),
+        )
         .forEach((mesh) => ordered.push({ mesh, phase }));
     });
 
@@ -243,6 +287,13 @@ function House({
     }
 
     const hl = highlightPhase;
+    // A new highlight means the colours must travel again — un-rest so the parent
+    // puts the loop back to "always" until they settle.
+    if (hl !== prevHlRef.current) {
+      prevHlRef.current = hl;
+      restedRef.current = false;
+    }
+    let maxColorDelta = 0;
     for (const p of pieces) {
       const k = Math.min(1, Math.max(0, (build - p.start) / p.dur));
       if (k <= 0) {
@@ -282,8 +333,35 @@ function House({
 
       if (p.colors.length) {
         const dim = hl >= 0 && p.phase !== hl;
-        for (const c of p.colors) c.mat.color.lerp(dim ? FADE : c.orig, 0.1);
+        for (const c of p.colors) {
+          const target = dim ? FADE : c.orig;
+          c.mat.color.lerp(target, 0.1);
+          // how far this colour still has to travel — drives the rest check below
+          const d =
+            Math.abs(c.mat.color.r - target.r) +
+            Math.abs(c.mat.color.g - target.g) +
+            Math.abs(c.mat.color.b - target.b);
+          if (d > maxColorDelta) maxColorDelta = d;
+        }
       }
+    }
+
+    // PERF: once the build has settled and the colours have stopped moving, this
+    // scene is a STILL IMAGE — but the canvas kept re-rendering it forever at full
+    // rate, shadow pass and all, for 313 meshes. That was the lag.
+    //
+    // The old check was `hl < 0`, which only ever let the HERO rest. The tour
+    // passes highlightPhase={segment} — 0 on arrival — so it never rested, and it
+    // mounts at page load (useInView has a 200px margin, so it is "in view" behind
+    // the hero). Two 313-mesh canvases, both looping, from the first second.
+    //
+    // A lerp toward a target never mathematically arrives, so waiting for hl < 0
+    // was never going to work for the tour. Instead: rest when every colour is
+    // within a delta nobody can see. A new highlight re-arms it (below).
+    const settled = maxColorDelta < 0.004;
+    if (doneRef.current && settled && !restedRef.current) {
+      restedRef.current = true;
+      onRest?.();
     }
   });
   /* eslint-enable react-hooks/immutability */
@@ -304,9 +382,15 @@ useGLTF.preload(HOUSE_URL);
 const LAYOUT = {
   hero: {
     scale: 0.28,
-    position: [3, -0.75, 0.1] as [number, number, number],
+    // Shifted right (was x=3) once the jerkinhead landed. The gable face sits on
+    // the MAIN block — the LEFT end of the house — so it fell under the text
+    // scrim, which washed the near-black timber truss to pale grey (measured on
+    // the gable: darkest pixel 13 with no scrim, 28 with it). Weakening the scrim
+    // instead dropped the headline to 1.25 contrast, i.e. the "text disappears"
+    // bug again. So the house moves, not the scrim.
+    position: [3.9, -0.75, 0.1] as [number, number, number],
     camera: [2.6, 1.35, 7.6] as [number, number, number],
-    target: [2.4, 0.3, 0] as [number, number, number],
+    target: [3.3, 0.3, 0] as [number, number, number],
     shadowY: -0.81, // must track position.y or the house floats off its shadow
   },
   // A phone has no room beside the copy, so the house drops into the bottom
@@ -350,11 +434,32 @@ export default function HouseBuildScene({
   const reduce = useReducedMotion();
   const L = LAYOUT[layout];
 
+  // PERF: a FINISHED, motionless house was rendering forever at full rate — 313
+  // meshes plus a shadow pass, every frame, for a still image. That was the lag.
+  // Once the build settles AND the phase colours stop moving we drop to "demand":
+  // R3F only redraws when asked, and drei's OrbitControls invalidates on drag, so
+  // spinning the house still works.
+  //
+  // This used to rest the hero only. The tour never rested (its highlight is
+  // always set), and it MOUNTS AT PAGE LOAD — useInView's 200px margin makes it
+  // "in view" right behind the hero — so two 313-mesh canvases looped from the
+  // first second. Changing the highlight re-arms the loop below.
+  const [rested, setRested] = useState(false);
+  // React's "adjust state when a prop changes" pattern (previous value in state,
+  // not a ref — refs may not be read during render). A new phase means the colours
+  // must travel again, so re-arm the loop.
+  const [seenHl, setSeenHl] = useState(highlightPhase);
+  if (seenHl !== highlightPhase) {
+    setSeenHl(highlightPhase);
+    if (rested) setRested(false);
+  }
+  const frameloop = !active ? "never" : rested ? "demand" : "always";
+
   return (
     <Canvas
+      frameloop={frameloop}
       shadows="soft"
       dpr={[1, 1.5]}
-      frameloop={active ? "always" : "never"}
       // Staying on ACES. The 3D session recommended AgX, arguing ACES "washes the
       // warm palette" — but that was researched, not verified, and it does not
       // survive the real render. Measured on a tight roof/wall crop (page
@@ -369,21 +474,37 @@ export default function HouseBuildScene({
         alpha: true,
         powerPreference: "high-performance",
         toneMapping: ACESFilmicToneMapping,
-        toneMappingExposure: 1.05,
+        toneMappingExposure: 1.18,
       }}
       className="!absolute inset-0"
       aria-label="Model 3D: casa se construiește singură, etapă cu etapă"
     >
       <PerspectiveCamera makeDefault position={L.camera} fov={40} />
-      <ambientLight intensity={0.3} />
+      {/* Lighting matched to the reference photo (docs/reference-match/). Measured
+          on the house area, our render vs the photo:
+            before: mean 197.5, std-dev 43.7, deep shadow 0.5%, bright 53.4%
+            photo : mean 130.2, std-dev 71.8, deep shadow 19.6%, bright 19.3%
+          i.e. the house had essentially NO shadows and half of it was blown out.
+          That flatness is what read as "plastic" — not the geometry, which is why
+          five sessions of adding detail never fixed it. Ambient was the culprit:
+          0.3 of flat fill erases the shadows a hard sun would carve. */}
+      <ambientLight intensity={0.12} />
+      {/* PERF: shadow-autoUpdate stops once the house has settled. Nothing moves
+          after that, so re-rendering the shadow map for 240 casters every frame
+          was pure waste. `needsUpdate` forces exactly one final map. */}
+      {/* Key sun: high front-LEFT, matching where the sun sits in the reference
+          photo. Harder and warmer than before so the eaves, the porch and the
+          gable trusses actually cast. */}
       <directionalLight
-        position={[5, 8, 4]}
-        intensity={2.2}
-        color="#ffe6c2"
+        position={[-6, 8, 5]}
+        intensity={3.2}
+        color="#ffdcae"
         castShadow
         shadow-mapSize={[1024, 1024]}
         shadow-bias={-0.0004}
         shadow-normalBias={0.02}
+        shadow-autoUpdate={!rested}
+        shadow-needsUpdate={rested}
       />
       <directionalLight position={[-6, 3, -4]} intensity={0.5} color="#cddcff" />
       {/* Dim back-rim: lifts the roofline off the page tone so the silhouette
@@ -396,6 +517,7 @@ export default function HouseBuildScene({
           playing={play && !reduce}
           highlightPhase={highlightPhase}
           onDone={onDone}
+          onRest={() => setRested(true)}
           scale={L.scale}
           position={L.position}
         />
@@ -406,7 +528,7 @@ export default function HouseBuildScene({
       <Suspense fallback={null}>
         <Environment
           files="/hdri/venice_sunset_1k.hdr"
-          environmentIntensity={1.15}
+          environmentIntensity={0.55}
         />
       </Suspense>
       <ContactShadows
@@ -417,15 +539,32 @@ export default function HouseBuildScene({
         far={5}
         frames={1}
       />
-      <OrbitControls
-        makeDefault
-        target={L.target}
-        autoRotate={false}
-        enableZoom={false}
-        enablePan={false}
-        minPolarAngle={Math.PI / 5}
-        maxPolarAngle={Math.PI / 2.15}
-      />
+      <Controls target={L.target} />
     </Canvas>
+  );
+}
+
+/**
+ * OrbitControls that explicitly redraws on drag.
+ *
+ * Once the build settles the canvas drops to frameloop="demand", and dragging
+ * silently stopped rotating the house — the controls moved the camera but
+ * nothing asked for a new frame, so the picture never changed. Caught by driving
+ * a real drag and diffing the pixels; it would have shipped as "the house is
+ * frozen". invalidate() on change is what makes on-demand rendering interactive.
+ */
+function Controls({ target }: { target: [number, number, number] }) {
+  const invalidate = useThree((s) => s.invalidate);
+  return (
+    <OrbitControls
+      makeDefault
+      target={target}
+      onChange={() => invalidate()}
+      autoRotate={false}
+      enableZoom={false}
+      enablePan={false}
+      minPolarAngle={Math.PI / 5}
+      maxPolarAngle={Math.PI / 2.15}
+    />
   );
 }

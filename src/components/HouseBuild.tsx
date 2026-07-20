@@ -45,9 +45,15 @@ function useArmed() {
     window.addEventListener("pointerdown", arm, opts);
     window.addEventListener("pointermove", arm, opts);
     window.addEventListener("keydown", arm, opts);
+    // 250ms, not 2500. The long wait only ever existed to keep the 3D out of a
+    // Lighthouse run, and it never worked (Lighthouse waits far longer than
+    // 2.5s) — audit robots are now excluded explicitly via ?no3d=1, so the delay
+    // is pure dead time before the build starts. It cost the visitor 2.5s of
+    // staring at an empty hero, on top of the build itself, before any headline
+    // appeared. Short enough to let first paint land, long enough not to fight it.
     const t = window.setTimeout(() => {
       if (document.visibilityState === "visible") setArmed(true);
-    }, 2500);
+    }, 250);
     return () => {
       window.removeEventListener("scroll", arm);
       window.removeEventListener("pointerdown", arm);
@@ -117,7 +123,10 @@ export default function HouseBuild({
       {/* max-w-md, not -xl: the long service list used to run out past the
           scrim onto the beige wall, where muted grey stopped reading. */}
       <p className="max-w-md text-body-lg text-muted-foreground">{subline}</p>
-      <p className="flex items-center gap-2 text-caption font-medium text-foreground">
+      {/* max-w-md for the same reason as the subline above: its tail ran past the
+          scrim onto the house and dropped to 3.07 contrast. Wrapping keeps it
+          over the scrim. */}
+      <p className="flex max-w-md items-center gap-2 text-caption font-medium text-foreground">
         <Icon name="shield" size={18} className="shrink-0 text-accent-strong" />
         {trust}
       </p>
@@ -179,7 +188,11 @@ export default function HouseBuild({
           initial={{ opacity: 0, y: 18 }}
           animate={built ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="pointer-events-auto"
+          // w-fit is load-bearing: as a plain flex child this div stretched the
+          // full container width and swallowed every pointer event over the
+          // house, so "Trage pentru a roti" did nothing across most of the hero.
+          // Only the copy itself should capture clicks.
+          className="pointer-events-auto w-fit"
         >
           {heroBlock}
         </motion.div>
