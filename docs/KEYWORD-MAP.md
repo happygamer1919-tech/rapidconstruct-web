@@ -32,7 +32,7 @@ The roof page leaves high-intent `pret` / `ремонт` / `цена` traffic on
 | `/acoperisuri` | RO | Acoperișuri la cheie în Chișinău și Moldova | Acoperiș la cheie Chișinău, preț de la 160 lei/m² | Surfaces the price and the high-intent "pret" query in the title |
 | `/acoperisuri` | RU | Крыша под ключ в Кишинёве и по Молдове | Ремонт и монтаж крыши в Кишинёве, цена от 160 лей | Adds "ремонт крыши" (top RU query) + "цена" |
 
-Apply these two in a follow-up code ticket by editing `roofPage.seo.title` in
+APPLIED 2026-07-20 (PR: acoperis title quick-wins). Both titles below are live in
 `messages/ro.json` and `messages/ru.json`. No other live page needs a title change.
 
 ## RO master table (rows = pages, RO keywords + RO title/description)
