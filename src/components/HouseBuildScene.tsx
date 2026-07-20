@@ -382,9 +382,15 @@ useGLTF.preload(HOUSE_URL);
 const LAYOUT = {
   hero: {
     scale: 0.28,
-    position: [3, -0.75, 0.1] as [number, number, number],
+    // Shifted right (was x=3) once the jerkinhead landed. The gable face sits on
+    // the MAIN block — the LEFT end of the house — so it fell under the text
+    // scrim, which washed the near-black timber truss to pale grey (measured on
+    // the gable: darkest pixel 13 with no scrim, 28 with it). Weakening the scrim
+    // instead dropped the headline to 1.25 contrast, i.e. the "text disappears"
+    // bug again. So the house moves, not the scrim.
+    position: [3.9, -0.75, 0.1] as [number, number, number],
     camera: [2.6, 1.35, 7.6] as [number, number, number],
-    target: [2.4, 0.3, 0] as [number, number, number],
+    target: [3.3, 0.3, 0] as [number, number, number],
     shadowY: -0.81, // must track position.y or the house floats off its shadow
   },
   // A phone has no room beside the copy, so the house drops into the bottom

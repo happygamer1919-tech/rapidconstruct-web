@@ -123,7 +123,10 @@ export default function HouseBuild({
       {/* max-w-md, not -xl: the long service list used to run out past the
           scrim onto the beige wall, where muted grey stopped reading. */}
       <p className="max-w-md text-body-lg text-muted-foreground">{subline}</p>
-      <p className="flex items-center gap-2 text-caption font-medium text-foreground">
+      {/* max-w-md for the same reason as the subline above: its tail ran past the
+          scrim onto the house and dropped to 3.07 contrast. Wrapping keeps it
+          over the scrim. */}
+      <p className="flex max-w-md items-center gap-2 text-caption font-medium text-foreground">
         <Icon name="shield" size={18} className="shrink-0 text-accent-strong" />
         {trust}
       </p>
