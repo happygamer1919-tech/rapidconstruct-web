@@ -15,3 +15,8 @@
 - **2026-07-13 — Same working model as A&I site.** Feature branches + PRs with plain-language
   owner checklists, blocked-question protocol, browser-verified QA. Owner (Max) reviews
   preview URLs only, never code.
+- **2026-07-20 — /acoperisuri titles now lead with price (KEYWORD-MAP quick wins applied).**
+  RO `Acoperiș la cheie Chișinău, preț de la 160 lei/m²`, RU `Ремонт и монтаж крыши в
+  Кишинёве, цена от 160 лей`. Rationale: KEYWORD-MAP flagged high-intent `preț`/`ремонт`/
+  `цена` queries the old titles missed; 160 lei/m² is already published site-wide, so this
+  publishes no new claim. Only `roofPage.seo.title` changed — page copy untouched.
