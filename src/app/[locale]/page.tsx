@@ -258,21 +258,12 @@ export default async function Home({ params }: PageProps) {
                 {t("projects.title")}
               </h2>
             </div>
-            <Link
-              href="/portofoliu"
-              className="inline-flex items-center gap-1 text-caption font-semibold text-accent-strong hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong"
-            >
-              {t("projects.cta")}
-              <Icon name="arrowUpRight" size={16} />
-            </Link>
+            {/* "Vezi tot portofoliul" CTA returns when RC-104 builds /portofoliu (Q-06) */}
           </div>
           <ul className="border-t border-border">
             {projects.map((p, i) => (
               <li key={`${p.location}-${p.work}`}>
-                <Link
-                  href="/portofoliu"
-                  className="group grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-border py-5 transition-colors hover:bg-muted focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent-strong sm:gap-6"
-                >
+                <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-border py-5 sm:gap-6">
                   {/* Interim real project thumbnail (Q-06) */}
                   <span className="relative h-14 w-20 shrink-0 overflow-hidden rounded-md border border-border sm:h-16 sm:w-24">
                     <Image
@@ -280,7 +271,7 @@ export default async function Home({ params }: PageProps) {
                       alt=""
                       fill
                       sizes="96px"
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="object-cover"
                     />
                   </span>
                   <div className="flex flex-col gap-1">
@@ -297,7 +288,7 @@ export default async function Home({ params }: PageProps) {
                   <span className="micro-label hidden shrink-0 text-muted-foreground sm:block">
                     {p.year}
                   </span>
-                </Link>
+                </div>
               </li>
             ))}
           </ul>

@@ -35,7 +35,7 @@ export type NavItem = { href: string; key: string };
 
 export const PRIMARY_NAV: readonly NavItem[] = [
   { href: "/despre-noi", key: "despre" },
-  { href: "/portofoliu", key: "portofoliu" },
+  // /portofoliu re-enters here when RC-104 builds the page (blocked on Q-06 photos)
   { href: "/contact", key: "contact" },
 ] as const;
 
