@@ -148,19 +148,13 @@ export default async function SiteFooter() {
       <div className="border-t border-inverse-border">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-1 px-gutter py-5 text-micro text-inverse-muted-foreground">
           <span>{t("rights")}</span>
-          {/* CC-BY attribution — legally required: the 3D scene embeds two
-              CC-BY assets (fence, bush). Do not remove while those assets ship. */}
+          {/* CC-BY attribution — legally required, and it must track what
+              ACTUALLY ships. The CC-BY fence asset was replaced by a
+              purpose-built masonry fence, so its credit was removed; the shrubs
+              still use the CC-BY bush, so that credit stays. Re-check this
+              whenever scenery assets change. */}
           <span className="text-inverse-muted-foreground/70">
             {t("modelCredits")}{" "}
-            <a
-              href="https://sketchfab.com/invisiprim3d"
-              rel="noopener noreferrer"
-              target="_blank"
-              className="underline decoration-inverse-border underline-offset-2 hover:text-inverse-foreground"
-            >
-              invisiprim3d
-            </a>
-            {" · "}
             <a
               href="https://sketchfab.com/levandreev23032010"
               rel="noopener noreferrer"
