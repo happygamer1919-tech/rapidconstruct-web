@@ -146,8 +146,31 @@ export default async function SiteFooter() {
       </div>
 
       <div className="border-t border-inverse-border">
-        <div className="mx-auto w-full max-w-6xl px-gutter py-5 text-micro text-inverse-muted-foreground">
-          {t("rights")}
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-1 px-gutter py-5 text-micro text-inverse-muted-foreground">
+          <span>{t("rights")}</span>
+          {/* CC-BY attribution — legally required, and it must track what
+              ACTUALLY ships. The shipped house.glb carries scenery derived from
+              this author's CC-BY assets (plinth_shrub_*, plinth_tree_*,
+              plinth_hedge_*), so the credit is owed as long as any of them are
+              in the model. It was written for the Look B model but applies to
+              the currently-shipped one too — the assets predate that work.
+              Rescued from PR #47, which was closed for unrelated reasons; the
+              site was live-facing without this credit until 2026-07-22.
+              RE-CHECK whenever scenery assets change: if the photo-match rebuild
+              replaces every CC-BY-derived prop, remove this; if it adds new
+              third-party assets, add them. */}
+          <span className="text-inverse-muted-foreground/70">
+            {t("modelCredits")}{" "}
+            <a
+              href="https://sketchfab.com/levandreev23032010"
+              rel="noopener noreferrer"
+              target="_blank"
+              className="underline decoration-inverse-border underline-offset-2 hover:text-inverse-foreground"
+            >
+              levandreev23032010
+            </a>{" "}
+            (CC-BY)
+          </span>
         </div>
       </div>
     </footer>

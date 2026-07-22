@@ -1,4 +1,5 @@
 import type { IconName } from "@/components/icons";
+import type { Pathname } from "@/i18n/routing";
 
 /**
  * Shared navigation + service taxonomy for RC-101 (home + header + footer).
@@ -13,8 +14,8 @@ import type { IconName } from "@/components/icons";
  * which is acceptable per the RC-101 brief.
  */
 export type ServiceItem = {
-  /** Route slug (RO). RU reuses the RO-shaped path until RC-201. */
-  slug: string;
+  /** Internal route key (RO-shaped). RU URLs come from routing `pathnames`. */
+  slug: Pathname;
   /** Message key under the `services` namespace (title + desc). */
   key: string;
   /** Icon rendered on the service card. */
@@ -31,7 +32,7 @@ export const SERVICES: readonly ServiceItem[] = [
 ] as const;
 
 /** Primary content nav (excludes Home, which is the wordmark link). */
-export type NavItem = { href: string; key: string };
+export type NavItem = { href: Pathname; key: string };
 
 export const PRIMARY_NAV: readonly NavItem[] = [
   { href: "/despre-noi", key: "despre" },

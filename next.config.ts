@@ -52,6 +52,49 @@ const nextConfig: NextConfig = {
         destination: "/politica-de-confidentialitate",
         permanent: true,
       },
+
+      // ── RC-201: old RO-shaped RU URLs → localized RU slugs ────────────────
+      // Until 2026-07-22 the RU mirror served Romanian paths (`/ru/acoperisuri`).
+      // Those URLs are live on the preview, may already be indexed, and are what
+      // any existing inbound link points at — so each needs a 301 to its new
+      // home. Without these the whole RU site would 404 the moment the localized
+      // slugs shipped.
+      //
+      // Keep in lockstep with `pathnames` in src/i18n/routing.ts: one row per
+      // changed slug, plus a case in tests/redirects.spec.ts.
+      { source: "/ru/acoperisuri", destination: "/ru/kryshi", permanent: true },
+      { source: "/ru/fatade", destination: "/ru/fasady", permanent: true },
+      {
+        source: "/ru/renovari-la-cheie",
+        destination: "/ru/remont-pod-klyuch",
+        permanent: true,
+      },
+      { source: "/ru/finisaje", destination: "/ru/otdelka", permanent: true },
+      {
+        source: "/ru/instalatii",
+        destination: "/ru/elektrika-santehnika",
+        permanent: true,
+      },
+      {
+        source: "/ru/proiectare-3d",
+        destination: "/ru/proekt-3d",
+        permanent: true,
+      },
+      { source: "/ru/despre-noi", destination: "/ru/o-nas", permanent: true },
+      {
+        source: "/ru/portofoliu",
+        destination: "/ru/portfolio",
+        permanent: true,
+      },
+      { source: "/ru/contact", destination: "/ru/kontakty", permanent: true },
+      {
+        source: "/ru/calculator-acoperis",
+        destination: "/ru/kalkulyator-kryshi",
+        permanent: true,
+      },
+      { source: "/ru/chisinau", destination: "/ru/kishinev", permanent: true },
+      { source: "/ru/orhei", destination: "/ru/orgeev", permanent: true },
+      { source: "/ru/cahul", destination: "/ru/kagul", permanent: true },
     ];
   },
 };

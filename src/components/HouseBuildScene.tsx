@@ -168,11 +168,20 @@ function House({
       opacity: 0.5,
     });
 
+    // Small pieces do not cast shadows. The 3D session profiled the real build:
+    // ~480 draw calls per frame, of which ~165 were the shadow pass re-drawing
+    // every mesh — and the hero is draw-call-bound (only ~24k triangles). Tiny
+    // pieces (muntins, trims, sills, quoin blocks, snow guards, fence pickets,
+    // handles, downspouts) contribute no readable shadow at hero distance, so
+    // excluding them cuts shadow-caster draws with zero visual cost.
+    const NO_SHADOW =
+      /^(w\d+_(mun|trim)|sill|quoin|roof_snowguards|plinth_hedge_fence|handle|ds\d)/;
+
     const buckets: Mesh[][] = Array.from({ length: PHASE_COUNT }, () => []);
     scene.traverse((o) => {
       const m = o as Mesh;
       if (!m.isMesh) return;
-      m.castShadow = true;
+      m.castShadow = !NO_SHADOW.test(m.name);
       m.receiveShadow = true;
       // Cheap reflective glass (real transmission re-rendered the scene every
       // frame — the lag source). Dark interior liners sell it as real glazing.
@@ -500,7 +509,10 @@ export default function HouseBuildScene({
         intensity={3.2}
         color="#ffdcae"
         castShadow
-        shadow-mapSize={[1024, 1024]}
+        // 512, was 1024: the profile showed the hero is draw-call-bound, and at
+        // this scene scale the soft shadows read identically at half resolution
+        // (verified side by side before shipping). Quarter the shadow fill cost.
+        shadow-mapSize={[512, 512]}
         shadow-bias={-0.0004}
         shadow-normalBias={0.02}
         shadow-autoUpdate={!rested}

@@ -102,3 +102,77 @@ test.describe("RC-401 Tilda -> new permanent redirects", () => {
     ).not.toBe("/despre-noi");
   });
 });
+
+/**
+ * RC-201 — the RU mirror moved from Romanian paths (`/ru/acoperisuri`) to
+ * localized Russian slugs (`/ru/kryshi`).
+ *
+ * These are the highest-risk redirects on the site: they cover EVERY RU page at
+ * once, so a broken row does not degrade one page, it 404s a whole locale. Each
+ * old URL must 301/308 to its new slug AND the new slug must actually be a live
+ * 200 — the follow-through assertion is the one that matters, because a redirect
+ * into a 404 is worse than no redirect at all (that is how `/1` was broken for
+ * weeks before RC-401 caught it).
+ *
+ * Keep this table in lockstep with `pathnames` in src/i18n/routing.ts and the
+ * RC-201 block in next.config.ts. Three places, one fact.
+ */
+const RU_SLUG_MOVES: ReadonlyArray<readonly [string, string]> = [
+  ["/ru/acoperisuri", "/ru/kryshi"],
+  ["/ru/fatade", "/ru/fasady"],
+  ["/ru/renovari-la-cheie", "/ru/remont-pod-klyuch"],
+  ["/ru/finisaje", "/ru/otdelka"],
+  ["/ru/instalatii", "/ru/elektrika-santehnika"],
+  ["/ru/proiectare-3d", "/ru/proekt-3d"],
+  ["/ru/despre-noi", "/ru/o-nas"],
+  ["/ru/portofoliu", "/ru/portfolio"],
+  ["/ru/contact", "/ru/kontakty"],
+  ["/ru/calculator-acoperis", "/ru/kalkulyator-kryshi"],
+  ["/ru/chisinau", "/ru/kishinev"],
+  ["/ru/orhei", "/ru/orgeev"],
+  ["/ru/cahul", "/ru/kagul"],
+];
+
+test.describe("RC-201 RU localized slugs", () => {
+  for (const [from, to] of RU_SLUG_MOVES) {
+    test(`${from} redirects permanently to ${to}`, async ({ request }) => {
+      const res = await request.get(from, { maxRedirects: 0 });
+      expect(
+        [301, 308],
+        `${from} returned ${res.status()} instead of a permanent redirect. Every old RU URL may already be indexed; a 404 here loses the page's ranking outright.`,
+      ).toContain(res.status());
+      expect(res.headers()["location"]).toBe(to);
+    });
+
+    test(`${to} is a live page (following ${from} lands on 200)`, async ({
+      request,
+    }) => {
+      const res = await request.get(from);
+      expect(
+        res.status(),
+        `${from} -> ${to} resolved ${res.status()}. The redirect points at a page that does not exist — check the slug in src/i18n/routing.ts matches next.config.ts exactly.`,
+      ).toBe(200);
+    });
+  }
+
+  // The RO side must be untouched by the RU rename. If a rule leaked without a
+  // locale prefix it would silently move the default-locale URLs too.
+  for (const ro of [
+    "/acoperisuri",
+    "/fatade",
+    "/despre-noi",
+    "/portofoliu",
+    "/contact",
+    "/chisinau",
+  ]) {
+    test(`${ro} (RO) still resolves directly, not redirected`, async ({
+      request,
+    }) => {
+      const res = await request.get(ro, { maxRedirects: 0 });
+      expect(
+        res.status(),
+        `${ro} returned ${res.status()}; the RC-201 RU rules must never touch RO URLs.`,
+      ).toBe(200);
+    });
+  }
+});

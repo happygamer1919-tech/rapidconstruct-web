@@ -12,6 +12,22 @@ export const site = {
   /** Trading name, used as the JSON-LD `name` and OG `siteName`. */
   name: "Rapid Construct & 3D Design",
 
+  /**
+   * Short brand used for the document `<title>` suffix ONLY.
+   *
+   * The full trading name costs 30 characters (" · Rapid Construct & 3D Design")
+   * on every page. Google renders roughly 60, so the suffix alone was eating
+   * half the budget: measured across all 26 page titles, 22 exceeded 60
+   * characters purely because of it — the titles themselves are 33–49 chars and
+   * keyword-led. Shortening the suffix buys 13 characters everywhere without
+   * touching a single deliberate title decision (e.g. the price-first
+   * /acoperisuri titles from PR #45).
+   *
+   * JSON-LD `name`, `og:siteName` and the share image keep the full trading
+   * name — those are identity, not search snippets.
+   */
+  shortName: "Rapid Construct",
+
   /** Postal address (schema.org PostalAddress fields). */
   address: {
     streetAddress: "Nicolae Zelinski St 24",

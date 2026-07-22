@@ -1,3 +1,4 @@
+import type { Pathname } from "@/i18n/routing";
 /**
  * Promo bar configuration (RC-110) — the ONE place the owner edits the slim
  * offer bar that sits above the header. Change `messageKey` (and the matching
@@ -17,7 +18,7 @@ export type PromoConfig = {
   /** Key inside the `promo` message namespace (messages/{ro,ru}.json). */
   messageKey: string;
   /** Optional link target; when set the whole message becomes a link. */
-  href?: string;
+  href?: Pathname;
 };
 
 export const promo: PromoConfig = {
