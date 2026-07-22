@@ -31,7 +31,11 @@ export default function ContactForm({ locale }: { locale: string }) {
 
   const baseId = useId();
   const errorFor = (code?: LeadFieldError) =>
-    code === "phone" ? t("errPhone") : code === "required" ? t("errRequired") : null;
+    code === "phone"
+      ? t("errPhone")
+      : code === "required"
+        ? t("errRequired")
+        : null;
 
   if (state.status === "success") {
     return (
@@ -58,7 +62,9 @@ export default function ContactForm({ locale }: { locale: string }) {
       action={formAction}
       noValidate
       className="flex flex-col gap-5"
-      aria-describedby={state.deliveryFailed ? `${baseId}-form-error` : undefined}
+      aria-describedby={
+        state.deliveryFailed ? `${baseId}-form-error` : undefined
+      }
     >
       <h2 className="text-h3 font-semibold text-foreground">{t("title")}</h2>
 
@@ -104,7 +110,10 @@ export default function ContactForm({ locale }: { locale: string }) {
 
       {/* Honeypot: hidden from humans and assistive tech, off the tab order.
           A filled value means a bot — the server action rejects it. */}
-      <div aria-hidden="true" className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
+      <div
+        aria-hidden="true"
+        className="absolute left-[-9999px] h-0 w-0 overflow-hidden"
+      >
         <label htmlFor={`${baseId}-website`}>Website</label>
         <input
           id={`${baseId}-website`}
@@ -172,7 +181,10 @@ function Field({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-caption font-semibold text-foreground">
+      <label
+        htmlFor={id}
+        className="text-caption font-semibold text-foreground"
+      >
         {label}
       </label>
       {textarea ? (
@@ -186,7 +198,11 @@ function Field({
         </p>
       )}
       {error && (
-        <p id={errorId} role="alert" className="text-micro font-medium text-red-700">
+        <p
+          id={errorId}
+          role="alert"
+          className="text-micro font-medium text-red-700"
+        >
           {error}
         </p>
       )}

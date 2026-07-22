@@ -70,8 +70,13 @@ Run against the production deployment, not a preview:
 
 ## 5. Lead capture — the site's actual job
 
-- [ ] **Q-09 — Resend API key.** Without it the contact form cannot deliver.
-      A launched site that silently drops enquiries is worse than no launch.
+- [ ] **Q-09 — Resend API key.** ⚠️ Without it `deliverLead` console.logs the
+      lead and returns SUCCESS — the customer is told "we'll call back" and the
+      lead exists only in Vercel's log stream, which the owner will never open.
+      The owner adds it himself: `npx vercel env add RESEND_API_KEY production`.
+      Note the free tier sends from onboarding@resend.dev until the domain is
+      verified, so early leads may land in spam; verify rapidconstruct.md in
+      Resend during the DNS cutover.
 - [ ] **Q-03 — where leads go** (email / Telegram / both).
 - [ ] Submit the real form on production and confirm the lead arrives.
 

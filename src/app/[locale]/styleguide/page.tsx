@@ -36,48 +36,213 @@ export async function generateMetadata({
 type Swatch = { name: string; value: string; box: string; label: string };
 
 const brandRamp: Swatch[] = [
-  { name: "brand-50", value: "#fff4ed", box: "bg-brand-50", label: "text-ink-900" },
-  { name: "brand-100", value: "#ffe6d5", box: "bg-brand-100", label: "text-ink-900" },
-  { name: "brand-200", value: "#fecdaa", box: "bg-brand-200", label: "text-ink-900" },
-  { name: "brand-300", value: "#fdac74", box: "bg-brand-300", label: "text-ink-900" },
-  { name: "brand-400", value: "#fb833c", box: "bg-brand-400", label: "text-ink-900" },
-  { name: "brand-500", value: "#f26419", box: "bg-brand-500", label: "text-ink-900" },
-  { name: "brand-600", value: "#d94e0a", box: "bg-brand-600", label: "text-neutral-50" },
-  { name: "brand-700", value: "#b23c08", box: "bg-brand-700", label: "text-neutral-50" },
-  { name: "brand-800", value: "#8f3110", box: "bg-brand-800", label: "text-neutral-50" },
-  { name: "brand-900", value: "#742a11", box: "bg-brand-900", label: "text-neutral-50" },
+  {
+    name: "brand-50",
+    value: "#fff4ed",
+    box: "bg-brand-50",
+    label: "text-ink-900",
+  },
+  {
+    name: "brand-100",
+    value: "#ffe6d5",
+    box: "bg-brand-100",
+    label: "text-ink-900",
+  },
+  {
+    name: "brand-200",
+    value: "#fecdaa",
+    box: "bg-brand-200",
+    label: "text-ink-900",
+  },
+  {
+    name: "brand-300",
+    value: "#fdac74",
+    box: "bg-brand-300",
+    label: "text-ink-900",
+  },
+  {
+    name: "brand-400",
+    value: "#fb833c",
+    box: "bg-brand-400",
+    label: "text-ink-900",
+  },
+  {
+    name: "brand-500",
+    value: "#f26419",
+    box: "bg-brand-500",
+    label: "text-ink-900",
+  },
+  {
+    name: "brand-600",
+    value: "#d94e0a",
+    box: "bg-brand-600",
+    label: "text-neutral-50",
+  },
+  {
+    name: "brand-700",
+    value: "#b23c08",
+    box: "bg-brand-700",
+    label: "text-neutral-50",
+  },
+  {
+    name: "brand-800",
+    value: "#8f3110",
+    box: "bg-brand-800",
+    label: "text-neutral-50",
+  },
+  {
+    name: "brand-900",
+    value: "#742a11",
+    box: "bg-brand-900",
+    label: "text-neutral-50",
+  },
 ];
 
 const inkRamp: Swatch[] = [
-  { name: "ink-600", value: "#444444", box: "bg-ink-600", label: "text-neutral-50" },
-  { name: "ink-700", value: "#333333", box: "bg-ink-700", label: "text-neutral-50" },
-  { name: "ink-800", value: "#242424", box: "bg-ink-800", label: "text-neutral-50" },
-  { name: "ink-900", value: "#1c1c1c", box: "bg-ink-900", label: "text-neutral-50" },
-  { name: "ink-950", value: "#141414", box: "bg-ink-950", label: "text-neutral-50" },
+  {
+    name: "ink-600",
+    value: "#444444",
+    box: "bg-ink-600",
+    label: "text-neutral-50",
+  },
+  {
+    name: "ink-700",
+    value: "#333333",
+    box: "bg-ink-700",
+    label: "text-neutral-50",
+  },
+  {
+    name: "ink-800",
+    value: "#242424",
+    box: "bg-ink-800",
+    label: "text-neutral-50",
+  },
+  {
+    name: "ink-900",
+    value: "#1c1c1c",
+    box: "bg-ink-900",
+    label: "text-neutral-50",
+  },
+  {
+    name: "ink-950",
+    value: "#141414",
+    box: "bg-ink-950",
+    label: "text-neutral-50",
+  },
 ];
 
 const neutralRamp: Swatch[] = [
-  { name: "neutral-50", value: "#faf8f5", box: "bg-neutral-50", label: "text-ink-900" },
-  { name: "neutral-100", value: "#f3efe9", box: "bg-neutral-100", label: "text-ink-900" },
-  { name: "neutral-200", value: "#e7e0d6", box: "bg-neutral-200", label: "text-ink-900" },
-  { name: "neutral-300", value: "#d6ccbe", box: "bg-neutral-300", label: "text-ink-900" },
-  { name: "neutral-400", value: "#b8ab99", box: "bg-neutral-400", label: "text-ink-900" },
-  { name: "neutral-500", value: "#938776", box: "bg-neutral-500", label: "text-neutral-50" },
-  { name: "neutral-600", value: "#675d4b", box: "bg-neutral-600", label: "text-neutral-50" },
-  { name: "neutral-700", value: "#4f4739", box: "bg-neutral-700", label: "text-neutral-50" },
-  { name: "neutral-800", value: "#332e25", box: "bg-neutral-800", label: "text-neutral-50" },
-  { name: "neutral-900", value: "#211d17", box: "bg-neutral-900", label: "text-neutral-50" },
+  {
+    name: "neutral-50",
+    value: "#faf8f5",
+    box: "bg-neutral-50",
+    label: "text-ink-900",
+  },
+  {
+    name: "neutral-100",
+    value: "#f3efe9",
+    box: "bg-neutral-100",
+    label: "text-ink-900",
+  },
+  {
+    name: "neutral-200",
+    value: "#e7e0d6",
+    box: "bg-neutral-200",
+    label: "text-ink-900",
+  },
+  {
+    name: "neutral-300",
+    value: "#d6ccbe",
+    box: "bg-neutral-300",
+    label: "text-ink-900",
+  },
+  {
+    name: "neutral-400",
+    value: "#b8ab99",
+    box: "bg-neutral-400",
+    label: "text-ink-900",
+  },
+  {
+    name: "neutral-500",
+    value: "#938776",
+    box: "bg-neutral-500",
+    label: "text-neutral-50",
+  },
+  {
+    name: "neutral-600",
+    value: "#675d4b",
+    box: "bg-neutral-600",
+    label: "text-neutral-50",
+  },
+  {
+    name: "neutral-700",
+    value: "#4f4739",
+    box: "bg-neutral-700",
+    label: "text-neutral-50",
+  },
+  {
+    name: "neutral-800",
+    value: "#332e25",
+    box: "bg-neutral-800",
+    label: "text-neutral-50",
+  },
+  {
+    name: "neutral-900",
+    value: "#211d17",
+    box: "bg-neutral-900",
+    label: "text-neutral-50",
+  },
 ];
 
 const semanticRamp: Swatch[] = [
-  { name: "background", value: "neutral-50", box: "bg-background", label: "text-foreground" },
-  { name: "foreground", value: "ink-900", box: "bg-foreground", label: "text-background" },
-  { name: "surface", value: "#ffffff", box: "bg-surface", label: "text-surface-foreground" },
-  { name: "muted", value: "neutral-100", box: "bg-muted", label: "text-foreground" },
-  { name: "muted-foreground", value: "neutral-600", box: "bg-muted-foreground", label: "text-neutral-50" },
-  { name: "border", value: "neutral-200", box: "bg-border", label: "text-ink-900" },
-  { name: "accent", value: "brand-500", box: "bg-accent", label: "text-accent-foreground" },
-  { name: "accent-strong", value: "brand-700", box: "bg-accent-strong", label: "text-neutral-50" },
+  {
+    name: "background",
+    value: "neutral-50",
+    box: "bg-background",
+    label: "text-foreground",
+  },
+  {
+    name: "foreground",
+    value: "ink-900",
+    box: "bg-foreground",
+    label: "text-background",
+  },
+  {
+    name: "surface",
+    value: "#ffffff",
+    box: "bg-surface",
+    label: "text-surface-foreground",
+  },
+  {
+    name: "muted",
+    value: "neutral-100",
+    box: "bg-muted",
+    label: "text-foreground",
+  },
+  {
+    name: "muted-foreground",
+    value: "neutral-600",
+    box: "bg-muted-foreground",
+    label: "text-neutral-50",
+  },
+  {
+    name: "border",
+    value: "neutral-200",
+    box: "bg-border",
+    label: "text-ink-900",
+  },
+  {
+    name: "accent",
+    value: "brand-500",
+    box: "bg-accent",
+    label: "text-accent-foreground",
+  },
+  {
+    name: "accent-strong",
+    value: "brand-700",
+    box: "bg-accent-strong",
+    label: "text-neutral-50",
+  },
 ];
 
 const RO = "Construcții și Renovări — șindrilă, țiglă, fațadă";
@@ -102,13 +267,7 @@ function SwatchGrid({ title, items }: { title: string; items: Swatch[] }) {
   );
 }
 
-function TypeRow({
-  label,
-  sizeClass,
-}: {
-  label: string;
-  sizeClass: string;
-}) {
+function TypeRow({ label, sizeClass }: { label: string; sizeClass: string }) {
   return (
     <div className="flex flex-col gap-2 border-b border-border py-6">
       <p className="micro-label text-muted-foreground">{label}</p>
@@ -168,7 +327,8 @@ export default function Styleguide() {
       <section className="mb-16 flex flex-col gap-4">
         <h2 className="font-serif text-h2 text-foreground">Micro-label</h2>
         <p className="max-w-prose text-body text-muted-foreground">
-          Letterspaced all-caps label (the &ldquo;EST. 2009&rdquo; style) via the
+          Letterspaced all-caps label (the &ldquo;EST. 2009&rdquo; style) via
+          the
           <code className="text-accent-strong"> micro-label</code> utility.
         </p>
         <div className="flex flex-wrap gap-8 rounded-lg border border-border bg-surface p-6">

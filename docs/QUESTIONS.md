@@ -101,3 +101,20 @@ Before cutover the owner must pick the canonical host.
 **Recommended default**: `https://rapidconstruct.md` (apex) — it matches the
 current Tilda URLs, so the 301s from legacy pages land on the same host with no
 extra redirect hop. See docs/LAUNCH-CHECKLIST.md §1. STATUS: OPEN
+
+## Q-16 (2026-07-22) — Privacy policy: legal entity + retention period
+`/politica-de-confidentialitate` is live in RO + RU and describes exactly what the
+code does (verified: no analytics, no tracking cookies, self-hosted fonts, form
+collects name/phone/message, delivered by email via Resend, hosted on Vercel).
+
+Two things were deliberately LEFT OUT because inventing them would be inventing a
+legal fact:
+1. **The registered legal entity + IDNO.** The page names the trading name
+   "Rapid Construct & 3D Design". If the contracting entity is an SRL with a
+   different registered name, it should be stated.
+2. **A concrete retention period.** The page currently says data is kept "as long
+   as needed to answer, and as long as accounting/contract law requires" — true
+   as written, but a specific period (e.g. 12 months for non-clients) is clearer.
+
+**Recommended default**: publish as-is (already done — it is accurate), and add
+the entity name + a concrete period when the owner confirms them. STATUS: OPEN

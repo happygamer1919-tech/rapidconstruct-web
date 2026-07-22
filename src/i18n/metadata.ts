@@ -25,7 +25,10 @@ const STAGING_HOST = "https://rapidconstruct-web.vercel.app";
 // duplicate of staging on the very day we cut over. Nothing used to catch that:
 // the Vercel project currently has ZERO environment variables, so a production
 // deploy today would silently do exactly this. Fail the build instead.
-if (process.env.VERCEL_ENV === "production" && !process.env.NEXT_PUBLIC_SITE_URL) {
+if (
+  process.env.VERCEL_ENV === "production" &&
+  !process.env.NEXT_PUBLIC_SITE_URL
+) {
   throw new Error(
     "NEXT_PUBLIC_SITE_URL is required for production builds (RC-403 cutover).\n" +
       `Without it every canonical/hreflang/sitemap URL points at ${STAGING_HOST}.\n` +

@@ -57,7 +57,10 @@ export default function HouseTour({
     offset: ["start start", "end end"],
   });
   useMotionValueEvent(scrollYProgress, "change", (v) => {
-    const s = Math.min(phases.length - 1, Math.floor(v * phases.length * 1.001));
+    const s = Math.min(
+      phases.length - 1,
+      Math.floor(v * phases.length * 1.001),
+    );
     setSegment((prev) => (prev === s ? prev : s));
   });
   const active = phases[segment];
@@ -173,7 +176,10 @@ function Heading({
   return (
     <div className="flex flex-col gap-3">
       <p className="micro-label text-accent-strong">{eyebrow}</p>
-      <h2 id="tour-title" className="font-serif text-display-lg text-foreground">
+      <h2
+        id="tour-title"
+        className="font-serif text-display-lg text-foreground"
+      >
         {title}
       </h2>
       <p className="max-w-md text-body-lg text-muted-foreground">{intro}</p>
@@ -190,7 +196,9 @@ function PhaseList({ phases }: { phases: BuildPhase[] }) {
             {i + 1}
           </span>
           <div className="flex flex-col gap-1">
-            <h3 className="text-body font-semibold text-foreground">{p.name}</h3>
+            <h3 className="text-body font-semibold text-foreground">
+              {p.name}
+            </h3>
             <p className="text-caption text-muted-foreground">{p.desc}</p>
           </div>
         </li>

@@ -102,7 +102,9 @@ export default async function PortfolioPage({ params }: PageProps) {
       <section className="border-b border-border">
         <div className="mx-auto w-full max-w-6xl px-gutter py-16 lg:py-20">
           <div className="flex max-w-2xl flex-col gap-4">
-            <p className="micro-label text-accent-strong">{t("hero.eyebrow")}</p>
+            <p className="micro-label text-accent-strong">
+              {t("hero.eyebrow")}
+            </p>
             <h1 className="font-serif text-display-xl text-foreground">
               {t("hero.h1")}
             </h1>

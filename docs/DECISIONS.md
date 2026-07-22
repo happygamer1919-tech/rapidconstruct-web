@@ -84,3 +84,27 @@ clip the brand, never the keyword phrase. JSON-LD `name`, `og:siteName` and the
 share image keep the full trading name — identity, not snippets. No individual
 title was rewritten, so deliberate decisions (the price-first /acoperisuri titles
 from PR #45) are untouched.
+
+## 2026-07-22 — Privacy policy published; two dead redirects repointed (RC-402)
+The contact form has been collecting a name and a phone number while
+`/politica-de-confidentialitate` did not exist — and the legacy Tilda URL
+`/privacypolicy` redirected straight into that 404. The policy now exists in
+RO + RU, is linked from the footer on every page, and is in the sitemap.
+
+The copy states only what the code does, verified before writing: no analytics or
+tag manager anywhere in src/, no cookies (localStorage holds just the promo-bar
+dismissal id), `next/font` self-hosts the Google fonts so a visit sends nothing to
+Google at runtime, the only runtime outbound call is Resend. **If RC-404 adds
+GA4, this page must change in the same PR** — a policy describing a site you no
+longer run is a written false statement.
+
+Two other redirects pointed at pages nobody built, so they 301'd into 404s — the
+same defect class as `/1` under RC-401:
+- `/2` → `/case-constructii` (never built) → now `/portofoliu`, which shows the
+  real built houses the old page was about.
+- `/calcul-gard` → `/calculator-gard` (RC-108, not built) → now `/contact`.
+  Sending fence traffic to the ROOF calculator would answer the wrong question.
+  Repoint when RC-108 ships.
+
+`PENDING_PAGES` in tests/redirects.spec.ts is now EMPTY: every redirect
+destination on the site resolves 200. Keep it that way.

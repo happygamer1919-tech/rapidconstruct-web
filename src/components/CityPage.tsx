@@ -102,7 +102,9 @@ export default async function CityPage({
       <section className="relative isolate overflow-hidden border-b border-border bg-inverse-background">
         <div className="mx-auto w-full max-w-6xl px-gutter py-20 lg:py-28">
           <div className="flex max-w-2xl flex-col gap-5">
-            <p className="micro-label text-inverse-accent">{t("hero.eyebrow")}</p>
+            <p className="micro-label text-inverse-accent">
+              {t("hero.eyebrow")}
+            </p>
             <h1 className="font-serif text-display-xl text-inverse-foreground">
               {t("hero.h1")}
             </h1>
@@ -237,7 +239,10 @@ export default async function CityPage({
       </section>
 
       {/* FAQ */}
-      <section aria-labelledby="city-faq-title" className="border-b border-border">
+      <section
+        aria-labelledby="city-faq-title"
+        className="border-b border-border"
+      >
         <div className="mx-auto w-full max-w-3xl px-gutter py-16 lg:py-20">
           <div className="mb-8 flex flex-col gap-3">
             <p className="micro-label text-accent-strong">{t("faq.eyebrow")}</p>
@@ -296,7 +301,9 @@ export default async function CityPage({
 
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(localBusinessJsonLd),
+        }}
       />
       <script
         type="application/ld+json"

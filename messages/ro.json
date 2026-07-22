@@ -79,6 +79,7 @@
     "hours": "Lun–Sâm 08:00–17:00 · Dum: închis",
     "socialTitle": "Urmărește-ne",
     "rights": "© Rapid Construct 2026",
+    "privacyLink": "Politica de confidențialitate",
     "modelCredits": "Model 3D cu elemente de la"
   },
   "home": {
@@ -1277,5 +1278,50 @@
       "button": "Solicită o ofertă",
       "secondary": "Sună acum"
     }
+  },
+  "privacyPage": {
+    "seo": {
+      "title": "Politica de confidențialitate",
+      "description": "Ce date personale colectăm prin formularul de contact, de ce, cu cine le partajăm și ce drepturi ai asupra lor."
+    },
+    "hero": {
+      "eyebrow": "Date personale",
+      "h1": "Politica de confidențialitate",
+      "updated": "Ultima actualizare: 22 iulie 2026"
+    },
+    "sections": [
+      {
+        "title": "Cine prelucrează datele",
+        "body": "Datele sunt prelucrate de Rapid Construct & 3D Design, cu sediul în Nicolae Zelinski 24, Chișinău, Republica Moldova. Ne poți scrie la rapidconstructmd@gmail.com sau suna la +373 76 837 180 pentru orice întrebare legată de datele tale."
+      },
+      {
+        "title": "Ce date colectăm",
+        "body": "Colectăm doar ce ne trimiți tu prin formular: numele, numărul de telefon, mesajul, limba în care ai completat și momentul trimiterii. Dacă folosești calculatorul de acoperiș și ceri oferta, primim în plus dimensiunile introduse, materialul ales și estimarea afișată — ca să te putem suna informat. Nu îți cerem adresa, actele sau date de plată."
+      },
+      {
+        "title": "De ce le folosim",
+        "body": "Le folosim într-un singur scop: să te contactăm înapoi și să pregătim oferta pe care ai cerut-o. Temeiul este cererea ta explicită (pașii premergători unui contract). Nu îți trimitem mesaje publicitare și nu te înscriem în liste de newsletter."
+      },
+      {
+        "title": "Cum ajung la noi",
+        "body": "Mesajul este trimis prin e-mail către adresa firmei, folosind serviciul Resend. Site-ul este găzduit de Vercel. Ambii furnizori procesează datele strict ca să livreze mesajul, respectiv ca să afișeze site-ul. Nu vindem, nu închiriem și nu partajăm datele cu nimeni altcineva."
+      },
+      {
+        "title": "Cât le păstrăm",
+        "body": "Păstrăm mesajul cât este necesar ca să răspundem cererii și, dacă lucrarea se contractează, atât cât ne obligă legislația contabilă și contractuală. Dacă nu devii client, poți cere oricând ștergerea și o facem."
+      },
+      {
+        "title": "Cookie-uri și urmărire",
+        "body": "Site-ul nu folosește cookie-uri de urmărire, nu are Google Analytics, Meta Pixel sau alte instrumente de profilare. Singurul lucru salvat în browserul tău este faptul că ai închis bara de ofertă din partea de sus, ca să nu îți reapară la fiecare pagină — nu conține date despre tine și rămâne pe dispozitivul tău. Fonturile sunt servite de pe serverul nostru, deci vizita ta nu este raportată către terți."
+      },
+      {
+        "title": "Drepturile tale",
+        "body": "Poți cere să afli ce date avem despre tine, să le corectezi, să le ștergem sau să ne opui prelucrarea. Scrie-ne la rapidconstructmd@gmail.com sau sună la +373 76 837 180 și rezolvăm. Dacă nu ești mulțumit de răspuns, te poți adresa Centrului Național pentru Protecția Datelor cu Caracter Personal din Republica Moldova."
+      },
+      {
+        "title": "Modificări",
+        "body": "Dacă schimbăm ceva în modul în care lucrăm cu datele, actualizăm această pagină și data de mai sus."
+      }
+    ]
   }
 }
