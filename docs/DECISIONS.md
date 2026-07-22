@@ -20,3 +20,12 @@
   Кишинёве, цена от 160 лей`. Rationale: KEYWORD-MAP flagged high-intent `preț`/`ремонт`/
   `цена` queries the old titles missed; 160 lei/m² is already published site-wide, so this
   publishes no new claim. Only `roofPage.seo.title` changed — page copy untouched.
+
+## 2026-07-22 — Look B dark timber cladding REVERSED (owner instruction + photographic evidence)
+Look B (dark vertical timber on gables + entry, greige walls) was approved on renders 2026-07-21
+and built. The owner's drone photos of houses his company ACTUALLY builds
+(docs/reference-match/owner-drone-2026-07-22/, esp. DJI_0018/0021/0037) show the real product:
+full multi-level HIP roofs, BRIGHT WHITE stucco, mid-grey scored accent panels, no timber
+cladding anywhere. Owner instruction "make the walls whiter, they look old" + "change the
+building" overrides the Look B approval. Direction from 2026-07-22: photo-match the drone house.
+Do not re-derive or re-propose dark timber cladding.

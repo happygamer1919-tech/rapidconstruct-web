@@ -62,3 +62,22 @@ later (Q-03). **Blocks:** nothing (log fallback in place); improves owner's lead
 
 ## Q-10 — OPEN — Calculator prices need confirmation
 Extracted from your live Tilda calculator (docs/PRICING.md): 13 materials. Confirm: (1) Creaton ceramică 57/58 lei — per BUCATĂ or per m²? (2) what exactly is "160 lei/m² înghețat" (no material matches it)? (3) do prices include jgheaburi/burlane și demontare? **Blocks:** publishing the two ceramic entries; the other 11 ship in the calculator.
+
+## Q-11 (2026-07-21, 3D agent) — Pick ONE house to photo-match
+We've been modelling an "average" house. Point at ONE photo from your 110 and say "build that
+one" — matching a single real building beats approximating a genus.
+**Recommended default**: the 2026-01-15_041947 chalet (already the committed reference master,
+saved at docs/reference-match/research-2026-07-21/owner_01.jpg). STATUS: OPEN
+
+## Q-12 (2026-07-21, 3D agent) — Is the 3D hero still the right call?
+You have 110 real photos of finished work; a photo of a real house cannot look fake. The 3D's
+unique value is the build animation, which a photo can't do. After a week of iterations this
+option deserves a decision.
+**Recommended default**: keep the 3D build animation, but consider leading with a real photo and
+placing the 3D below the fold. STATUS: OPEN
+
+## Q-13 (2026-07-21, 3D agent) — Enable Sketchfab / Hyper3D / Hunyuan3D in BlenderMCP N-panel
+Would give ready-made planting and props instead of modelling them (free tiers; may need a free
+API key each). Note: Sketchfab + Hyper3D showed as ticked in earlier sessions but the task list
+says OFF — please verify the N-panel state either way.
+**Recommended default**: enable all three. STATUS: OPEN
