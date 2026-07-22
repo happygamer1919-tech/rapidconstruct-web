@@ -22,8 +22,29 @@ rapidconstructmd@gmail.com + Telegram bot message to Max. **Blocks:** RC-105, RC
 ## Q-04 — PARTIALLY RESOLVED — Domain/DNS + Tilda access
 Tilda access: WORKS — owner logs into tilda.cc in the browser pane and Claude reads the
 admin (done 2026-07-13 for the page audit; same flow for photo export). Owner should
-change the Tilda password (it was pasted in chat once). DNS: still unknown who controls
-the rapidconstruct.md zone. **Blocks:** RC-403 (DNS part only).
+change the Tilda password (it was pasted in chat once).
+
+**DNS investigated 2026-07-22 (dig + whois.nic.md), facts:**
+```
+rapidconstruct.md   registered 2025-02-09, expires 2027-02-09
+NameServers         ns1.tildadns.com, ns2.tildadns.com   <- Tilda hosts the ZONE
+A                   194.48.203.138 (Tilda), www CNAMEs to apex
+MX                  NONE
+```
+- Tilda controls the DNS **zone**, but Tilda is NOT the registrar — `.md` domains must be
+  registered through a NIC.MD-accredited registrar. Someone registered it in Feb 2025 and
+  delegated it to tildadns. NIC.MD hides the registrar in whois, so the only way to find it
+  is to ask the owner **who he paid for the domain** (not Tilda).
+- **Preferred cutover (Path A):** change nameservers at the REGISTRAR to
+  `ns1.vercel-dns.com` / `ns2.vercel-dns.com`. Needs the registrar login — still missing.
+- **Path B (avoid):** edit the A record inside Tilda's panel to point at Vercel. Uses the
+  login we already have, BUT leaves the zone hosted by the vendor we are leaving — when the
+  Tilda subscription lapses, DNS dies and the site goes dark. Also not certain Tilda's panel
+  permits an A record pointing away from Tilda.
+- ✅ **No MX records** — the company runs on rapidconstructmd@gmail.com, so nothing email
+  depends on this domain. The cutover cannot break their email.
+
+**Blocks:** RC-403 (registrar login is the last missing piece).
 
 ## Q-05 — OPEN — Is an EN version ever needed?
 RO+RU covers the local market. EN only matters for foreign investors/commercial clients.
