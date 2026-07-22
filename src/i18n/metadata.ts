@@ -17,8 +17,26 @@ import { getPathname } from "./navigation";
  * RC-006 changed the fallback to the staging host per its brief. The value is
  * env-driven either way — this only affects builds with no env set.
  */
+const STAGING_HOST = "https://rapidconstruct-web.vercel.app";
+
+// RC-402 launch guard. The staging fallback is right for previews, but shipping
+// it to PRODUCTION would publish canonical + hreflang + sitemap + og:image URLs
+// that all point at the vercel.app host — telling Google the real domain is a
+// duplicate of staging on the very day we cut over. Nothing used to catch that:
+// the Vercel project currently has ZERO environment variables, so a production
+// deploy today would silently do exactly this. Fail the build instead.
+if (process.env.VERCEL_ENV === "production" && !process.env.NEXT_PUBLIC_SITE_URL) {
+  throw new Error(
+    "NEXT_PUBLIC_SITE_URL is required for production builds (RC-403 cutover).\n" +
+      `Without it every canonical/hreflang/sitemap URL points at ${STAGING_HOST}.\n` +
+      "Set it in the Vercel project, Production scope:\n" +
+      "  vercel env add NEXT_PUBLIC_SITE_URL production\n" +
+      "See docs/LAUNCH-CHECKLIST.md.",
+  );
+}
+
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://rapidconstruct-web.vercel.app"
+  process.env.NEXT_PUBLIC_SITE_URL ?? STAGING_HOST
 ).replace(/\/+$/, "");
 
 /** Open Graph locale codes (`og:locale`) for each app locale. */

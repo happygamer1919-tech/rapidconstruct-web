@@ -30,6 +30,7 @@ const ROUTES = [
   "/proiectare-3d",
   "/instalatii",
   "/despre-noi",
+  "/portofoliu",
   "/contact",
   "/chisinau",
   "/orhei",
