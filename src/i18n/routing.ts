@@ -48,6 +48,10 @@ export const pathnames = {
     ro: "/calculator-acoperis",
     ru: "/kalkulyator-kryshi",
   },
+  "/politica-de-confidentialitate": {
+    ro: "/politica-de-confidentialitate",
+    ru: "/politika-konfidencialnosti",
+  },
   "/chisinau": { ro: "/chisinau", ru: "/kishinev" },
   "/orhei": { ro: "/orhei", ru: "/orgeev" },
   "/cahul": { ro: "/cahul", ru: "/kagul" },

@@ -252,7 +252,9 @@ function House({
     const last = Math.max(1, ordered.length - 1);
     ordered.forEach(({ mesh, phase }, i) => {
       // Clone materials per piece so highlight fading is independent.
-      const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+      const mats = Array.isArray(mesh.material)
+        ? mesh.material
+        : [mesh.material];
       const colors: PieceColor[] = [];
       const cloned = mats.map((mm) => {
         const c = (mm as MeshStandardMaterial).clone();
@@ -518,12 +520,20 @@ export default function HouseBuildScene({
         shadow-autoUpdate={!rested}
         shadow-needsUpdate={rested}
       />
-      <directionalLight position={[-6, 3, -4]} intensity={0.5} color="#cddcff" />
+      <directionalLight
+        position={[-6, 3, -4]}
+        intensity={0.5}
+        color="#cddcff"
+      />
       {/* Dim back-rim: lifts the roofline off the page tone so the silhouette
           reads. Free — one light, no shadow map. (No SSAO/postprocessing here on
           purpose: it would sink the low-end phone that already cannot finish a
           Lighthouse run. Ambient occlusion belongs baked in the texture.) */}
-      <directionalLight position={[-3, 4, -7]} intensity={0.35} color="#ffd9a0" />
+      <directionalLight
+        position={[-3, 4, -7]}
+        intensity={0.35}
+        color="#ffd9a0"
+      />
       <Suspense fallback={null}>
         <House
           playing={play && !reduce}

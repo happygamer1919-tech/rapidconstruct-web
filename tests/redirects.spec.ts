@@ -29,14 +29,14 @@ import { test, expect } from "@playwright/test";
 
 const REDIRECTS: ReadonlyArray<{ from: string; to: string }> = [
   { from: "/1", to: "/renovari-la-cheie" },
-  { from: "/2", to: "/case-constructii" },
+  { from: "/2", to: "/portofoliu" },
   { from: "/3", to: "/fatade" },
   { from: "/4", to: "/finisaje" },
   { from: "/5", to: "/proiectare-3d" },
   { from: "/6", to: "/instalatii" },
   { from: "/contacte", to: "/contact" },
   { from: "/calcul-acoperis", to: "/calculator-acoperis" },
-  { from: "/calcul-gard", to: "/calculator-gard" },
+  { from: "/calcul-gard", to: "/contact" },
   { from: "/page53648667.html", to: "/" },
   { from: "/privacypolicy", to: "/politica-de-confidentialitate" },
 ];
@@ -48,9 +48,10 @@ const REDIRECTS: ReadonlyArray<{ from: string; to: string }> = [
  * redirect aimed at a slug nobody ever built.
  */
 const PENDING_PAGES: ReadonlySet<string> = new Set([
-  "/case-constructii", // RC-103
-  "/calculator-gard", // RC-108
-  "/politica-de-confidentialitate", // RC-402 launch prep
+  // Emptied 2026-07-22 (RC-402 launch prep). Every redirect destination now
+  // resolves 200: /2 and /calcul-gard were repointed at real pages, and the
+  // privacy policy was built. Keep this set EMPTY unless a genuinely-pending
+  // page forces an entry — each one is a redirect we knowingly aim at a 404.
 ]);
 
 test.describe("RC-401 Tilda -> new permanent redirects", () => {
@@ -175,4 +176,52 @@ test.describe("RC-201 RU localized slugs", () => {
       ).toBe(200);
     });
   }
+});
+
+/**
+ * RC-402 — redirects that used to point at pages nobody ever built, so they
+ * 301'd straight into a 404. Same defect class as `/1` (RC-401): the rule looked
+ * correct in the config and was broken in production for weeks.
+ *
+ * `/privacypolicy` is the important one — the contact form collects a name and a
+ * phone number, so the policy has to exist and be reachable.
+ */
+const REPOINTED = [
+  { from: "/2", to: "/portofoliu" },
+  { from: "/calcul-gard", to: "/contact" },
+  { from: "/privacypolicy", to: "/politica-de-confidentialitate" },
+] as const;
+
+test.describe("RC-402 repointed dead redirects", () => {
+  for (const { from, to } of REPOINTED) {
+    test(`${from} redirects to ${to} and lands on a real page`, async ({
+      request,
+    }) => {
+      const hop = await request.get(from, { maxRedirects: 0 });
+      expect([301, 308]).toContain(hop.status());
+      expect(hop.headers()["location"]).toBe(to);
+
+      const followed = await request.get(from);
+      expect(
+        followed.status(),
+        `${from} -> ${to} resolved ${followed.status()}. This redirect points at a page that does not exist — the exact bug this suite exists to catch.`,
+      ).toBe(200);
+    });
+  }
+
+  test("the privacy policy is reachable from the footer in both locales", async ({
+    page,
+  }) => {
+    for (const [start, expected] of [
+      ["/", "/politica-de-confidentialitate"],
+      ["/ru", "/ru/politika-konfidencialnosti"],
+    ] as const) {
+      await page.goto(start);
+      const link = page.locator(`footer a[href="${expected}"]`);
+      await expect(
+        link,
+        `no footer privacy link on ${start}; a policy that exists but is unlinked is no better than none`,
+      ).toHaveCount(1);
+    }
+  });
 });

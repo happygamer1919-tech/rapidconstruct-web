@@ -30,7 +30,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: "/1", destination: "/renovari-la-cheie", permanent: true },
-      { source: "/2", destination: "/case-constructii", permanent: true },
+      // RC-402: was `/case-constructii`, a page that was never built, so this
+      // 301'd straight into a 404 — the same defect RC-401 found on `/1`.
+      // `/2` was the Tilda "case/construcții" page, and the closest real thing
+      // we now have is the portfolio: actual built houses, with photos.
+      { source: "/2", destination: "/portofoliu", permanent: true },
       { source: "/3", destination: "/fatade", permanent: true },
       { source: "/4", destination: "/finisaje", permanent: true },
       { source: "/5", destination: "/proiectare-3d", permanent: true },
@@ -41,11 +45,12 @@ const nextConfig: NextConfig = {
         destination: "/calculator-acoperis",
         permanent: true,
       },
-      {
-        source: "/calcul-gard",
-        destination: "/calculator-gard",
-        permanent: true,
-      },
+      // RC-402: was `/calculator-gard` (RC-108, not built), so this 301'd into a
+      // 404. The fence calculator has no equivalent page, and sending fence
+      // traffic to the ROOF calculator would answer the wrong question — so it
+      // goes to /contact, where the enquiry is still captured. Repoint this to
+      // /calculator-gard the moment RC-108 ships.
+      { source: "/calcul-gard", destination: "/contact", permanent: true },
       { source: "/page53648667.html", destination: "/", permanent: true },
       {
         source: "/privacypolicy",

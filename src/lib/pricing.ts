@@ -17,13 +17,43 @@ export type RoofMaterial = {
 };
 
 export const ROOF_MATERIALS: RoofMaterial[] = [
-  { id: "novatik-classic", name: "Novatik Classic (rocă vulcanică)", pricePerM2: 232 },
-  { id: "novatik-slate", name: "Novatik Slate (rocă vulcanică)", pricePerM2: 255 },
-  { id: "novatik-roman", name: "Novatik Roman (rocă vulcanică)", pricePerM2: 232 },
-  { id: "iko-cambridge", name: "Șindrilă IKO Cambridge Xpress", pricePerM2: 345 },
-  { id: "iko-superglass", name: "Șindrilă IKO Superglass Hex", pricePerM2: 250 },
-  { id: "creaton-balance", name: "Țiglă ceramică Creaton Balance", pricePerM2: 57, verify: true },
-  { id: "creaton-rapido", name: "Țiglă ceramică Creaton Rapido", pricePerM2: 58, verify: true },
+  {
+    id: "novatik-classic",
+    name: "Novatik Classic (rocă vulcanică)",
+    pricePerM2: 232,
+  },
+  {
+    id: "novatik-slate",
+    name: "Novatik Slate (rocă vulcanică)",
+    pricePerM2: 255,
+  },
+  {
+    id: "novatik-roman",
+    name: "Novatik Roman (rocă vulcanică)",
+    pricePerM2: 232,
+  },
+  {
+    id: "iko-cambridge",
+    name: "Șindrilă IKO Cambridge Xpress",
+    pricePerM2: 345,
+  },
+  {
+    id: "iko-superglass",
+    name: "Șindrilă IKO Superglass Hex",
+    pricePerM2: 250,
+  },
+  {
+    id: "creaton-balance",
+    name: "Țiglă ceramică Creaton Balance",
+    pricePerM2: 57,
+    verify: true,
+  },
+  {
+    id: "creaton-rapido",
+    name: "Țiglă ceramică Creaton Rapido",
+    pricePerM2: 58,
+    verify: true,
+  },
   { id: "barcelona", name: "Barcelona", pricePerM2: 198 },
   { id: "bavaria", name: "Bavaria 2.0/40 UTK", pricePerM2: 295 },
   { id: "finn", name: "Finn 2.0 UTK", pricePerM2: 295 },

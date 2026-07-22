@@ -104,7 +104,9 @@ export default function RoofCutaway({
         <div className="sticky top-0 h-svh w-full overflow-hidden">
           {/* 3D fills the section as a background */}
           <div className="absolute inset-0 bg-gradient-to-br from-neutral-100 via-muted to-neutral-200">
-            {mount3d && <RoofCutawayScene explodeValue={explodeValue} active={inView} />}
+            {mount3d && (
+              <RoofCutawayScene explodeValue={explodeValue} active={inView} />
+            )}
           </div>
 
           {/* legibility scrim (left + bottom) */}
@@ -113,7 +115,12 @@ export default function RoofCutaway({
 
           {/* heading + active layer description overlaid */}
           <div className="relative mx-auto flex h-svh w-full max-w-6xl flex-col justify-center gap-6 px-gutter">
-            <Header eyebrow={eyebrow} title={title} intro={intro} className="max-w-lg" />
+            <Header
+              eyebrow={eyebrow}
+              title={title}
+              intro={intro}
+              className="max-w-lg"
+            />
 
             <div className="relative min-h-36 max-w-md">
               <AnimatePresence mode="wait">
@@ -195,7 +202,9 @@ function LayerList({ layers }: { layers: RoofLayer[] }) {
             {i + 1}
           </span>
           <div className="flex flex-col gap-1">
-            <h3 className="text-body font-semibold text-foreground">{l.name}</h3>
+            <h3 className="text-body font-semibold text-foreground">
+              {l.name}
+            </h3>
             <p className="text-caption text-muted-foreground">{l.desc}</p>
           </div>
         </li>

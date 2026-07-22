@@ -147,7 +147,18 @@ export default async function SiteFooter() {
 
       <div className="border-t border-inverse-border">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-1 px-gutter py-5 text-micro text-inverse-muted-foreground">
-          <span>{t("rights")}</span>
+          <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span>{t("rights")}</span>
+            {/* The form collects a name and a phone number, so the policy has to
+                be reachable from every page — one that exists but is unlinked is
+                no better than none. */}
+            <Link
+              href="/politica-de-confidentialitate"
+              className="underline decoration-inverse-border underline-offset-2 hover:text-inverse-foreground focus-visible:text-inverse-foreground focus-visible:outline-none"
+            >
+              {t("privacyLink")}
+            </Link>
+          </span>
           {/* CC-BY attribution — legally required, and it must track what
               ACTUALLY ships. The shipped house.glb carries scenery derived from
               this author's CC-BY assets (plinth_shrub_*, plinth_tree_*,

@@ -84,7 +84,9 @@ export default async function DespreNoiPage({ params }: PageProps) {
       <section className="border-b border-border bg-muted">
         <div className="mx-auto w-full max-w-4xl px-gutter py-20 lg:py-28">
           <div className="flex flex-col gap-6">
-            <p className="micro-label text-accent-strong">{t("hero.eyebrow")}</p>
+            <p className="micro-label text-accent-strong">
+              {t("hero.eyebrow")}
+            </p>
             <h1 className="font-serif text-display-xl text-foreground">
               {t("hero.h1")}
             </h1>
@@ -115,7 +117,10 @@ export default async function DespreNoiPage({ params }: PageProps) {
       </section>
 
       {/* VALUES — what the client can rely on (reuses badge icon set) */}
-      <section aria-labelledby="values-title" className="border-b border-border">
+      <section
+        aria-labelledby="values-title"
+        className="border-b border-border"
+      >
         <div className="mx-auto w-full max-w-6xl px-gutter py-16 lg:py-20">
           <div className="mb-10 flex flex-col gap-3">
             <p className="micro-label text-accent-strong">

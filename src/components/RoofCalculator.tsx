@@ -114,7 +114,8 @@ export default function RoofCalculator({
   const liveArea = dimsValid ? Math.round(lenNum * widNum * 100) / 100 : 0;
 
   const estimate = useMemo(
-    () => (dimsValid && materialId ? estimateRoof(lenNum, widNum, materialId) : null),
+    () =>
+      dimsValid && materialId ? estimateRoof(lenNum, widNum, materialId) : null,
     [dimsValid, materialId, lenNum, widNum],
   );
 
@@ -380,7 +381,10 @@ function NumberField({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-caption font-semibold text-foreground">
+      <label
+        htmlFor={id}
+        className="text-caption font-semibold text-foreground"
+      >
         {label}
       </label>
       <input
@@ -425,7 +429,11 @@ function LeadForm({
   const baseId = useId();
 
   const errorFor = (code?: CalcLeadFieldError) =>
-    code === "phone" ? t("errPhone") : code === "required" ? t("errRequired") : null;
+    code === "phone"
+      ? t("errPhone")
+      : code === "required"
+        ? t("errRequired")
+        : null;
 
   if (state.status === "success") {
     return (
@@ -567,7 +575,10 @@ function TextField({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-caption font-semibold text-foreground">
+      <label
+        htmlFor={id}
+        className="text-caption font-semibold text-foreground"
+      >
         {label}
       </label>
       {textarea ? (
@@ -581,7 +592,11 @@ function TextField({
         </p>
       )}
       {error && (
-        <p id={errorId} role="alert" className="text-micro font-medium text-red-700">
+        <p
+          id={errorId}
+          role="alert"
+          className="text-micro font-medium text-red-700"
+        >
           {error}
         </p>
       )}

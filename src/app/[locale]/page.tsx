@@ -43,7 +43,10 @@ export async function generateMetadata({
   const safeLocale = hasLocale(routing.locales, locale)
     ? locale
     : routing.defaultLocale;
-  const t = await getTranslations({ locale: safeLocale, namespace: "seo.home" });
+  const t = await getTranslations({
+    locale: safeLocale,
+    namespace: "seo.home",
+  });
 
   return buildMetadata({
     locale: safeLocale,
@@ -123,7 +126,10 @@ export default async function Home({ params }: PageProps) {
       />
 
       {/* 3 — TRUST BADGES */}
-      <section aria-labelledby="badges-title" className="border-b border-border">
+      <section
+        aria-labelledby="badges-title"
+        className="border-b border-border"
+      >
         <div className="mx-auto w-full max-w-6xl px-gutter py-14">
           <h2 id="badges-title" className="sr-only">
             {t("badges.title")}
@@ -471,7 +477,11 @@ function ContactRow({
 }) {
   return (
     <div className="flex items-start gap-3">
-      <Icon name={icon} size={20} className="mt-0.5 shrink-0 text-inverse-accent" />
+      <Icon
+        name={icon}
+        size={20}
+        className="mt-0.5 shrink-0 text-inverse-accent"
+      />
       <div className="flex flex-col">
         <dt className="micro-label text-inverse-muted-foreground">{label}</dt>
         <dd className="text-body text-inverse-foreground">

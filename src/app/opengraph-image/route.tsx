@@ -34,57 +34,64 @@ const MUTED = "#d6ccbe"; // --color-neutral-300 (muted text on charcoal)
 
 export function GET() {
   return new ImageResponse(
-    (
-      <div
-        style={{
-          height: "100%",
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          background: INK,
-          padding: 80,
-        }}
-      >
-        {/* Wordmark */}
-        <div style={{ display: "flex", alignItems: "center", gap: 22 }}>
-          <div
-            style={{
-              width: 56,
-              height: 56,
-              background: BRAND,
-              borderRadius: 12,
-              display: "flex",
-            }}
-          />
-          <div style={{ display: "flex", color: PAPER, fontSize: 36, fontWeight: 700 }}>
-            {site.name}
-          </div>
+    <div
+      style={{
+        height: "100%",
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        background: INK,
+        padding: 80,
+      }}
+    >
+      {/* Wordmark */}
+      <div style={{ display: "flex", alignItems: "center", gap: 22 }}>
+        <div
+          style={{
+            width: 56,
+            height: 56,
+            background: BRAND,
+            borderRadius: 12,
+            display: "flex",
+          }}
+        />
+        <div
+          style={{
+            display: "flex",
+            color: PAPER,
+            fontSize: 36,
+            fontWeight: 700,
+          }}
+        >
+          {site.name}
         </div>
+      </div>
 
-        {/* Headline slot + accent rule */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      {/* Headline slot + accent rule */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+        <div
+          style={{
+            display: "flex",
+            color: PAPER,
+            fontSize: 72,
+            fontWeight: 800,
+            lineHeight: 1.05,
+            maxWidth: 960,
+          }}
+        >
+          Construcții & Renovări la cheie
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
           <div
-            style={{
-              display: "flex",
-              color: PAPER,
-              fontSize: 72,
-              fontWeight: 800,
-              lineHeight: 1.05,
-              maxWidth: 960,
-            }}
-          >
-            Construcții & Renovări la cheie
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-            <div style={{ display: "flex", width: 72, height: 8, background: BRAND }} />
-            <div style={{ display: "flex", color: MUTED, fontSize: 32 }}>
-              {site.address.addressLocality} · Moldova
-            </div>
+            style={{ display: "flex", width: 72, height: 8, background: BRAND }}
+          />
+          <div style={{ display: "flex", color: MUTED, fontSize: 32 }}>
+            {site.address.addressLocality} · Moldova
           </div>
         </div>
       </div>
-    ),
+    </div>,
     { ...SIZE },
   );
 }
