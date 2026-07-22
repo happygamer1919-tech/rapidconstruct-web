@@ -81,3 +81,23 @@ Would give ready-made planting and props instead of modelling them (free tiers; 
 API key each). Note: Sketchfab + Hyper3D showed as ticked in earlier sessions but the task list
 says OFF — please verify the N-panel state either way.
 **Recommended default**: enable all three. STATUS: OPEN
+
+## Q-14 (2026-07-22) — Portfolio project metadata (city / year / size)
+The `/portofoliu` page is live with 8 real photos from the drone set. It
+publishes NO location, floor area or completion year, because nobody has
+confirmed those facts and inventing them on a proof page would discredit the
+page itself. Real metadata would make each entry rank for local queries
+("casă la cheie Orhei") and let us add richer JSON-LD.
+**Ask the owner, per photo:** locality, approximate built area (m²), year
+finished, and whether the client agreed to be shown.
+**Recommended default**: ship as-is without metadata (already done); enrich when
+the owner supplies it. STATUS: OPEN
+
+## Q-15 (2026-07-22) — Canonical domain: apex or www?
+`NEXT_PUBLIC_SITE_URL` is unset and Vercel has zero env vars, so every canonical
+/ hreflang / sitemap / og:image URL currently points at the staging host. A
+production build now FAILS rather than shipping that (verified both ways).
+Before cutover the owner must pick the canonical host.
+**Recommended default**: `https://rapidconstruct.md` (apex) — it matches the
+current Tilda URLs, so the 301s from legacy pages land on the same host with no
+extra redirect hop. See docs/LAUNCH-CHECKLIST.md §1. STATUS: OPEN

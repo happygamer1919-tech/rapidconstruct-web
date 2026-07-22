@@ -1207,5 +1207,74 @@
         "ctaCall": "Sună acum"
       }
     }
+  },
+  "portfolioPage": {
+    "seo": {
+      "title": "Portofoliu: case, acoperișuri și fațade",
+      "description": "Lucrări finalizate de Rapid Construct: case la cheie, acoperișuri din țiglă metalică, fațade și instalații în Chișinău, Orhei, Cahul și Costești."
+    },
+    "hero": {
+      "eyebrow": "Portofoliu",
+      "h1": "Lucrări făcute de echipa noastră",
+      "intro": "Fotografii din șantierele noastre, nu imagini de stoc. Case ridicate de la zero, acoperișuri din țiglă metalică, fațade și instalații — așa arată lucrul terminat."
+    },
+    "projects": {
+      "items": [
+        {
+          "tag": "Case la cheie",
+          "title": "Casă cu parter și etaj",
+          "desc": "Acoperiș în patru ape din țiglă metalică antracit, fațadă albă cu inserții gri, curte pavată și gard din beton cu panouri metalice.",
+          "alt": "Vedere din dronă a unei case cu parter și etaj, acoperiș în patru ape din țiglă metalică antracit și curte pavată"
+        },
+        {
+          "tag": "Acoperișuri",
+          "title": "Acoperiș cu panouri solare",
+          "desc": "Acoperiș în patru ape din țiglă metalică, cu panouri fotovoltaice montate pe versantul din spate și coșuri de cărămidă.",
+          "alt": "Acoperiș în patru ape din țiglă metalică cu panouri fotovoltaice pe versantul din spate"
+        },
+        {
+          "tag": "Case la cheie",
+          "title": "Terasă acoperită și carport",
+          "desc": "Intrare cu terasă acoperită și carport pentru două mașini, sub aceeași linie de acoperiș ca locuința.",
+          "alt": "Fațada principală a casei, cu terasă acoperită la intrare și carport pentru două mașini"
+        },
+        {
+          "tag": "Fațade",
+          "title": "Fațadă laterală, tencuială albă",
+          "desc": "Tencuială decorativă albă cu bandă verticală gri, soclu închis la culoare, jgheaburi și burlane în tonul acoperișului.",
+          "alt": "Fațada laterală a casei, tencuială albă cu bandă verticală gri și soclu închis la culoare"
+        },
+        {
+          "tag": "Acoperișuri",
+          "title": "Detaliu de acoperiș",
+          "desc": "Țiglă metalică cu profil ondulat, opritori de zăpadă montate pe rânduri și streașină dreaptă cu jgheab semicircular.",
+          "alt": "Detaliu de acoperiș din țiglă metalică ondulată, cu opritori de zăpadă și jgheab semicircular"
+        },
+        {
+          "tag": "Instalații",
+          "title": "Pompă de căldură",
+          "desc": "Unitate exterioară de pompă de căldură și tablou de racord, montate pe fațada dinspre curte, lângă anexa cu acoperiș propriu.",
+          "alt": "Unitate exterioară de pompă de căldură montată pe fațada dinspre curte"
+        },
+        {
+          "tag": "Case la cheie",
+          "title": "Duplex modern, acoperiș plat",
+          "desc": "Două locuințe cuplate, cu acoperiș plat, ferestre mari și fațadă placată cu plăci tip piatră.",
+          "alt": "Duplex modern cu acoperiș plat și fațadă placată cu plăci tip piatră"
+        },
+        {
+          "tag": "Structură",
+          "title": "Ansamblu rezidențial la roșu",
+          "desc": "Structură din cadre de beton armat și zidărie de cărămidă, în execuție — etapa dinaintea acoperișului și a fațadei.",
+          "alt": "Ansamblu rezidențial în construcție, structură din cadre de beton armat și zidărie de cărămidă"
+        }
+      ]
+    },
+    "cta": {
+      "title": "Vrei o lucrare ca acestea?",
+      "desc": "Spune-ne ce ai de construit sau de renovat. Venim la fața locului, măsurăm și îți dăm un preț clar, în scris.",
+      "button": "Solicită o ofertă",
+      "secondary": "Sună acum"
+    }
   }
 }

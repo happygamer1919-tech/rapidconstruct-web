@@ -29,3 +29,28 @@ full multi-level HIP roofs, BRIGHT WHITE stucco, mid-grey scored accent panels, 
 cladding anywhere. Owner instruction "make the walls whiter, they look old" + "change the
 building" overrides the Look B approval. Direction from 2026-07-22: photo-match the drone house.
 Do not re-derive or re-propose dark timber cladding.
+
+## 2026-07-22 — /portofoliu ships without project metadata (Q-14)
+RC-104 is live in RO + RU with 8 real photos from the owner's 2026-07-22 drone
+set. The page publishes no locality, floor area or completion year: none of those
+were confirmed, and a proof page that invents its own proof is worse than no page.
+Copy describes only what is visible in each frame. Q-14 asks the owner for the
+real metadata; add it (and extend the ItemList JSON-LD) when it arrives.
+
+## 2026-07-22 — Production builds fail without NEXT_PUBLIC_SITE_URL
+The Vercel project has zero environment variables, so a production deploy would
+have emitted canonical/hreflang/sitemap/og:image URLs pointing at the staging
+host — telling Google the real domain duplicates staging on cutover day.
+`src/i18n/metadata.ts` now throws when `VERCEL_ENV=production` and the variable
+is missing. Verified: build exits 1 without it, exits 0 with it. Apex vs www is
+still undecided (Q-15).
+
+## 2026-07-22 — Viewport-level overlays moved out of <header>
+The header carries `backdrop-blur`; a backdrop-filter creates a containing block
+for `position: fixed` descendants. The mobile drawer and the floating call button
+lived inside it, so the drawer was clipped to the 81px header height (its nav
+links were unreachable on a phone) and the call button anchored to the header
+rather than the viewport. Both are now siblings of the header. The closed drawer
+is also clipped with `overflow-hidden`, which removed a 694px-wide document on a
+375px viewport across every page (Google mobile-usability "content wider than
+screen").

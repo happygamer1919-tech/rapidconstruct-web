@@ -40,8 +40,12 @@ _RC-003/004/005/007 shipped together in PR #6 (squash). RC-006 next._
 - [ ] **RC-103** Service pages ×6 (acoperisuri, fatade, renovari-la-cheie, finisaje,
       proiectare-3d, instalatii): template with H1, benefit copy, process steps, gallery,
       price-from, FAQ, CTA. Service + FAQPage JSON-LD.
-- [ ] **RC-104** Portfolio: filterable project grid (city, type, m²), project detail pages with
+- [~] **RC-104** Portfolio: filterable project grid (city, type, m²), project detail pages with
       before/after slider and specs (Orhei 100m², Costești 320m², Cahul 180m², Chișinău 280m² as seed).
+      PARTIAL (2026-07-22): `/portofoliu` ships RO+RU with 8 real drone photos, tags, ItemList
+      JSON-LD and a sitemap entry — the nav 404 is gone. NOT done: filters, per-project detail
+      pages, before/after sliders. All three need per-project metadata nobody has confirmed
+      (Q-14); the seed figures above were never verified either, so do not publish them as-is.
 - [ ] **RC-105** Contact page + lead form: name/phone/message, server action, spam honeypot,
       "răspundem în 2 ore lucrătoare" promise, success state. Delivery per QUESTIONS Q-03.
 - [ ] **RC-106** WhatsApp/Viber/Telegram click-to-chat buttons (floating on mobile).

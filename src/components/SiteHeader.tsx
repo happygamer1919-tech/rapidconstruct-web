@@ -38,103 +38,121 @@ export default function SiteHeader() {
   }, [menuOpen]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-gutter py-3">
-        {/* Wordmark */}
-        <Link
-          href="/"
-          className="font-serif lining-nums text-lg font-semibold tracking-tight text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
-        >
-          Rapid Construct{" "}
-          <span className="text-accent-strong">
-            <span className="font-sans font-normal">&amp;</span> 3D Design
-          </span>
-        </Link>
-
-        {/* Desktop nav */}
-        <nav
-          aria-label={t("home")}
-          className="hidden items-center gap-7 lg:flex"
-        >
-          <Link href="/" className={navLinkClass}>
-            {t("home")}
+    <>
+      <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-gutter py-3">
+          {/* Wordmark */}
+          <Link
+            href="/"
+            className="font-serif lining-nums text-lg font-semibold tracking-tight text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+          >
+            Rapid Construct{" "}
+            <span className="text-accent-strong">
+              <span className="font-sans font-normal">&amp;</span> 3D Design
+            </span>
           </Link>
 
-          {/* Visible content links come BEFORE the (default-hidden) services
+          {/* Desktop nav */}
+          <nav
+            aria-label={t("home")}
+            className="hidden items-center gap-7 lg:flex"
+          >
+            <Link href="/" className={navLinkClass}>
+              {t("home")}
+            </Link>
+
+            {/* Visible content links come BEFORE the (default-hidden) services
               dropdown so a keyboard user — and the CI nav smoke test — reaches a
               visible link first. */}
-          {PRIMARY_NAV.map((item) => (
-            <Link key={item.href} href={item.href} className={navLinkClass}>
-              {t(item.key)}
-            </Link>
-          ))}
+            {PRIMARY_NAV.map((item) => (
+              <Link key={item.href} href={item.href} className={navLinkClass}>
+                {t(item.key)}
+              </Link>
+            ))}
 
-          {/* Services disclosure — opens on hover/focus (pure CSS, keyboard-safe). */}
-          <div className="group relative">
+            {/* Services disclosure — opens on hover/focus (pure CSS, keyboard-safe). */}
+            <div className="group relative">
+              <button
+                type="button"
+                aria-haspopup="true"
+                className={`${navLinkClass} inline-flex cursor-pointer items-center gap-1`}
+              >
+                {t("services")}
+                <Icon
+                  name="chevronDown"
+                  size={16}
+                  className="transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180"
+                />
+              </button>
+              <div className="invisible absolute right-0 top-full z-50 w-64 pt-3 opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                <ul className="grid gap-1 rounded-lg border border-border bg-surface p-2 shadow-lg shadow-black/5">
+                  {SERVICES.map((s) => (
+                    <li key={s.slug}>
+                      <Link
+                        href={s.slug}
+                        className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-surface-foreground transition-colors hover:bg-muted focus-visible:bg-muted focus-visible:outline-none"
+                      >
+                        <Icon
+                          name={s.icon}
+                          size={18}
+                          className="shrink-0 text-accent-strong"
+                        />
+                        {tServices(`${s.key}.title`)}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </nav>
+
+          {/* Right cluster: phone CTA + locale switcher (desktop) */}
+          <div className="hidden items-center gap-3 lg:flex">
+            <a
+              href={`tel:${site.phone}`}
+              className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground transition-colors hover:bg-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong"
+            >
+              <Icon name="phone" size={16} />
+              {t("callNow")}
+            </a>
+            <LocaleSwitcher />
+          </div>
+
+          {/* Mobile controls */}
+          <div className="flex items-center gap-2 lg:hidden">
+            <LocaleSwitcher />
             <button
               type="button"
-              aria-haspopup="true"
-              className={`${navLinkClass} inline-flex cursor-pointer items-center gap-1`}
+              onClick={() => setMenuOpen(true)}
+              aria-label={t("openMenu")}
+              aria-expanded={menuOpen}
+              className="inline-flex cursor-pointer items-center justify-center rounded-md p-2 text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-strong"
             >
-              {t("services")}
-              <Icon
-                name="chevronDown"
-                size={16}
-                className="transition-transform duration-200 group-hover:rotate-180 group-focus-within:rotate-180"
-              />
+              <Icon name="menu" size={24} />
             </button>
-            <div className="invisible absolute right-0 top-full z-50 w-64 pt-3 opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-              <ul className="grid gap-1 rounded-lg border border-border bg-surface p-2 shadow-lg shadow-black/5">
-                {SERVICES.map((s) => (
-                  <li key={s.slug}>
-                    <Link
-                      href={s.slug}
-                      className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-surface-foreground transition-colors hover:bg-muted focus-visible:bg-muted focus-visible:outline-none"
-                    >
-                      <Icon
-                        name={s.icon}
-                        size={18}
-                        className="shrink-0 text-accent-strong"
-                      />
-                      {tServices(`${s.key}.title`)}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
           </div>
-        </nav>
-
-        {/* Right cluster: phone CTA + locale switcher (desktop) */}
-        <div className="hidden items-center gap-3 lg:flex">
-          <a
-            href={`tel:${site.phone}`}
-            className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground transition-colors hover:bg-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong"
-          >
-            <Icon name="phone" size={16} />
-            {t("callNow")}
-          </a>
-          <LocaleSwitcher />
         </div>
+      </header>
 
-        {/* Mobile controls */}
-        <div className="flex items-center gap-2 lg:hidden">
-          <LocaleSwitcher />
-          <button
-            type="button"
-            onClick={() => setMenuOpen(true)}
-            aria-label={t("openMenu")}
-            aria-expanded={menuOpen}
-            className="inline-flex cursor-pointer items-center justify-center rounded-md p-2 text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-strong"
-          >
-            <Icon name="menu" size={24} />
-          </button>
-        </div>
-      </div>
+      {/*
+        Everything below is `position: fixed` and MUST stay outside <header>.
+        The header carries `backdrop-blur`, and a backdrop-filter creates a
+        containing block for fixed descendants — so while these lived inside it,
+        the mobile drawer was clipped to the 81px header (its nav links were
+        unreachable on a phone) and the floating call button anchored to the
+        bottom of the header instead of the viewport. Both are viewport-level
+        overlays; they are siblings of the header, not children.
+      */}
 
       {/* Mobile slide-in menu */}
       <div
-        className={`fixed inset-0 z-50 lg:hidden ${menuOpen ? "" : "pointer-events-none"}`}
+        // `overflow-hidden` clips the closed drawer, which is parked off-screen
+        // with `translate-x-full`. Without it the panel widened the document to
+        // 694px on a 375px viewport on EVERY page — Google flags that as
+        // "content wider than screen" in mobile usability, and it let the whole
+        // page be dragged sideways. Clipping here is inert when the menu is
+        // open (the panel then sits inside inset-0).
+        className={`fixed inset-0 z-50 overflow-hidden lg:hidden ${menuOpen ? "" : "pointer-events-none"}`}
         aria-hidden={!menuOpen}
       >
         {/* Backdrop */}
@@ -225,7 +243,7 @@ export default function SiteHeader() {
       >
         <Icon name="phone" size={24} />
       </a>
-    </header>
+    </>
   );
 }
 
