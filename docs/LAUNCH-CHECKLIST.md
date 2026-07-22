@@ -50,8 +50,9 @@ Run against the production deployment, not a preview:
 
 ## 3. Redirects from the old Tilda URLs
 
-- [x] 21-case redirect suite passes (`tests/redirects.spec.ts`), including
-      follow-to-200 guards so a redirect can never land on a 404 again.
+- [x] Redirect suite passes (`tests/redirects.spec.ts`): the Tilda rules plus
+      the 13 RC-201 RU slug moves, all with follow-to-200 guards so a redirect
+      can never land on a 404 again. 97 tests total.
 - [ ] Re-run the suite **against production** after cutover — the suite currently
       proves the rules, not the live DNS.
 
@@ -64,8 +65,8 @@ Run against the production deployment, not a preview:
       published. Publishing an unverified claim is both a trust and a legal risk.
 - [ ] **Q-10 — calculator prices.** The roof calculator quotes money; the
       numbers must be the owner's real ones.
-- [ ] Titles: several exceed ~60 characters and will truncate in Google results.
-      Not a blocker, but a cheap pre-launch win (see §7).
+- [x] Titles: suffix shortened (§7). 12 of 28 still exceed ~60 chars, but only
+      the brand clips — every keyword phrase is inside the visible window.
 
 ## 5. Lead capture — the site's actual job
 
@@ -106,7 +107,8 @@ Run against the production deployment, not a preview:
 
 Audited all 28 routes (14 × 2 locales) on a local production-equivalent render:
 
-- All 200 except `/portofoliu`, which **now exists** (was the only 404).
+- All 28 return 200, zero defects (`/portofoliu` was the only 404; RU now on
+  localized slugs).
 - canonical present on every page ✓
 - hreflang ro/ru/x-default present on every page ✓ (rendered as `hrefLang`,
   which is valid — HTML attributes are case-insensitive)
