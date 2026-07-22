@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { OG_LOCALE, SITE_URL, localeAlternates } from "@/i18n/metadata";
+import type { Pathname } from "@/i18n/routing";
 import type { AppLocale } from "@/i18n/routing";
 import { site } from "@/config/site";
 
@@ -46,7 +47,7 @@ export type BuildMetadataArgs = {
   /** Meta description (unique per page). */
   description: string;
   /** Route path WITHOUT locale prefix, e.g. "/" or "/despre-noi". Default "/". */
-  path?: string;
+  path?: Pathname;
   /** Current locale — drives canonical, og:locale, and hreflang. */
   locale: AppLocale;
   /** Optional absolute URL to override the default branded share image. */
@@ -65,7 +66,9 @@ export function buildMetadata({
   const images = ogImage ? [ogImage] : [DEFAULT_OG_IMAGE];
 
   return {
-    title: `${title} · ${site.name}`,
+    // `shortName`, not `name` — see the note on site.shortName. og:title below
+    // stays the bare headline and og:siteName keeps the full trading name.
+    title: `${title} · ${site.shortName}`,
     description,
     alternates,
     openGraph: {

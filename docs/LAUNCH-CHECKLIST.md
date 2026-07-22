@@ -43,7 +43,7 @@ Run against the production deployment, not a preview:
 - [ ] `curl -s https://<host>/robots.txt` — `Host:` and `Sitemap:` both show the
       real domain.
 - [ ] `curl -s https://<host>/sitemap.xml | grep -c "<loc>"` — 28 URLs
-      (14 routes × 2 locales), all on the real domain.
+      (14 routes × 2 locales, RU on localized slugs), all on the real domain.
 - [ ] Spot-check three pages: `canonical`, `hrefLang="ro"`, `hrefLang="ru"`,
       `hrefLang="x-default"` all absolute and on the real domain.
 - [ ] `og:image` resolves (open it in a browser, expect an image not a 404).
@@ -83,11 +83,12 @@ Run against the production deployment, not a preview:
 
 ## 7. Nice-to-have before launch
 
-- [ ] Shorten over-long titles (20+ pages at 67–83 chars).
-- [ ] RU slugs (RC-201) — RU currently uses the RO paths (`/ru/acoperisuri`).
-      Real Russian slugs would target `ремонт крыши`-class queries better.
-      A post-launch change means another round of redirects, so doing it before
-      cutover is cheaper.
+- [x] Title suffix shortened to "Rapid Construct" — titles over 60 chars went
+      from 22/26 to 12/28, and the remainder clip only the brand, never the
+      keyword phrase.
+- [x] RU slugs (RC-201) — done 2026-07-22. `/ru/kryshi`, `/ru/fasady` etc.,
+      13 permanent redirects from the old RO-shaped RU URLs, all with
+      follow-to-200 guards.
 - [ ] Q-08 — disable Vercel deployment protection so the owner can open preview
       links without logging in.
 

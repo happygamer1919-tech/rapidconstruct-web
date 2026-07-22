@@ -54,3 +54,33 @@ rather than the viewport. Both are now siblings of the header. The closed drawer
 is also clipped with `overflow-hidden`, which removed a 694px-wide document on a
 375px viewport across every page (Google mobile-usability "content wider than
 screen").
+
+## 2026-07-22 — RU slugs localized (RC-201)
+The RU mirror served Romanian paths (`/ru/acoperisuri`). A Russian speaker in
+Moldova searches «ремонт крыши Кишинёв», and the URL is a ranking and click
+signal, so RU now has its own slugs via next-intl `pathnames`:
+kryshi · fasady · remont-pod-klyuch · otdelka · elektrika-santehnika · proekt-3d ·
+o-nas · portfolio · kontakty · kalkulyator-kryshi · kishinev · orgeev · kagul.
+All 13 old URLs 301 to the new ones (next.config.ts) with follow-to-200 guards in
+tests/redirects.spec.ts. RO URLs are untouched, and there are RO-side tests
+asserting that. Internal `<Link href>` values stay RO-shaped — `pathnames` is the
+single place the public RU URL is decided, so canonical, hreflang and the sitemap
+follow automatically.
+
+Side effect worth keeping: `pathnames` makes route keys a TypeScript union, so
+`Pathname` now types every href in config and helpers. A link to a page that does
+not exist is a compile error — which is exactly how the `/portofoliu` nav 404
+shipped unnoticed.
+
+Doing this BEFORE launch was deliberate: post-launch it would have meant a second
+redirect generation layered on the Tilda ones.
+
+## 2026-07-22 — Title suffix shortened to "Rapid Construct"
+The `<title>` suffix was the full trading name, costing 30 characters on every
+page. 22 of 26 titles exceeded Google's ~60-character render purely because of
+it; the titles themselves are 33–49 chars and keyword-led. The suffix is now
+`site.shortName` ("Rapid Construct"), which brought it to 12 of 28 and those only
+clip the brand, never the keyword phrase. JSON-LD `name`, `og:siteName` and the
+share image keep the full trading name — identity, not snippets. No individual
+title was rewritten, so deliberate decisions (the price-first /acoperisuri titles
+from PR #45) are untouched.

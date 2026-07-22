@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { routing, type AppLocale } from "./routing";
+import { routing, type AppLocale, type Pathname } from "./routing";
 import { getPathname } from "./navigation";
 
 /**
@@ -46,9 +46,9 @@ export const OG_LOCALE: Record<AppLocale, string> = {
 };
 
 /** Build an absolute canonical-host URL for a locale + un-prefixed pathname. */
-function absoluteUrl(locale: AppLocale, pathname: string): string {
+function absoluteUrl(locale: AppLocale, pathname: Pathname): string {
   // `getPathname` applies the `as-needed` rule: no prefix for RO, `/ru` for RU.
-  const localized = getPathname({ href: pathname || "/", locale });
+  const localized = getPathname({ href: pathname, locale });
   return `${SITE_URL}${localized}`;
 }
 
@@ -57,16 +57,17 @@ function absoluteUrl(locale: AppLocale, pathname: string): string {
  * locale-correct canonical, for a given route.
  *
  * @param locale   the current locale (drives the canonical URL)
- * @param pathname the route WITHOUT locale prefix, e.g. "" / "/" for the home
- *                 page, "/despre-noi" for a subpage. RU still uses RO-shaped
- *                 paths until RC-201 localizes the slugs.
+ * @param pathname the INTERNAL route key (RO-shaped), e.g. "/" for the home
+ *                 page or "/despre-noi" for a subpage. The public RU URL is
+ *                 resolved from routing `pathnames` (RC-201), so callers never
+ *                 pass a localized slug.
  *
  * This prevents the old Tilda defect of missing hreflang (SPEC §7): every route
  * emits absolute, canonical-host alternates for all locales.
  */
 export function localeAlternates(
   locale: AppLocale,
-  pathname = "/",
+  pathname: Pathname = "/",
 ): NonNullable<Metadata["alternates"]> {
   const languages: Record<string, string> = {};
   for (const l of routing.locales) {
