@@ -108,3 +108,18 @@ same defect class as `/1` under RC-401:
 
 `PENDING_PAGES` in tests/redirects.spec.ts is now EMPTY: every redirect
 destination on the site resolves 200. Keep it that way.
+
+## 2026-07-22 — Deployment Protection off (Q-08) + staging made un-indexable
+Vercel Authentication disabled so the owner can open preview links without a
+login (`ssoProtection: null`, set via the API and verified).
+
+That removed the only barrier keeping search engines off
+rapidconstruct-web.vercel.app, where robots.txt said `allow: /`, the canonicals
+point at the vercel.app host and sitemap.xml lists all 30 staging URLs. Shipped
+in the same change: `IS_UNINDEXABLE_STAGING` drives `Disallow: /` (no sitemap
+line) plus `noindex, nofollow` on every page whenever `NEXT_PUBLIC_SITE_URL` is
+unset. It can never be true in production — the RC-402 guard throws there — so
+indexing switches on by itself at cutover with nothing to remember.
+
+Rule going forward: **never re-enable indexing on a host that is not the real
+domain**, and if RC-404 adds analytics, keep it off the staging host too.

@@ -56,16 +56,25 @@ stock or low-res. Ask Max for a Drive/phone dump of real site photos. Also: the 
 folder has an unpublished page named "img" (pageid 106732726) that may be a photo stash —
 check it during content export. **Blocks:** RC-104 quality (can build with placeholders).
 
-## Q-08 — OPEN — Disable Vercel Deployment Protection (one toggle)
-Per-PR preview links currently require a Vercel login, so Max can't open them. Someone with
-access to the Vercel dashboard (sm33xy account): open vercel.com → team "sm33xy's projects" →
-project **rapidconstruct-web** → Settings → **Deployment Protection** → set **Vercel
-Authentication** to *Disabled*, Save. The site is a public marketing site — nothing secret in
-previews. Until flipped, Max verifies on https://rapidconstruct-web.vercel.app after merge.
-**Optional upgrade at the same time:** install the Vercel GitHub App on the
-happygamer1919-tech account (github.com/apps/vercel) and grant it rapidconstruct-web — then
-every PR gets its preview URL automatically, no CLI step. **Blocks:** nothing (workaround in
-place); improves the review flow for Max.
+## Q-08 — RESOLVED 2026-07-22 — Vercel Deployment Protection disabled
+Preview links now open WITHOUT a Vercel login. Done via the API
+(`PATCH /v9/projects/<id>` with `ssoProtection: null`); verified `ssoProtection`
+is now `null` and a fresh preview returns 200 on `/`, `/ru`, `/portofoliu`,
+`/ru/kryshi` and `/politica-de-confidentialitate`.
+
+⚠️ **This removed the only thing keeping crawlers off the staging host.** Shipped
+together with a safeguard (`IS_UNINDEXABLE_STAGING`): while `NEXT_PUBLIC_SITE_URL`
+is unset, robots.txt returns `Disallow: /` with no sitemap line and every page
+emits `noindex, nofollow`. Without it Google could index
+rapidconstruct-web.vercel.app as canonical and rapidconstruct.md would launch
+competing with its own staging duplicate. The safeguard clears itself when the
+real domain is set (the production guard makes the staging value impossible
+there) — nothing to undo at cutover. Regression tests in tests/redirects.spec.ts.
+
+**Optional upgrade, still open:** install the Vercel GitHub App on the
+happygamer1919-tech account (github.com/apps/vercel) and grant it
+rapidconstruct-web — then every PR gets its preview URL automatically instead of
+a manual `vercel deploy`.
 
 ## Q-07 — OPEN — Are the claimed numbers accurate?
 "500+ case", "250+ recenzii", "15+ ani", "garanție 30 ani", "160 lei/m²" — we will publish
