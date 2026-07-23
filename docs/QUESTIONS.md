@@ -139,3 +139,15 @@ legal fact:
 
 **Recommended default**: publish as-is (already done — it is accurate), and add
 the entity name + a concrete period when the owner confirms them. STATUS: OPEN
+
+## Q-17 (2026-07-22) — Pre-existing homepage accessibility audits (not launch-blocking)
+Lighthouse a11y on `/` is 0.89 (above the 0.88 CI gate) but three audits fail on
+BOTH main and every branch — pre-existing, not introduced by any recent PR:
+- **aria-hidden-focus** — the mobile menu drawer keeps `aria-hidden="true"` while
+  closed but still contains 12 focusable links. Fix: also set `inert` (or
+  `tabindex=-1`/`hidden`) on the closed drawer so its links leave the tab order.
+- **definition-list / dlitem** — two homepage stat blocks use `<dl>` with bare
+  `<div>` children instead of `<dt>`/`<dd>` pairs. Fix: wrap each stat's value in
+  `<dd>` and label in `<dt>` (or drop the `<dl>` and use plain elements).
+Neither blocks launch (score already clears the gate). Worth a small dedicated
+a11y ticket after cutover. STATUS: OPEN (not blocking)
