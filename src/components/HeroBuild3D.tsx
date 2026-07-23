@@ -35,7 +35,7 @@ const BLUEPRINT = "#1F4FD6";
 // const BLUEPRINT = BRAND;
 
 const PALETTE = {
-  wall: "#F2F0EA", // white stucco
+  wall: "#F8F6F2", // white stucco
   roof: "#22272B", // near-black tile
   panel: "#333B44", // grey scored panels
   plinth: "#272D34", // dark base trim
@@ -71,6 +71,13 @@ type Part = {
   start: number;
   dur: number;
   panel?: boolean;
+  /**
+   * Force the ridge axis instead of letting it follow the longer footprint
+   * side. The main block and wing are nearly square, so "longer side" is a
+   * coin-flip that pointed the ridge at the camera; the photos show every ridge
+   * running parallel to the facade (the X axis here).
+   */
+  ridgeAlongX?: boolean;
 };
 
 const PARTS: Part[] = [
@@ -98,11 +105,12 @@ const PARTS: Part[] = [
   {
     kind: "hip",
     color: PALETTE.roof,
-    pos: [4, 7.6, 0],
-    size: [3.5, 3.75, 2.8],
+    pos: [4, 7.15, 0],
+    size: [3.5, 3.75, 1.9],
     from: [0, 9, 0],
     start: 1.8,
     dur: 0.46,
+    ridgeAlongX: true,
   },
 
   // single-storey wing + hip roof
@@ -118,11 +126,12 @@ const PARTS: Part[] = [
   {
     kind: "hip",
     color: PALETTE.roof,
-    pos: [-2.5, 4.4, 0.3],
-    size: [3.45, 3.45, 2.0],
+    pos: [-2.5, 4.075, 0.3],
+    size: [3.45, 3.45, 1.35],
     from: [0, 9, 0],
     start: 2.1,
     dur: 0.4,
+    ridgeAlongX: true,
   },
 
   // dark plinth
@@ -237,8 +246,8 @@ const PARTS: Part[] = [
   {
     kind: "hip",
     color: PALETTE.roof,
-    pos: [1.5, 3.65, 3.7],
-    size: [3.05, 1.85, 1.3],
+    pos: [1.5, 3.4, 3.7],
+    size: [3.05, 1.85, 0.8],
     from: [0, 6, 0],
     start: 1.72,
     dur: 0.3,
@@ -259,7 +268,7 @@ const PARTS: Part[] = [
   {
     kind: "box",
     color: PALETTE.brick,
-    pos: [5, 8.4, -1.0],
+    pos: [5, 7.95, -1.0],
     size: [0.7, 1.7, 0.7],
     from: [0, 6, 0],
     start: 2.35,
@@ -268,7 +277,7 @@ const PARTS: Part[] = [
   {
     kind: "box",
     color: PALETTE.roof,
-    pos: [5, 9.35, -1.0],
+    pos: [5, 8.9, -1.0],
     size: [0.95, 0.22, 0.95],
     from: [0, 6, 0],
     start: 2.48,
@@ -347,6 +356,50 @@ function useScoredTexture() {
   }, []);
 }
 
+/**
+ * Metal-tile courses for the roof.
+ *
+ * Without this the roof is one flat near-black fill, which at hero distance
+ * reads as a dark blob rather than a roof — the single loudest "toy" cue after
+ * the pyramid silhouette. The owner's photos show a strongly banded profile:
+ * horizontal courses with a bright step where each row laps the one below, plus
+ * a subtle vertical seam every panel width.
+ *
+ * Drawn light-on-dark so the base tone stays the approved anthracite.
+ */
+function useTileTexture() {
+  return useMemo(() => {
+    if (typeof document === "undefined") return null;
+    const c = document.createElement("canvas");
+    c.width = c.height = 256;
+    const x = c.getContext("2d");
+    if (!x) return null;
+
+    x.fillStyle = PALETTE.roof;
+    x.fillRect(0, 0, 256, 256);
+
+    // six courses; each gets a lit upper lip and a shadowed underside so the
+    // profile reads at a glance
+    const rows = 6;
+    const step = 256 / rows;
+    for (let i = 0; i < rows; i++) {
+      const y = i * step;
+      x.fillStyle = "rgba(255,255,255,0.16)";
+      x.fillRect(0, y, 256, Math.max(2, step * 0.16));
+      x.fillStyle = "rgba(0,0,0,0.34)";
+      x.fillRect(0, y + step - 3, 256, 3);
+    }
+    // vertical panel seams
+    x.fillStyle = "rgba(0,0,0,0.20)";
+    for (let vx = 0; vx < 256; vx += 64) x.fillRect(vx, 0, 2, 256);
+
+    const t = new THREE.CanvasTexture(c);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.repeat.set(4, 3);
+    return t;
+  }, []);
+}
+
 function usePaverTexture() {
   return useMemo(() => {
     if (typeof document === "undefined") return null;
@@ -377,10 +430,82 @@ const easeIO = (t: number) =>
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
-function hipGeometry(halfX: number, halfZ: number, height: number) {
-  const g = new THREE.ConeGeometry(1, height, 4);
-  g.rotateY(Math.PI / 4);
-  g.scale(halfX / 0.7071, 1, halfZ / 0.7071);
+/**
+ * A real HIP roof: a horizontal RIDGE with two trapezoidal slopes and two
+ * triangular hip ends.
+ *
+ * This used to be `ConeGeometry(1, height, 4)` — a four-sided cone, i.e. a
+ * square PYRAMID converging to a single point. That is the classic Monopoly-
+ * house silhouette and it was on every roof in the scene, which is why the
+ * building read as a toy. Not one roof in the owner's drone photos is a
+ * pyramid: they all have a ridge line.
+ *
+ * The ridge automatically runs along the LONGER footprint axis, which is what a
+ * roofer would do. `ridgeFrac` is the ridge length as a fraction of that axis —
+ * 0 would collapse back to a pyramid, ~0.4 matches the photos.
+ *
+ * UVs: u runs along the ridge, v runs up the slope, so a tile texture lays in
+ * horizontal courses parallel to the eave (see useTileTexture).
+ */
+function hipGeometry(
+  halfX: number,
+  halfZ: number,
+  height: number,
+  ridgeFrac = 0.58,
+  forceAlongX?: boolean,
+) {
+  const alongX = forceAlongX ?? halfX >= halfZ;
+  const h = height;
+  const r = (alongX ? halfX : halfZ) * ridgeFrac;
+
+  // base corners, counter-clockwise seen from above
+  const p0: [number, number, number] = [-halfX, 0, -halfZ];
+  const p1: [number, number, number] = [halfX, 0, -halfZ];
+  const p2: [number, number, number] = [halfX, 0, halfZ];
+  const p3: [number, number, number] = [-halfX, 0, halfZ];
+  // ridge ends
+  const a: [number, number, number] = alongX ? [-r, h, 0] : [0, h, -r];
+  const b: [number, number, number] = alongX ? [r, h, 0] : [0, h, r];
+
+  const pos: number[] = [];
+  const uv: number[] = [];
+  // u along the ridge axis, v up the slope — flat-shaded, so non-indexed.
+  const uvFor = (p: [number, number, number]) =>
+    alongX
+      ? [(p[0] + halfX) / (2 * halfX), p[1] / h]
+      : [(p[2] + halfZ) / (2 * halfZ), p[1] / h];
+  const tri = (
+    x: [number, number, number],
+    y: [number, number, number],
+    z: [number, number, number],
+  ) => {
+    pos.push(...x, ...y, ...z);
+    uv.push(...uvFor(x), ...uvFor(y), ...uvFor(z));
+  };
+
+  if (alongX) {
+    tri(p3, p2, b); // +Z slope
+    tri(p3, b, a);
+    tri(p1, p0, a); // -Z slope
+    tri(p1, a, b);
+    tri(p2, p1, b); // +X hip end
+    tri(p0, p3, a); // -X hip end
+  } else {
+    tri(p2, p1, a); // +X slope
+    tri(p2, a, b);
+    tri(p0, p3, b); // -X slope
+    tri(p0, b, a);
+    tri(p3, p2, b); // +Z hip end
+    tri(p1, p0, a); // -Z hip end
+  }
+
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
+  g.computeVertexNormals(); // non-indexed ⇒ crisp flat faces
+  // Geometry is built around its own base centre; the PARTS table positions the
+  // roof by its centre height, so lift it half its height to match the old cone.
+  g.translate(0, -h / 2, 0);
   return g;
 }
 
@@ -395,6 +520,7 @@ function Scene({ onPhase, onRested, loop, reduced }: SceneProps) {
   const { camera } = useThree();
   const scored = useScoredTexture();
   const pavers = usePaverTexture();
+  const tiles = useTileTexture();
 
   const groupRefs = useRef<(THREE.Group | null)[]>([]);
   const matRefs = useRef<(THREE.MeshStandardMaterial | null)[]>([]);
@@ -410,7 +536,7 @@ function Scene({ onPhase, onRested, loop, reduced }: SceneProps) {
     () =>
       PARTS.map((p) =>
         p.kind === "hip"
-          ? hipGeometry(p.size[0], p.size[1], p.size[2])
+          ? hipGeometry(p.size[0], p.size[1], p.size[2], 0.58, p.ridgeAlongX)
           : new THREE.BoxGeometry(p.size[0], p.size[1], p.size[2]),
       ),
     [],
@@ -426,9 +552,10 @@ function Scene({ onPhase, onRested, loop, reduced }: SceneProps) {
       geoms.forEach((g) => g.dispose());
       edges.forEach((e) => e.dispose());
       scored?.dispose();
+      tiles?.dispose();
       pavers?.dispose();
     };
-  }, [geoms, edges, scored, pavers]);
+  }, [geoms, edges, scored, pavers, tiles]);
 
   useFrame((state) => {
     // reduced motion: render the finished house, no animation
@@ -502,10 +629,13 @@ function Scene({ onPhase, onRested, loop, reduced }: SceneProps) {
 
   return (
     <>
-      <hemisphereLight args={["#ffffff", "#C6CCD2", 0.85]} />
+      <hemisphereLight args={["#ffffff", "#C6CCD2", 1.0]} />
+      {/* Key light lifted 1.15 -> 1.45 (with exposure 1.06 -> 1.12): the facade
+          rendered mid-grey when the palette calls for white stucco, which is
+          what the owner's houses actually are. */}
       <directionalLight
         position={[-16, 26, 13]}
-        intensity={1.15}
+        intensity={1.45}
         color="#FFF3E2"
       />
       <directionalLight
@@ -550,8 +680,21 @@ function Scene({ onPhase, onRested, loop, reduced }: SceneProps) {
               ref={(el) => {
                 matRefs.current[i] = el;
               }}
-              color={p.panel && scored ? "#ffffff" : p.color}
-              map={p.panel ? (scored ?? undefined) : undefined}
+              // Roof pieces take the tile-course map; the scored panels take
+              // their stripe map. Both drive colour from the texture, so the
+              // material colour goes white to avoid double-darkening.
+              color={
+                (p.panel && scored) || (p.color === PALETTE.roof && tiles)
+                  ? "#ffffff"
+                  : p.color
+              }
+              map={
+                p.panel
+                  ? (scored ?? undefined)
+                  : p.color === PALETTE.roof
+                    ? (tiles ?? undefined)
+                    : undefined
+              }
               roughness={0.9}
               metalness={0}
               transparent
@@ -647,7 +790,7 @@ export default function HeroBuild3D({
         onCreated={({ gl, scene }) => {
           gl.setClearColor(PALETTE.bg);
           gl.toneMapping = THREE.ACESFilmicToneMapping;
-          gl.toneMappingExposure = 1.06;
+          gl.toneMappingExposure = 1.12;
           scene.fog = new THREE.Fog(PALETTE.bg, 50, 130);
         }}
       >
