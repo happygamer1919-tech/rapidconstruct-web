@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/i18n/metadata";
-import { routing } from "@/i18n/routing";
+import { routing, type Pathname } from "@/i18n/routing";
 import { getPathname } from "@/i18n/navigation";
 
 /**
@@ -20,7 +20,7 @@ import { getPathname } from "@/i18n/navigation";
  */
 
 /** Un-prefixed route paths that currently resolve and should be indexed. */
-const ROUTES = [
+const ROUTES: Pathname[] = [
   "/",
   "/acoperisuri",
   "/calculator-acoperis",
@@ -32,19 +32,20 @@ const ROUTES = [
   "/despre-noi",
   "/portofoliu",
   "/contact",
+  "/politica-de-confidentialitate",
   "/chisinau",
   "/orhei",
   "/cahul",
 ];
 
-function absolute(locale: (typeof routing.locales)[number], path: string) {
+function absolute(locale: (typeof routing.locales)[number], path: Pathname) {
   // Strip the trailing slash on the root so the sitemap <loc> exactly matches
   // the page's canonical/hreflang URLs (Next normalizes those without a slash).
   return `${SITE_URL}${getPathname({ href: path, locale })}`.replace(/\/$/, "");
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const languagesFor = (path: string) => {
+  const languagesFor = (path: Pathname) => {
     const languages: Record<string, string> = {};
     for (const locale of routing.locales) {
       languages[locale] = absolute(locale, path);

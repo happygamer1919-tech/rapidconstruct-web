@@ -22,8 +22,29 @@ rapidconstructmd@gmail.com + Telegram bot message to Max. **Blocks:** RC-105, RC
 ## Q-04 — PARTIALLY RESOLVED — Domain/DNS + Tilda access
 Tilda access: WORKS — owner logs into tilda.cc in the browser pane and Claude reads the
 admin (done 2026-07-13 for the page audit; same flow for photo export). Owner should
-change the Tilda password (it was pasted in chat once). DNS: still unknown who controls
-the rapidconstruct.md zone. **Blocks:** RC-403 (DNS part only).
+change the Tilda password (it was pasted in chat once).
+
+**DNS investigated 2026-07-22 (dig + whois.nic.md), facts:**
+```
+rapidconstruct.md   registered 2025-02-09, expires 2027-02-09
+NameServers         ns1.tildadns.com, ns2.tildadns.com   <- Tilda hosts the ZONE
+A                   194.48.203.138 (Tilda), www CNAMEs to apex
+MX                  NONE
+```
+- Tilda controls the DNS **zone**, but Tilda is NOT the registrar — `.md` domains must be
+  registered through a NIC.MD-accredited registrar. Someone registered it in Feb 2025 and
+  delegated it to tildadns. NIC.MD hides the registrar in whois, so the only way to find it
+  is to ask the owner **who he paid for the domain** (not Tilda).
+- **Preferred cutover (Path A):** change nameservers at the REGISTRAR to
+  `ns1.vercel-dns.com` / `ns2.vercel-dns.com`. Needs the registrar login — still missing.
+- **Path B (avoid):** edit the A record inside Tilda's panel to point at Vercel. Uses the
+  login we already have, BUT leaves the zone hosted by the vendor we are leaving — when the
+  Tilda subscription lapses, DNS dies and the site goes dark. Also not certain Tilda's panel
+  permits an A record pointing away from Tilda.
+- ✅ **No MX records** — the company runs on rapidconstructmd@gmail.com, so nothing email
+  depends on this domain. The cutover cannot break their email.
+
+**Blocks:** RC-403 (registrar login is the last missing piece).
 
 ## Q-05 — OPEN — Is an EN version ever needed?
 RO+RU covers the local market. EN only matters for foreign investors/commercial clients.
@@ -101,3 +122,32 @@ Before cutover the owner must pick the canonical host.
 **Recommended default**: `https://rapidconstruct.md` (apex) — it matches the
 current Tilda URLs, so the 301s from legacy pages land on the same host with no
 extra redirect hop. See docs/LAUNCH-CHECKLIST.md §1. STATUS: OPEN
+
+## Q-16 (2026-07-22) — Privacy policy: legal entity + retention period
+`/politica-de-confidentialitate` is live in RO + RU and describes exactly what the
+code does (verified: no analytics, no tracking cookies, self-hosted fonts, form
+collects name/phone/message, delivered by email via Resend, hosted on Vercel).
+
+Two things were deliberately LEFT OUT because inventing them would be inventing a
+legal fact:
+1. **The registered legal entity + IDNO.** The page names the trading name
+   "Rapid Construct & 3D Design". If the contracting entity is an SRL with a
+   different registered name, it should be stated.
+2. **A concrete retention period.** The page currently says data is kept "as long
+   as needed to answer, and as long as accounting/contract law requires" — true
+   as written, but a specific period (e.g. 12 months for non-clients) is clearer.
+
+**Recommended default**: publish as-is (already done — it is accurate), and add
+the entity name + a concrete period when the owner confirms them. STATUS: OPEN
+
+## Q-17 (2026-07-22) — Pre-existing homepage accessibility audits (not launch-blocking)
+Lighthouse a11y on `/` is 0.89 (above the 0.88 CI gate) but three audits fail on
+BOTH main and every branch — pre-existing, not introduced by any recent PR:
+- **aria-hidden-focus** — the mobile menu drawer keeps `aria-hidden="true"` while
+  closed but still contains 12 focusable links. Fix: also set `inert` (or
+  `tabindex=-1`/`hidden`) on the closed drawer so its links leave the tab order.
+- **definition-list / dlitem** — two homepage stat blocks use `<dl>` with bare
+  `<div>` children instead of `<dt>`/`<dd>` pairs. Fix: wrap each stat's value in
+  `<dd>` and label in `<dt>` (or drop the `<dl>` and use plain elements).
+Neither blocks launch (score already clears the gate). Worth a small dedicated
+a11y ticket after cutover. STATUS: OPEN (not blocking)

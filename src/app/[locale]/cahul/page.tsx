@@ -35,6 +35,10 @@ export default async function CahulPage({ params }: PageProps) {
   setRequestLocale(locale);
 
   return (
-    <CityPage namespace="cityPages.cahul" cityName="Cahul" region="Raionul Cahul" />
+    <CityPage
+      namespace="cityPages.cahul"
+      cityName="Cahul"
+      region="Raionul Cahul"
+    />
   );
 }

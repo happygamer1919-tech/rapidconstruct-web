@@ -54,3 +54,57 @@ rather than the viewport. Both are now siblings of the header. The closed drawer
 is also clipped with `overflow-hidden`, which removed a 694px-wide document on a
 375px viewport across every page (Google mobile-usability "content wider than
 screen").
+
+## 2026-07-22 — RU slugs localized (RC-201)
+The RU mirror served Romanian paths (`/ru/acoperisuri`). A Russian speaker in
+Moldova searches «ремонт крыши Кишинёв», and the URL is a ranking and click
+signal, so RU now has its own slugs via next-intl `pathnames`:
+kryshi · fasady · remont-pod-klyuch · otdelka · elektrika-santehnika · proekt-3d ·
+o-nas · portfolio · kontakty · kalkulyator-kryshi · kishinev · orgeev · kagul.
+All 13 old URLs 301 to the new ones (next.config.ts) with follow-to-200 guards in
+tests/redirects.spec.ts. RO URLs are untouched, and there are RO-side tests
+asserting that. Internal `<Link href>` values stay RO-shaped — `pathnames` is the
+single place the public RU URL is decided, so canonical, hreflang and the sitemap
+follow automatically.
+
+Side effect worth keeping: `pathnames` makes route keys a TypeScript union, so
+`Pathname` now types every href in config and helpers. A link to a page that does
+not exist is a compile error — which is exactly how the `/portofoliu` nav 404
+shipped unnoticed.
+
+Doing this BEFORE launch was deliberate: post-launch it would have meant a second
+redirect generation layered on the Tilda ones.
+
+## 2026-07-22 — Title suffix shortened to "Rapid Construct"
+The `<title>` suffix was the full trading name, costing 30 characters on every
+page. 22 of 26 titles exceeded Google's ~60-character render purely because of
+it; the titles themselves are 33–49 chars and keyword-led. The suffix is now
+`site.shortName` ("Rapid Construct"), which brought it to 12 of 28 and those only
+clip the brand, never the keyword phrase. JSON-LD `name`, `og:siteName` and the
+share image keep the full trading name — identity, not snippets. No individual
+title was rewritten, so deliberate decisions (the price-first /acoperisuri titles
+from PR #45) are untouched.
+
+## 2026-07-22 — Privacy policy published; two dead redirects repointed (RC-402)
+The contact form has been collecting a name and a phone number while
+`/politica-de-confidentialitate` did not exist — and the legacy Tilda URL
+`/privacypolicy` redirected straight into that 404. The policy now exists in
+RO + RU, is linked from the footer on every page, and is in the sitemap.
+
+The copy states only what the code does, verified before writing: no analytics or
+tag manager anywhere in src/, no cookies (localStorage holds just the promo-bar
+dismissal id), `next/font` self-hosts the Google fonts so a visit sends nothing to
+Google at runtime, the only runtime outbound call is Resend. **If RC-404 adds
+GA4, this page must change in the same PR** — a policy describing a site you no
+longer run is a written false statement.
+
+Two other redirects pointed at pages nobody built, so they 301'd into 404s — the
+same defect class as `/1` under RC-401:
+- `/2` → `/case-constructii` (never built) → now `/portofoliu`, which shows the
+  real built houses the old page was about.
+- `/calcul-gard` → `/calculator-gard` (RC-108, not built) → now `/contact`.
+  Sending fence traffic to the ROOF calculator would answer the wrong question.
+  Repoint when RC-108 ships.
+
+`PENDING_PAGES` in tests/redirects.spec.ts is now EMPTY: every redirect
+destination on the site resolves 200. Keep it that way.

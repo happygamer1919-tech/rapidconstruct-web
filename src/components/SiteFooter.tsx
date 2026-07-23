@@ -146,8 +146,51 @@ export default async function SiteFooter() {
       </div>
 
       <div className="border-t border-inverse-border">
-        <div className="mx-auto w-full max-w-6xl px-gutter py-5 text-micro text-inverse-muted-foreground">
-          {t("rights")}
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-1 px-gutter py-5 text-micro text-inverse-muted-foreground">
+          <span className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <span>{t("rights")}</span>
+            {/* The form collects a name and a phone number, so the policy has to
+                be reachable from every page — one that exists but is unlinked is
+                no better than none.
+                `inline-block py-1.5` gives this link a >=24px tap height so it
+                meets WCAG 2.5.8 target-size; at text-micro the bare link was 12px
+                and failed the audit (dropping the homepage a11y score under the
+                CI gate). The surrounding gap-x-4 keeps horizontal spacing clear. */}
+            <Link
+              href="/politica-de-confidentialitate"
+              className="inline-block py-1.5 underline decoration-inverse-border underline-offset-2 hover:text-inverse-foreground focus-visible:text-inverse-foreground focus-visible:outline-none"
+            >
+              {t("privacyLink")}
+            </Link>
+          </span>
+          {/* CC-BY attribution — legally required, and it must track what
+              ACTUALLY ships. The shipped house.glb carries scenery derived from
+              this author's CC-BY assets (plinth_shrub_*, plinth_tree_*,
+              plinth_hedge_*), so the credit is owed as long as any of them are
+              in the model. It was written for the Look B model but applies to
+              the currently-shipped one too — the assets predate that work.
+              Rescued from PR #47, which was closed for unrelated reasons; the
+              site was live-facing without this credit until 2026-07-22.
+              RE-CHECK whenever scenery assets change: if the photo-match rebuild
+              replaces every CC-BY-derived prop, remove this; if it adds new
+              third-party assets, add them. */}
+          {/* Full-opacity muted, NOT /70. neutral-400 at 70% over the ink-900
+              footer is ~4.38:1 — under WCAG AA's 4.5:1 for this micro text, and
+              it dropped the homepage a11y score below the CI gate. Full opacity
+              is 7.56:1. The credit is already visually secondary via text-micro
+              + muted; it does not also need lowered opacity. */}
+          <span className="text-inverse-muted-foreground">
+            {t("modelCredits")}{" "}
+            <a
+              href="https://sketchfab.com/levandreev23032010"
+              rel="noopener noreferrer"
+              target="_blank"
+              className="inline-block py-1.5 underline decoration-inverse-border underline-offset-2 hover:text-inverse-foreground"
+            >
+              levandreev23032010
+            </a>{" "}
+            (CC-BY)
+          </span>
         </div>
       </div>
     </footer>

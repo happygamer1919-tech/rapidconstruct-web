@@ -78,7 +78,9 @@ export default async function ContactPage({ params }: PageProps) {
       <section className="border-b border-border bg-inverse-background text-inverse-foreground">
         <div className="mx-auto w-full max-w-6xl px-gutter py-16 lg:py-20">
           <div className="flex max-w-2xl flex-col gap-5">
-            <p className="micro-label text-inverse-accent">{t("hero.eyebrow")}</p>
+            <p className="micro-label text-inverse-accent">
+              {t("hero.eyebrow")}
+            </p>
             <h1 className="font-serif text-display-xl text-inverse-foreground">
               {t("hero.h1")}
             </h1>
@@ -165,7 +167,11 @@ function ContactRow({
 }) {
   return (
     <div className="flex items-start gap-3">
-      <Icon name={icon} size={20} className="mt-0.5 shrink-0 text-accent-strong" />
+      <Icon
+        name={icon}
+        size={20}
+        className="mt-0.5 shrink-0 text-accent-strong"
+      />
       <div className="flex flex-col">
         <dt className="micro-label text-muted-foreground">{label}</dt>
         <dd className="text-body text-foreground">

@@ -170,12 +170,20 @@ function Tile() {
           {/* course pan */}
           <mesh position={[0, 0, z]} castShadow receiveShadow>
             <boxGeometry args={[W + 0.12, 0.04, 0.5]} />
-            <meshStandardMaterial color={TILE} roughness={0.42} metalness={0.55} />
+            <meshStandardMaterial
+              color={TILE}
+              roughness={0.42}
+              metalness={0.55}
+            />
           </mesh>
           {/* raised front step (down-slope lip) */}
           <mesh position={[0, 0.045, z + 0.22]} castShadow>
             <boxGeometry args={[W + 0.12, 0.05, 0.09]} />
-            <meshStandardMaterial color={TILE_DK} roughness={0.4} metalness={0.6} />
+            <meshStandardMaterial
+              color={TILE_DK}
+              roughness={0.4}
+              metalness={0.6}
+            />
           </mesh>
         </group>
       ))}
@@ -183,7 +191,11 @@ function Tile() {
       {seams.map((x) => (
         <mesh key={x} position={[x, 0.05, 0]} castShadow>
           <boxGeometry args={[0.045, 0.055, D + 0.12]} />
-          <meshStandardMaterial color={TILE_DK} roughness={0.35} metalness={0.62} />
+          <meshStandardMaterial
+            color={TILE_DK}
+            roughness={0.35}
+            metalness={0.62}
+          />
         </mesh>
       ))}
       {/* ridge cap across the top edge */}
@@ -285,7 +297,11 @@ export default function RoofCutawayScene({
         shadow-bias={-0.0004}
         shadow-normalBias={0.02}
       />
-      <directionalLight position={[-5, 3, -3]} intensity={0.5} color="#cddcff" />
+      <directionalLight
+        position={[-5, 3, -3]}
+        intensity={0.5}
+        color="#cddcff"
+      />
       {/* Environment gets its OWN Suspense and a self-hosted HDR: drei's
           `preset` pulls from a CDN that rate-limits and returns 0 bytes, and a
           SHARED Suspense would then blank the whole roof with no error. */}
@@ -298,7 +314,13 @@ export default function RoofCutawayScene({
       <Suspense fallback={null}>
         <Environment files="/hdri/venice_sunset_1k.hdr" />
       </Suspense>
-      <ContactShadows position={[0, -1.5, 0]} opacity={0.3} scale={12} blur={2.6} far={5} />
+      <ContactShadows
+        position={[0, -1.5, 0]}
+        opacity={0.3}
+        scale={12}
+        blur={2.6}
+        far={5}
+      />
       <OrbitControls
         makeDefault
         target={[0, 0.4, 0]}

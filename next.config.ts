@@ -30,7 +30,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: "/1", destination: "/renovari-la-cheie", permanent: true },
-      { source: "/2", destination: "/case-constructii", permanent: true },
+      // RC-402: was `/case-constructii`, a page that was never built, so this
+      // 301'd straight into a 404 — the same defect RC-401 found on `/1`.
+      // `/2` was the Tilda "case/construcții" page, and the closest real thing
+      // we now have is the portfolio: actual built houses, with photos.
+      { source: "/2", destination: "/portofoliu", permanent: true },
       { source: "/3", destination: "/fatade", permanent: true },
       { source: "/4", destination: "/finisaje", permanent: true },
       { source: "/5", destination: "/proiectare-3d", permanent: true },
@@ -41,17 +45,61 @@ const nextConfig: NextConfig = {
         destination: "/calculator-acoperis",
         permanent: true,
       },
-      {
-        source: "/calcul-gard",
-        destination: "/calculator-gard",
-        permanent: true,
-      },
+      // RC-402: was `/calculator-gard` (RC-108, not built), so this 301'd into a
+      // 404. The fence calculator has no equivalent page, and sending fence
+      // traffic to the ROOF calculator would answer the wrong question — so it
+      // goes to /contact, where the enquiry is still captured. Repoint this to
+      // /calculator-gard the moment RC-108 ships.
+      { source: "/calcul-gard", destination: "/contact", permanent: true },
       { source: "/page53648667.html", destination: "/", permanent: true },
       {
         source: "/privacypolicy",
         destination: "/politica-de-confidentialitate",
         permanent: true,
       },
+
+      // ── RC-201: old RO-shaped RU URLs → localized RU slugs ────────────────
+      // Until 2026-07-22 the RU mirror served Romanian paths (`/ru/acoperisuri`).
+      // Those URLs are live on the preview, may already be indexed, and are what
+      // any existing inbound link points at — so each needs a 301 to its new
+      // home. Without these the whole RU site would 404 the moment the localized
+      // slugs shipped.
+      //
+      // Keep in lockstep with `pathnames` in src/i18n/routing.ts: one row per
+      // changed slug, plus a case in tests/redirects.spec.ts.
+      { source: "/ru/acoperisuri", destination: "/ru/kryshi", permanent: true },
+      { source: "/ru/fatade", destination: "/ru/fasady", permanent: true },
+      {
+        source: "/ru/renovari-la-cheie",
+        destination: "/ru/remont-pod-klyuch",
+        permanent: true,
+      },
+      { source: "/ru/finisaje", destination: "/ru/otdelka", permanent: true },
+      {
+        source: "/ru/instalatii",
+        destination: "/ru/elektrika-santehnika",
+        permanent: true,
+      },
+      {
+        source: "/ru/proiectare-3d",
+        destination: "/ru/proekt-3d",
+        permanent: true,
+      },
+      { source: "/ru/despre-noi", destination: "/ru/o-nas", permanent: true },
+      {
+        source: "/ru/portofoliu",
+        destination: "/ru/portfolio",
+        permanent: true,
+      },
+      { source: "/ru/contact", destination: "/ru/kontakty", permanent: true },
+      {
+        source: "/ru/calculator-acoperis",
+        destination: "/ru/kalkulyator-kryshi",
+        permanent: true,
+      },
+      { source: "/ru/chisinau", destination: "/ru/kishinev", permanent: true },
+      { source: "/ru/orhei", destination: "/ru/orgeev", permanent: true },
+      { source: "/ru/cahul", destination: "/ru/kagul", permanent: true },
     ];
   },
 };

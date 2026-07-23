@@ -78,8 +78,16 @@ export default function Model3D({ active = true }: { active?: boolean }) {
         shadow-bias={-0.0004}
         shadow-normalBias={0.02}
       />
-      <directionalLight position={[-6, 3, -4]} intensity={0.5} color="#cddcff" />
-      <directionalLight position={[-3, 5, -6]} intensity={0.7} color="#ffd9a0" />
+      <directionalLight
+        position={[-6, 3, -4]}
+        intensity={0.5}
+        color="#cddcff"
+      />
+      <directionalLight
+        position={[-3, 5, -6]}
+        intensity={0.7}
+        color="#ffd9a0"
+      />
       {/* Environment gets its OWN Suspense and a self-hosted HDR: drei's
           `preset` pulls from a CDN that rate-limits and returns 0 bytes, and a
           SHARED Suspense would then blank the whole house with no error. */}

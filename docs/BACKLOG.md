@@ -71,7 +71,7 @@ _RC-003/004/005/007 shipped together in PR #6 (squash). RC-006 next._
 
 ## P2 — Russian version
 
-- [ ] **RC-201** RU information architecture: RU slugs map (`/ru/kryshi`, `/ru/fasady`, ...),
+- [x] **RC-201** (2026-07-22) RU information architecture: RU slugs map (`/ru/kryshi`, `/ru/fasady`, ...),
       redirect-safe, hreflang verified both directions.
 - [ ] **RC-202** RU translations: home + services (owner review pass required — flag with
       TODO(ru-review) until Max approves).

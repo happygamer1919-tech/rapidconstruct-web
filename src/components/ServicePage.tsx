@@ -56,7 +56,9 @@ export default async function ServicePage({
   };
 
   const heroTitle = photo ? "text-neutral-50" : "text-inverse-foreground";
-  const heroIntro = photo ? "text-neutral-200" : "text-inverse-muted-foreground";
+  const heroIntro = photo
+    ? "text-neutral-200"
+    : "text-inverse-muted-foreground";
   const heroTrust = photo ? "text-neutral-50" : "text-inverse-foreground";
 
   return (
@@ -85,7 +87,9 @@ export default async function ServicePage({
         ) : null}
         <div className="mx-auto w-full max-w-6xl px-gutter py-20 lg:py-28">
           <div className="flex max-w-2xl flex-col gap-5">
-            <p className="micro-label text-inverse-accent">{t("hero.eyebrow")}</p>
+            <p className="micro-label text-inverse-accent">
+              {t("hero.eyebrow")}
+            </p>
             <h1 className={`font-serif text-display-xl ${heroTitle}`}>
               {t("hero.h1")}
             </h1>
@@ -163,7 +167,10 @@ export default async function ServicePage({
       </section>
 
       {/* FAQ */}
-      <section aria-labelledby="service-faq-title" className="border-b border-border">
+      <section
+        aria-labelledby="service-faq-title"
+        className="border-b border-border"
+      >
         <div className="mx-auto w-full max-w-3xl px-gutter py-16 lg:py-20">
           <div className="mb-8 flex flex-col gap-3">
             <p className="micro-label text-accent-strong">{t("faq.eyebrow")}</p>

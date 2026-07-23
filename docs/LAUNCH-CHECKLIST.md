@@ -43,15 +43,16 @@ Run against the production deployment, not a preview:
 - [ ] `curl -s https://<host>/robots.txt` — `Host:` and `Sitemap:` both show the
       real domain.
 - [ ] `curl -s https://<host>/sitemap.xml | grep -c "<loc>"` — 28 URLs
-      (14 routes × 2 locales), all on the real domain.
+      (14 routes × 2 locales, RU on localized slugs), all on the real domain.
 - [ ] Spot-check three pages: `canonical`, `hrefLang="ro"`, `hrefLang="ru"`,
       `hrefLang="x-default"` all absolute and on the real domain.
 - [ ] `og:image` resolves (open it in a browser, expect an image not a 404).
 
 ## 3. Redirects from the old Tilda URLs
 
-- [x] 21-case redirect suite passes (`tests/redirects.spec.ts`), including
-      follow-to-200 guards so a redirect can never land on a 404 again.
+- [x] Redirect suite passes (`tests/redirects.spec.ts`): the Tilda rules plus
+      the 13 RC-201 RU slug moves, all with follow-to-200 guards so a redirect
+      can never land on a 404 again. 97 tests total.
 - [ ] Re-run the suite **against production** after cutover — the suite currently
       proves the rules, not the live DNS.
 
@@ -64,13 +65,18 @@ Run against the production deployment, not a preview:
       published. Publishing an unverified claim is both a trust and a legal risk.
 - [ ] **Q-10 — calculator prices.** The roof calculator quotes money; the
       numbers must be the owner's real ones.
-- [ ] Titles: several exceed ~60 characters and will truncate in Google results.
-      Not a blocker, but a cheap pre-launch win (see §7).
+- [x] Titles: suffix shortened (§7). 12 of 28 still exceed ~60 chars, but only
+      the brand clips — every keyword phrase is inside the visible window.
 
 ## 5. Lead capture — the site's actual job
 
-- [ ] **Q-09 — Resend API key.** Without it the contact form cannot deliver.
-      A launched site that silently drops enquiries is worse than no launch.
+- [ ] **Q-09 — Resend API key.** ⚠️ Without it `deliverLead` console.logs the
+      lead and returns SUCCESS — the customer is told "we'll call back" and the
+      lead exists only in Vercel's log stream, which the owner will never open.
+      The owner adds it himself: `npx vercel env add RESEND_API_KEY production`.
+      Note the free tier sends from onboarding@resend.dev until the domain is
+      verified, so early leads may land in spam; verify rapidconstruct.md in
+      Resend during the DNS cutover.
 - [ ] **Q-03 — where leads go** (email / Telegram / both).
 - [ ] Submit the real form on production and confirm the lead arrives.
 
@@ -83,11 +89,12 @@ Run against the production deployment, not a preview:
 
 ## 7. Nice-to-have before launch
 
-- [ ] Shorten over-long titles (20+ pages at 67–83 chars).
-- [ ] RU slugs (RC-201) — RU currently uses the RO paths (`/ru/acoperisuri`).
-      Real Russian slugs would target `ремонт крыши`-class queries better.
-      A post-launch change means another round of redirects, so doing it before
-      cutover is cheaper.
+- [x] Title suffix shortened to "Rapid Construct" — titles over 60 chars went
+      from 22/26 to 12/28, and the remainder clip only the brand, never the
+      keyword phrase.
+- [x] RU slugs (RC-201) — done 2026-07-22. `/ru/kryshi`, `/ru/fasady` etc.,
+      13 permanent redirects from the old RO-shaped RU URLs, all with
+      follow-to-200 guards.
 - [ ] Q-08 — disable Vercel deployment protection so the owner can open preview
       links without logging in.
 
@@ -105,7 +112,8 @@ Run against the production deployment, not a preview:
 
 Audited all 28 routes (14 × 2 locales) on a local production-equivalent render:
 
-- All 200 except `/portofoliu`, which **now exists** (was the only 404).
+- All 28 return 200, zero defects (`/portofoliu` was the only 404; RU now on
+  localized slugs).
 - canonical present on every page ✓
 - hreflang ro/ru/x-default present on every page ✓ (rendered as `hrefLang`,
   which is valid — HTML attributes are case-insensitive)
