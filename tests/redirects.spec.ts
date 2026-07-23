@@ -225,3 +225,43 @@ test.describe("RC-402 repointed dead redirects", () => {
     }
   });
 });
+
+/**
+ * Q-08 — with Deployment Protection off, preview/staging URLs are publicly
+ * reachable. The login wall used to be the only thing keeping crawlers off the
+ * staging host; robots.txt + `noindex` are now that safeguard.
+ *
+ * If this ever regresses, Google can index `rapidconstruct-web.vercel.app` and
+ * the real domain launches into a duplicate-content fight with its own staging
+ * copy — the exact damage the production SITE_URL guard exists to prevent.
+ *
+ * The suite runs against a staging-configured build (no NEXT_PUBLIC_SITE_URL),
+ * so the un-indexable branch is what we assert here.
+ */
+test.describe("Q-08 staging must not be indexable", () => {
+  test("robots.txt disallows all crawling on the staging host", async ({
+    request,
+  }) => {
+    const res = await request.get("/robots.txt");
+    expect(res.status()).toBe(200);
+    const body = await res.text();
+    expect(
+      body,
+      "staging robots.txt must Disallow: / — previews are public now",
+    ).toContain("Disallow: /");
+    expect(
+      body,
+      "staging robots.txt must not advertise a sitemap (it would invite crawling)",
+    ).not.toContain("Sitemap:");
+  });
+
+  test("pages carry noindex on the staging host", async ({ request }) => {
+    for (const path of ["/", "/ru", "/portofoliu"]) {
+      const html = await (await request.get(path)).text();
+      expect(
+        html,
+        `${path} must emit noindex on staging; robots.txt alone does not stop indexing of URLs found elsewhere`,
+      ).toMatch(/<meta name="robots" content="[^"]*noindex/);
+    }
+  });
+});

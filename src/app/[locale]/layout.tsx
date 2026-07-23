@@ -3,7 +3,12 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
-import { OG_LOCALE, SITE_URL, localeAlternates } from "@/i18n/metadata";
+import {
+  IS_UNINDEXABLE_STAGING,
+  OG_LOCALE,
+  SITE_URL,
+  localeAlternates,
+} from "@/i18n/metadata";
 import { site } from "@/config/site";
 import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import LocalBusinessJsonLd from "@/components/LocalBusinessJsonLd";
@@ -64,6 +69,15 @@ export async function generateMetadata({
       card: "summary_large_image",
       images: [DEFAULT_OG_IMAGE],
     },
+    // Q-08: keep the staging host out of the index. robots.txt disallow stops
+    // crawling, but Google can still index a URL it discovers elsewhere (a link,
+    // the sitemap) without crawling it — `noindex` is the signal that actually
+    // prevents that. Inherited by every page, so one place covers all 30 URLs.
+    // Never true in production: the guard in i18n/metadata.ts throws if
+    // NEXT_PUBLIC_SITE_URL is missing there, so this clears itself at cutover.
+    ...(IS_UNINDEXABLE_STAGING
+      ? { robots: { index: false, follow: false } }
+      : {}),
   };
 }
 

@@ -42,6 +42,23 @@ export const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ?? STAGING_HOST
 ).replace(/\/+$/, "");
 
+/**
+ * True when this build serves the throwaway staging host rather than the real
+ * domain — i.e. `NEXT_PUBLIC_SITE_URL` is unset, so every canonical, hreflang
+ * and sitemap URL points at `rapidconstruct-web.vercel.app`.
+ *
+ * Such a build MUST NOT be indexed. Until Q-08 was turned off, the Vercel login
+ * wall was the only thing keeping Google out; with previews public, an indexed
+ * staging copy would compete with rapidconstruct.md as a duplicate the moment we
+ * cut over — the same damage the production guard above prevents, via a
+ * different door. `robots.ts` and the root layout both read this.
+ *
+ * Self-clearing: it can never be true in production, because the guard above
+ * throws if `NEXT_PUBLIC_SITE_URL` is missing there. Set the real domain and
+ * indexing switches on by itself — nothing to remember to undo.
+ */
+export const IS_UNINDEXABLE_STAGING = SITE_URL === STAGING_HOST;
+
 /** Open Graph locale codes (`og:locale`) for each app locale. */
 export const OG_LOCALE: Record<AppLocale, string> = {
   ro: "ro_RO",
