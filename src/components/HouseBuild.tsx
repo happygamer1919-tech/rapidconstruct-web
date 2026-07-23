@@ -2,30 +2,29 @@
 
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { motion, useInView, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Link } from "@/i18n/navigation";
 import { Icon } from "@/components/icons";
 import { skipHeavy3d } from "@/lib/audit";
 
-// Heavy WebGL scene, browser-only.
-const HouseBuildScene = dynamic(() => import("./HouseBuildScene"), {
+// WebGL scene, browser-only.
+//
+// The hero intro is now HeroBuild3D: a stylized house that builds itself from
+// blueprint lines into matte massing while the camera pulls back to a drone 3/4.
+// Its massing comes from the owner's real drone photos (2-storey block + hip
+// roof, wing, carport, porch, grey scored panels, brick chimney). It ships as
+// GEOMETRY rather than a 1 MB glb, so the hero no longer waits on a model
+// download. HouseBuildScene is untouched and still powers the scroll story
+// (HouseTour) further down the page.
+const HeroBuild3D = dynamic(() => import("./HeroBuild3D"), {
   ssr: false,
   loading: () => <div className="absolute inset-0" />,
 });
 
-// The hero frames the house differently on a phone (below the copy) than on a
-// desktop (beside it) — that is a camera/position change, not just CSS.
-function useIsNarrow() {
-  const [narrow, setNarrow] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 1023px)");
-    const sync = () => setNarrow(mq.matches);
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
-  return narrow;
-}
+// `useIsNarrow` and the `useInView` gate went away with the HouseBuildScene
+// swap: HeroBuild3D drives its own camera (a scripted pull-back to a drone 3/4),
+// so there is no per-breakpoint `layout` prop to feed it. Reinstate them if a
+// future hero needs breakpoint-specific framing.
 
 // Mount WebGL right away when the tab is visible (the hero must build itself on
 // load — owner direction), or on first interaction.
@@ -93,9 +92,7 @@ export default function HouseBuild({
 }) {
   const reduce = useReducedMotion();
   const armed = useArmed();
-  const narrow = useIsNarrow();
   const wrapRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(wrapRef, { margin: "200px 0px" });
 
   // The headline + CTAs are hidden until the build finishes, and `built` is
   // flipped by the scene's onDone. So if the scene never mounts or never
@@ -155,7 +152,10 @@ export default function HouseBuild({
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-gutter py-16">
           {heroBlock}
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-neutral-100 to-muted">
-            <HouseBuildScene active={inView} />
+            {/* HeroBuild3D reads prefers-reduced-motion itself and renders the
+                FINISHED house with no animation, which is exactly what this
+                branch wants. */}
+            <HeroBuild3D loop={false} />
           </div>
         </div>
       </section>
@@ -168,12 +168,26 @@ export default function HouseBuild({
       className="relative h-svh w-full overflow-hidden border-b border-border"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-neutral-100 via-muted to-neutral-200">
+        {/* `armed` still gates the mount, so audit robots (?no3d=1) never get a
+            WebGL canvas — the blocking Lighthouse perf budget measures that URL.
+            `loop={false}`: the hero builds ONCE and stays built, matching the
+            existing hero contract that the copy reveal depends on. Looping would
+            also keep a render loop running forever behind the copy, which is the
+            battery/lag problem HouseBuildScene's `rested` flag exists to avoid.
+
+            FRAMING: HeroBuild3D scripts its own camera (it has no `layout` prop),
+            so the composition is set by sizing its BOX rather than the camera.
+            Full-bleed put the house straight through the headline on desktop and
+            over the CTAs on a phone. Instead:
+              · desktop — the canvas takes the right ~62%, so the house sits in
+                the half the scrim already fades toward (copy left, house right);
+              · mobile — it takes the lower ~52%, below the copy block, matching
+                the top-down scrim. Aspect-driven reframing is why this works
+                without touching the camera. */}
         {armed && (
-          <HouseBuildScene
-            active={inView}
-            layout={narrow ? "heroMobile" : "hero"}
-            onDone={() => setBuilt(true)}
-          />
+          <div className="absolute inset-x-0 bottom-0 top-[48%] lg:inset-y-0 lg:left-[38%] lg:top-0">
+            <HeroBuild3D loop={false} onRested={() => setBuilt(true)} />
+          </div>
         )}
       </div>
       {/* Scrim so the copy always reads over the model. Muted grey text on the
