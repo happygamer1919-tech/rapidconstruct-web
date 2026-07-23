@@ -9,20 +9,21 @@ import { skipHeavy3d } from "@/lib/audit";
 
 // WebGL scene, browser-only.
 //
-// The hero intro is now HeroBuild3D: a stylized house that builds itself from
-// blueprint lines into matte massing while the camera pulls back to a drone 3/4.
-// Its massing comes from the owner's real drone photos (2-storey block + hip
-// roof, wing, carport, porch, grey scored panels, brick chimney). It ships as
-// GEOMETRY rather than a 1 MB glb, so the hero no longer waits on a model
-// download. HouseBuildScene is untouched and still powers the scroll story
-// (HouseTour) further down the page.
-const HeroBuild3D = dynamic(() => import("./HeroBuild3D"), {
+// The hero intro is HeroScene, which mounts the APPROVED scene source held
+// verbatim in src/scenes/rapidconstruct-scene.js ("cu fronton": stepped massing
+// — a long single-storey wing plus a two-storey block with a cross gable — hip
+// roofs, white render, stone base and quoins, dormers, carport, paved yard,
+// fence and gate). It builds itself from blueprint lines while the camera pulls
+// back to a drone 3/4. It ships as GEOMETRY rather than a 1 MB glb, so the hero
+// never waits on a model download. HouseBuildScene is untouched and still powers
+// the scroll story (HouseTour) further down the page.
+const HeroScene = dynamic(() => import("./HeroScene"), {
   ssr: false,
   loading: () => <div className="absolute inset-0" />,
 });
 
 // `useIsNarrow` and the `useInView` gate went away with the HouseBuildScene
-// swap: HeroBuild3D drives its own camera (a scripted pull-back to a drone 3/4),
+// swap: HeroScene drives its own camera (a scripted pull-back to a drone 3/4),
 // so there is no per-breakpoint `layout` prop to feed it. Reinstate them if a
 // future hero needs breakpoint-specific framing.
 
@@ -152,10 +153,10 @@ export default function HouseBuild({
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-gutter py-16">
           {heroBlock}
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-neutral-100 to-muted">
-            {/* HeroBuild3D reads prefers-reduced-motion itself and renders the
+            {/* HeroScene reads prefers-reduced-motion itself and renders the
                 FINISHED house with no animation, which is exactly what this
                 branch wants. */}
-            <HeroBuild3D loop={false} />
+            <HeroScene loop={false} />
           </div>
         </div>
       </section>
@@ -175,7 +176,7 @@ export default function HouseBuild({
             also keep a render loop running forever behind the copy, which is the
             battery/lag problem HouseBuildScene's `rested` flag exists to avoid.
 
-            FRAMING: HeroBuild3D scripts its own camera (it has no `layout` prop),
+            FRAMING: HeroScene scripts its own camera (it has no `layout` prop),
             so the composition is set by sizing its BOX rather than the camera.
             Full-bleed put the house straight through the headline on desktop and
             over the CTAs on a phone. Instead:
@@ -186,7 +187,7 @@ export default function HouseBuild({
                 without touching the camera. */}
         {armed && (
           <div className="absolute inset-x-0 bottom-0 top-[48%] lg:inset-y-0 lg:left-[38%] lg:top-0">
-            <HeroBuild3D loop={false} onRested={() => setBuilt(true)} />
+            <HeroScene loop={false} onRested={() => setBuilt(true)} />
           </div>
         )}
       </div>
