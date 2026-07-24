@@ -256,6 +256,34 @@ export function buildScene(THREE, scene, renderer) {
   scene.add(key);
   const fill = new THREE.DirectionalLight(0x93b4d8, .28); // was .32 — cooler frame overall
   fill.position.set(17, 9, -15); scene.add(fill);
+
+  // LANE B step 2 — procedural environment map, assigned per-material to
+  // glass and metals ONLY (via material.envMap in add()). First attempt used
+  // scene.environment: it feeds EVERY standard material — lawn, trees,
+  // plaster — which filled the step-1 contact shadows and washed the whole
+  // frame flat. Targeted assignment keeps LANE A's light untouched while
+  // giving low-roughness surfaces something to mirror — without it glass
+  // reads as dark paint.
+  let envPMREM = null;
+  if (renderer) {
+    const ec = cv(256, 128), ex = ec.getContext('2d');
+    const eg = ex.createLinearGradient(0, 0, 0, 128);
+    eg.addColorStop(0, '#86b0d8'); eg.addColorStop(.45, '#cfdce4');
+    eg.addColorStop(.52, '#eddcba'); eg.addColorStop(.56, '#8f8a74');
+    eg.addColorStop(1, '#5f5c4c');
+    ex.fillStyle = eg; ex.fillRect(0, 0, 256, 128);
+    const sunU = 232, sunV = 34; // roughly the key light's direction
+    const sun = ex.createRadialGradient(sunU, sunV, 0, sunU, sunV, 26);
+    sun.addColorStop(0, 'rgba(255,236,200,.95)');
+    sun.addColorStop(.25, 'rgba(255,226,180,.4)');
+    sun.addColorStop(1, 'rgba(255,226,180,0)');
+    ex.fillStyle = sun; ex.beginPath(); ex.arc(sunU, sunV, 26, 0, 7); ex.fill();
+    const envT = new THREE.CanvasTexture(ec);
+    envT.mapping = THREE.EquirectangularReflectionMapping;
+    const pm = new THREE.PMREMGenerator(renderer);
+    envPMREM = pm.fromEquirectangular(envT).texture;
+    pm.dispose(); envT.dispose();
+  }
   // Sun drift during the hold (step 4): the key swings ±~3° azimuth and
   // breathes in elevation, so shadows creep imperceptibly instead of being
   // stamped. Base position preserved exactly at h=0.
@@ -353,19 +381,25 @@ export function buildScene(THREE, scene, renderer) {
     if (o.bump) { mp.bumpMap = o.bump; mp.bumpScale = o.bs || .07; }
     if (o.emi) { mp.emissive = new THREE.Color(o.emi); mp.emissiveIntensity = o.ei || 1; }
     if (o.ds) mp.side = THREE.DoubleSide;
-    // env reception (LANE B step 2): metals reflect strongly, rough dielectrics
-    // barely — keeps scene.environment from washing the plaster.
-    mp.envMapIntensity = (o.m || 0) >= .3 ? 1 : .25;
+    // env reception (LANE B step 2): ONLY metals (m ≥ .3) and glass get the
+    // envMap — everything else keeps LANE A's lighting untouched. Intensity
+    // scales with metalness: a flat 1.0 turned the m=.3 fence louvres into
+    // sky mirrors (washed white); proportional keeps them grey with a sheen
+    // while true metal reflects properly.
+    if (envPMREM && !o.glass && (o.m || 0) >= .3) {
+      mp.envMap = envPMREM; mp.envMapIntensity = .9 * o.m;
+    }
     // LANE B step 1 — glass gets its own PHYSICAL material: dark tint, tight
     // roughness, clearcoat. The physical shader's fresnel makes it catch light
-    // at grazing angles; envMapIntensity is high so step 2's environment map
-    // reads strongest here. Per-piece material (not shared) because the build
-    // animation fades each piece's opacity individually.
+    // at grazing angles; the envMap (step 2) reads strongest here. Per-piece
+    // material (not shared) because the build animation fades each piece's
+    // opacity individually.
     const mt = o.glass
       ? new THREE.MeshPhysicalMaterial({
           color: col, roughness: .06, metalness: 0,
           clearcoat: 1, clearcoatRoughness: .08,
-          envMapIntensity: 1.8, transparent: true, opacity: 0,
+          envMap: envPMREM || undefined, envMapIntensity: 1.8,
+          transparent: true, opacity: 0,
         })
       : new THREE.MeshStandardMaterial(mp);
     const me = new THREE.Mesh(geo, mt); me.castShadow = true; me.receiveShadow = true;
