@@ -51,6 +51,10 @@ export default async function CityPage({
   const localBusinessJsonLd = {
     "@context": "https://schema.org",
     "@type": "HomeAndConstructionBusiness",
+    // Same @id as the sitewide LocalBusinessJsonLd node so this city-scoped block
+    // is understood as the SAME business entity (one company in Chișinău serving
+    // this city), not a second business at the same address. See that file.
+    "@id": `${SITE_URL}/#localbusiness`,
     name: site.name,
     url: `${SITE_URL}/`,
     image: OG_IMAGE_URL,

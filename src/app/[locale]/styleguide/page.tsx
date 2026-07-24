@@ -19,13 +19,29 @@ export async function generateMetadata({
     ? locale
     : routing.defaultLocale;
 
+  // Internal dev aid: noindex + excluded from the sitemap, so this never reaches
+  // search. Title/description are still made locale-distinct so the RO and RU
+  // URLs are not literal duplicates of each other. Not owner copy, no claim
+  // numbers — purely an internal reference string.
+  const meta = {
+    ro: {
+      title: "Ghid de stiluri — tokenuri de design (RC-003)",
+      description:
+        "Referință internă a tokenurilor de design pentru reconstrucția RapidConstruct. Pagină de dezvoltare, nu una publică.",
+    },
+    ru: {
+      title: "Руководство по стилю — токены дизайна (RC-003)",
+      description:
+        "Внутренний справочник токенов дизайна для проекта RapidConstruct. Служебная страница, не публичная.",
+    },
+  }[safeLocale];
+
   return {
     ...buildMetadata({
       locale: safeLocale,
       path: "/styleguide",
-      title: "Styleguide — design tokens (RC-003)",
-      description:
-        "Internal design-token reference for the RapidConstruct rebuild. Not a public page.",
+      title: meta.title,
+      description: meta.description,
     }),
     robots: { index: false, follow: false },
   };
