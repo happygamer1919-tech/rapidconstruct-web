@@ -126,7 +126,7 @@ Shipped and verified. PR numbers in brackets.
 |---|---|---|
 | **3D hero — owner review** | `feature/3d-hero`, `src/components/HeroScene.tsx` | Ported and live at the owner review URL. Awaiting the owner's verdict. Not merged to `main` by design. `HeroBuild3D.tsx` is now dead code — delete it once the owner signs off on the new scene. |
 | **RC-104 Portfolio** | `/portofoliu` | **Partial.** Page ships with 8 real photos, tags, ItemList JSON-LD, sitemap entry — the nav 404 is gone. Not done: filters, per-project detail pages, before/after sliders. All three need metadata nobody has confirmed (Q-14). |
-| **RC-402 pre-launch audit** | `docs/LAUNCH-CHECKLIST.md` | Route audit done — all 28 checked routes return 200, canonical + hreflang + JSON-LD + single H1 + og:image present on every page. Remaining: re-verify after the canonical host is settled, and Rich Results / OG debugger passes. |
+| **RC-402 pre-launch audit** | `docs/LAUNCH-CHECKLIST.md` | Route audit done — all indexable routes return 200, canonical + hreflang + JSON-LD + single H1 + og:image present on every page. **Sitemap count reconciled 2026-07-24 (RC-402): 30, not 28** — see below. Remaining: re-verify after the canonical host is settled, and Rich Results / OG debugger passes. |
 
 ---
 
@@ -179,8 +179,17 @@ In order. Items 1–3 need no owner input.
    needed. Standalone script, no dependency on the 3D work.
 4. **Owner reviews the new 3D hero** at the review URL. On sign-off: delete the
    unused `HeroBuild3D.tsx` and decide whether the hero merges to `main`.
-5. **Reconcile the sitemap count** — the launch checklist expects 28 URLs, the
-   sitemap emits 30. Confirm which is right before cutover.
+5. ~~**Reconcile the sitemap count**~~ — **done** (2026-07-24, RC-402,
+   branch `rc/RC-402-sitemap-reconcile`). The **sitemap was right at 30**, the
+   checklist's 28 was stale; no `sitemap.ts` change. The 30 = 15 indexable routes
+   × 2 locales (every `[locale]` page except the `noindex` `/styleguide` dev aid,
+   which is correctly sitemap-excluded). The two URLs beyond 28 are the privacy
+   policy — `/politica-de-confidentialitate` (RO) and
+   `/ru/politika-konfidencialnosti` (RU) — a real public page that belongs in the
+   sitemap; PR #50 added the page but never bumped the checklist count.
+   `docs/LAUNCH-CHECKLIST.md` updated to 30 with the reasoning. Verified:
+   `npm run build` exit 0, generated sitemap counts 30 `<loc>`. No host/canonical
+   change (Q-15 untouched), no 3D touched.
 6. **Close the questions the repo has already answered:** Q-06 and Q-11 (drone
    photos landed), Q-09 (Resend key is set — verify with one real form submit
    end-to-end, then close). **Q-15 needs the owner's decision, not just

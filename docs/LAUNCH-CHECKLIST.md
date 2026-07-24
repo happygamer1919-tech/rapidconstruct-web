@@ -42,8 +42,14 @@ Run against the production deployment, not a preview:
 
 - [ ] `curl -s https://<host>/robots.txt` — `Host:` and `Sitemap:` both show the
       real domain.
-- [ ] `curl -s https://<host>/sitemap.xml | grep -c "<loc>"` — 28 URLs
-      (14 routes × 2 locales, RU on localized slugs), all on the real domain.
+- [ ] `curl -s https://<host>/sitemap.xml | grep -c "<loc>"` — 30 URLs
+      (15 routes × 2 locales, RU on localized slugs), all on the real domain.
+      The 15 indexable routes are every page under `src/app/[locale]/` **except
+      `/styleguide`**, which is a dev aid and is correctly `noindex` +
+      sitemap-excluded. The privacy policy (`/politica-de-confidentialitate`,
+      RU `/ru/politika-konfidencialnosti`) is a real public page and belongs in
+      the sitemap — it is the pair that took the count from 28 to 30 (see the
+      reconciliation note at the bottom of this file).
 - [ ] Spot-check three pages: `canonical`, `hrefLang="ro"`, `hrefLang="ru"`,
       `hrefLang="x-default"` all absolute and on the real domain.
 - [ ] `og:image` resolves (open it in a browser, expect an image not a 404).
@@ -122,3 +128,46 @@ Audited all 28 routes (14 × 2 locales) on a local production-equivalent render:
 - og:title + og:image present on every page ✓
 - sitemap 200, robots 200, llms.txt 200 ✓
 - **every absolute URL still points at the staging host** — §1
+
+> ⚠️ This dated snapshot says **28 routes (14 × 2)** — see the reconciliation
+> below. It undercounts by one route: the privacy policy page landed in the same
+> PR (#50) that wrote this audit, but the count here was never bumped.
+
+---
+
+## Sitemap count reconciliation — 2026-07-24 (RC-402)
+
+**Resolved: the sitemap is correct at 30; this checklist's "28" was stale.**
+
+`src/app/sitemap.ts` emits **30** `<loc>` entries — verified by `npm run build`
+(exit 0) and counting the generated `.next/server/app/sitemap.xml.body`. That is
+**15 indexable routes × 2 locales**, RU on its localized slugs:
+
+    /  /acoperisuri  /calculator-acoperis  /fatade  /renovari-la-cheie
+    /finisaje  /proiectare-3d  /instalatii  /despre-noi  /portofoliu  /contact
+    /politica-de-confidentialitate  /chisinau  /orhei  /cahul
+
+These are every page under `src/app/[locale]/` **except `/styleguide`**, which is
+a dev aid — already `robots: { index: false, follow: false }` and already
+excluded from the sitemap, so no change was needed there (the `noindex` +
+sitemap-exclusion are consistent).
+
+**The two URLs that make it 30, not 28**, are the privacy policy in both locales:
+
+- `/politica-de-confidentialitate` (RO)
+- `/ru/politika-konfidencialnosti` (RU)
+
+**Decision — keep them; update the checklist to 30.** A privacy policy is a real,
+public, 200-returning page that a site legitimately wants indexed; it is nothing
+like the `/styleguide` dev aid. Route history confirms the checklist simply fell
+behind: the route list grew 13 → 14 (`/portofoliu`, PR #48) → 15
+(`/politica-de-confidentialitate`, PR #50), and PR #50 added the page but never
+bumped this document's count. No `src/app/sitemap.ts` change was made; the code
+was already right.
+
+Not in scope / untouched: the canonical host stays the staging fallback by design
+(Q-15 is the owner's call, and `NEXT_PUBLIC_SITE_URL` must stay absent until
+RC-403) — this reconciliation is only about the route **count**. The separate
+title-length metric elsewhere in this file ("12 of 28") counts titles over ~60
+chars, not sitemap routes, and was left alone — it needs its own re-measure, not
+a find-and-replace.
