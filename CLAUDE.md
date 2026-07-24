@@ -4,6 +4,10 @@ Next.js + React on Vercel for a construction company in Chișinău, Moldova.
 Bilingual RO (default, `/`) + RU (`/ru`). Brand orange `#E08039`.
 Production `rapidconstruct.md` is **still on Tilda** until the RC-403 cutover.
 
+The repo owner (**Max**) and the person in this terminal are the same individual.
+When a decision needs the owner, make it with them here directly — don't defer it
+to a third party or stall waiting on someone else.
+
 ## Read before doing anything
 
 1. `docs/PROJECT-MEMORY.md` — permanent memory: history, what was tried, what was
