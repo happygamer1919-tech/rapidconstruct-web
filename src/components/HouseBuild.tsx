@@ -120,7 +120,14 @@ export default function HouseBuild({
       <h1 className="font-serif text-display-xl text-foreground">{h1}</h1>
       {/* max-w-md, not -xl: the long service list used to run out past the
           scrim onto the beige wall, where muted grey stopped reading. */}
-      <p className="max-w-md text-body-lg text-muted-foreground">{subline}</p>
+      {/* max-w-sm on large screens, not -md: the service list is the one hero
+          line that still ran its tail out of the scrim and onto the house, where
+          muted grey measured 3.0:1. Narrowing the column wraps it earlier and
+          keeps every line inside the strong part of the scrim — which costs the
+          house nothing, unlike pushing the gradient further right. */}
+      <p className="max-w-md text-body-lg text-muted-foreground lg:max-w-sm">
+        {subline}
+      </p>
       {/* max-w-md for the same reason as the subline above: its tail ran past the
           scrim onto the house and dropped to 3.07 contrast. Wrapping keeps it
           over the scrim. */}
@@ -180,13 +187,16 @@ export default function HouseBuild({
             so the composition is set by sizing its BOX rather than the camera.
             Full-bleed put the house straight through the headline on desktop and
             over the CTAs on a phone. Instead:
-              · desktop — the canvas takes the right ~62%, so the house sits in
-                the half the scrim already fades toward (copy left, house right);
-              · mobile — it takes the lower ~52%, below the copy block, matching
-                the top-down scrim. Aspect-driven reframing is why this works
-                without touching the camera. */}
+            FULL-BLEED (2026-07-23). The canvas used to be a sub-box — right 62%
+            on desktop, bottom 52% on a phone — which suited the previous hero.
+            Against the approved scene it failed twice over: that scene is a whole
+            SITE (house, carport, fence, gate, garage, paving, trees), so a cropped
+            box sliced it off mid-building, and the leftover area read as a dead
+            white half with a hard seam down the middle. The scene now gets the
+            entire hero and the scrim alone carries copy legibility. HeroScene
+            widens its lens on portrait so the whole site still fits. */}
         {armed && (
-          <div className="absolute inset-x-0 bottom-0 top-[48%] lg:inset-y-0 lg:left-[38%] lg:top-0">
+          <div className="absolute inset-0">
             <HeroScene loop={false} onRested={() => setBuilt(true)} />
           </div>
         )}
@@ -194,10 +204,34 @@ export default function HouseBuild({
       {/* Scrim so the copy always reads over the model. Muted grey text on the
           beige wall measured ~1:1 — invisible. Desktop gets a LEFT scrim (copy
           left, house right); a phone has no side space, so it gets a TOP-DOWN
-          scrim instead and the copy sits up top, clear of the house. */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-neutral-100 from-38% via-neutral-100/60 via-50% to-transparent to-58% lg:bg-gradient-to-r lg:from-15% lg:via-neutral-100/70 lg:via-45% lg:to-70%" />
+          scrim instead and the copy sits up top, clear of the house.
 
-      <div className="pointer-events-none relative mx-auto flex h-full w-full max-w-6xl flex-col justify-start px-gutter pt-20 lg:justify-center lg:pt-0">
+          Stops are MEASURED, not guessed. Sampling the composited pixels behind
+          the worst text runs found real failures at the previous settings:
+          desktop service list 1.53:1 over the dark roof, mobile outlined CTA
+          2.80:1 over the house — both well under WCAG AA 4.5:1, and the same
+          "muted grey on the beige wall" class of defect this scrim exists for.
+
+          Desktop: the copy is max-w-md inside max-w-6xl, so text reaches ~41% of
+          a 1440px viewport — the scrim therefore holds to 47% before clearing by
+          72%, leaving the right third of the house clean.
+          Mobile: the copy runs to the bottom edge, so the gradient never reaches
+          full transparency; it settles at 58% so the outlined CTA keeps a
+          backdrop. The house reads as a soft haze behind the copy, which suits
+          the scene's own FogExp2 atmosphere rather than fighting it.
+
+          NOTE: the far stop is `neutral-100/0`, NOT `to-transparent`. Tailwind's
+          `transparent` is transparent BLACK, so a gradient running colour ->
+          transparent interpolates through black and darkens the midpoint. That
+          is measurable here: with `to-transparent` the backdrop behind the
+          service list sampled rgb(151,144,130) where the maths predicted ~226,
+          and contrast sat at 2.04:1. Same-hue zero-alpha keeps the ramp clean. */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-neutral-100 from-28% via-neutral-100/84 via-58% to-neutral-100/72 to-100% lg:bg-gradient-to-r lg:from-neutral-100 lg:from-30% lg:via-neutral-100/88 lg:via-44% lg:to-neutral-100/0 lg:to-68%" />
+
+      {/* pt-10 on a phone, not pt-20: with the promo bar and a two-line header
+          above it, the old padding pushed "Solicită ofertă gratuită" under the
+          fold — a hero CTA the visitor could not see. Desktop is unchanged. */}
+      <div className="pointer-events-none relative mx-auto flex h-full w-full max-w-6xl flex-col justify-start px-gutter pb-8 pt-10 lg:justify-center lg:pb-0 lg:pt-0">
         {/* Hero copy — slides in only once the build has finished. */}
         <motion.div
           initial={{ opacity: 0, y: 18 }}

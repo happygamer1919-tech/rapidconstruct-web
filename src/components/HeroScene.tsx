@@ -126,11 +126,63 @@ export default function HeroScene({
     // Nothing below may override those.
     const api = buildScene(THREE, scene, renderer);
 
+    /**
+     * Keep the HORIZONTAL field of view constant instead of the vertical one.
+     *
+     * three.js `fov` is vertical, so a fixed value crops the frame horizontally
+     * as the viewport narrows. This scene is not a single object — it is a site
+     * roughly 30 m wide (house, carport, fence, gate, garage, paving, trees) —
+     * so on a portrait phone a fixed 40° sliced straight through the building.
+     * Widening the lens as the aspect narrows keeps the same horizontal extent
+     * visible at every viewport, which is what makes one fixed camera path work
+     * on both a desktop and a phone.
+     *
+     * The camera POSITION and lookAt still come untouched from api.cameraAt();
+     * only the lens adapts. The scene file never specifies a lens.
+     */
+    const BASE_FOV = 40; // vertical fov at the reference aspect
+    const REF_ASPECT = 16 / 9;
+    const RAD = Math.PI / 180;
+    const H_FOV = 2 * Math.atan(Math.tan((BASE_FOV / 2) * RAD) * REF_ASPECT);
+
+    // Vertical fov that preserves the reference horizontal extent at `aspect`.
+    // Clamped: past ~74° the perspective distortion bows the roof lines, which
+    // reads as a modelling defect rather than a wide shot.
+    const fovFor = (aspect: number) =>
+      aspect >= REF_ASPECT
+        ? BASE_FOV
+        : Math.min(74, (2 * Math.atan(Math.tan(H_FOV / 2) / aspect)) / RAD);
+
+    /**
+     * On a portrait phone the copy block (eyebrow + headline + service list +
+     * guarantee + two CTAs) fills most of the screen, so a centred house lands
+     * directly behind the text — the service list sat on the dark roof at about
+     * 1.5:1 contrast.
+     *
+     * Rather than crop the scene (the old sub-box approach, which sliced the
+     * site in half) we render the TOP slice of a taller virtual frame. The house
+     * sits at the virtual centre, so showing the upper portion pushes it into
+     * the lower third of the canvas, under the copy, with sky behind the text.
+     * setViewOffset only moves the projection window — camera position and
+     * lookAt still come untouched from api.cameraAt().
+     */
+    const PORTRAIT_LIFT = 1.3;
+
     const resize = () => {
       const w = mount.clientWidth || 1;
       const h = mount.clientHeight || 1;
       renderer.setSize(w, h, false);
-      camera.aspect = w / h;
+
+      if (w / h < 1) {
+        const virtualH = h * PORTRAIT_LIFT;
+        camera.aspect = w / virtualH;
+        camera.fov = fovFor(camera.aspect);
+        camera.setViewOffset(w, virtualH, 0, 0, w, h);
+      } else {
+        camera.clearViewOffset();
+        camera.aspect = w / h;
+        camera.fov = fovFor(camera.aspect);
+      }
       camera.updateProjectionMatrix();
     };
     resize();
