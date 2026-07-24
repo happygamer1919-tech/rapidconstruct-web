@@ -201,53 +201,24 @@ export default function HouseBuild({
           </div>
         )}
       </div>
-      {/* Scrim so the copy reads over the model — FADED IN WITH THE COPY, not
-          painted from the start (owner direction 2026-07-23: "the writing on the
-          left should appear after the animation, but the animation itself has to
-          be clear on both PC and mobile").
-
-          That is the whole point of this element being animated. While the house
-          is assembling there is no text on screen, so a scrim buys nothing and
-          costs everything: it washed the build out on desktop and turned the
-          phone into a haze. Now the build plays at full contrast edge to edge,
-          and the scrim arrives only at the moment it has something to protect.
-
-          Desktop gets a LEFT scrim (copy left, house right); a phone has no side
-          space, so it gets a TOP-DOWN scrim instead.
-
-          Stops are MEASURED, not guessed. Sampling the composited pixels behind
-          the worst text runs found real failures at the previous settings:
-          desktop service list 1.53:1 over the dark roof, mobile outlined CTA
-          2.80:1 over the house — both well under WCAG AA 4.5:1, and the same
-          "muted grey on the beige wall" class of defect this scrim exists for.
-
-          Desktop: the copy is max-w-md inside max-w-6xl, so text reaches ~41% of
-          a 1440px viewport — the scrim therefore holds to 47% before clearing by
-          72%, leaving the right third of the house clean.
-          Mobile: the copy runs to the bottom edge, so the gradient never reaches
-          full transparency; it settles at 58% so the outlined CTA keeps a
-          backdrop. The house reads as a soft haze behind the copy, which suits
-          the scene's own FogExp2 atmosphere rather than fighting it.
-
-          NOTE: the far stop is `neutral-100/0`, NOT `to-transparent`. Tailwind's
-          `transparent` is transparent BLACK, so a gradient running colour ->
-          transparent interpolates through black and darkens the midpoint. That
-          is measurable here: with `to-transparent` the backdrop behind the
-          service list sampled rgb(151,144,130) where the maths predicted ~226,
-          and contrast sat at 2.04:1. Same-hue zero-alpha keeps the ramp clean. */}
-      <motion.div
-        aria-hidden
-        initial={{ opacity: 0 }}
-        animate={{ opacity: built ? 1 : 0 }}
-        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-neutral-100 from-28% via-neutral-100/84 via-58% to-neutral-100/84 to-100% lg:bg-gradient-to-r lg:from-neutral-100 lg:from-30% lg:via-neutral-100/88 lg:via-44% lg:to-neutral-100/0 lg:to-68%"
-      />
-
       {/* pt-10 on a phone, not pt-20: with the promo bar and a two-line header
           above it, the old padding pushed "Solicită ofertă gratuită" under the
           fold — a hero CTA the visitor could not see. Desktop is unchanged. */}
       <div className="pointer-events-none relative mx-auto flex h-full w-full max-w-6xl flex-col justify-start px-gutter pb-8 pt-10 lg:justify-center lg:pb-0 lg:pt-0">
-        {/* Hero copy — slides in only once the build has finished. */}
+        {/* Hero copy — slides in only once the build has finished, carrying its
+            OWN backdrop rather than a full-screen scrim (owner direction
+            2026-07-23: "the white doesn\'t need to appear on the full
+            background, only on a part, and transparent — just so the text has a
+            normal background and doesn\'t dissolve into the animation, but the
+            animation needs to be seen").
+
+            The full-bleed gradient that used to live here washed the whole hero
+            to read one column of text. This panel covers only the copy: it is
+            translucent and blurred, so the house keeps moving behind it, while
+            everything outside it — most of the frame — stays completely clear.
+            Blur matters as much as opacity: it removes the high-frequency detail
+            that made text "dissolve" into the roof tiles, so the panel can stay
+            see-through and still read. */}
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           animate={built ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
@@ -256,7 +227,7 @@ export default function HouseBuild({
           // full container width and swallowed every pointer event over the
           // house, so "Trage pentru a roti" did nothing across most of the hero.
           // Only the copy itself should capture clicks.
-          className="pointer-events-auto w-fit"
+          className="pointer-events-auto w-fit rounded-3xl bg-neutral-100/92 p-6 backdrop-blur-md ring-1 ring-ink-950/5 lg:p-7"
         >
           {heroBlock}
         </motion.div>
