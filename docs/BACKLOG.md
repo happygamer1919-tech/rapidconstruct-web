@@ -69,6 +69,31 @@ _RC-003/004/005/007 shipped together in PR #6 (squash). RC-006 next._
       lightweight "configurator started/completed" event so we can see drop-off (RC-404
       analytics). GDPR note: price shown on-page; contact details only on submit.
 
+- [x] **RC-115** (2026-07-24) Hero verification Tier 1 — `npm run verify:hero`. Replaces the
+      per-ticket md5 of `rapidconstruct-scene.js`, which the configurator refactor killed
+      (the file was split across `house-kit.js` and `houses/*.js`, so the hash could never
+      match again) and which lived in disposable ticket prose that could never be updated
+      when code landed. The file list is derived by walking the import graph from
+      `HeroScene.tsx` + `rapidconstruct-scene.js`, resolving the `@/` alias, so refactors are
+      picked up automatically; unresolvable imports are a hard error, never a silent skip.
+      Baseline in `tests/hero-manifest.json`, re-approved with `npm run verify:hero:update`
+      in the same commit as the change that justifies it. Coverage 1 file → 7.
+- [ ] **RC-116** Hero verification Tier 2 — rendered-output baselines. The real gate: Tier 1
+      only detects that source moved, not that the hero still LOOKS approved. Playwright
+      screenshots of the canvas element (not the page, so copy/fonts cannot cause false
+      diffs) at fixed animation timestamps, driven through the scene API's existing
+      `update(t)` / `cameraAt(t)` / `BUILD_END` / `HOLD` so frames are deterministic rather
+      than racing wall-clock rAF. Three frames: mid-build, `BUILD_END`, settled — the two
+      build frames enforce "never regress the build animation", which nothing automated
+      covers today. Also capture a reduced-motion baseline, which turns "SSAO is
+      demonstrably OFF on the fallback path" from an agent eyeballing a code branch into a
+      pixel assertion. **Sequencing: land AFTER the SSAO work (ticket 340)** — SSAO changes
+      the hero's pixels by design, so baselines taken before it are stale on arrival.
+      **Local-only to start** (owner decision 2026-07-24): WebGL is not bit-stable across
+      GPUs/drivers, so run it on one pinned machine and get a feel for the noise floor
+      before it gates CI; promote it if `--use-gl=swiftshader` proves stable across
+      machines.
+
 ## P2 — Russian version
 
 - [x] **RC-201** (2026-07-22) RU information architecture: RU slugs map (`/ru/kryshi`, `/ru/fasady`, ...),
