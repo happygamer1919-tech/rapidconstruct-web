@@ -109,6 +109,44 @@ Shipped and verified. PR numbers in brackets.
   **Pending push: `git push origin feature/3d-hero`** — the commit (`028bb9c`) is
   local only; push was denied in the automation run (permission not enabled). Push
   it when able; do not force-push.
+- **3D hero — LANE A: reduced-motion + low-end fallbacks AUDITED (no code change)**
+  (2026-07-24, `feature/3d-hero`). Audit-first task: both fallback paths already
+  exist in the live hero and are correct, so this is a verification, not a rewrite.
+  Findings, with file:line —
+  1. **Reduced-motion static path.** `src/components/HeroScene.tsx` detects
+     `(prefers-reduced-motion: reduce)` via `matchMedia` with a live `change`
+     listener (lazy init L80–90). When it matches, `beginLoop` renders the settled
+     house **once** — `applyFrame(api.BUILD_END)`, no `requestAnimationFrame`, no
+     build/camera loop (L280–288); the pre-warm draw is also posed at `BUILD_END`
+     (L294). No camera motion (a single static `cameraAt(BUILD_END)` pose) and no
+     glow pulse: the window glow is a **static** emissive material
+     (`src/scenes/rapidconstruct-scene.js:254`, `emissiveIntensity` set once), not
+     a time-driven pulse, so a fixed-`t` frame does not animate.
+  2. **Low-end fallback.** `useSkipCanvas` (`HeroScene.tsx` L47–63) skips WebGL
+     **entirely** — before any context is created — on: no WebGL, `?no3d`
+     (`skipHeavy3d()`, `src/lib/audit.ts` — the same flag task 320 / RC-305 gate
+     on, reused not reinvented), `hardwareConcurrency ≤ 2`, or `deviceMemory ≤ 2`.
+     On skip it returns an `aria-hidden` div so the hero's own gradient shows
+     through — **never a black canvas** — and fires `onRested` immediately (L103)
+     so the copy/CTAs never wait on WebGL — **first paint is not blocked**.
+  3. **Render-loop guard** (PROJECT-MEMORY §4.5): `tick()` schedules
+     `requestAnimationFrame` FIRST (L234) then runs the update in `try/catch` — a
+     thrown frame can never leave a permanent black canvas. Present and correct.
+  4. **Task 320 SSAO/DoF are OFF in both paths by construction.** The live hero
+     uses **no postprocessing at all**: the scene's `applyRenderer`
+     (`rapidconstruct-scene.js:487–494`) sets only ACES tone mapping + PCF soft
+     shadows. SSAO + DepthOfField exist ONLY in `src/components/HeroBuild3D.tsx`,
+     which is **unwired dead code** (superseded by the scene port; not mounted),
+     so there are no effects to disable on the fallback paths.
+  `npm run build` exits **0** in the worktree; both branches compile and are
+  reachable by reading the code paths. ⚠️ Headless cannot emulate a real low-end
+  GPU or the OS reduced-motion setting, so this is reasoned from code + build —
+  **owner should spot-check on a phone**: toggle OS "Reduce Motion" (expect the
+  finished house, no build, no camera drift) and load on a low-end/2-core device
+  or with `?no3d=1` (expect the gradient hero + copy, no black canvas). No non-3D
+  file touched; no `HeroScene.tsx` / scene change made.
+  **Pending push: `git push origin feature/3d-hero`** — see the note above; this
+  STATUS commit rides the same push.
 
 ---
 
