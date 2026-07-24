@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 // Live project board for RapidConstruct.
-// Parses docs/STATUS.md on EVERY request and renders it as a dark kanban with
-// four columns (Done / In Progress / Blocked / Next). No dependencies.
-// The page meta-refreshes every 10s, so the board always reflects the file.
+// Parses docs/STATUS.md on EVERY request and serves it as a dense dark kanban
+// (Done / In Progress / Blocked / Next). No dependencies.
+//
+// The page is rendered client-side from data embedded on first paint, then the
+// client polls /data every 10s and re-renders in place — so the live refresh
+// never reloads the page or drops your filter text / focus. Done-column collapse
+// and active chips are remembered in localStorage.
 //
 //   node tools/board-server.js         # http://localhost:4300
 //   PORT=5000 node tools/board-server.js
@@ -25,7 +29,8 @@ const COLUMNS = [
 ];
 
 // ---------------------------------------------------------------------------
-// Parsing
+// Parsing  (unchanged behaviour: three STATUS formats, struck-through done
+// items, ID badges on table rows, prose sub-blocks excluded per column)
 // ---------------------------------------------------------------------------
 
 function escapeHtml(s) {
@@ -189,92 +194,247 @@ function parseStatus(md) {
 }
 
 // ---------------------------------------------------------------------------
-// Rendering
+// ID badges — extract Q-04 / RC-403 / B2 style ids and their prefixes so the
+// client can offer quick-filter chips and match them in search.
 // ---------------------------------------------------------------------------
 
-function renderCard(card, color) {
-  const body = card.body ? `<p class="body">${card.body}</p>` : '';
-  return (
-    `<article class="card${card.done ? ' done' : ''}" style="--c:${color}">` +
-    `<h3>${card.title}</h3>${body}</article>`
-  );
+const ID_RE = /\b(?:Q-\d{1,3}|RC-\d{1,3}|B\d{1,2})\b/g;
+const PREFIX_ORDER = ['Q-', 'RC-', 'B'];
+
+function idPrefix(id) {
+  if (id.startsWith('Q-')) return 'Q-';
+  if (id.startsWith('RC-')) return 'RC-';
+  return 'B';
 }
 
-function renderColumn(col, cards) {
-  const items = cards.map((c) => renderCard(c, col.color)).join('') ||
-    '<p class="empty">— nothing here —</p>';
-  return (
-    `<section class="col" style="--c:${col.color}">` +
-    `<header class="col-head"><span class="dot"></span>` +
-    `<span class="name">${col.title}</span>` +
-    `<span class="count">${cards.length}</span></header>` +
-    `<div class="cards">${items}</div></section>`
-  );
+function extractIds(text) {
+  return text.match(ID_RE) || [];
 }
 
-function renderPage(data, meta) {
-  const cols = COLUMNS.map((c) => renderColumn(c, data[c.key])).join('');
-  const total = COLUMNS.reduce((n, c) => n + data[c.key].length, 0);
+// Build the JSON the client renders from. Fresh each request.
+function buildData(md) {
+  const parsed = parseStatus(md);
+  const prefixSet = new Set();
+  const columns = COLUMNS.map((col) => {
+    const cards = parsed[col.key].map((c) => {
+      const ids = extractIds(c.title + ' ' + c.body);
+      const prefixes = [...new Set(ids.map(idPrefix))];
+      prefixes.forEach((p) => prefixSet.add(p));
+      return { title: c.title, body: c.body, done: c.done, prefixes };
+    });
+    return { key: col.key, title: col.title, color: col.color, cards };
+  });
+  const prefixes = [...prefixSet].sort(
+    (a, b) => (PREFIX_ORDER.indexOf(a) + 1 || 99) - (PREFIX_ORDER.indexOf(b) + 1 || 99)
+  );
+  return { columns, prefixes, refresh: REFRESH_SECONDS, stamp: new Date().toLocaleTimeString() };
+}
+
+// ---------------------------------------------------------------------------
+// Client — stringified and embedded. Written with no backticks and no ${} so it
+// drops cleanly into the server template. Never executed in Node.
+// ---------------------------------------------------------------------------
+
+function clientMain() {
+  var DATA = window.__BOARD__;
+  var state = { q: '', prefixes: new Set(), doneOpen: localStorage.getItem('board.doneOpen') === '1' };
+  try { state.prefixes = new Set(JSON.parse(localStorage.getItem('board.prefixes') || '[]')); } catch (e) {}
+
+  var boardEl = document.getElementById('board');
+  var chipsEl = document.getElementById('chips');
+  var qEl = document.getElementById('q');
+  var stampEl = document.getElementById('stamp');
+
+  function el(tag, cls) { var e = document.createElement(tag); if (cls) e.className = cls; return e; }
+  function filterActive() { return state.q !== '' || state.prefixes.size > 0; }
+
+  function matches(card) {
+    var textOk = !state.q || (card.title + ' ' + card.body).toLowerCase().indexOf(state.q) !== -1;
+    var pfxOk = state.prefixes.size === 0 || (card.prefixes || []).some(function (p) { return state.prefixes.has(p); });
+    return textOk && pfxOk;
+  }
+
+  function renderCard(c) {
+    var card = el('article', 'card' + (c.done ? ' done' : ''));
+    var h = el('h3'); h.textContent = c.title; card.appendChild(h);
+    if (c.body) { var p = el('p', 'body'); p.textContent = c.body; card.appendChild(p); }
+    return card;
+  }
+
+  function render() {
+    boardEl.textContent = '';
+    DATA.columns.forEach(function (col) {
+      var visible = col.cards.filter(matches);
+      var section = el('section', 'col');
+      section.style.setProperty('--c', col.color);
+
+      var head = el('header', 'col-head');
+      head.appendChild(el('span', 'dot'));
+      var name = el('span', 'name'); name.textContent = col.title; head.appendChild(name);
+      var count = el('span', 'count'); count.textContent = visible.length; head.appendChild(count);
+      section.appendChild(head);
+
+      var wrap = el('div', 'cards');
+      var isDone = col.key === 'done';
+      var collapsed = isDone && !state.doneOpen && !filterActive();
+      var list = collapsed ? visible.slice(-3) : visible; // three most recent
+      list.forEach(function (c) { wrap.appendChild(renderCard(c)); });
+
+      if (isDone && !filterActive() && col.cards.length > 3) {
+        var btn = el('button', 'toggle');
+        btn.textContent = collapsed ? 'Show all ' + visible.length : 'Show fewer';
+        btn.onclick = function () {
+          state.doneOpen = !state.doneOpen;
+          localStorage.setItem('board.doneOpen', state.doneOpen ? '1' : '0');
+          render();
+        };
+        wrap.appendChild(btn);
+      }
+      if (list.length === 0) { var e = el('p', 'empty'); e.textContent = '— nothing —'; wrap.appendChild(e); }
+
+      section.appendChild(wrap);
+      boardEl.appendChild(section);
+    });
+  }
+
+  function renderChips() {
+    chipsEl.textContent = '';
+    DATA.prefixes.forEach(function (p) {
+      var chip = el('button', 'chip' + (state.prefixes.has(p) ? ' on' : ''));
+      chip.textContent = p;
+      chip.onclick = function () {
+        if (state.prefixes.has(p)) state.prefixes.delete(p); else state.prefixes.add(p);
+        localStorage.setItem('board.prefixes', JSON.stringify([].concat(Array.from(state.prefixes))));
+        renderChips(); render();
+      };
+      chipsEl.appendChild(chip);
+    });
+  }
+
+  qEl.addEventListener('input', function () { state.q = qEl.value.trim().toLowerCase(); render(); });
+
+  stampEl.textContent = 'read ' + DATA.stamp;
+  renderChips();
+  render();
+
+  // Live refresh with no page reload: keeps the search text, focus and chips.
+  setInterval(function () {
+    fetch('/data', { cache: 'no-store' }).then(function (r) {
+      return r.ok ? r.json() : null;
+    }).then(function (fresh) {
+      if (!fresh) return;
+      DATA.columns = fresh.columns;
+      DATA.prefixes = fresh.prefixes;
+      DATA.stamp = fresh.stamp;
+      stampEl.textContent = 'read ' + fresh.stamp;
+      // Drop any active chip whose prefix no longer exists in the file.
+      Array.from(state.prefixes).forEach(function (p) {
+        if (fresh.prefixes.indexOf(p) === -1) state.prefixes.delete(p);
+      });
+      renderChips();
+      render();
+    }).catch(function () {});
+  }, (DATA.refresh || 10) * 1000);
+}
+
+// ---------------------------------------------------------------------------
+// Page shell
+// ---------------------------------------------------------------------------
+
+const STYLES = `
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: #0d1117; color: #e6edf3; overflow: hidden;
+    display: flex; flex-direction: column;
+    font: 13px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  header.top {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex: 0 0 auto;
+    padding: 8px 14px; border-bottom: 1px solid #1f2630; background: #0f141b;
+  }
+  .brand { font-size: 13px; font-weight: 650; letter-spacing: .2px; }
+  .brand .sub { color: #6e7681; font-size: 11px; font-weight: 400; margin-left: 6px; }
+  .tools { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+  #q {
+    background: #161b22; border: 1px solid #21262d; border-radius: 6px; color: #e6edf3;
+    font-size: 12px; padding: 5px 9px; width: 210px; outline: none;
+  }
+  #q:focus { border-color: #58a6ff; }
+  .chips { display: flex; gap: 5px; flex-wrap: wrap; }
+  .chip {
+    background: #161b22; border: 1px solid #21262d; color: #9aa4af; border-radius: 999px;
+    font: 600 11px/1 inherit; letter-spacing: .04em; padding: 4px 10px; cursor: pointer;
+  }
+  .chip:hover { border-color: #3d444d; color: #c9d1d9; }
+  .chip.on { background: rgba(31,111,235,.18); border-color: #1f6feb; color: #79c0ff; }
+  .board {
+    flex: 1 1 auto; min-height: 0; display: flex; gap: 10px;
+    padding: 10px 14px; overflow-x: auto;
+  }
+  .col {
+    flex: 1 1 0; min-width: 220px; min-height: 0; display: flex; flex-direction: column;
+    background: #0f141b; border: 1px solid #1f2630; border-radius: 10px; overflow: hidden;
+  }
+  .col-head {
+    display: flex; align-items: center; gap: 7px; flex: 0 0 auto; padding: 8px 10px;
+    border-bottom: 1px solid #1f2630;
+    background: color-mix(in srgb, var(--c) 13%, #0f141b);
+    text-transform: uppercase; font-size: 11px; letter-spacing: .09em;
+  }
+  .col-head .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c); box-shadow: 0 0 7px var(--c); flex: 0 0 auto; }
+  .col-head .name { font-weight: 700; }
+  .col-head .count {
+    margin-left: auto; min-width: 20px; text-align: center; padding: 0 7px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; color: var(--c);
+    background: color-mix(in srgb, var(--c) 18%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
+  }
+  .cards {
+    flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 8px;
+    display: flex; flex-direction: column; gap: 7px;
+  }
+  .card {
+    background: #161b22; border: 1px solid #21262d; border-left: 3px solid var(--c);
+    border-radius: 7px; padding: 7px 9px;
+  }
+  .card h3 { margin: 0; font-size: 12.5px; font-weight: 620; line-height: 1.3; }
+  .card .body { margin: 4px 0 0; color: #8b949e; font-size: 11.5px; line-height: 1.4; }
+  .card.done { opacity: .5; }
+  .card.done h3 { color: #8b949e; font-weight: 550; }
+  .toggle {
+    margin-top: 2px; background: transparent; border: 1px dashed #30363d; color: #7d8590;
+    border-radius: 6px; font-size: 11px; padding: 5px; cursor: pointer;
+  }
+  .toggle:hover { color: #adbac7; border-color: #484f58; }
+  .empty { color: #57606a; font-size: 11px; font-style: italic; margin: 4px; }
+  .cards::-webkit-scrollbar { width: 8px; }
+  .cards::-webkit-scrollbar-thumb { background: #21262d; border-radius: 4px; }
+  .cards::-webkit-scrollbar-thumb:hover { background: #30363d; }
+`;
+
+function renderPage(data) {
+  const dataJson = JSON.stringify(data).replace(/</g, '\\u003c');
   return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="refresh" content="${REFRESH_SECONDS}">
 <title>RapidConstruct — Live Board</title>
-<style>
-  :root { color-scheme: dark; }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: #0d1117; color: #e6edf3;
-    font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  }
-  header.top {
-    display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
-    padding: 20px 24px 8px;
-  }
-  header.top h1 { margin: 0; font-size: 18px; font-weight: 650; letter-spacing: .2px; }
-  header.top .sub { color: #7d8590; font-size: 12px; }
-  .board {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
-    padding: 12px 24px 32px; align-items: start;
-  }
-  @media (max-width: 900px) { .board { grid-template-columns: 1fr 1fr; } }
-  @media (max-width: 560px) { .board { grid-template-columns: 1fr; } }
-  .col { background: #0f141b; border: 1px solid #1f2630; border-radius: 12px; overflow: hidden; }
-  .col-head {
-    display: flex; align-items: center; gap: 8px;
-    padding: 12px 14px; border-bottom: 1px solid #1f2630;
-    background: color-mix(in srgb, var(--c) 12%, transparent);
-  }
-  .col-head .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--c); box-shadow: 0 0 8px var(--c); }
-  .col-head .name { font-weight: 650; font-size: 13px; letter-spacing: .3px; }
-  .col-head .count {
-    margin-left: auto; min-width: 24px; text-align: center;
-    padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 650;
-    color: var(--c); background: color-mix(in srgb, var(--c) 18%, transparent);
-    border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
-  }
-  .cards { padding: 10px; display: flex; flex-direction: column; gap: 10px; }
-  .card {
-    background: #161b22; border: 1px solid #21262d; border-left: 3px solid var(--c);
-    border-radius: 8px; padding: 10px 12px;
-  }
-  .card h3 { margin: 0; font-size: 13px; font-weight: 620; line-height: 1.35; }
-  .card .body { margin: 6px 0 0; color: #9aa4af; font-size: 12px; }
-  .card.done h3 { color: #8b949e; }
-  .card.done { opacity: .62; }
-  .empty { color: #57606a; font-size: 12px; padding: 10px 12px; margin: 0; font-style: italic; }
-  footer { color: #57606a; font-size: 11px; padding: 0 24px 24px; }
-</style>
+<style>${STYLES}</style>
 </head>
 <body>
   <header class="top">
-    <h1>RapidConstruct — Live Board</h1>
-    <span class="sub">${total} items · re-read from docs/STATUS.md on every load · auto-refresh ${REFRESH_SECONDS}s · ${meta}</span>
+    <div class="brand">RapidConstruct — Live Board <span id="stamp" class="sub"></span></div>
+    <div class="tools">
+      <input id="q" type="search" placeholder="Filter cards…" autocomplete="off" spellcheck="false">
+      <div id="chips" class="chips"></div>
+    </div>
   </header>
-  <main class="board">${cols}</main>
-  <footer>Source: docs/STATUS.md — where it disagrees with anything else, STATUS wins.</footer>
+  <main id="board" class="board"></main>
+  <script>window.__BOARD__ = ${dataJson};</script>
+  <script>(${clientMain.toString()})();</script>
 </body>
 </html>`;
 }
@@ -283,13 +443,13 @@ function renderError(message) {
   return `<!doctype html><html><head><meta charset="utf-8">
 <meta http-equiv="refresh" content="${REFRESH_SECONDS}">
 <title>Board — error</title>
-<style>body{background:#0d1117;color:#f85149;font:14px -apple-system,sans-serif;padding:40px}</style>
+<style>body{background:#0d1117;color:#f85149;font:13px -apple-system,sans-serif;padding:40px}</style>
 </head><body><h1>Cannot read the board</h1><pre>${escapeHtml(message)}</pre>
 <p style="color:#7d8590">Expected file: ${escapeHtml(STATUS_FILE)}</p></body></html>`;
 }
 
 // ---------------------------------------------------------------------------
-// Server
+// Server — re-reads docs/STATUS.md on every request (page and /data alike)
 // ---------------------------------------------------------------------------
 
 const server = http.createServer((req, res) => {
@@ -298,18 +458,23 @@ const server = http.createServer((req, res) => {
     res.end();
     return;
   }
-  let body;
+  let md;
   try {
-    const md = fs.readFileSync(STATUS_FILE, 'utf8'); // fresh read every request
-    const data = parseStatus(md);
-    const stamp = new Date().toLocaleTimeString();
-    body = renderPage(data, `read ${stamp}`);
-    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+    md = fs.readFileSync(STATUS_FILE, 'utf8'); // fresh read every request
   } catch (err) {
-    body = renderError(err.message);
     res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(renderError(err.message));
+    return;
   }
-  res.end(body);
+
+  if (req.url === '/data' || req.url.startsWith('/data?')) {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+    res.end(JSON.stringify(buildData(md)));
+    return;
+  }
+
+  res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+  res.end(renderPage(buildData(md)));
 });
 
 server.listen(PORT, () => {
