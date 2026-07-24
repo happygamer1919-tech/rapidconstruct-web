@@ -68,6 +68,22 @@ dependency on the 3D work).
 
 Shipped and verified. PR numbers in brackets.
 
+- **three.js dedupe (RC-113) + shadow-emitter location (RC-114)** (2026-07-24,
+  `rc/RC-113-three-dedupe`, off `main`). Investigation-first, non-blocking, **no
+  3D behavior changed**. Diagnosis: the tree carried two `three` copies —
+  `three@0.185.1` (direct, r185) and `three@0.170.0` (r170) nested under
+  `stats-gl@2.4.2`, a `@react-three/drei` dep whose `three@^0.170.0` caret (a
+  `0.x` caret = `>=0.170.0 <0.171.0`) r185 can't satisfy. **Dedupe APPLIED** —
+  `overrides: { "three": "$three" }` collapses the tree to one `three@0.185.1`
+  (nested copy gone from `package-lock.json` + `node_modules`); `npm run build`
+  exits 0; all **106 Playwright tests pass**. The dup lives on `main` itself (all
+  4 packages declared there), not only under a 3D lane, so it was safe to fix
+  here. **RC-114:** `PCFSoftShadowMap` is emitted in `applyRenderer` at
+  `src/scenes/rapidconstruct-scene.js:659` on `feature/3d-hero` and `:250` on
+  `feature/configurator` (`r.shadowMap.type = THREE.PCFSoftShadowMap;`); **not on
+  `main`**. Located only — shadow type UNCHANGED. Prior STATUS line ref `487–494`
+  was stale; anchor on the `applyRenderer` name / `shadowMap.type` grep, not the
+  line number. Full findings: `docs/RC-113-three-dedupe.md`.
 - **Foundation** — Next.js 16 App Router + TS + Tailwind scaffold [#2]; Vercel
   wiring and staging URL [#3]; design tokens, RO/RU routing, layout shell, CI [#6].
 - **SEO plumbing** — metadata helper, LocalBusiness JSON-LD, sitemap, robots,
