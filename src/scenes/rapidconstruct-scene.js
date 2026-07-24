@@ -187,13 +187,20 @@ export function buildScene(THREE, scene, renderer) {
   const grT = T(grc, 30, 30);
 
   /* ------------------------------------------------------------- sky/fog -- */
+  // LANE A step 3 — depth + sky. Cooler, deeper blue at the zenith falling to
+  // a warm golden band at the horizon (late-afternoon read), and denser,
+  // warm-tinted fog. Density is tuned to the settled camera: the house
+  // (~35 m) stays crisp, mid-ground trees (70–300 m) haze progressively, the
+  // horizon hills melt into the sky's warm band — that separation is what
+  // makes the flat lawn read as distance instead of a green wall.
+  // was: stops 7fa8d2/.38 b0c8e0/.72 dce1e3/1 e2dbcd · FogExp2 cbcdc9 .0066
   const kc = cv(4, 256), kx = kc.getContext('2d');
   const sg = kx.createLinearGradient(0, 0, 0, 256);
-  sg.addColorStop(0, '#7fa8d2'); sg.addColorStop(.38, '#b0c8e0');
-  sg.addColorStop(.72, '#dce1e3'); sg.addColorStop(1, '#e2dbcd');
+  sg.addColorStop(0, '#6d9bc8'); sg.addColorStop(.38, '#a9c4de');
+  sg.addColorStop(.72, '#e0e0d6'); sg.addColorStop(1, '#eddcba');
   kx.fillStyle = sg; kx.fillRect(0, 0, 4, 256);
   scene.background = new THREE.CanvasTexture(kc);
-  scene.fog = new THREE.FogExp2(0xcbcdc9, .0066);
+  scene.fog = new THREE.FogExp2(0xd6cfba, .0095);
 
   /* -------------------------------------------------------------- lights -- */
   scene.add(new THREE.HemisphereLight(0xafc6de, 0x7a6e52, .52));
