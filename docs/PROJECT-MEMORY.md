@@ -1,8 +1,12 @@
 # PROJECT MEMORY — RapidConstruct website
 
-Permanent memory for this project. Written 2026-07-23, verified against the repo
-(git log, working tree, live HTTP checks, Vercel API) rather than recalled.
-A fresh session should be able to read this alone and pick up cold.
+Permanent memory for this project. Written 2026-07-23, **re-verified 2026-07-24**
+against the repo (git log, working tree, live HTTP checks, Vercel API) rather than
+recalled. A fresh session should be able to read this alone and pick up cold.
+
+Where this file and `docs/STATUS.md` disagree, **STATUS wins** — it is updated
+more often. Current state is stated plainly; superseded facts are kept as dated
+history rather than deleted, so the reasoning survives.
 
 Companion docs: `docs/STATUS.md` (living board — what to do next),
 `AGENTS.md` (rules), `docs/BACKLOG.md` (tickets), `docs/QUESTIONS.md` (blockers),
@@ -117,11 +121,24 @@ moved to the very top with text sliding over it (#37).
 - Same day: the owner sent drone photography of houses his company actually
   builds. This invalidated a week of modelling — see §4.
 
-### 2026-07-23 — the procedural rebuild (3 commits, current branch)
+### 2026-07-23 — the procedural rebuild (`feature/3d-hero`)
 - `df53e9d` use `HeroBuild3D` as the homepage intro.
 - `3e1009b` real hip roofs instead of pyramids.
-- `e6766b5` **rebuild `HeroBuild3D` from the full `3D-HERO-SPEC`** — 1,337 lines,
-  the current state of the art for the hero.
+- `e6766b5` rebuild `HeroBuild3D` from the full `3D-HERO-SPEC` — 1,337 lines.
+- **Later the same day, superseded:** the owner's approved scene was ported
+  verbatim as `src/scenes/rapidconstruct-scene.js` (485 lines, md5
+  `68a4fb72172b7695a0f067ec261f7c25`), mounted by `src/components/HeroScene.tsx`
+  (375 lines). `HouseBuild.tsx` imports **`HeroScene`** — so `HeroBuild3D.tsx` is
+  no longer wired to anything and is dead code pending deletion.
+- Then a framing/reveal/legibility pass: full-bleed edge-to-edge build, copy
+  revealed only after settle on a local blurred panel, hero text contrast
+  1.53:1 → **4.61:1** (all AA), constant horizontal fov for portrait.
+
+### 2026-07-23 → 07-24 — documentation and state repair (`main`)
+- `docs/PROJECT-MEMORY.md` + `docs/STATUS.md` written as the source of truth.
+- The indexing near-miss detected and reverted (§9.2).
+- `1cc24d0` resolved a STATUS.md merge conflict that had been left in the working
+  tree with literal markers; `702e3c8` added `CLAUDE.md` as a pointer file.
 
 ---
 
@@ -162,10 +179,15 @@ behind a loader.
 **success is still reported to the customer** so no message is lost. Telegram is
 planned at the same seam (Q-03).
 
-**Key components by size:** `HeroBuild3D.tsx` (1,337), `RoofCalculator.tsx`
-(605), `HouseBuildScene.tsx` (592), `RoofCutawayScene.tsx` (335),
-`CityPage.tsx` (314). The 3D scene files are heavily commented with the reasoning
+**Key components by size:** `RoofCalculator.tsx` (605), `HouseBuildScene.tsx`
+(592), `HeroScene.tsx` (375, `feature/3d-hero`), `RoofCutawayScene.tsx` (335),
+`CityPage.tsx` (314), plus `src/scenes/rapidconstruct-scene.js` (485,
+`feature/3d-hero`). The 3D scene files are heavily commented with the reasoning
 behind every magic number — read the comments before changing values.
+
+⚠️ `HeroBuild3D.tsx` (1,337) also sits on `feature/3d-hero` but is **not wired to
+anything** — superseded by the scene port on 2026-07-23. Do not treat its size as
+a sign it is the hero.
 
 **CI** (`.github/workflows/ci.yml`), three jobs:
 1. `typecheck · lint · build · smoke` — Playwright, **blocking**.
@@ -302,10 +324,20 @@ Consequences, all logged in `docs/DECISIONS.md`:
 
 ### 4.5 Era 2 — procedural three.js (2026-07-23, current)
 
-The Blender GLB pipeline has effectively been **superseded**. The current hero,
-`src/components/HeroBuild3D.tsx`, is 1,337 lines of **procedural three.js** built
-to `docs/3D-HERO-SPEC.md` — parametric geometry and procedural canvas textures,
-no GLB, no Blender in the loop.
+The Blender GLB pipeline has been **superseded**. The hero is now **procedural
+three.js** — parametric geometry and procedural canvas textures, no GLB, no
+Blender in the loop.
+
+**The current hero (on `feature/3d-hero`) is
+`src/scenes/rapidconstruct-scene.js`** — 485 lines, a byte-identical port of the
+scene the owner approved (md5 `68a4fb72172b7695a0f067ec261f7c25`), mounted by
+`src/components/HeroScene.tsx` (375 lines). `HouseBuild.tsx` imports `HeroScene`.
+
+*History, 2026-07-23:* the first procedural attempt was
+`src/components/HeroBuild3D.tsx`, 1,337 lines built from `docs/3D-HERO-SPEC.md`.
+It was replaced the same day by the approved scene port above and is now unwired
+dead code. The spec remains the reference for **why** the geometry is shaped as it
+is; the scene file is what actually ships.
 
 **The stated design position: stylized-realistic, not photoreal.** Quoting the
 spec directly: *"Photoreal realtime archviz at web weight is a losing fight — it
@@ -359,7 +391,7 @@ measurement harness cost an afternoon; the assumption cost a week.
 
 | Service | State |
 |---|---|
-| **Vercel** | Project `rapidconstruct-web`, org `sm33xys-projects`, id `prj_WIp1lNai3i0C2RzJWK3kN2rF21yd`. Deployment protection **off** (Q-08). Env vars **now set** — see below. Production deploy ran 9 h ago. |
+| **Vercel** | Project `rapidconstruct-web`, org `sm33xys-projects`, id `prj_WIp1lNai3i0C2RzJWK3kN2rF21yd`. Deployment protection **off** (Q-08). Env: `RESEND_API_KEY` only — see below. The owner review host is served by a **preview build repointed with `vercel alias set`**, because a production build cannot succeed until cutover (by design). |
 | **Resend** | `RESEND_API_KEY` **is set** in Vercel Production scope (added ~10 h before this writing). Delivery seam already wired in `src/lib/lead.ts`. Free tier sends from `onboarding@resend.dev` until the domain is verified — early leads may land in spam. |
 | **Meshy** | Used once, for a photogrammetry scan of the real house (multi-view, Private licence). Source file is `~/Downloads/Meshy_AI_Blue_Roofed_Modern_Ho_0723131932_generate.glb`, **19.4 MB**, *not* in the repo. Spec records 157 KB after Draco. **Not used for the hero** — dimensionally accurate but wobbly surfaces and scan artifacts in the yard. Kept as a **measurement reference only**. |
 | **Higgsfield** | **Evaluated 2026-07-23 in a chat session, never in the repo** — which is why the repo search finds nothing. MCP connected and read calls worked. Cost preflights were obtained: **Meshy multi-image 30 credits**, **Tripo H3.1 multiview 18 credits**. Generation was then **blocked by HTTP 403 `only_website_usage_on_trial_is_available`** — the unlimited passes expired **2026-07-22**. Separately: Higgsfield's public-site "3D" features are **image/video effects, not mesh export** — they cannot produce a model for the web. **Produced no assets.** Nothing to integrate; do not re-attempt without a paid plan and a mesh-export path. |
@@ -367,16 +399,27 @@ measurement harness cost an afternoon; the assumption cost a week.
 | **Tilda** | Still hosts the **live production site and the DNS zone** (`ns1/ns2.tildadns.com`, A → `194.48.203.138`). Owner can log in; Claude reads the admin in a shared browser pane. |
 | **GitHub** | `happygamer1919-tech/rapidconstruct-web`, `gh` authenticated as `sm33xy`. |
 
-**Vercel environment variables — verified live:**
+**Vercel environment variables — verified live (re-checked 2026-07-24):**
 
 ```
-RESEND_API_KEY         Encrypted   Production   (~10h ago)
-NEXT_PUBLIC_SITE_URL   Encrypted   Production   (~11h ago)
+RESEND_API_KEY         Encrypted   Production
 ```
 
-⚠️ **This contradicts `docs/LAUNCH-CHECKLIST.md`, Q-09 and Q-15, all of which
-still say the project has zero environment variables.** Those docs are stale as
-of 2026-07-23. The consequence is a live defect — see §9.
+🔴 **`NEXT_PUBLIC_SITE_URL` is deliberately ABSENT from Production, and must stay
+that way until the RC-403 cutover.** Its absence is load-bearing, not an oversight:
+
+- `IS_UNINDEXABLE_STAGING` keys off the variable being unset. While it is absent,
+  every non-production host serves `Disallow: /` plus a `noindex, nofollow` meta.
+  Verified live on `https://rapidconstruct-web.vercel.app`.
+- **A production build FAILS without it, by design** (`src/i18n/metadata.ts`
+  throws). That is the guard working, not a break — it exists so cutover day
+  cannot silently publish staging URLs as canonical.
+- Consequence: the owner review host is a **preview build repointed with
+  `vercel alias set`**, because its `noindex` is baked in at build time.
+
+Restoring the variable is a **cutover-day step (RC-403)** — see the cutover box
+in `docs/STATUS.md`, and the near-miss recorded in §9.2 for why this is guarded.
+`docs/LAUNCH-CHECKLIST.md` §1 and Q-15 describe the pre-cutover state correctly.
 
 **Domain facts (verified by `dig`/`whois` 2026-07-22, re-checked today):**
 `rapidconstruct.md` registered 2025-02-09, expires 2027-02-09, nameservers at
@@ -493,7 +536,7 @@ From `docs/QUESTIONS.md`, with verified corrections.
 | Q-12 | Is the 3D hero still the right call? | **GENUINELY OPEN** — see below |
 | Q-13 | Enable Sketchfab / Hyper3D / Hunyuan3D | **OPEN** — moot while Blender is out of the loop |
 | Q-14 | Portfolio project metadata | **OPEN** — ship as-is, enrich when supplied |
-| Q-15 | Canonical domain: apex or www? | **Doc says OPEN — but `NEXT_PUBLIC_SITE_URL` IS SET** and resolves to `https://rapidconstruct.md` (apex, the recommended option). Confirm with the owner and close |
+| Q-15 | Canonical domain: apex or www? | **OPEN — needs the owner's confirmation.** Apex `https://rapidconstruct.md` is the recommendation (it matches the Tilda URLs, so legacy 301s land with no extra hop). The value is **not** set in Vercel and must not be until RC-403 (§5, §9.2) — confirm the choice now, apply it on cutover day |
 | Q-16 | Privacy policy: legal entity + retention period | **OPEN** — page is accurate as written |
 | Q-17 | Pre-existing homepage a11y audits | **OPEN, not blocking** — `aria-hidden-focus` on the closed drawer; two `<dl>` stat blocks lacking `<dt>`/`<dd>` |
 
@@ -505,38 +548,59 @@ now supports asking it properly.
 
 ---
 
-## 9. Corrections to earlier documents (verified 2026-07-23)
+## 9. Corrections to earlier documents (verified 2026-07-24)
 
-`HANDOFF-2026-07-22.md` and several docs are now partly stale. Trust this file
-and `docs/STATUS.md` where they differ.
+`HANDOFF-2026-07-22.md` and several docs are partly stale. Trust this file and
+`docs/STATUS.md` where they differ; where **this file** and STATUS differ, STATUS
+wins — it is updated more often.
 
-1. **Vercel env vars exist.** `LAUNCH-CHECKLIST.md` §1, Q-09 and Q-15 all state
-   "the Vercel project has ZERO environment variables". Both `RESEND_API_KEY` and
-   `NEXT_PUBLIC_SITE_URL` are set in Production scope.
+1. **Vercel env: `RESEND_API_KEY` only.** `LAUNCH-CHECKLIST.md` §1 and Q-09 say
+   the project has zero environment variables — that is stale, the Resend key is
+   set. `NEXT_PUBLIC_SITE_URL` is deliberately absent and must stay absent until
+   RC-403 (§5).
 
-2. **🔴 A live indexing defect, caused by that.** The `IS_UNINDEXABLE_STAGING`
-   safeguard keys off `NEXT_PUBLIC_SITE_URL` being *unset*. Now that it is set,
-   the safeguard no longer fires. Verified live on
-   `https://rapidconstruct-web.vercel.app`:
-   - `robots.txt` returns `Allow: /` with `Host:` and `Sitemap:` pointing at
-     `https://rapidconstruct.md`
-   - no `noindex` meta on `/`; canonical is `https://rapidconstruct.md`
-   - `sitemap.xml` advertises **30 URLs**, all on `rapidconstruct.md`
+2. **📋 NEAR-MISS, 2026-07-23 — resolved the same day. Recorded so it is not
+   repeated.**
 
-   But `rapidconstruct.md` **still serves Tilda** (`x-tilda-server: 22`). Spot
-   checks: `/portofoliu` → 200 (coincidence — Tilda has that page),
-   `/acoperisuri` → **404**, `/ru/kryshi` → **404**,
-   `/politica-de-confidentialitate` → **404**.
+   **What happened.** `NEXT_PUBLIC_SITE_URL` was added to Vercel Production and a
+   production deploy was run. `IS_UNINDEXABLE_STAGING` keys off that variable
+   being *unset*, so setting it silently disabled the safeguard across every
+   non-production host.
 
-   So the staging host is currently crawlable *and* publishing a sitemap of 30
-   URLs where most 404 on the domain they point at. This is the mirror image of
-   the risk `docs/DECISIONS.md` set out to prevent. **See `docs/STATUS.md` for the
-   fix options.**
+   **The exposure, measured live at the time:** `robots.txt` flipped to `Allow: /`
+   with `Host:`/`Sitemap:` pointing at `https://rapidconstruct.md`; the `noindex`
+   meta disappeared; `sitemap.xml` advertised **30 URLs** on a domain that still
+   serves Tilda (`x-tilda-server: 22`). Most of those URLs 404 there —
+   `/acoperisuri`, `/ru/kryshi`, `/politica-de-confidentialitate` all 404, while
+   `/portofoliu` returned 200 only because Tilda happens to have that page. A
+   crawlable staging host was publishing a sitemap of mostly-dead URLs: the exact
+   mirror image of the risk `docs/DECISIONS.md` was written to prevent.
 
-3. **A Production deployment has run** (9 h ago). `AGENTS.md` reserves
-   `vercel deploy --prod` for the RC-403 cutover. It is harmless while DNS points
-   at Tilda — the vercel.app host simply serves production output — but it is the
-   mechanism that activated defect #2, and it contradicts the written rule.
+   **Root cause.** The safeguard's trigger is the *absence* of a variable, so
+   setting that variable for an unrelated reason disabled it silently. Nothing
+   failed loudly, because a passing production build is the normal outcome.
+
+   **What caught it.** A live HTTP re-check of `robots.txt` and the `noindex` meta
+   during a state audit — not CI, and not the build. CI cannot see this: the
+   blocking Lighthouse job measures `?no3d=1` on a preview, where the safeguard
+   was still engaged.
+
+   **Fix applied the same day.** The variable was removed from Production, which
+   re-engaged the safeguard, and the owner review host was repointed to a
+   **preview build** via `vercel alias set` so its `noindex` is baked in at build
+   time. Verified after the fix, and again 2026-07-24: `Disallow: /` plus
+   `noindex, nofollow` on the staging host.
+
+   **Standing lesson.** Do not set `NEXT_PUBLIC_SITE_URL` before cutover, and
+   treat any absence-triggered safeguard as fragile — after touching Vercel env or
+   running a production deploy, re-check `robots.txt` and the `noindex` meta on
+   the live host rather than trusting the build.
+
+3. **A Production deployment was run on 2026-07-23**, contrary to `AGENTS.md`,
+   which reserves `vercel deploy --prod` for the RC-403 cutover. It was the
+   mechanism that activated the near-miss above. It is now impossible to repeat by
+   accident: with `NEXT_PUBLIC_SITE_URL` absent, a production build **fails by
+   design**, so `--prod` cannot succeed until cutover.
 
 4. **`docs/blender-tasks-done/` holds 4 entries, not 23** as the handoff states
    (3 research task files + a `surface-research` folder). The other archived tasks
@@ -567,8 +631,8 @@ questions. Then:
 - **The site is nearly launch-ready and is blocked on owner answers, not
   engineering.** Q-07 (are the numbers true) and Q-04 (registrar login) are the
   real blockers; Q-10 gates two calculator entries.
-- **Fix the indexing defect first** (§9.2). It is live, it is cheap, and it gets
-  worse the longer it is crawlable.
+- **The indexing near-miss of 2026-07-23 is fixed** (§9.2) — re-verified
+  2026-07-24. Nothing to do; just never set `NEXT_PUBLIC_SITE_URL` before cutover.
 - **Do not restart Blender work** without a decision on Q-12. The current hero is
   procedural three.js and the Blender pipeline is dormant. If it is resumed, read
   `BLENDER-NOTES.md` and the skill file first — nearly every obvious idea in that
