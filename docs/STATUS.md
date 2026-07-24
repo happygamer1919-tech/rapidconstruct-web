@@ -94,6 +94,18 @@ Shipped and verified. PR numbers in brackets.
   mounts it. Build animation, phase captions, reduced-motion and low-end
   fallbacks all verified on the live deployment. Replaces the older
   `HeroBuild3D.tsx`, which is now unused.
+- **3D hero — LANE A polish: frames + quoins** (2026-07-24, `feature/3d-hero`).
+  Owner feedback on the review build: window frames "read too thin", corner
+  quoins "read too pale". In `src/scenes/rapidconstruct-scene.js`: window-frame
+  bars thickened (`winZ`/`winX`) — face `.09 → .13`, depth `.15 → .19` (half-bar
+  offset `.045 → .065`, top/bottom span widened to keep the corners closed);
+  still a RING of four bars, inner edges unchanged so the glass is never covered.
+  Quoins now tint stone with a new `QUOIN` constant (`0xbcae98`, warmer + ~9%
+  darker than the shared `STN 0xc6bfb1`) so the corners read against the white
+  stucco; `STN` is untouched for the wall bases and columns that also use it.
+  `npm run build` exits 0 in the worktree. Note: the scene is no longer
+  byte-identical to the ported source above — this is a deliberate owner-driven
+  polish pass on top of it. Awaiting the owner's visual verdict; iterate if needed.
 
 ---
 

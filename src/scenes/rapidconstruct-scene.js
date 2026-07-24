@@ -21,6 +21,11 @@ export function buildScene(THREE, scene, renderer) {
   const B = THREE.BoxGeometry;
   const BRAND = 0xE08039, BLUE = 0x1f4fd6;
   const WHT = 0xf1eee6, STN = 0xc6bfb1, FRM = 0x14181c, GLS = 0x2f4856;
+  // Quoin-only stone tint — warmer + slightly darker than STN so the corner
+  // blocks read against the white stucco. STN is still used by wall bases and
+  // columns, so this is a separate constant rather than a change to STN.
+  // was tint STN 0xc6bfb1 (too pale), now 0xbcae98 (owner: quoins too pale, 2026-07)
+  const QUOIN = 0xbcae98;
 
   /* ---------------------------------------------------------- textures ---- */
   const cv = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
@@ -261,7 +266,7 @@ export function buildScene(THREE, scene, renderer) {
     const n = Math.max(6, Math.round(h / .44)), bh = h / n;
     for (let i = 0; i < n; i++) {
       const wide = (i % 2 === 0), w = wide ? .6 : .38, d = wide ? .38 : .6;
-      add(new B(w, bh * .9, d), 0xffffff, { x: cx, y: baseY + bh * (i + .5), z: cz, fy: -4, s: st + i * .014, d: .24, map: stoneQT, r: .86, tint: STN });
+      add(new B(w, bh * .9, d), 0xffffff, { x: cx, y: baseY + bh * (i + .5), z: cz, fy: -4, s: st + i * .014, d: .24, map: stoneQT, r: .86, tint: QUOIN });
     }
   }
   function eave(cx, cy, cz, hx, hz, st, dd) {
@@ -291,21 +296,28 @@ export function buildScene(THREE, scene, renderer) {
   function winZ(wx, wy, wz, w, h, st, mull) {
     const gz = wz - .1, fz2 = wz - .02;
     add(new B(w, h, .05), GLS, { x: wx, y: wy, z: gz, fz: 1.6, s: st, d: .22, r: .04, m: .95 });
-    add(new B(w+.17, .09, .15), FRM, { x: wx, y: wy+h/2+.045, z: fz2, fz: 1.6, s: st+.02, d: .2, r: .32, m: .5 });
-    add(new B(w+.17, .09, .15), FRM, { x: wx, y: wy-h/2-.045, z: fz2, fz: 1.6, s: st+.02, d: .2, r: .32, m: .5 });
-    add(new B(.09, h, .15), FRM, { x: wx-w/2-.045, y: wy, z: fz2, fz: 1.6, s: st+.02, d: .2, r: .32, m: .5 });
-    add(new B(.09, h, .15), FRM, { x: wx+w/2+.045, y: wy, z: fz2, fz: 1.6, s: st+.02, d: .2, r: .32, m: .5 });
-    if (mull) add(new B(.06, h, .13), FRM, { x: wx, y: wy, z: fz2-.01, fz: 1.6, s: st+.03, d: .2, r: .32, m: .5 });
+    // Frame bars thickened: face .09->.13, depth .15->.19, offset .045->.065 (=bar/2),
+    // top/bottom span w+.17->w+.26 (=w+2*bar) to keep the corners closed. Bars still
+    // sit OUTSIDE the glass rect — inner edge stays on the glass edge, never over it.
+    // (owner: frames too thin, 2026-07)
+    add(new B(w+.26, .13, .19), FRM, { x: wx, y: wy+h/2+.065, z: fz2, fz: 1.6, s: st+.02, d: .2, r: .32, m: .5 });
+    add(new B(w+.26, .13, .19), FRM, { x: wx, y: wy-h/2-.065, z: fz2, fz: 1.6, s: st+.02, d: .2, r: .32, m: .5 });
+    add(new B(.13, h, .19), FRM, { x: wx-w/2-.065, y: wy, z: fz2, fz: 1.6, s: st+.02, d: .2, r: .32, m: .5 });
+    add(new B(.13, h, .19), FRM, { x: wx+w/2+.065, y: wy, z: fz2, fz: 1.6, s: st+.02, d: .2, r: .32, m: .5 });
+    if (mull) add(new B(.085, h, .17), FRM, { x: wx, y: wy, z: fz2-.01, fz: 1.6, s: st+.03, d: .2, r: .32, m: .5 });
     add(new B(w+.38, .1, .28), 0xe6e2da, { x: wx, y: wy-h/2-.14, z: wz-.02, fz: 1.6, s: st+.04, d: .2, r: .9 });
   }
   function winX(wx, wy, wz, d, h, st, mull) {
     const s = (wx > 0) ? 1 : -1, gx2 = wx - s*.1, fxb = wx - s*.02;
     add(new B(.05, h, d), GLS, { x: gx2, y: wy, z: wz, fx: 1.6*s, s: st, d: .22, r: .04, m: .95 });
-    add(new B(.15, .09, d+.17), FRM, { x: fxb, y: wy+h/2+.045, z: wz, fx: 1.6*s, s: st+.02, d: .2, r: .32, m: .5 });
-    add(new B(.15, .09, d+.17), FRM, { x: fxb, y: wy-h/2-.045, z: wz, fx: 1.6*s, s: st+.02, d: .2, r: .32, m: .5 });
-    add(new B(.15, h, .09), FRM, { x: fxb, y: wy, z: wz-d/2-.045, fx: 1.6*s, s: st+.02, d: .2, r: .32, m: .5 });
-    add(new B(.15, h, .09), FRM, { x: fxb, y: wy, z: wz+d/2+.045, fx: 1.6*s, s: st+.02, d: .2, r: .32, m: .5 });
-    if (mull) add(new B(.13, h, .06), FRM, { x: fxb-s*.01, y: wy, z: wz, fx: 1.6*s, s: st+.03, d: .2, r: .32, m: .5 });
+    // Frame bars thickened to match winZ: face .09->.13, depth .15->.19, offset
+    // .045->.065 (=bar/2), top/bottom z-span d+.17->d+.26 to keep corners closed.
+    // Bars still frame the glass rect, never overlap its face. (owner: frames too thin, 2026-07)
+    add(new B(.19, .13, d+.26), FRM, { x: fxb, y: wy+h/2+.065, z: wz, fx: 1.6*s, s: st+.02, d: .2, r: .32, m: .5 });
+    add(new B(.19, .13, d+.26), FRM, { x: fxb, y: wy-h/2-.065, z: wz, fx: 1.6*s, s: st+.02, d: .2, r: .32, m: .5 });
+    add(new B(.19, h, .13), FRM, { x: fxb, y: wy, z: wz-d/2-.065, fx: 1.6*s, s: st+.02, d: .2, r: .32, m: .5 });
+    add(new B(.19, h, .13), FRM, { x: fxb, y: wy, z: wz+d/2+.065, fx: 1.6*s, s: st+.02, d: .2, r: .32, m: .5 });
+    if (mull) add(new B(.17, h, .085), FRM, { x: fxb-s*.01, y: wy, z: wz, fx: 1.6*s, s: st+.03, d: .2, r: .32, m: .5 });
     add(new B(.28, .1, d+.38), 0xe6e2da, { x: wx-s*.02, y: wy-h/2-.14, z: wz, fx: 1.6*s, s: st+.04, d: .2, r: .9 });
   }
   function dormer(cx, roofBase, roofCz, hz, h, f, st) {
