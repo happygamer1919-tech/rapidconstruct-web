@@ -217,6 +217,7 @@ Shipped and verified. PR numbers in brackets.
 >   --body "Completes the RC-402 items that do NOT depend on the canonical host: route liveness re-run (RO+RU, no 301->404), offline structured-data validation (Rich-Results-equivalent), OG completeness. docs/LAUNCH-CHECKLIST.md updated; the canonical-host re-verify is explicitly DEFERRED to Q-15/RC-403 (owner). Claim numbers left to Q-07 (flagged, not changed). No 3D, no DNS. Verified: npm run build exits 0."
 > ```
 | **RC-402 pre-launch audit** | `docs/LAUNCH-CHECKLIST.md`, `rc/RC-402-audit-finish` (**local — push/PR pending, see note below**) | **Non-host items DONE (2026-07-24, LANE B).** Verified on the 30-URL route set (15×2): route liveness (RO+RU all 200-shape, single H1, **no 301→404** — 24 redirect targets resolve, `PENDING_PAGES` empty), offline structured-data validation (all JSON-LD valid; LocalBusiness/Service/FAQPage/ItemList required props present; `aggregateRating` correctly absent per Q-07), and OG completeness (all 6 og tags + `og:image` route on every page). `npm run build` exits 0. **Remaining item (a) — canonical-host re-verify — DEFERRED to Q-15 → RC-403** (host unchosen/unset until cutover). Online Rich Results + OG debugger left as an owner cutover step. Q-07/Q-10 flagged, not changed. See checklist "Verified state as of 2026-07-24". |
+| **RC-402 pre-launch audit** | `docs/LAUNCH-CHECKLIST.md` | Route audit done. **Sitemap count reconciled 2026-07-24: 30 `<loc>` on `main` (15 routes × 2), checklist updated from the stale 28 and made merge-aware (→ 32 after `feature/configurator`).** All checked routes return 200, canonical + hreflang + JSON-LD + single H1 + og:image present on every page. Remaining: re-verify after the canonical host is settled, and Rich Results / OG debugger passes. |
 
 ---
 
@@ -269,8 +270,16 @@ In order. Items 1–3 need no owner input.
    needed. Standalone script, no dependency on the 3D work.
 4. **Owner reviews the new 3D hero** at the review URL. On sign-off: delete the
    unused `HeroBuild3D.tsx` and decide whether the hero merges to `main`.
-5. **Reconcile the sitemap count** — the launch checklist expects 28 URLs, the
-   sitemap emits 30. Confirm which is right before cutover.
+5. ~~**Reconcile the sitemap count**~~ — **done 2026-07-24** (`rc/RC-402-sitemap-merge`,
+   off `main`). Re-verified on `main`: the sitemap emits **30** `<loc>` (15 routes
+   × 2 locales; `/styleguide` correctly `noindex` + excluded), and the checklist's
+   "28" was one route stale (the privacy-policy pair from PR #50 was never counted).
+   Checklist §2 updated to 30 and made **merge-aware**: after
+   `feature/configurator` merges the target is **32** (+`/configurator`,
+   +`/ru/konfigurator`). A self-check note with both counts now sits at the top of
+   `src/app/sitemap.ts`. `npm run build` exits 0. No code logic, host or canonical
+   changed. (Supersedes the earlier unmerged `rc/RC-402-sitemap-reconcile`, which
+   reached the same 30 but was not merge-aware.)
 6. **Close the questions the repo has already answered:** Q-06 and Q-11 (drone
    photos landed), Q-09 (Resend key is set — verify with one real form submit
    end-to-end, then close). **Q-15 needs the owner's decision, not just
