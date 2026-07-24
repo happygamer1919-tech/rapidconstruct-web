@@ -237,8 +237,16 @@ function buildData(md) {
 
 function clientMain() {
   var DATA = window.__BOARD__;
-  var state = { q: '', prefixes: new Set(), doneOpen: localStorage.getItem('board.doneOpen') === '1' };
+  var PREVIEW_MIN = 12;   // only columns longer than this offer the fold affordance
+  var PREVIEW_COUNT = 3;  // how many cards a folded column shows
+  // Two independent per-column states, both keyed by column key and persisted:
+  //   collapsed[key] — whole column body hidden (header toggle + chevron)
+  //   folded[key]    — opt-in: fold a very long (>PREVIEW_MIN) open column to a preview
+  var state = { q: '', prefixes: new Set(), collapsed: {}, folded: {} };
   try { state.prefixes = new Set(JSON.parse(localStorage.getItem('board.prefixes') || '[]')); } catch (e) {}
+  try { state.collapsed = JSON.parse(localStorage.getItem('board.collapsed') || '{}'); } catch (e) {}
+  try { state.folded = JSON.parse(localStorage.getItem('board.folded') || '{}'); } catch (e) {}
+  function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 
   var boardEl = document.getElementById('board');
   var chipsEl = document.getElementById('chips');
@@ -261,40 +269,62 @@ function clientMain() {
     return card;
   }
 
-  function render() {
-    boardEl.textContent = '';
-    DATA.columns.forEach(function (col) {
-      var visible = col.cards.filter(matches);
-      var section = el('section', 'col');
-      section.style.setProperty('--c', col.color);
+  // One shared renderer for every column — no column is a special case.
+  function renderColumn(col) {
+    var visible = col.cards.filter(matches);
+    // A filter with matches force-expands a collapsed column so hits are visible.
+    var collapsed = !!state.collapsed[col.key] && !(filterActive() && visible.length > 0);
 
-      var head = el('header', 'col-head');
-      head.appendChild(el('span', 'dot'));
-      var name = el('span', 'name'); name.textContent = col.title; head.appendChild(name);
-      var count = el('span', 'count'); count.textContent = visible.length; head.appendChild(count);
-      section.appendChild(head);
+    var section = el('section', 'col' + (collapsed ? ' collapsed' : ''));
+    section.style.setProperty('--c', col.color);
 
+    var head = el('header', 'col-head');
+    head.setAttribute('role', 'button');
+    head.setAttribute('tabindex', '0');
+    head.setAttribute('aria-expanded', String(!collapsed));
+    head.appendChild(el('span', 'dot'));
+    var name = el('span', 'name'); name.textContent = col.title; head.appendChild(name);
+    var count = el('span', 'count'); count.textContent = visible.length; head.appendChild(count);
+    var chev = el('span', 'chev'); chev.textContent = '▾'; head.appendChild(chev);
+    function toggleColumn() {
+      state.collapsed[col.key] = !state.collapsed[col.key];
+      save('board.collapsed', state.collapsed);
+      render();
+    }
+    head.onclick = toggleColumn;
+    head.onkeydown = function (ev) {
+      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); toggleColumn(); }
+    };
+    section.appendChild(head);
+
+    if (!collapsed) {
       var wrap = el('div', 'cards');
-      var isDone = col.key === 'done';
-      var collapsed = isDone && !state.doneOpen && !filterActive();
-      var list = collapsed ? visible.slice(-3) : visible; // three most recent
+      // Columns start fully expanded. Only very long columns (>PREVIEW_MIN) offer
+      // an opt-in fold to a short preview; an active filter always shows every match.
+      var folded = !filterActive() && !!state.folded[col.key];
+      var longCol = col.cards.length > PREVIEW_MIN;
+      var list = (folded && longCol) ? visible.slice(-PREVIEW_COUNT) : visible;
       list.forEach(function (c) { wrap.appendChild(renderCard(c)); });
 
-      if (isDone && !filterActive() && col.cards.length > 3) {
+      if (!filterActive() && longCol) {
         var btn = el('button', 'toggle');
-        btn.textContent = collapsed ? 'Show all ' + visible.length : 'Show fewer';
+        btn.textContent = folded ? 'Show all ' + visible.length : 'Show fewer';
         btn.onclick = function () {
-          state.doneOpen = !state.doneOpen;
-          localStorage.setItem('board.doneOpen', state.doneOpen ? '1' : '0');
+          state.folded[col.key] = !state.folded[col.key];
+          save('board.folded', state.folded);
           render();
         };
         wrap.appendChild(btn);
       }
       if (list.length === 0) { var e = el('p', 'empty'); e.textContent = '— nothing —'; wrap.appendChild(e); }
-
       section.appendChild(wrap);
-      boardEl.appendChild(section);
-    });
+    }
+    return section;
+  }
+
+  function render() {
+    boardEl.textContent = '';
+    DATA.columns.forEach(function (col) { boardEl.appendChild(renderColumn(col)); });
   }
 
   function renderChips() {
@@ -382,7 +412,11 @@ const STYLES = `
     border-bottom: 1px solid #1f2630;
     background: color-mix(in srgb, var(--c) 13%, #0f141b);
     text-transform: uppercase; font-size: 11px; letter-spacing: .09em;
+    cursor: pointer; user-select: none; transition: background .12s ease;
   }
+  .col-head:hover { background: color-mix(in srgb, var(--c) 24%, #0f141b); }
+  .col-head:focus-visible { outline: 1px solid var(--c); outline-offset: -1px; }
+  .col.collapsed .col-head { border-bottom-color: transparent; }
   .col-head .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c); box-shadow: 0 0 7px var(--c); flex: 0 0 auto; }
   .col-head .name { font-weight: 700; }
   .col-head .count {
@@ -391,6 +425,11 @@ const STYLES = `
     background: color-mix(in srgb, var(--c) 18%, transparent);
     border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
   }
+  .col-head .chev {
+    flex: 0 0 auto; font-size: 10px; line-height: 1; color: #8b949e;
+    transition: transform .15s ease; transform: rotate(0deg);
+  }
+  .col.collapsed .col-head .chev { transform: rotate(-90deg); }
   .cards {
     flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 8px;
     display: flex; flex-direction: column; gap: 7px;
