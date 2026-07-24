@@ -210,6 +210,51 @@ export function buildScene(THREE, scene, renderer) {
     new THREE.MeshStandardMaterial({ map: grT, color: 0xdedbd0, roughness: 1, transparent: true, opacity: 0 }));
   ground.rotation.x = -Math.PI / 2; ground.position.y = -.02; ground.receiveShadow = true; scene.add(ground);
 
+  /* ---------------------------------------- grounding (LANE A, step 1) ---- */
+  // The house read as floating: walls and fence met uniformly-bright paving
+  // with zero contact occlusion. Cheap procedural AO: radial-gradient planes
+  // under each building mass and along the fence line (fake contact shadow),
+  // plus an inverse vignette that darkens the lawn away from the site so the
+  // frame's brightness centres on the house. All fade in with the ground (e0).
+  const radialT = (stops) => {
+    const c = cv(256, 256), q = c.getContext('2d');
+    const g = q.createRadialGradient(128, 128, 0, 128, 128, 128);
+    for (const [p, col] of stops) g.addColorStop(p, col);
+    q.fillStyle = g; q.fillRect(0, 0, 256, 256);
+    return new THREE.CanvasTexture(c);
+  };
+  const contactT = radialT([[0, 'rgba(7,8,9,.78)'], [.45, 'rgba(7,8,9,.44)'], [1, 'rgba(7,8,9,0)']]);
+  const vignetteT = radialT([[0, 'rgba(24,23,18,0)'], [.42, 'rgba(24,23,18,0)'], [1, 'rgba(24,23,18,.6)']]);
+  // Slab-rim shadow: dark right at the paving edge, fading OUTWARD onto the
+  // lawn (a ring under the slab would be hidden by it). The plane is the slab
+  // plus a 4.2 m border, so the inner rect must sit at a different pixel inset
+  // per axis. Stacked strokes fake the blur (ctx.filter is not universal).
+  const rimT = (() => {
+    const c = cv(512, 512), q = c.getContext('2d');
+    const ix = 63, iz = 85, N = 22; // slab edge in texture px (x / z axis)
+    for (let i = 0; i < N; i++) {
+      const f = i / N; // 0 at slab edge → 1 at plane (lawn) edge
+      q.strokeStyle = `rgba(7,8,9,${.13 * (1 - f) * (1 - f)})`;
+      q.lineWidth = 7;
+      const ox = ix * (1 - f), oz = iz * (1 - f);
+      q.strokeRect(ox, oz, 512 - ox * 2, 512 - oz * 2);
+    }
+    return new THREE.CanvasTexture(c);
+  })();
+  const groundFx = [];
+  function groundPlane(map, cx2, cz2, sx2, sz2, y2, op2, order) {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 1),
+      new THREE.MeshBasicMaterial({ map, transparent: true, opacity: 0, depthWrite: false }));
+    m.rotation.x = -Math.PI / 2; m.position.set(cx2, y2, cz2); m.scale.set(sx2, sz2, 1);
+    m.renderOrder = order; scene.add(m); groundFx.push({ m, op: op2 });
+  }
+  groundPlane(vignetteT, 0, 2, 190, 150, .012, 1, 1);
+  groundPlane(rimT, -1.5, 1.5, 34.4, 25.4, .018, 1, 2);      // paving perimeter
+  groundPlane(contactT, -3.7, -.1, 15.4, 9.4, .455, 1, 2);   // wing + carport
+  groundPlane(contactT, 5.9, .7, 12.8, 10.2, .455, 1, 2);    // block + bay
+  groundPlane(contactT, .2, 9.4, 32, 3.4, .285, .85, 2);     // fence line
+  groundPlane(contactT, -7.6, 1.4, 5, 6.8, .46, .7, 2);      // car
+
   const hillM = new THREE.MeshStandardMaterial({ color: 0x929e88, roughness: 1, transparent: true, opacity: 0 });
   for (let i = 0; i < 7; i++) {
     const hm = new THREE.Mesh(new THREE.SphereGeometry(90 + Math.random() * 70, 12, 8), hillM);
@@ -475,6 +520,7 @@ export function buildScene(THREE, scene, renderer) {
   function update(t) {
     const e0 = eo(cl(t/.6, 0, 1));
     ground.material.opacity = e0; hillM.opacity = e0 * .95;
+    for (const f of groundFx) f.m.material.opacity = e0 * f.op;
     for (const tr of trees) { tr.tm.opacity = e0; tr.lm.opacity = e0; }
     const bp = cl(t/.5, 0, 1);
     for (const p of P) {
