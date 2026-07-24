@@ -210,15 +210,40 @@ export default function HeroScene({
     let restedFired = false;
     let cancelled = false;
 
+    /**
+     * Handheld drift during the hold (LANE A step 2 — owner direction: the
+     * settled frame must never be dead-still). Layered non-harmonic sines ≈
+     * cheap Perlin: position wanders a few cm, the look-at a hair, so the
+     * framing breathes without ever re-composing the shot. `h` is seconds
+     * since the build settled; every period is irrational relative to the
+     * others so the loop never visibly repeats.
+     */
+    const drift = (h: number) => ({
+      x: 0.16 * Math.sin(h * 0.21) + 0.06 * Math.sin(h * 0.57 + 1.7),
+      y: 0.08 * Math.sin(h * 0.16 + 0.9) + 0.03 * Math.sin(h * 0.43 + 2.1),
+      z: 0.12 * Math.sin(h * 0.12 + 2.6),
+      lx: 0.05 * Math.sin(h * 0.1 + 1.2),
+      ly: 0.035 * Math.sin(h * 0.18 + 0.5),
+    });
+
     const applyFrame = (t: number) => {
       api.update(t);
-      const cam = api.cameraAt(t);
+      // Camera path is authored up to BUILD_END; past it the base pose is the
+      // settled drone frame plus drift.
+      const cam = api.cameraAt(Math.min(t, api.BUILD_END));
       camera.position.set(cam.position[0], cam.position[1], cam.position[2]);
-      camera.lookAt(cam.lookAt[0], cam.lookAt[1], cam.lookAt[2]);
+      if (!reduced && t > api.BUILD_END) {
+        const d = drift(t - api.BUILD_END);
+        camera.position.x += d.x;
+        camera.position.y += d.y;
+        camera.position.z += d.z;
+        camera.lookAt(cam.lookAt[0] + d.lx, cam.lookAt[1] + d.ly, cam.lookAt[2]);
+      } else {
+        camera.lookAt(cam.lookAt[0], cam.lookAt[1], cam.lookAt[2]);
+      }
       // The scene file's PHASES is an untyped mixed array, so TS widens both
-      // fields to `string | number`. Narrow here rather than edit the scene:
-      // that file is a verbatim copy and stays byte-identical to the source.
-      const ph = api.phaseAt(t);
+      // fields to `string | number`. Narrow here rather than edit the scene.
+      const ph = api.phaseAt(Math.min(t, api.BUILD_END));
       const label = String(ph.label);
       if (label !== lastLabel) {
         lastLabel = label;
@@ -227,30 +252,34 @@ export default function HeroScene({
       renderer.render(scene, camera);
     };
 
+    let holdFrame = 0;
     const tick = () => {
       // §10 render-loop guard: schedule the next frame FIRST, then do the
       // work in a try/catch. An uncaught throw otherwise kills rAF for good
       // and leaves a black canvas with no explanation.
       raf = requestAnimationFrame(tick);
       try {
-        let t = (performance.now() - start) / 1000;
+        const t = (performance.now() - start) / 1000;
         if (loop) {
           if (t > LOOP_AT) {
             start = performance.now();
-            t = 0;
+            applyFrame(0);
+            return;
           }
         } else if (t >= api.BUILD_END) {
-          // Build once, then stay built: draw the settled frame and stop.
-          // Leaving a render loop running forever behind the copy is the
-          // battery/lag problem the hero has always avoided.
-          t = api.BUILD_END;
-          applyFrame(t);
-          cancelAnimationFrame(raf);
-          raf = 0;
+          // Build once, then HOLD ALIVE: the loop keeps running at half rate
+          // (~30 fps) so the drift above — and the scene's own hold motion —
+          // stay in play. This deliberately amends the old "draw one settled
+          // frame and stop" rule (owner direction, LANE A): the cost is one
+          // render every other frame of a scene that is already warm, rAF
+          // pauses it whenever the tab is hidden, and reduced-motion still
+          // renders exactly one static frame.
           if (!restedFired) {
             restedFired = true;
             onRestedRef.current?.();
           }
+          holdFrame = (holdFrame + 1) % 2;
+          if (holdFrame === 0) applyFrame(t);
           return;
         }
         applyFrame(t);
