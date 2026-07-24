@@ -375,6 +375,42 @@ export function buildScene(THREE, scene, renderer) {
     g.computeVertexNormals(); return g;
   }
 
+  /**
+   * LANE B step 4 — subtle tone/roughness variation on plaster + stone so big
+   * white surfaces don't read as flat plastic. World-space value noise
+   * injected via onBeforeCompile (shader-driven, NOT a texture map): ±5%
+   * tint at two octaves, ±.06 roughness. One function instance → one shader
+   * program cache entry for every patched material.
+   */
+  const toneNoise = (sh) => {
+    sh.vertexShader = sh.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vWp;')
+      .replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvWp = (modelMatrix * vec4(transformed, 1.)).xyz;');
+    sh.fragmentShader = sh.fragmentShader
+      .replace('#include <common>', `#include <common>
+varying vec3 vWp;
+float vnHash(float n) { return fract(sin(n) * 43758.5453); }
+float vNoise(vec3 p) {
+  vec3 i = floor(p), f = fract(p);
+  f = f * f * (3. - 2. * f);
+  float n = dot(i, vec3(1., 57., 113.));
+  return mix(
+    mix(mix(vnHash(n), vnHash(n + 1.), f.x), mix(vnHash(n + 57.), vnHash(n + 58.), f.x), f.y),
+    mix(mix(vnHash(n + 113.), vnHash(n + 114.), f.x), mix(vnHash(n + 170.), vnHash(n + 171.), f.x), f.y),
+    f.z);
+}`)
+      .replace('#include <color_fragment>', `#include <color_fragment>
+{
+  float tn = (vNoise(vWp * .55) * .7 + vNoise(vWp * 2.3 + 7.) * .3) - .5;
+  diffuseColor.rgb *= (1. + tn * .10);
+}`)
+      .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
+{
+  float rn = vNoise(vWp * 1.7 + 3.) - .5;
+  roughnessFactor = clamp(roughnessFactor + rn * .12, .05, 1.);
+}`);
+  };
+
   /** NOTE: rotate BEFORE translate. Reversing this spins the piece about the world origin. */
   function add(geo, col, o) {
     if (o.rx) geo.rotateX(o.rx);
@@ -405,6 +441,11 @@ export function buildScene(THREE, scene, renderer) {
           transparent: true, opacity: 0,
         })
       : new THREE.MeshStandardMaterial(mp);
+    // Plaster + stone get the tone-noise patch (step 4). Map identity is the
+    // selector so no call site changes.
+    if (o.map === stT || o.map === stoneLowT || o.map === stoneQT || o.map === stoneColT) {
+      mt.onBeforeCompile = toneNoise;
+    }
     const me = new THREE.Mesh(geo, mt); me.castShadow = true; me.receiveShadow = true;
     const pv = new THREE.Group(); pv.add(me); G.add(pv);
     const bm = new THREE.LineBasicMaterial({ color: BLUE, transparent: true, opacity: 0 });
