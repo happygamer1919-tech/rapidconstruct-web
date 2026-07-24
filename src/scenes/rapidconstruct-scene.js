@@ -194,6 +194,20 @@ export function buildScene(THREE, scene, renderer) {
   // horizon hills melt into the sky's warm band — that separation is what
   // makes the flat lawn read as distance instead of a green wall.
   // was: stops 7fa8d2/.38 b0c8e0/.72 dce1e3/1 e2dbcd · FogExp2 cbcdc9 .0066
+  //
+  // LANE A step 5 — the gradient lives on a sky DOME (BackSide sphere) instead
+  // of scene.background, with soft procedural cloud banks painted into the
+  // band above the horizon. update() rotates the dome imperceptibly, so the
+  // sky is the one element that never freezes. fog:false keeps it crisp;
+  // depth-wise the dome only wins beyond the ground's edge, which reads as
+  // the horizon melting into the warm band.
+  // The gradient stays on scene.background (SCREEN-mapped — that is the only
+  // way the blue zenith is visible at all: the settled camera pitches ~19°
+  // down with a 40° lens, so the top ray clears the horizon by barely ~1°; a
+  // world-mapped dome gradient shows nothing but its horizon band, verified
+  // empirically). The dome carries ONLY the clouds, on a transparent canvas,
+  // painted into the few degrees around the horizon the camera can actually
+  // see (v = .5 + ε/180 ⇒ canvas rows ~232–258 of 512), and rotates slowly.
   const kc = cv(4, 256), kx = kc.getContext('2d');
   const sg = kx.createLinearGradient(0, 0, 0, 256);
   sg.addColorStop(0, '#6d9bc8'); sg.addColorStop(.38, '#a9c4de');
@@ -201,6 +215,29 @@ export function buildScene(THREE, scene, renderer) {
   kx.fillStyle = sg; kx.fillRect(0, 0, 4, 256);
   scene.background = new THREE.CanvasTexture(kc);
   scene.fog = new THREE.FogExp2(0xd6cfba, .0095);
+
+  const domeC = cv(1024, 512), dx2 = domeC.getContext('2d');
+  for (let i = 0; i < 30; i++) {
+    // one cloud bank: overlapping soft ellipses, flat-bottomed, low band
+    const bx3 = Math.random() * 1024, by3 = 233 + Math.random() * 18;
+    const bw3 = 70 + Math.random() * 140, bh3 = 4 + Math.random() * 6;
+    for (let p = 0; p < 7; p++) {
+      const g2 = dx2.createRadialGradient(0, 0, 0, 0, 0, 1);
+      g2.addColorStop(0, `rgba(255,250,242,${.22 + Math.random() * .16})`);
+      g2.addColorStop(1, 'rgba(255,250,242,0)');
+      dx2.save();
+      dx2.translate((bx3 + (Math.random() - .5) * bw3) % 1024, by3 + (Math.random() - .4) * bh3);
+      dx2.scale(bw3 * (.35 + Math.random() * .4), bh3 * (.5 + Math.random() * .5));
+      dx2.fillStyle = g2;
+      dx2.beginPath(); dx2.arc(0, 0, 1, 0, 7); dx2.fill();
+      dx2.restore();
+    }
+  }
+  const domeT = new THREE.CanvasTexture(domeC);
+  domeT.wrapS = THREE.RepeatWrapping;
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(880, 32, 16),
+    new THREE.MeshBasicMaterial({ map: domeT, transparent: true, side: THREE.BackSide, fog: false, depthWrite: false }));
+  dome.renderOrder = -1; scene.add(dome);
 
   /* -------------------------------------------------------------- lights -- */
   // LANE A step 4 — warm key vs cool sky fill. Sky half of the hemisphere
@@ -536,6 +573,7 @@ export function buildScene(THREE, scene, renderer) {
     const e0 = eo(cl(t/.6, 0, 1));
     ground.material.opacity = e0; hillM.opacity = e0 * .95;
     for (const f of groundFx) f.m.material.opacity = e0 * f.op;
+    dome.rotation.y = t * .0045; // clouds drift ~1°/4s — never a frozen sky
     if (t > BUILD_END) {
       const h = t - BUILD_END;
       const az = KEY_AZ + .05 * Math.sin(h * .07);
