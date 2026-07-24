@@ -24,6 +24,7 @@ const ROUTES: Pathname[] = [
   "/",
   "/acoperisuri",
   "/calculator-acoperis",
+  "/configurator",
   "/fatade",
   "/renovari-la-cheie",
   "/finisaje",

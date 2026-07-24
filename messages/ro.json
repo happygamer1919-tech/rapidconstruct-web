@@ -36,6 +36,7 @@
     "home": "Acasă",
     "despre": "Despre Noi",
     "portofoliu": "Portofoliu",
+    "configurator": "Configurator 3D",
     "contact": "Contact",
     "services": "Servicii",
     "callNow": "Sună acum",
@@ -1323,5 +1324,52 @@
         "body": "Dacă schimbăm ceva în modul în care lucrăm cu datele, actualizăm această pagină și data de mai sus."
       }
     ]
+  },
+  "configuratorPage": {
+    "seo": {
+      "title": "Configurator 3D case — acoperiș, materiale, prețuri",
+      "description": "Configurează casa în 3D: tip de acoperiș, material de învelitoare, gard. Vezi prețul orientativ pe m² și estimarea totală, în timp real."
+    },
+    "hero": {
+      "eyebrow": "Configurator 3D",
+      "h1": "Configurează-ți casa în 3D",
+      "intro": "Alege tipul de acoperiș, materialul și gardul — modelul 3D și prețul orientativ se actualizează pe loc, fără reîncărcare."
+    },
+    "viewer": {
+      "hint": "Trage pentru a roti modelul",
+      "fallback": "Vizualizarea 3D nu este disponibilă pe acest dispozitiv — alegerea materialelor și prețurile funcționează normal."
+    },
+    "roof": {
+      "title": "Acoperiș",
+      "typeLabel": "Tip de acoperiș",
+      "materialLabel": "Material învelitoare",
+      "types": {
+        "2ape": "2 ape",
+        "4ape": "4 ape",
+        "mansarda": "Mansardă",
+        "combinat": "Combinat"
+      },
+      "materials": {
+        "tigla-metalica": "Țiglă metalică",
+        "shingle": "Șindrilă bituminoasă",
+        "roca-vulcanica": "Rocă vulcanică",
+        "tigla-ceramica": "Țiglă ceramică"
+      }
+    },
+    "specs": {
+      "title": "Specificații material",
+      "durability": "Durabilitate",
+      "durabilityValue": "{value} ani",
+      "warranty": "Garanție producător",
+      "warrantyValue": "{value} ani",
+      "weight": "Greutate",
+      "weightValue": "{value} kg/m²",
+      "note": "Valori orientative pentru categoria de material — garanția exactă depinde de producător și de sistemul montat."
+    },
+    "price": {
+      "from": "de la {price} lei/m²",
+      "onRequest": "preț la cerere",
+      "onRequestNote": "Prețul pentru țiglă ceramică se confirmă la cerere — sună-ne sau cere o ofertă."
+    }
   }
 }

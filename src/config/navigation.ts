@@ -37,6 +37,7 @@ export type NavItem = { href: Pathname; key: string };
 export const PRIMARY_NAV: readonly NavItem[] = [
   { href: "/despre-noi", key: "despre" },
   { href: "/portofoliu", key: "portofoliu" },
+  { href: "/configurator", key: "configurator" },
   { href: "/contact", key: "contact" },
 ] as const;
 
