@@ -20,7 +20,10 @@
 export function buildScene(THREE, scene, renderer) {
   const B = THREE.BoxGeometry;
   const BRAND = 0xE08039, BLUE = 0x1f4fd6;
-  const WHT = 0xf1eee6, STN = 0xc6bfb1, FRM = 0x14181c, GLS = 0x2f4856;
+  // GLS deepened 2f4856 → 1a2a34 (LANE B): with the physical glass material
+  // the old blue-grey read as painted panel; the darker tint lets sky
+  // reflections carry the surface instead of albedo.
+  const WHT = 0xf1eee6, STN = 0xc6bfb1, FRM = 0x14181c, GLS = 0x1a2a34;
   // Quoin-only stone tint — warmer + slightly darker than STN so the corner
   // blocks read against the white stucco. STN is still used by wall bases and
   // columns, so this is a separate constant rather than a change to STN.
@@ -350,7 +353,21 @@ export function buildScene(THREE, scene, renderer) {
     if (o.bump) { mp.bumpMap = o.bump; mp.bumpScale = o.bs || .07; }
     if (o.emi) { mp.emissive = new THREE.Color(o.emi); mp.emissiveIntensity = o.ei || 1; }
     if (o.ds) mp.side = THREE.DoubleSide;
-    const mt = new THREE.MeshStandardMaterial(mp);
+    // env reception (LANE B step 2): metals reflect strongly, rough dielectrics
+    // barely — keeps scene.environment from washing the plaster.
+    mp.envMapIntensity = (o.m || 0) >= .3 ? 1 : .25;
+    // LANE B step 1 — glass gets its own PHYSICAL material: dark tint, tight
+    // roughness, clearcoat. The physical shader's fresnel makes it catch light
+    // at grazing angles; envMapIntensity is high so step 2's environment map
+    // reads strongest here. Per-piece material (not shared) because the build
+    // animation fades each piece's opacity individually.
+    const mt = o.glass
+      ? new THREE.MeshPhysicalMaterial({
+          color: col, roughness: .06, metalness: 0,
+          clearcoat: 1, clearcoatRoughness: .08,
+          envMapIntensity: 1.8, transparent: true, opacity: 0,
+        })
+      : new THREE.MeshStandardMaterial(mp);
     const me = new THREE.Mesh(geo, mt); me.castShadow = true; me.receiveShadow = true;
     const pv = new THREE.Group(); pv.add(me); G.add(pv);
     const bm = new THREE.LineBasicMaterial({ color: BLUE, transparent: true, opacity: 0 });
@@ -391,8 +408,15 @@ export function buildScene(THREE, scene, renderer) {
 
   /** CRITICAL: the frame is a RING of four bars. A solid box hides the glass. */
   function winZ(wx, wy, wz, w, h, st, mull) {
-    const gz = wz - .1, fz2 = wz - .02;
-    add(new B(w, h, .05), GLS, { x: wx, y: wy, z: gz, fz: 1.6, s: st, d: .22, r: .04, m: .95 });
+    // Glass recessed .1 → .16 behind the wall plane, with real reveal jambs
+    // lining the opening (LANE B step 1): left/right neutral, head shadowed
+    // (fake AO), inner sill light. The opening reads as depth, not a decal.
+    const gz = wz - .16, fz2 = wz - .02;
+    add(new B(w, h, .05), GLS, { x: wx, y: wy, z: gz, fz: 1.6, s: st, d: .22, glass: 1 });
+    add(new B(.07, h, .15), 0xb7b2a6, { x: wx - w/2 + .035, y: wy, z: wz - .095, fz: 1.6, s: st + .01, d: .2, r: .92 });
+    add(new B(.07, h, .15), 0xb7b2a6, { x: wx + w/2 - .035, y: wy, z: wz - .095, fz: 1.6, s: st + .01, d: .2, r: .92 });
+    add(new B(w, .07, .15), 0x827e74, { x: wx, y: wy + h/2 - .035, z: wz - .095, fz: 1.6, s: st + .01, d: .2, r: .92 });
+    add(new B(w, .06, .15), 0xd8d4ca, { x: wx, y: wy - h/2 + .03, z: wz - .095, fz: 1.6, s: st + .01, d: .2, r: .9 });
     // Frame bars thickened: face .09->.13, depth .15->.19, offset .045->.065 (=bar/2),
     // top/bottom span w+.17->w+.26 (=w+2*bar) to keep the corners closed. Bars still
     // sit OUTSIDE the glass rect — inner edge stays on the glass edge, never over it.
@@ -405,8 +429,13 @@ export function buildScene(THREE, scene, renderer) {
     add(new B(w+.38, .1, .28), 0xe6e2da, { x: wx, y: wy-h/2-.14, z: wz-.02, fz: 1.6, s: st+.04, d: .2, r: .9 });
   }
   function winX(wx, wy, wz, d, h, st, mull) {
-    const s = (wx > 0) ? 1 : -1, gx2 = wx - s*.1, fxb = wx - s*.02;
-    add(new B(.05, h, d), GLS, { x: gx2, y: wy, z: wz, fx: 1.6*s, s: st, d: .22, r: .04, m: .95 });
+    // Mirror of winZ's recess + reveal (LANE B step 1) along the ±x normal.
+    const s = (wx > 0) ? 1 : -1, gx2 = wx - s*.16, fxb = wx - s*.02;
+    add(new B(.05, h, d), GLS, { x: gx2, y: wy, z: wz, fx: 1.6*s, s: st, d: .22, glass: 1 });
+    add(new B(.15, h, .07), 0xb7b2a6, { x: wx - s*.095, y: wy, z: wz - d/2 + .035, fx: 1.6*s, s: st + .01, d: .2, r: .92 });
+    add(new B(.15, h, .07), 0xb7b2a6, { x: wx - s*.095, y: wy, z: wz + d/2 - .035, fx: 1.6*s, s: st + .01, d: .2, r: .92 });
+    add(new B(.15, .07, d), 0x827e74, { x: wx - s*.095, y: wy + h/2 - .035, z: wz, fx: 1.6*s, s: st + .01, d: .2, r: .92 });
+    add(new B(.15, .06, d), 0xd8d4ca, { x: wx - s*.095, y: wy - h/2 + .03, z: wz, fx: 1.6*s, s: st + .01, d: .2, r: .9 });
     // Frame bars thickened to match winZ: face .09->.13, depth .15->.19, offset
     // .045->.065 (=bar/2), top/bottom z-span d+.17->d+.26 to keep corners closed.
     // Bars still frame the glass rect, never overlap its face. (owner: frames too thin, 2026-07)
