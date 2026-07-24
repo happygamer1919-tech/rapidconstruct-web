@@ -6,6 +6,28 @@ file is only *what is true now and what happens next*.
 **Last updated: 2026-07-24** — verified against git, the Vercel API, the
 indexability tripwire and live HTTP checks, not recalled.
 
+### ⏳ Pending push/PR — `rc/RC-seo-geo-sweep` (SEO/GEO sweep)
+
+`git push` was **denied** in the sweep session, so the branch is committed
+**locally only** (3 commits on `rc/RC-seo-geo-sweep`, off `main`). Nothing else is
+pending — the audit + fixes are done and `npm run build` passed. The sweep
+worktree was removed in cleanup, but the branch ref survives in the shared repo,
+so push it from the main checkout:
+
+```bash
+cd "/Users/sm33xy/Projects/rapidconstruct-web"
+git push -u origin rc/RC-seo-geo-sweep
+gh pr create --base main --head rc/RC-seo-geo-sweep \
+  --title "seo: SEO/GEO sweep (16 routes x RO/RU) + fixes" \
+  --body "Route-by-route audit in docs/SEO-AUDIT-2026-07-24.md covering title, meta description, canonical (presence only — Q-15 owns the host), hreflang RO/RU + x-default reciprocity, OG tags, JSON-LD validity, single H1, html lang. Mechanical defects fixed in-PR; Q-07 (claim numbers) and Q-15 (canonical host) items are FLAGGED, not changed. No 3D, no DNS. Verified: npm run build exits 0.
+
+Owner check-through:
+- [ ] skim docs/SEO-AUDIT-2026-07-24.md FLAG rows
+- [ ] CI green"
+```
+
+No force-push; do not re-run the audit before pushing (it is already committed).
+
 ---
 
 ## Current state
