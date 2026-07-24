@@ -41,3 +41,7 @@ next-env.d.ts
 # Lighthouse CI (RC-305)
 .lighthouseci/
 perf-run.log
+
+# board-server runtime artifacts
+tools/board.log
+tools/board.pid
