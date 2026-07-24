@@ -69,11 +69,14 @@ Shipped and verified. PR numbers in brackets.
      PMREMGenerator, assigned per-material to glass (1.8) and metals
      (.9×metalness) ONLY. scene.environment and flat intensity both tried and
      reverted (washed the frame / mirrored the fence white).
-  3. *SSAO landed* — GTAOPass via EffectComposer (SSAOPass rendered blank in
-     this scene, abandoned after isolating the chain). Fog re-tuned
-     .0095→.0082 for the linear-space compositing shift. ⚠️ Grade drift for
-     owner review: the composer pipeline lifts the frame slightly (roof a
-     touch lighter); one-line revert = drop the composer.
+  3. *SSAO landed, then REVERTED same day* — GTAOPass via EffectComposer
+     worked (SSAOPass renders blank in this scene — use GTAO if revisited,
+     wiring recoverable in `8054c44`), but the composer's linear-space
+     compositing lifted the approved near-black roof +55% luminance
+     (measured 48→74, side-by-side at the settled hold). Decision: the
+     signature grade wins; composer dropped in `b4af02a`, fog compensation
+     restored (.0082→.0095). Targeted AO remains as geometry (contact
+     planes, shadowed window heads, reveal jambs).
   4. *Wall tone* — onBeforeCompile world-space value noise on plaster/stone:
      ±5% tint, ±.06 roughness, one shared program.
   - *Verified:* tsc, eslint, prod build; hold still alive (6.2% pixel change
