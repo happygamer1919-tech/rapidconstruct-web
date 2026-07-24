@@ -3,8 +3,8 @@
 Living board. Background and reasoning live in `docs/PROJECT-MEMORY.md`; this
 file is only *what is true now and what happens next*.
 
-**Last updated: 2026-07-23 (late evening)** — verified against git, the Vercel API and
-live HTTP checks, not recalled.
+**Last updated: 2026-07-24** — verified against git, the Vercel API, the
+indexability tripwire and live HTTP checks, not recalled.
 
 ---
 
@@ -15,8 +15,8 @@ live HTTP checks, not recalled.
 | **Owner review URL** | **https://rapidconstruct-web.vercel.app** — public, no login, **non-indexable** (verified). Shows the new 3D hero. |
 | Immutable build behind it | `https://rapidconstruct-n5c1575vn-sm33xys-projects.vercel.app` |
 | **Production site** | `rapidconstruct.md` — **still Tilda** (`x-tilda-server: 22`, A `194.48.203.138`, NS `ns1/ns2.tildadns.com`). **DNS untouched.** |
-| **Default branch** | `main` @ `0f6d516` — now carries the Q-08 safeguard (cherry-picked). No 3D work. |
-| **Working branch** | `feature/3d-hero` — the approved scene port. Ahead of `main`; unmerged by design. |
+| **Default branch** | `main` @ `c0f3f5b` — carries the Q-08 safeguard (cherry-picked) plus the corrected memory docs and `CLAUDE.md`. No 3D work. |
+| **Working branch** | `feature/3d-hero` @ `6008dee` — the approved scene port. Ahead of `main`; unmerged by design. |
 | **Open PRs** | None. |
 | **Vercel env** | `RESEND_API_KEY` (Production) only. **`NEXT_PUBLIC_SITE_URL` deliberately absent** — see the cutover box below. |
 | **Repo** | `happygamer1919-tech/rapidconstruct-web`, Vercel project `rapidconstruct-web` (org `sm33xys-projects`) |
@@ -45,13 +45,22 @@ re-engage the staging safeguard. Consequences, all verified live:
    node scripts/check-indexability.mjs https://rapidconstruct.md
    ```
 
-### Regression guard (new)
+### Regression guard
 
 `scripts/check-indexability.mjs <url>` asserts that any host which is not
 `rapidconstruct.md` must be non-indexable, and that the real domain must be.
 **Run it after every deploy.** It exists because the build-time protection and
 the CI tests both passed while the live site was indexable — the failure was
 environmental (an env var set before cutover), which CI structurally cannot see.
+
+Last run **2026-07-24** against `https://rapidconstruct-web.vercel.app` →
+**PASS** (`Disallow: /`, no sitemap advertised, `/`, `/ru` and `/acoperisuri` all
+200 + `noindex`).
+
+⚠️ **The script lives only on `feature/3d-hero`, not on `main`.** Anyone working
+from the default branch cannot run the guard the moment they most need it — right
+after a deploy. Cherry-pick it to `main` (it is a standalone script with no
+dependency on the 3D work).
 
 ---
 
@@ -97,6 +106,17 @@ Shipped and verified. PR numbers in brackets.
   mounts it. Build animation, phase captions, reduced-motion and low-end
   fallbacks all verified on the live deployment. Replaces the older
   `HeroBuild3D.tsx`, which is now unused.
+- **Memory docs repaired** (2026-07-24, `main`). `docs/STATUS.md` had been left in
+  the working tree with **literal merge-conflict markers** and an unmerged index
+  entry; resolved by keeping both sides' facts rather than dropping either
+  [`1cc24d0`]. `CLAUDE.md` added as a pointer to PROJECT-MEMORY + STATUS so a
+  fresh session stops re-deriving settled decisions [`702e3c8`].
+  `docs/PROJECT-MEMORY.md` corrected [`c0f3f5b`]: §5 now states that
+  `NEXT_PUBLIC_SITE_URL` is deliberately absent; §9.2 rewritten from "a live
+  defect" into a **dated near-miss** with root cause, what caught it and the
+  standing lesson; and four further stale claims fixed — §2/§3/§4.5 had all
+  called `HeroBuild3D.tsx` "the current hero" long after the scene port
+  superseded it, plus Q-15 and §10.
 
 ---
 
@@ -153,21 +173,30 @@ In order. Items 1–3 need no owner input.
 
 1. ~~Fix B1~~ — **done** (2026-07-23).
 2. ~~Cherry-pick the Q-08 safeguard onto `main`~~ — **done** (`249e9ad`, `0f6d516`).
-3. **Owner reviews the new 3D hero** at the review URL. On sign-off: delete the
+3. **Cherry-pick `scripts/check-indexability.mjs` onto `main`.** It is the guard
+   STATUS tells you to run after every deploy, and it currently exists only on
+   `feature/3d-hero` — unavailable from the default branch exactly when it is
+   needed. Standalone script, no dependency on the 3D work.
+4. **Owner reviews the new 3D hero** at the review URL. On sign-off: delete the
    unused `HeroBuild3D.tsx` and decide whether the hero merges to `main`.
-4. **Reconcile the sitemap count** — the launch checklist expects 28 URLs, the
+5. **Reconcile the sitemap count** — the launch checklist expects 28 URLs, the
    sitemap emits 30. Confirm which is right before cutover.
-4. **Close the questions the repo has already answered:** Q-06 and Q-11
-   (drone photos landed), Q-09 (Resend key is set — verify with one real form
-   submit end-to-end, then close), Q-15 (value is set; needs only confirmation).
-5. **Chase the owner on B3 / B4 / B2**, in that order — Q-07 and Q-10 gate
+6. **Close the questions the repo has already answered:** Q-06 and Q-11 (drone
+   photos landed), Q-09 (Resend key is set — verify with one real form submit
+   end-to-end, then close). **Q-15 needs the owner's decision, not just
+   confirmation** — apex vs www is still unanswered, and the value is deliberately
+   *not* set in Vercel until cutover.
+7. **Chase the owner on B3 / B4 / B2**, in that order — Q-07 and Q-10 gate
    published claims and money figures; the registrar login gates the whole launch.
-6. **Unblocked engineering while waiting:** RC-301 (apply the keyword map to
+8. **Unblocked engineering while waiting:** RC-301 (apply the keyword map to
    remaining titles/H1s), RC-202/203 (RU translations for owner review),
    Q-17 a11y fixes (`inert` on the closed drawer, `<dt>`/`<dd>` in the two stat
    blocks), RC-111 construction-story section.
-7. **Launch chain** once B2/B3 clear: RC-402 final audit → RC-403 cutover →
-   RC-404 analytics.
+9. **Housekeeping:** remove the stray `rapidconstruct.md` domain attached to the
+   Vercel project on 2026-07-23. It does not affect DNS or serving (DNS still
+   points at Tilda) but it is undocumented state.
+10. **Launch chain** once B2/B3 clear: RC-402 final audit → RC-403 cutover →
+    RC-404 analytics.
 
 ---
 
