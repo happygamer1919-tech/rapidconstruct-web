@@ -13,7 +13,7 @@ live HTTP checks, not recalled.
 | | |
 |---|---|
 | **Owner review URL** | **https://rapidconstruct-web.vercel.app** — public, no login, **non-indexable** (verified). Shows the new 3D hero. |
-| Immutable build behind it | `https://rapidconstruct-i56sj4uo0-sm33xys-projects.vercel.app` |
+| Immutable build behind it | `https://rapidconstruct-n5c1575vn-sm33xys-projects.vercel.app` |
 | **Production site** | `rapidconstruct.md` — **still Tilda** (`x-tilda-server: 22`, A `194.48.203.138`, NS `ns1/ns2.tildadns.com`). **DNS untouched.** |
 | **Default branch** | `main` @ `0f6d516` — now carries the Q-08 safeguard (cherry-picked). No 3D work. |
 | **Working branch** | `feature/3d-hero` — the approved scene port. Ahead of `main`; unmerged by design. |
@@ -80,6 +80,14 @@ Shipped and verified. PR numbers in brackets.
 - **Q-08** — Vercel deployment protection disabled; owner can open previews
   without logging in.
 - **Perf budget in CI** [#16] — blocking Lighthouse job on `?no3d=1`.
+- **3D hero — framing + reveal pass** (2026-07-23, `feature/3d-hero`). Canvas is
+  full-bleed; the lens holds a constant HORIZONTAL fov so portrait no longer
+  crops through the building; the build animation plays completely unveiled and
+  the copy arrives afterwards on its own local translucent+blurred panel (34% of
+  the hero on desktop) rather than a full-screen wash. Hero text contrast went
+  from a measured 1.53:1 worst case to 4.61:1, all elements clearing WCAG AA on
+  desktop and mobile. Shader warm-up before the clock starts, or the 4.3s build
+  was ~80% over by the second drawn frame.
 - **3D hero — approved scene ported** (2026-07-23, `feature/3d-hero`).
   `src/scenes/rapidconstruct-scene.js` is a byte-identical copy of the supplied
   source (md5 `68a4fb72172b7695a0f067ec261f7c25`); `src/components/HeroScene.tsx`
