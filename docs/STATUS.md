@@ -126,7 +126,7 @@ Shipped and verified. PR numbers in brackets.
 |---|---|---|
 | **3D hero — owner review** | `feature/3d-hero`, `src/components/HeroScene.tsx` | Ported and live at the owner review URL. Awaiting the owner's verdict. Not merged to `main` by design. `HeroBuild3D.tsx` is now dead code — delete it once the owner signs off on the new scene. |
 | **RC-104 Portfolio** | `/portofoliu` | **Partial.** Page ships with 8 real photos, tags, ItemList JSON-LD, sitemap entry — the nav 404 is gone. Not done: filters, per-project detail pages, before/after sliders. All three need metadata nobody has confirmed (Q-14). |
-| **RC-402 pre-launch audit** | `docs/LAUNCH-CHECKLIST.md` | Route audit done — all 28 checked routes return 200, canonical + hreflang + JSON-LD + single H1 + og:image present on every page. Remaining: re-verify after the canonical host is settled, and Rich Results / OG debugger passes. |
+| **RC-402 pre-launch audit** | `docs/LAUNCH-CHECKLIST.md`, `rc/RC-402-audit-finish` | **Non-host items DONE (2026-07-24, LANE B).** Verified on the 30-URL route set (15×2): route liveness (RO+RU all 200-shape, single H1, **no 301→404** — 24 redirect targets resolve, `PENDING_PAGES` empty), offline structured-data validation (all JSON-LD valid; LocalBusiness/Service/FAQPage/ItemList required props present; `aggregateRating` correctly absent per Q-07), and OG completeness (all 6 og tags + `og:image` route on every page). `npm run build` exits 0. **Remaining item (a) — canonical-host re-verify — DEFERRED to Q-15 → RC-403** (host unchosen/unset until cutover). Online Rich Results + OG debugger left as an owner cutover step. Q-07/Q-10 flagged, not changed. See checklist "Verified state as of 2026-07-24". |
 
 ---
 

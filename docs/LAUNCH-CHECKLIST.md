@@ -38,6 +38,17 @@ without the variable and succeeds with it.
 
 ## 2. Verify after the variable is set
 
+> ⏸️ **DEFERRED to Q-15 / RC-403 (RC-402 remaining item a).** Every check in this
+> section asserts facts about the *canonical host* — the `Host:`/`Sitemap:` lines,
+> the absolute domain on every `canonical`/`hreflang`/`<loc>`/`og:image`. The host
+> is deliberately **not chosen (apex vs www, Q-15) and not set** (`NEXT_PUBLIC_SITE_URL`
+> stays absent until cutover). In the current build every absolute URL resolves to
+> the staging host `https://rapidconstruct-web.vercel.app` **by design** — that is
+> correct for pre-launch and cannot be re-verified against the real domain until the
+> host value is set on cutover day. Do NOT tick these before RC-403. The 2026-07-24
+> RC-402 audit (below) verified the host-*independent* structure of exactly these
+> fields; only the absolute host remains to confirm at cutover.
+
 Run against the production deployment, not a preview:
 
 - [ ] `curl -s https://<host>/robots.txt` — `Host:` and `Sitemap:` both show the
@@ -65,6 +76,13 @@ Run against the production deployment, not a preview:
       published. Publishing an unverified claim is both a trust and a legal risk.
 - [ ] **Q-10 — calculator prices.** The roof calculator quotes money; the
       numbers must be the owner's real ones.
+- [ ] **Owner action at cutover — run the ONLINE validators.** The offline
+      structural validation is done (2026-07-24 audit below); the public
+      [Google Rich Results Test](https://search.google.com/test/rich-results) and
+      [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) are
+      external tools that cannot be hit headlessly. Run them on the live cutover
+      URLs once the real host is serving: `/`, `/ru`, `/acoperisuri`, `/ru/kryshi`,
+      `/portofoliu`, `/contact`.
 - [x] Titles: suffix shortened (§7). 12 of 28 still exceed ~60 chars, but only
       the brand clips — every keyword phrase is inside the visible window.
 
@@ -122,3 +140,76 @@ Audited all 28 routes (14 × 2 locales) on a local production-equivalent render:
 - og:title + og:image present on every page ✓
 - sitemap 200, robots 200, llms.txt 200 ✓
 - **every absolute URL still points at the staging host** — §1
+
+---
+
+## Verified state as of 2026-07-24 — RC-402 non-host audit (LANE B, RC-402-audit-finish)
+
+Finishes the RC-402 items that do **not** depend on the canonical host. Method: a
+full production build (`npm run build`, exit 0) followed by an offline structural
+audit of the prerendered output (`.next/server/app/**/*.html`) — for these SSG
+routes the prerendered HTML **is** the served response, so it is authoritative for
+structure. The dev server and outbound HTTP were unavailable in this automated run
+(sandboxed), which does not affect the host-independent checks; the host-dependent
+re-verify is deferred regardless (see below).
+
+Route set: **30 URLs = 15 indexable routes × 2 locales** (RU on localized slugs;
+`/styleguide` excluded, it is `noindex`). This matches the RC-402 sitemap
+reconcile (task 410: the sitemap already emitted 30; the checklist's "28" was the
+stale figure). All results below are host-independent.
+
+**1. Route liveness — PASS (RO + RU, no 301→404).**
+- All **30/30** routes prerendered to a real page (bytes ≫ not-found shell, a
+  non-empty `<title>`, and **exactly one `<h1>`** each). Build exited 0, so no
+  route fell through to `_error`/`_not-found`.
+- **No redirect 301s into a 404:** all **24** `next.config.ts` redirect
+  destinations (11 Tilda/legacy + 13 RC-201 RU slug moves) resolve to a built,
+  served route. `PENDING_PAGES` in `tests/redirects.spec.ts` is **empty** and
+  documented to stay empty. Matches PROJECT-MEMORY §6.2 (`/2`→`/portofoliu`,
+  `/calcul-gard`→`/contact` repointed; privacy policy built).
+- RU localized slugs confirmed live via each RU page's canonical
+  (`/ru/kryshi`, `/ru/fasady`, `/ru/remont-pod-klyuch`, `/ru/otdelka`,
+  `/ru/proekt-3d`, `/ru/elektrika-santehnika`, `/ru/o-nas`, `/ru/portfolio`,
+  `/ru/kontakty`, `/ru/kalkulyator-kryshi`, `/ru/kishinev`, `/ru/orgeev`,
+  `/ru/kagul`).
+
+**2. Structured data — PASS (offline Rich-Results-equivalent).** Every JSON-LD
+block on all 30 pages parsed as valid JSON, and the required properties for each
+declared `@type` are present and non-empty:
+- `HomeAndConstructionBusiness` (LocalBusiness subtype), sitewide on all 30:
+  `name`, `address` (streetAddress + addressLocality), `telephone`, `url`,
+  `openingHoursSpecification` all present.
+- `Service` (14, on the service + calculator pages): `name`, `provider`,
+  `areaServed` present.
+- `FAQPage` (20): every `mainEntity[]` has a non-empty `name` **and**
+  `acceptedAnswer.text`.
+- `ItemList` (`/portofoliu` ×2): non-empty `itemListElement`.
+- Also present and valid: `AboutPage` (2), `ContactPage` (2).
+- ✅ **`aggregateRating` / `reviewCount` are correctly ABSENT** on every page —
+  this is the deliberate Q-07 guard in `LocalBusinessJsonLd.tsx`, not a defect.
+- Reminder: the public Google Rich Results Test + Facebook OG debugger are online
+  tools; run them at cutover on the live host (owner item added to §4).
+
+**3. Open Graph completeness — PASS.** All six required tags —
+`og:title`, `og:description`, `og:type`, `og:url`, `og:image`, `og:locale` —
+present on all 30 pages. `og:type=website`, `og:locale` per locale
+(`ro_RO` / `ru_RU`). The `og:image` target route `/opengraph-image` built
+successfully (offline resolve). Its **absolute host** is the deferred item — see
+below.
+
+### ⏸️ DEFERRED to Q-15 → RC-403 (RC-402 remaining item a)
+The **canonical-host re-verify** is not done here and must not be: the host is
+unchosen (Q-15: apex vs www, owner) and unset (`NEXT_PUBLIC_SITE_URL` absent until
+cutover, by design). Every absolute `canonical`/`hreflang`/`og:url`/`og:image`
+and the `og:image` target currently resolve to `https://rapidconstruct-web.vercel.app`
+(the staging fallback) — correct for pre-launch. Re-run §2 against the real domain
+on cutover day once the host is set.
+
+### 🚩 FLAGGED — owner product decisions, NOT changed by this audit
+- **Q-07 — unverified marketing-claim numbers.** Published as quotable
+  SEO/GEO text and left exactly as-is: "de la 160 lei/m²" (in `/acoperisuri`
+  titles RO+RU), plus "15+ ani", "500+ case", "30 ani garanție", "4.9/5 din 250+
+  recenzii" elsewhere in copy. FLAGGED for owner confirmation; the JSON-LD rating
+  fields stay omitted until then. Do not change.
+- **Q-10 — calculator price entries** (roof calculator). Owner-owned; unchanged.
+- **Q-15 — canonical host** (apex vs www). Owner-owned; blocks item a above.
