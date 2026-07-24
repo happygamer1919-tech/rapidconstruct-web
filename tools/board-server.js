@@ -249,9 +249,15 @@ function clientMain() {
   function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 
   var boardEl = document.getElementById('board');
+  var statsEl = document.getElementById('stats');
   var chipsEl = document.getElementById('chips');
   var qEl = document.getElementById('q');
   var stampEl = document.getElementById('stamp');
+
+  function colorOf(key) {
+    var c = DATA.columns.filter(function (x) { return x.key === key; })[0];
+    return c ? c.color : '#8b949e';
+  }
 
   function el(tag, cls) { var e = document.createElement(tag); if (cls) e.className = cls; return e; }
   function filterActive() { return state.q !== '' || state.prefixes.size > 0; }
@@ -322,7 +328,49 @@ function clientMain() {
     return section;
   }
 
+  // Stats bar — counts come straight from the parsed file and recompute on every
+  // render (filter change and 10s poll alike). When a filter is active the count
+  // metrics show "filtered / total" so a subset is obvious.
+  function renderStats() {
+    var totals = {}, filtered = {}, grand = 0, grandF = 0;
+    DATA.columns.forEach(function (col) {
+      var t = col.cards.length, f = col.cards.filter(matches).length;
+      totals[col.key] = t; filtered[col.key] = f;
+      grand += t; grandF += f;
+    });
+    var pct = grand ? Math.round((totals.done || 0) / grand * 100) : 0;
+    var active = filterActive();
+
+    var metrics = [
+      { label: 'Total', color: '#c9d1d9', t: grand, f: grandF },
+      { label: 'Done', color: colorOf('done'), t: totals.done, f: filtered.done },
+      { label: 'In Progress', color: colorOf('progress'), t: totals.progress, f: filtered.progress },
+      { label: 'Blocked', color: colorOf('blocked'), t: totals.blocked, f: filtered.blocked },
+      { label: 'Next', color: colorOf('next'), t: totals.next, f: filtered.next },
+      { label: '% Complete', color: colorOf('done'), pct: pct },
+    ];
+
+    statsEl.textContent = '';
+    metrics.forEach(function (m) {
+      var card = el('div', 'metric');
+      card.style.setProperty('--c', m.color);
+      var num = el('div', 'num');
+      if (m.pct !== undefined) {
+        num.textContent = m.pct + '%';
+      } else if (active) {
+        num.textContent = m.f + ' ';
+        var sub = el('span', 'sub'); sub.textContent = '/ ' + m.t; num.appendChild(sub);
+      } else {
+        num.textContent = m.t;
+      }
+      var lbl = el('div', 'lbl'); lbl.textContent = m.label;
+      card.appendChild(num); card.appendChild(lbl);
+      statsEl.appendChild(card);
+    });
+  }
+
   function render() {
+    renderStats();
     boardEl.textContent = '';
     DATA.columns.forEach(function (col) { boardEl.appendChild(renderColumn(col)); });
   }
@@ -399,12 +447,33 @@ const STYLES = `
   }
   .chip:hover { border-color: #3d444d; color: #c9d1d9; }
   .chip.on { background: rgba(31,111,235,.18); border-color: #1f6feb; color: #79c0ff; }
+  .stats {
+    display: flex; gap: 8px; flex-wrap: wrap; flex: 0 0 auto;
+    padding: 8px 14px 9px; border-bottom: 1px solid #1f2630; background: #0f141b;
+  }
+  .metric {
+    flex: 1 1 0; min-width: 96px; background: #12181f;
+    border: 1px solid #1f2630; border-top: 2px solid var(--c); border-radius: 8px;
+    padding: 6px 10px 7px; display: flex; flex-direction: column; gap: 2px;
+  }
+  .metric .num { font-size: 21px; font-weight: 700; line-height: 1.05; color: var(--c); }
+  .metric .num .sub { font-size: 12px; font-weight: 600; color: #6e7681; margin-left: 1px; }
+  .metric .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: #7d8590; }
   .board {
-    flex: 1 1 auto; min-height: 0; display: flex; gap: 10px;
-    padding: 10px 14px; overflow-x: auto;
+    flex: 1 1 auto; min-height: 0; display: grid;
+    grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+    gap: 10px; padding: 10px 14px;
+  }
+  @media (max-width: 900px) {
+    html, body { height: auto; }
+    body { overflow: auto; }
+    .board {
+      grid-template-columns: 1fr; grid-template-rows: none;
+      grid-auto-rows: minmax(200px, auto); overflow: visible;
+    }
   }
   .col {
-    flex: 1 1 0; min-width: 220px; min-height: 0; display: flex; flex-direction: column;
+    min-width: 0; min-height: 0; display: flex; flex-direction: column;
     background: #0f141b; border: 1px solid #1f2630; border-radius: 10px; overflow: hidden;
   }
   .col-head {
@@ -464,6 +533,7 @@ function renderPage(data) {
 <style>${STYLES}</style>
 </head>
 <body>
+  <div id="stats" class="stats"></div>
   <header class="top">
     <div class="brand">RapidConstruct — Live Board <span id="stamp" class="sub"></span></div>
     <div class="tools">
