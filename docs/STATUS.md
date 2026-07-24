@@ -59,6 +59,38 @@ environmental (an env var set before cutover), which CI structurally cannot see.
 
 Shipped and verified. PR numbers in brackets.
 
+- **3D hero — LANE A realism pass: light/ground/camera/motion, no textures**
+  (2026-07-24, `feature/3d-hero`, commits `d911bf1`…`a572413`). Five serial
+  steps, each proven with a canvas-only screenshot vs `before.png`; the build
+  intro is untouched (all new motion is hold-only or e0-faded):
+  1. *Grounded* — procedural contact-shadow planes (wing/carport, block/bay,
+     fence line, car), a slab-rim shadow fading outward onto the lawn, and an
+     inverse lawn vignette.
+  2. *Camera alive on hold* — after BUILD_END the loop keeps running at ~30 fps
+     with layered-sine handheld drift (≤16 cm position, hair of look-at).
+     ⚠️ Deliberately amends the old "draw one settled frame and stop" battery
+     rule (owner direction: never dead-still). rAF pauses on hidden tabs;
+     reduced-motion still renders exactly one static frame — re-verified.
+  3. *Depth* — fog cbcdc9·.0066 → d6cfba·.0095 tuned to the settled camera;
+     sky warm at horizon, cooler zenith.
+  4. *Warm light* — key ffe9c9·1.52 → ffd9a3·1.6, hemi cooled sky / warmed
+     ground bounce, fill eased; sun swings ±3° azimuth during hold. Shadow-map
+     type untouched.
+  5. *Ambient loop* — transparent sky-dome sphere with procedural cloud banks
+     rotating ~1°/4 s. Empirical finding recorded in the scene comments: a
+     world-mapped dome gradient is invisible at this framing (top ray clears
+     the horizon by ~1°), so the gradient stays screen-mapped on
+     scene.background and the dome carries only clouds.
+  - *Verified:* tsc, eslint, prod build; hold-motion proof = two canvas frames
+    4 s apart differ 3.4–5.7% of pixels with identical composition;
+    reduced-motion (one static frame, all improvements present) and `?no3d=1`
+    (no canvas) both re-verified in-browser.
+  - ⚠️ **The md5 in the "approved scene ported" entry below is now historical
+    on this branch** — the scene has owner-driven polish (frames/quoins) and
+    this realism pass on top of the byte-identical port.
+  - Pre-existing console noise (not from this pass, worth a look someday): an
+    `isReady` TypeError + hydration warning under reduced-motion emulation,
+    logged from the unmodified hero too.
 - **Foundation** — Next.js 16 App Router + TS + Tailwind scaffold [#2]; Vercel
   wiring and staging URL [#3]; design tokens, RO/RU routing, layout shell, CI [#6].
 - **SEO plumbing** — metadata helper, LocalBusiness JSON-LD, sitemap, robots,
