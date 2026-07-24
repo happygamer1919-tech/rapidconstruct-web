@@ -280,6 +280,14 @@ In order. Items 1–3 need no owner input.
    `src/app/sitemap.ts`. `npm run build` exits 0. No code logic, host or canonical
    changed. (Supersedes the earlier unmerged `rc/RC-402-sitemap-reconcile`, which
    reached the same 30 but was not merge-aware.)
+   **⏳ Pending push/PR** (push was denied in the automated run — branch is local,
+   2 commits ahead of `main`: `883da9e`, `8f80f36`). Run these to land it:
+   ```bash
+   git push -u origin rc/RC-402-sitemap-merge
+   gh pr create --base main --head rc/RC-402-sitemap-merge \
+     --title "fix(seo): sitemap count reconciliation (merge-aware)" \
+     --body "Reconciles main's sitemap with docs/LAUNCH-CHECKLIST.md and records the expected post-merge count (+2 for the configurator lane's /configurator + /ru/konfigurator). Decision + routes documented in the checklist and STATUS. No 3D, no DNS, no host/canonical change (Q-15 untouched). Verified: npm run build exits 0; sitemap and checklist agree for main today."
+   ```
 6. **Close the questions the repo has already answered:** Q-06 and Q-11 (drone
    photos landed), Q-09 (Resend key is set — verify with one real form submit
    end-to-end, then close). **Q-15 needs the owner's decision, not just
