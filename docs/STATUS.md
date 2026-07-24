@@ -3,7 +3,7 @@
 Living board. Background and reasoning live in `docs/PROJECT-MEMORY.md`; this
 file is only *what is true now and what happens next*.
 
-**Last updated: 2026-07-23 (evening)** — verified against git, the Vercel API and
+**Last updated: 2026-07-23 (late evening)** — verified against git, the Vercel API and
 live HTTP checks, not recalled.
 
 ---
@@ -80,6 +80,14 @@ Shipped and verified. PR numbers in brackets.
 - **Q-08** — Vercel deployment protection disabled; owner can open previews
   without logging in.
 - **Perf budget in CI** [#16] — blocking Lighthouse job on `?no3d=1`.
+- **3D hero — reveal + legibility (2026-07-23 evening).** Build animation now
+  plays edge-to-edge with nothing over it; the copy and its backdrop fade in
+  only once the build settles. The full-screen scrim was replaced by a local
+  translucent, blurred panel behind the copy (34% of the hero on desktop, 58%
+  Pixel 7, 77% iPhone). Hero text contrast measured on the live build: lowest
+  4.61:1, all AA — was 1.53:1 before this work. Portrait framing uses a small
+  setViewOffset lift (1.06) and a constant horizontal FOV so the site is never
+  cropped through the building.
 - **3D hero — approved scene ported** (2026-07-23, `feature/3d-hero`).
   `src/scenes/rapidconstruct-scene.js` is a byte-identical copy of the supplied
   source (md5 `68a4fb72172b7695a0f067ec261f7c25`); `src/components/HeroScene.tsx`
