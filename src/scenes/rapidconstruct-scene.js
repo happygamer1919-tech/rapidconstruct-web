@@ -203,15 +203,23 @@ export function buildScene(THREE, scene, renderer) {
   scene.fog = new THREE.FogExp2(0xd6cfba, .0095);
 
   /* -------------------------------------------------------------- lights -- */
-  scene.add(new THREE.HemisphereLight(0xafc6de, 0x7a6e52, .52));
-  const key = new THREE.DirectionalLight(0xffe9c9, 1.52);
+  // LANE A step 4 — warm key vs cool sky fill. Sky half of the hemisphere
+  // cooled, ground bounce warmed (sunlit lawn/paving reflects warm), key
+  // pushed golden. Shadow map type is deliberately untouched (applyRenderer).
+  // was: hemi afc6de/7a6e52 .52 · key ffe9c9 1.52
+  scene.add(new THREE.HemisphereLight(0xa3c1e6, 0x8b7a56, .55));
+  const key = new THREE.DirectionalLight(0xffd9a3, 1.6);
   key.position.set(-24, 13, 16); key.castShadow = true;
   key.shadow.mapSize.set(2048, 2048);
   Object.assign(key.shadow.camera, { left: -34, right: 34, top: 34, bottom: -34, near: 1, far: 100 });
   key.shadow.bias = -0.0007; key.shadow.radius = 3.5;
   scene.add(key);
-  const fill = new THREE.DirectionalLight(0x93b4d8, .32);
+  const fill = new THREE.DirectionalLight(0x93b4d8, .28); // was .32 — cooler frame overall
   fill.position.set(17, 9, -15); scene.add(fill);
+  // Sun drift during the hold (step 4): the key swings ±~3° azimuth and
+  // breathes in elevation, so shadows creep imperceptibly instead of being
+  // stamped. Base position preserved exactly at h=0.
+  const KEY_R = Math.hypot(-24, 16), KEY_AZ = Math.atan2(16, -24);
 
   const ground = new THREE.Mesh(new THREE.PlaneGeometry(1400, 1400),
     new THREE.MeshStandardMaterial({ map: grT, color: 0xdedbd0, roughness: 1, transparent: true, opacity: 0 }));
@@ -528,6 +536,11 @@ export function buildScene(THREE, scene, renderer) {
     const e0 = eo(cl(t/.6, 0, 1));
     ground.material.opacity = e0; hillM.opacity = e0 * .95;
     for (const f of groundFx) f.m.material.opacity = e0 * f.op;
+    if (t > BUILD_END) {
+      const h = t - BUILD_END;
+      const az = KEY_AZ + .05 * Math.sin(h * .07);
+      key.position.set(Math.cos(az) * KEY_R, 13 + .8 * Math.sin(h * .05 + 1), Math.sin(az) * KEY_R);
+    }
     for (const tr of trees) { tr.tm.opacity = e0; tr.lm.opacity = e0; }
     const bp = cl(t/.5, 0, 1);
     for (const p of P) {
