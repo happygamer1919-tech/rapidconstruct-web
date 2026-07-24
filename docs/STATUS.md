@@ -57,10 +57,12 @@ Last run **2026-07-24** against `https://rapidconstruct-web.vercel.app` →
 **PASS** (`Disallow: /`, no sitemap advertised, `/`, `/ru` and `/acoperisuri` all
 200 + `noindex`).
 
-⚠️ **The script lives only on `feature/3d-hero`, not on `main`.** Anyone working
-from the default branch cannot run the guard the moment they most need it — right
-after a deploy. Cherry-pick it to `main` (it is a standalone script with no
-dependency on the 3D work).
+**LANE B — 2026-07-24:** the guard is now on `main`. The standalone script was
+brought over from `feature/3d-hero` (byte-identical, commit `aac0e01`) onto
+`rc/RC-guard-indexability` off `main` — no 3D files touched. Re-verified before
+landing: PASS against `https://rapidconstruct-web.vercel.app` (exit 0), and
+`npm run build` exits 0. Opened as a PR to `main` so the guard is finally
+available from the default branch, right when it is needed after a deploy.
 
 ---
 
