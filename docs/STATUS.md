@@ -209,6 +209,30 @@ In order. Items 1–3 need no owner input.
 
 ---
 
+## ⏳ Pending push/PR — RC-402 sitemap reconcile (2026-07-24)
+
+`git push` was **denied** in the automated run, so the branch
+`rc/RC-402-sitemap-reconcile` (tip commit `90dc43b`, off `main`) is **local
+only** — no force-push, no retry. The worktree was cleaned up, but the branch
+ref survives in the shared repo, so publish it from the main clone:
+
+```bash
+cd "/Users/sm33xy/Projects/rapidconstruct-web"
+git push -u origin rc/RC-402-sitemap-reconcile
+gh pr create --base main --head rc/RC-402-sitemap-reconcile \
+  --title "fix(seo): reconcile sitemap count (30 vs 28)" \
+  --body "Reconciles src/app/sitemap.ts with docs/LAUNCH-CHECKLIST.md. Sitemap was already correct at 30 (15 indexable routes x 2 locales); the checklist's 28 was stale (PR #50 added /politica-de-confidentialitate but never bumped the count). Decision + reasoning in the commit and STATUS. No 3D, no DNS, no host/canonical change (Q-15 untouched). Verified: npm run build exits 0; sitemap and checklist now agree at 30.
+
+Owner check-through:
+- [ ] sitemap.xml lists exactly the intended routes
+- [ ] CI green"
+```
+
+(The `.worktrees/rc-sitemap` worktree has already been removed; the branch and
+its two commits remain in the repo.)
+
+---
+
 ## Housekeeping
 
 - **~18 stale local branches** and several remote ones whose PRs are merged or
