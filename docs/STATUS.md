@@ -3,8 +3,13 @@
 Living board. Background and reasoning live in `docs/PROJECT-MEMORY.md`; this
 file is only *what is true now and what happens next*.
 
-**Last updated: 2026-07-23 (late evening)** — verified against git, the Vercel API and
-live HTTP checks, not recalled.
+**Last updated: 2026-07-24 (configurator lane)** — verified against git, live
+browser checks and the full Playwright suite, not recalled.
+
+> ⚠️ This copy of STATUS lives on `feature/configurator` (branched from
+> `feature/3d-hero`). `main`'s STATUS has newer launch-state facts (verified
+> 2026-07-24: tripwire PASS, main @ `c0f3f5b`); this copy adds the configurator
+> lane on top of the 3d-hero state it branched from.
 
 ---
 
@@ -16,7 +21,8 @@ live HTTP checks, not recalled.
 | Immutable build behind it | `https://rapidconstruct-i56sj4uo0-sm33xys-projects.vercel.app` |
 | **Production site** | `rapidconstruct.md` — **still Tilda** (`x-tilda-server: 22`, A `194.48.203.138`, NS `ns1/ns2.tildadns.com`). **DNS untouched.** |
 | **Default branch** | `main` @ `0f6d516` — now carries the Q-08 safeguard (cherry-picked). No 3D work. |
-| **Working branch** | `feature/3d-hero` — the approved scene port. Ahead of `main`; unmerged by design. |
+| **Working branch** | `feature/3d-hero` @ `470359c` — approved scene port + LANE A polish/audit. **Pushed to origin 2026-07-24** (the pending push below is resolved). Unmerged by design. |
+| **Configurator branch** | `feature/configurator` (this branch, from `feature/3d-hero`) — 3D house configurator: data-driven scene engine + `/configurator` page. ⚠️ Here `rapidconstruct-scene.js` is a refactored engine, no longer byte-identical to the port — default output verified visually identical; the verbatim copy still lives on `feature/3d-hero`. |
 | **Open PRs** | None. |
 | **Vercel env** | `RESEND_API_KEY` (Production) only. **`NEXT_PUBLIC_SITE_URL` deliberately absent** — see the cutover box below. |
 | **Repo** | `happygamer1919-tech/rapidconstruct-web`, Vercel project `rapidconstruct-web` (org `sm33xys-projects`) |
@@ -58,6 +64,36 @@ environmental (an env var set before cutover), which CI structurally cannot see.
 ## 🔴 Done
 
 Shipped and verified. PR numbers in brackets.
+
+- **3D configurator — steps 0–3** (2026-07-24, `feature/configurator`, commits
+  `d0579f5`…). The house is now DATA-driven:
+  - *Refactor (step 0):* `rapidconstruct-scene.js` split into an engine +
+    `src/scenes/house-kit.js` (textures/geometry vocabulary, roof-tile painter
+    parameterised) + `src/scenes/houses/cu-fronton.js` (the approved house as a
+    per-category recipe: site/walls/roof/fence) + `src/config/configurator.ts`
+    (schema, materials, price bands). `buildScene(...)` with no config renders
+    the approved hero unchanged (screenshot-verified); `api.setConfig(patch)`
+    rebuilds ONLY affected categories with a compressed fly-in — no scene
+    reload. New house models = new recipe files, no engine changes.
+  - *Step 1 roof switcher:* `/configurator` + `/ru/konfigurator` (nav, sitemap,
+    JSON-LD AggregateOffers). 4 roof types (2 ape / 4 ape / mansardă /
+    combinat) × 4 materials with owner bands — metalică de la 450, shingle de
+    la 550, rocă vulcanică de la 800 lei/m²; **țiglă ceramică = "preț la
+    cerere"** (Q-10 — no invented number, excluded from JSON-LD). Spec panel
+    (durabilitate/garanție/greutate). OrbitControls after the signature build;
+    render-on-demand (idle = zero GPU frames); reduced-motion snaps; no-WebGL
+    fallback keeps the UI working.
+  - *Step 2 estimate:* presets 100/120/150/200/250 m² + free input (30–2000
+    valid); total = band × area shown as an orientative range with disclaimer;
+    ceramic shows the on-request note; CTA → /contact.
+  - *Step 3 fences:* jaluzele (approved default) / șipcă / plin / combinat cu
+    piatră swap on the same site model.
+  - *Verified:* tsc, eslint, prod build, **all 106 Playwright tests pass**,
+    live-browser tours screenshotted per type/material/fence, estimate math
+    hand-checked. RU strings logged in `docs/RU-REVIEW.md` (крыша register, no
+    banned кровля).
+  - *Note:* sitemap grew by 2 URLs (RO+RU configurator) — the RC-402 count
+    reconciliation must account for it when this lane merges.
 
 - **Foundation** — Next.js 16 App Router + TS + Tailwind scaffold [#2]; Vercel
   wiring and staging URL [#3]; design tokens, RO/RU routing, layout shell, CI [#6].
@@ -106,9 +142,8 @@ Shipped and verified. PR numbers in brackets.
   `npm run build` exits 0 in the worktree. Note: the scene is no longer
   byte-identical to the ported source above — this is a deliberate owner-driven
   polish pass on top of it. Awaiting the owner's visual verdict; iterate if needed.
-  **Pending push: `git push origin feature/3d-hero`** — the commit (`028bb9c`) is
-  local only; push was denied in the automation run (permission not enabled). Push
-  it when able; do not force-push.
+  ~~Pending push~~ — **resolved 2026-07-24**: `feature/3d-hero` pushed to origin
+  (`6008dee..470359c`), verified 0 commits ahead after push.
 - **3D hero — LANE A: reduced-motion + low-end fallbacks AUDITED (no code change)**
   (2026-07-24, `feature/3d-hero`). Audit-first task: both fallback paths already
   exist in the live hero and are correct, so this is a verification, not a rewrite.
