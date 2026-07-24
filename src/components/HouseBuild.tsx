@@ -201,10 +201,19 @@ export default function HouseBuild({
           </div>
         )}
       </div>
-      {/* Scrim so the copy always reads over the model. Muted grey text on the
-          beige wall measured ~1:1 — invisible. Desktop gets a LEFT scrim (copy
-          left, house right); a phone has no side space, so it gets a TOP-DOWN
-          scrim instead and the copy sits up top, clear of the house.
+      {/* Scrim so the copy reads over the model — FADED IN WITH THE COPY, not
+          painted from the start (owner direction 2026-07-23: "the writing on the
+          left should appear after the animation, but the animation itself has to
+          be clear on both PC and mobile").
+
+          That is the whole point of this element being animated. While the house
+          is assembling there is no text on screen, so a scrim buys nothing and
+          costs everything: it washed the build out on desktop and turned the
+          phone into a haze. Now the build plays at full contrast edge to edge,
+          and the scrim arrives only at the moment it has something to protect.
+
+          Desktop gets a LEFT scrim (copy left, house right); a phone has no side
+          space, so it gets a TOP-DOWN scrim instead.
 
           Stops are MEASURED, not guessed. Sampling the composited pixels behind
           the worst text runs found real failures at the previous settings:
@@ -226,7 +235,13 @@ export default function HouseBuild({
           is measurable here: with `to-transparent` the backdrop behind the
           service list sampled rgb(151,144,130) where the maths predicted ~226,
           and contrast sat at 2.04:1. Same-hue zero-alpha keeps the ramp clean. */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-neutral-100 from-28% via-neutral-100/84 via-58% to-neutral-100/72 to-100% lg:bg-gradient-to-r lg:from-neutral-100 lg:from-30% lg:via-neutral-100/88 lg:via-44% lg:to-neutral-100/0 lg:to-68%" />
+      <motion.div
+        aria-hidden
+        initial={{ opacity: 0 }}
+        animate={{ opacity: built ? 1 : 0 }}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-neutral-100 from-28% via-neutral-100/84 via-58% to-neutral-100/84 to-100% lg:bg-gradient-to-r lg:from-neutral-100 lg:from-30% lg:via-neutral-100/88 lg:via-44% lg:to-neutral-100/0 lg:to-68%"
+      />
 
       {/* pt-10 on a phone, not pt-20: with the promo bar and a two-line header
           above it, the old padding pushed "Solicită ofertă gratuită" under the

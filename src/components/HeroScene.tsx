@@ -95,6 +95,14 @@ export default function HeroScene({
     onRestedRef.current = onRested;
   }, [onRested]);
 
+  // When there will be no build at all (no WebGL, low-end, ?no3d=1), say so
+  // immediately. The page reveals its copy and scrim on this callback, so
+  // staying silent would leave those visitors staring at an empty hero until the
+  // caller's timeout fires — the copy must never wait on WebGL succeeding.
+  useEffect(() => {
+    if (skip) onRestedRef.current?.();
+  }, [skip]);
+
   useEffect(() => {
     const mount = mountRef.current;
     if (skip || !mount) return;
@@ -160,13 +168,19 @@ export default function HeroScene({
      * 1.5:1 contrast.
      *
      * Rather than crop the scene (the old sub-box approach, which sliced the
-     * site in half) we render the TOP slice of a taller virtual frame. The house
-     * sits at the virtual centre, so showing the upper portion pushes it into
-     * the lower third of the canvas, under the copy, with sky behind the text.
-     * setViewOffset only moves the projection window — camera position and
-     * lookAt still come untouched from api.cameraAt().
+     * site in half) we render the TOP slice of a taller virtual frame, which
+     * lowers the house in the canvas. setViewOffset only moves the projection
+     * window — camera position and lookAt still come untouched from
+     * api.cameraAt().
+     *
+     * Kept DELIBERATELY SMALL. At 1.3 the finished house was shoved into the
+     * bottom quarter behind ~60% empty sky, which wrecked the payoff frame of
+     * the build animation. That aggressive a lift was only ever needed because
+     * the copy used to be on screen the whole time; now the copy (and its scrim)
+     * fade in after the build, so this just needs to bias the house down a
+     * little for the final composition, not clear a whole text column.
      */
-    const PORTRAIT_LIFT = 1.3;
+    const PORTRAIT_LIFT = 1.06;
 
     const resize = () => {
       const w = mount.clientWidth || 1;
