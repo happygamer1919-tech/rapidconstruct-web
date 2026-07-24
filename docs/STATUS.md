@@ -59,6 +59,33 @@ environmental (an env var set before cutover), which CI structurally cannot see.
 
 Shipped and verified. PR numbers in brackets.
 
+- **3D hero — LANE B realism pass: glass / reflections / SSAO / wall tone**
+  (2026-07-24, `feature/3d-hero`, commits `dca2603`…`ea3bff4`). Procedural
+  only — no Blender, no texture maps. Canvas-only before/after per step:
+  1. *Glass is glass* — dedicated MeshPhysicalMaterial (dark tint, rough .06,
+     clearcoat fresnel), glass recessed .16 m with real reveal jambs +
+     shadowed head; frames confirmed rings of four bars.
+  2. *Reflections* — procedural equirect env (sky + sun blob) via
+     PMREMGenerator, assigned per-material to glass (1.8) and metals
+     (.9×metalness) ONLY. scene.environment and flat intensity both tried and
+     reverted (washed the frame / mirrored the fence white).
+  3. *SSAO landed* — GTAOPass via EffectComposer (SSAOPass rendered blank in
+     this scene, abandoned after isolating the chain). Fog re-tuned
+     .0095→.0082 for the linear-space compositing shift. ⚠️ Grade drift for
+     owner review: the composer pipeline lifts the frame slightly (roof a
+     touch lighter); one-line revert = drop the composer.
+  4. *Wall tone* — onBeforeCompile world-space value noise on plaster/stone:
+     ±5% tint, ±.06 roughness, one shared program.
+  - *Verified:* tsc, eslint, prod build; hold still alive (6.2% pixel change
+    over 4 s — clouds/sun/camera-breathe kept); reduced-motion single frame
+    with all effects; `?no3d=1` no canvas.
+  - ⚠️ **verify:hero / hero-manifest could NOT be updated from this branch**:
+    the RC-115 gate lives on `rc/RC-115-hero-verify-manifest`, which is based
+    on the CONFIGURATOR refactor (hashes house-kit.js etc. — files that don't
+    exist here). Reconciling the two lanes is a merge decision; until then
+    Tier-2 baselines for this pass can't be captured. The old md5 gate is
+    doubly historical.
+
 - **3D hero — LANE A realism pass: light/ground/camera/motion, no textures**
   (2026-07-24, `feature/3d-hero`, commits `d911bf1`…`a572413`). Five serial
   steps, each proven with a canvas-only screenshot vs `before.png`; the build
