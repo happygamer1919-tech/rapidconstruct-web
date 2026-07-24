@@ -10,7 +10,9 @@
     "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test",
     "perf": "next build && lhci autorun",
-    "board": "node tools/board-server.js"
+    "board": "node tools/board-server.js",
+    "board:start": "nohup node tools/board-server.js > tools/board.log 2>&1 & echo $! > tools/board.pid && echo \"board running (pid $(cat tools/board.pid)) -> http://localhost:4300\"",
+    "board:stop": "if [ -f tools/board.pid ]; then kill $(cat tools/board.pid) 2>/dev/null; rm -f tools/board.pid; echo 'board stopped'; else echo 'board not running'; fi"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
