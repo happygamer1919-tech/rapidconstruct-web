@@ -106,6 +106,9 @@ Shipped and verified. PR numbers in brackets.
   `npm run build` exits 0 in the worktree. Note: the scene is no longer
   byte-identical to the ported source above — this is a deliberate owner-driven
   polish pass on top of it. Awaiting the owner's visual verdict; iterate if needed.
+  **Pending push: `git push origin feature/3d-hero`** — the commit (`028bb9c`) is
+  local only; push was denied in the automation run (permission not enabled). Push
+  it when able; do not force-push.
 
 ---
 
