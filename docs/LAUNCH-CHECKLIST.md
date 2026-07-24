@@ -53,8 +53,19 @@ Run against the production deployment, not a preview:
 
 - [ ] `curl -s https://<host>/robots.txt` — `Host:` and `Sitemap:` both show the
       real domain.
-- [ ] `curl -s https://<host>/sitemap.xml | grep -c "<loc>"` — 28 URLs
-      (14 routes × 2 locales, RU on localized slugs), all on the real domain.
+- [ ] `curl -s https://<host>/sitemap.xml | grep -c "<loc>"` — **30 URLs**
+      (15 routes × 2 locales, RU on localized slugs), all on the real domain.
+      The 15 indexable routes are every page under `src/app/[locale]/` **except
+      `/styleguide`**, which is a dev aid (`robots: { index: false, follow: false }`
+      in `styleguide/page.tsx`) and is correctly `noindex` + sitemap-excluded. The
+      privacy policy (`/politica-de-confidentialitate`, RU
+      `/ru/politika-konfidencialnosti`) is a real public page and belongs in the
+      sitemap — it is the pair that took the count from 28 to 30. See the
+      reconciliation note at the bottom of this file.
+      **Merge-aware:** once `feature/configurator` merges to `main` the expected
+      count becomes **32** (17 routes × 2) — that lane adds `/configurator` (RO)
+      and `/ru/konfigurator` (RU). Whoever merges the configurator lane should
+      re-count and confirm **32**, not 30.
 - [ ] Spot-check three pages: `canonical`, `hrefLang="ro"`, `hrefLang="ru"`,
       `hrefLang="x-default"` all absolute and on the real domain.
 - [ ] `og:image` resolves (open it in a browser, expect an image not a 404).
@@ -127,6 +138,11 @@ Run against the production deployment, not a preview:
 ---
 
 ## Verified state as of 2026-07-22
+
+> ⚠️ This dated snapshot says **28 routes (14 × 2)** — it undercounts by one
+> route. The privacy policy page landed in the same PR (#50) that wrote this
+> audit, but the count here was never bumped. See the reconciliation below; the
+> real figure is **30**.
 
 Audited all 28 routes (14 × 2 locales) on a local production-equivalent render:
 
@@ -213,3 +229,62 @@ on cutover day once the host is set.
   fields stay omitted until then. Do not change.
 - **Q-10 — calculator price entries** (roof calculator). Owner-owned; unchanged.
 - **Q-15 — canonical host** (apex vs www). Owner-owned; blocks item a above.
+## Sitemap count reconciliation — 2026-07-24 (RC-402, merge-aware)
+
+**Resolved: `main`'s sitemap is correct at 30; this checklist's "28" was stale.
+After `feature/configurator` merges the target is 32.**
+
+Re-verified on `main` (worktree off `06fdb88`, not trusting the earlier
+`rc/RC-402-sitemap-reconcile` branch blindly): `npm run build` exits 0 and the
+generated `.next/server/app/sitemap.xml.body` contains **30** `<loc>` entries.
+That is **15 indexable routes × 2 locales**, RU on its localized slugs:
+
+    /  /acoperisuri  /calculator-acoperis  /fatade  /renovari-la-cheie
+    /finisaje  /proiectare-3d  /instalatii  /despre-noi  /portofoliu  /contact
+    /politica-de-confidentialitate  /chisinau  /orhei  /cahul
+
+These are every page under `src/app/[locale]/` **except `/styleguide`**, which is
+a dev aid — verified `robots: { index: false, follow: false }` in
+`src/app/[locale]/styleguide/page.tsx` and already excluded from
+`src/app/sitemap.ts`, so the `noindex` and the sitemap exclusion are consistent
+and no change was needed there.
+
+**The two URLs that make it 30, not 28**, are the privacy policy in both locales:
+
+- `/politica-de-confidentialitate` (RO)
+- `/ru/politika-konfidencialnosti` (RU)
+
+**Decision — keep them; the checklist is now 30.** A privacy policy is a real,
+public, 200-returning page a site legitimately wants indexed; it is nothing like
+the `/styleguide` dev aid. Route history confirms the checklist simply fell
+behind: the route list grew 13 → 14 (`/portofoliu`, PR #48) → 15
+(`/politica-de-confidentialitate`, PR #50), and PR #50 added the page but never
+bumped this document. No `src/app/sitemap.ts` change was made — the code was
+already right.
+
+### Merge-aware target (the new part)
+
+The **configurator lane** (`feature/configurator`, not yet merged) adds **2**
+indexable routes to `src/app/sitemap.ts` when it lands:
+
+- `/configurator` (RO)
+- `/ru/konfigurator` (RU)
+
+| State | Indexable routes | `<loc>` count |
+|---|---|---|
+| `main` today | 15 | **30** |
+| After `feature/configurator` merges | 17 | **32** |
+
+Whoever merges the configurator lane must re-run the build and confirm the
+sitemap emits **32**, and bump the §2 checkbox above to 32. If the count is not
+exactly 32 after that merge, either the configurator routes did not land in
+`sitemap.ts` or an unrelated route changed — investigate before cutover. A
+matching self-documenting note lives at the top of `src/app/sitemap.ts` so the
+expected counts are visible right where the `ROUTES` array is edited.
+
+Not in scope / untouched: the canonical host stays the staging fallback by
+design (Q-15 is the owner's call; `NEXT_PUBLIC_SITE_URL` must stay absent until
+RC-403) — this reconciliation is only about the route **count** and **which
+routes**. The separate title-length metric elsewhere in this file ("12 of 28")
+counts titles over ~60 chars, not sitemap routes, and was left alone — it needs
+its own re-measure, not a find-and-replace.
