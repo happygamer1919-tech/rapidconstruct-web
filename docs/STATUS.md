@@ -84,6 +84,15 @@ Shipped and verified. PR numbers in brackets.
   `main`**. Located only — shadow type UNCHANGED. Prior STATUS line ref `487–494`
   was stale; anchor on the `applyRenderer` name / `shadowMap.type` grep, not the
   line number. Full findings: `docs/RC-113-three-dedupe.md`.
+  **⏳ Pending push/PR — `git push` was DENIED this session; branch is local only
+  (`rc/RC-113-three-dedupe`, commit `bbd4176`). Run when push is allowed:**
+  ```bash
+  cd /Users/sm33xy/Projects/rapidconstruct-web
+  git push -u origin rc/RC-113-three-dedupe
+  gh pr create --base main --head rc/RC-113-three-dedupe \
+    --title "chore(RC-113/114): three.js dedupe + shadow-emitter location" \
+    --body "RC-113: diagnoses the duplicate three.js (r185 direct vs the copy pulled via @react-three/drei -> stats-gl) with npm ls/why; applies an overrides-based dedupe ONLY if mechanical and green, else documents the plan in docs/RC-113-three-dedupe.md. RC-114: locates the PCFSoftShadowMap emitter (file:line) without changing the shadow type. Non-blocking, no 3D behavior change. Verified: npm run build exits 0; dedupe applied, npm ls three shows one version and npm test stays green."
+  ```
 - **Foundation** — Next.js 16 App Router + TS + Tailwind scaffold [#2]; Vercel
   wiring and staging URL [#3]; design tokens, RO/RU routing, layout shell, CI [#6].
 - **SEO plumbing** — metadata helper, LocalBusiness JSON-LD, sitemap, robots,
