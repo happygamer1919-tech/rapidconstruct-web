@@ -217,7 +217,10 @@ export function buildScene(THREE, scene, renderer) {
   sg.addColorStop(.72, '#e0e0d6'); sg.addColorStop(1, '#eddcba');
   kx.fillStyle = sg; kx.fillRect(0, 0, 4, 256);
   scene.background = new THREE.CanvasTexture(kc);
-  scene.fog = new THREE.FogExp2(0xd6cfba, .0095);
+  // .0095 → .0082 (LANE B step 3): the composer blends transparency in
+  // LINEAR space before tone mapping, which reads milkier than the direct
+  // path the .0095 was tuned on — this compensates back to the approved depth.
+  scene.fog = new THREE.FogExp2(0xd6cfba, .0082);
 
   const domeC = cv(1024, 512), dx2 = domeC.getContext('2d');
   for (let i = 0; i < 30; i++) {

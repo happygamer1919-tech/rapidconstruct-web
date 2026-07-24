@@ -20,6 +20,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { GTAOPass } from "three/examples/jsm/postprocessing/GTAOPass.js";
+import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { buildScene } from "@/scenes/rapidconstruct-scene";
 import { skipHeavy3d } from "@/lib/audit";
 
@@ -135,6 +139,45 @@ export default function HeroScene({
     const api = buildScene(THREE, scene, renderer);
 
     /**
+     * SSAO (LANE B step 3). SSAOPass draws the beauty pass itself, so the
+     * chain is just [SSAO → OutputPass]; OutputPass applies the ACES tone
+     * mapping + sRGB that renderer.render used to. The composer target uses
+     * 4× MSAA (WebGL2) so we don't trade the built-in antialiasing away.
+     * kernelRadius is in world units — this scene is metric, so .7 m reaches
+     * eaves/reveal/plinth crevices without haloing whole walls. If any of
+     * this throws, `composer` stays null and applyFrame falls back to the
+     * plain render path — the hero must never die to a post effect.
+     */
+    let composer: EffectComposer | null = null;
+    try {
+      // Default buffers: on WebGL2 EffectComposer already allocates a 4× MSAA
+      // half-float target — a hand-rolled one broke the pass chain (blank
+      // canvas, no throw).
+      composer = new EffectComposer(renderer);
+      composer.addPass(new RenderPass(scene, camera));
+      // GTAOPass, not SSAOPass: SSAOPass produced a blank canvas with no
+      // throw in this scene (its self-contained beauty+composite path);
+      // GTAO blends over the RenderPass output and is the better AO anyway.
+      // Radii in world units — metric scene, so ~.4 m reaches eave/reveal/
+      // plinth crevices without haloing whole walls.
+      const gtao = new GTAOPass(scene, camera, 1, 1);
+      gtao.output = GTAOPass.OUTPUT.Default;
+      gtao.updateGtaoMaterial({
+        radius: 0.35,
+        distanceExponent: 1,
+        thickness: 1,
+        scale: 0.9,
+        samples: 10,
+        distanceFallOff: 1,
+        screenSpaceRadius: false,
+      });
+      composer.addPass(gtao);
+      composer.addPass(new OutputPass());
+    } catch {
+      composer = null;
+    }
+
+    /**
      * Keep the HORIZONTAL field of view constant instead of the vertical one.
      *
      * three.js `fov` is vertical, so a fixed value crops the frame horizontally
@@ -186,6 +229,9 @@ export default function HeroScene({
       const w = mount.clientWidth || 1;
       const h = mount.clientHeight || 1;
       renderer.setSize(w, h, false);
+      // CSS px — EffectComposer multiplies by the renderer's pixelRatio
+      // itself (pre-multiplying would 4× the buffers on dpr-2 phones).
+      composer?.setSize(w, h);
 
       if (w / h < 1) {
         const virtualH = h * PORTRAIT_LIFT;
@@ -249,7 +295,8 @@ export default function HeroScene({
         lastLabel = label;
         setPhase({ label, color: Number(ph.color) });
       }
-      renderer.render(scene, camera);
+      if (composer) composer.render();
+      else renderer.render(scene, camera);
     };
 
     let holdFrame = 0;
@@ -283,8 +330,9 @@ export default function HeroScene({
           return;
         }
         applyFrame(t);
-      } catch {
+      } catch (err) {
         // Swallow one bad frame rather than kill the loop.
+        if (process.env.NODE_ENV !== "production") console.error("[hero]", err);
       }
     };
 
@@ -348,6 +396,7 @@ export default function HeroScene({
         else mat?.dispose();
       });
       if (scene.background instanceof THREE.Texture) scene.background.dispose();
+      composer?.dispose();
       renderer.dispose();
       if (renderer.domElement.parentNode === mount)
         mount.removeChild(renderer.domElement);
