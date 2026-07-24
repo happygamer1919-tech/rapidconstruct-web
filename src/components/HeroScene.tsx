@@ -3,10 +3,13 @@
 /**
  * HeroScene — mounts the approved RapidConstruct 3D hero.
  *
- * The model itself is NOT defined here. It lives verbatim in
- * `src/scenes/rapidconstruct-scene.js` (byte-identical to the supplied source)
- * and is treated as read-only: this file only creates a renderer/scene/camera,
- * calls `buildScene` once, and drives the API it returns.
+ * The model itself is NOT defined here. It lives in
+ * `src/scenes/rapidconstruct-scene.js` — since feature/configurator a
+ * data-driven engine whose no-config default renders exactly the approved
+ * scene (house recipe: src/scenes/houses/cu-fronton.js). This file only
+ * creates a renderer/scene/camera, calls `buildScene` once, and drives the
+ * API it returns. It never passes a config, so the hero always shows the
+ * owner-approved house.
  *
  *   api.update(t)      — per frame
  *   api.cameraAt(t)    — camera position + lookAt
