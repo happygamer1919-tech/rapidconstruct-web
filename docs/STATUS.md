@@ -3,7 +3,7 @@
 Living board. Background and reasoning live in `docs/PROJECT-MEMORY.md`; this
 file is only *what is true now and what happens next*.
 
-**Last updated: 2026-07-23 (evening)** — verified against git, the Vercel API and
+**Last updated: 2026-07-23 (late evening)** — verified against git, the Vercel API and
 live HTTP checks, not recalled.
 
 ---
@@ -80,14 +80,17 @@ Shipped and verified. PR numbers in brackets.
 - **Q-08** — Vercel deployment protection disabled; owner can open previews
   without logging in.
 - **Perf budget in CI** [#16] — blocking Lighthouse job on `?no3d=1`.
-- **3D hero — framing + reveal pass** (2026-07-23, `feature/3d-hero`). Canvas is
-  full-bleed; the lens holds a constant HORIZONTAL fov so portrait no longer
-  crops through the building; the build animation plays completely unveiled and
-  the copy arrives afterwards on its own local translucent+blurred panel (34% of
-  the hero on desktop) rather than a full-screen wash. Hero text contrast went
-  from a measured 1.53:1 worst case to 4.61:1, all elements clearing WCAG AA on
-  desktop and mobile. Shader warm-up before the clock starts, or the 4.3s build
-  was ~80% over by the second drawn frame.
+- **3D hero — framing, reveal + legibility** (2026-07-23 evening,
+  `feature/3d-hero`). Canvas is full-bleed and the build animation plays
+  edge-to-edge with nothing over it; the copy and its backdrop fade in only once
+  the build settles. The full-screen scrim was replaced by a local translucent,
+  blurred panel behind the copy (34% of the hero on desktop, 58% Pixel 7, 77%
+  iPhone) rather than a full-screen wash. Hero text contrast measured on the live
+  build: lowest 4.61:1, every element clearing WCAG AA on desktop and mobile —
+  was 1.53:1 worst case before this work. Portrait framing holds a constant
+  HORIZONTAL fov plus a small `setViewOffset` lift (1.06), so the site is never
+  cropped through the building. Shader warm-up runs before the clock starts, or
+  the 4.3 s build was ~80% over by the second drawn frame.
 - **3D hero — approved scene ported** (2026-07-23, `feature/3d-hero`).
   `src/scenes/rapidconstruct-scene.js` is a byte-identical copy of the supplied
   source (md5 `68a4fb72172b7695a0f067ec261f7c25`); `src/components/HeroScene.tsx`
