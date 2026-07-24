@@ -29,9 +29,11 @@ import { skipHeavy3d } from "@/lib/audit";
 import {
   AREA_PRESETS,
   DEFAULT_CONFIG,
+  FENCE_TYPES,
   ROOF_MATERIALS_3D,
   ROOF_MATERIAL_ORDER,
   ROOF_TYPES,
+  type FenceTypeId,
   type HouseConfig,
   type RoofMaterialId,
   type RoofTypeId,
@@ -413,6 +415,29 @@ export default function HouseConfigurator() {
           <p className="mt-4 text-caption text-muted-foreground">
             {material.band ? t("specs.note") : t("price.onRequestNote")}
           </p>
+        </section>
+
+        {/* FENCE */}
+        <section aria-label={t("fence.title")}>
+          <h2 className="micro-label mb-3 text-muted-foreground">
+            {t("fence.title")}
+          </h2>
+          <p className="mb-2 text-caption font-medium text-foreground">
+            {t("fence.typeLabel")}
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            {FENCE_TYPES.map((id: FenceTypeId) => (
+              <button
+                key={id}
+                type="button"
+                className={chip(config.fence.type === id)}
+                aria-pressed={config.fence.type === id}
+                onClick={() => apply({ fence: { type: id } })}
+              >
+                {t(`fence.types.${id}`)}
+              </button>
+            ))}
+          </div>
         </section>
 
         {/* AREA */}

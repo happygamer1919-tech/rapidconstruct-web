@@ -1385,6 +1385,16 @@
       "disclaimer": "Estimare orientativă pentru material și montaj. Prețul exact se stabilește după măsurători — devizul este gratuit.",
       "onRequest": "Pentru țiglă ceramică prețul se confirmă la cerere — cere o ofertă și revenim cu cifra exactă.",
       "cta": "Cere ofertă exactă"
+    },
+    "fence": {
+      "title": "Gard",
+      "typeLabel": "Tip de gard",
+      "types": {
+        "jaluzele": "Jaluzele",
+        "sipca": "Șipcă",
+        "plin": "Plin",
+        "combinat-piatra": "Combinat cu piatră"
+      }
     }
   }
 }
