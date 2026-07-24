@@ -1370,6 +1370,21 @@
       "from": "de la {price} lei/m²",
       "onRequest": "preț la cerere",
       "onRequestNote": "Prețul pentru țiglă ceramică se confirmă la cerere — sună-ne sau cere o ofertă."
+    },
+    "area": {
+      "title": "Suprafață",
+      "label": "Suprafața acoperișului",
+      "customLabel": "Altă suprafață (m²)",
+      "customPlaceholder": "ex. 175",
+      "preset": "{value} m²"
+    },
+    "estimate": {
+      "title": "Estimare totală",
+      "range": "{low} – {high} lei",
+      "breakdown": "{area} m² × {material}",
+      "disclaimer": "Estimare orientativă pentru material și montaj. Prețul exact se stabilește după măsurători — devizul este gratuit.",
+      "onRequest": "Pentru țiglă ceramică prețul se confirmă la cerere — cere o ofertă și revenim cu cifra exactă.",
+      "cta": "Cere ofertă exactă"
     }
   }
 }

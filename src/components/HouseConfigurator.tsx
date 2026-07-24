@@ -19,13 +19,15 @@
  * whole configuration UI (prices, specs, totals) keeps working.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { buildScene } from "@/scenes/rapidconstruct-scene";
 import { skipHeavy3d } from "@/lib/audit";
 import {
+  AREA_PRESETS,
   DEFAULT_CONFIG,
   ROOF_MATERIALS_3D,
   ROOF_MATERIAL_ORDER,
@@ -34,6 +36,10 @@ import {
   type RoofMaterialId,
   type RoofTypeId,
 } from "@/config/configurator";
+
+/** Sane bounds for the free-input roof area (m²). */
+const MIN_AREA = 30;
+const MAX_AREA = 2000;
 
 /** The engine is plain JS — type the slice of its API the component drives. */
 type SceneApi = {
@@ -87,6 +93,10 @@ export default function HouseConfigurator() {
 
   const [config, setConfig] = useState<HouseConfig>(DEFAULT_CONFIG);
   const [building, setBuilding] = useState(true);
+  /** Roof area as typed (string, so the field can be cleared); presets write
+   *  into the same state — one source of truth for the estimate. */
+  const [areaInput, setAreaInput] = useState("150");
+  const areaId = useId();
 
   /** Apply a config patch to state + scene; rebuilt pieces fly in (~1.2 s). */
   const apply = (patch: Partial<HouseConfig>) => {
@@ -274,6 +284,17 @@ export default function HouseConfigurator() {
 
   const material = ROOF_MATERIALS_3D[config.roof.material];
 
+  const areaNum = Number(areaInput.replace(",", "."));
+  const areaValid =
+    Number.isFinite(areaNum) && areaNum >= MIN_AREA && areaNum <= MAX_AREA;
+  const estimate =
+    areaValid && material.band
+      ? {
+          low: material.band.min * areaNum,
+          high: material.band.max * areaNum,
+        }
+      : null;
+
   const chip = (selected: boolean) =>
     `rounded-lg border px-3 py-2 text-left text-caption font-medium transition-colors ${
       selected
@@ -392,6 +413,86 @@ export default function HouseConfigurator() {
           <p className="mt-4 text-caption text-muted-foreground">
             {material.band ? t("specs.note") : t("price.onRequestNote")}
           </p>
+        </section>
+
+        {/* AREA */}
+        <section aria-label={t("area.title")}>
+          <h2 className="micro-label mb-3 text-muted-foreground">
+            {t("area.title")}
+          </h2>
+          <p className="mb-2 text-caption font-medium text-foreground">
+            {t("area.label")}
+          </p>
+          <div className="mb-3 grid grid-cols-5 gap-2">
+            {AREA_PRESETS.map((v) => (
+              <button
+                key={v}
+                type="button"
+                className={`${chip(areaNum === v)} whitespace-nowrap px-2 text-center`}
+                aria-pressed={areaNum === v}
+                onClick={() => setAreaInput(String(v))}
+              >
+                {t("area.preset", { value: v })}
+              </button>
+            ))}
+          </div>
+          <label
+            htmlFor={areaId}
+            className="mb-1 block text-caption text-muted-foreground"
+          >
+            {t("area.customLabel")}
+          </label>
+          <input
+            id={areaId}
+            type="text"
+            inputMode="decimal"
+            value={areaInput}
+            onChange={(e) => setAreaInput(e.target.value)}
+            placeholder={t("area.customPlaceholder")}
+            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-body text-foreground outline-none transition-colors focus:border-accent"
+          />
+        </section>
+
+        {/* ESTIMATE */}
+        <section
+          aria-label={t("estimate.title")}
+          className="rounded-xl border border-border bg-inverse-background p-5 text-inverse-foreground"
+        >
+          <h2 className="micro-label mb-3 text-inverse-muted-foreground">
+            {t("estimate.title")}
+          </h2>
+          {estimate ? (
+            <>
+              <p
+                className="font-serif text-2xl"
+                aria-live="polite"
+              >
+                {t("estimate.range", {
+                  low: fmt(estimate.low),
+                  high: fmt(estimate.high),
+                })}
+              </p>
+              <p className="mt-1 text-caption text-inverse-muted-foreground">
+                {t("estimate.breakdown", {
+                  area: areaNum,
+                  material: t(`roof.materials.${config.roof.material}`),
+                })}
+              </p>
+              <p className="mt-4 text-caption text-inverse-muted-foreground">
+                {t("estimate.disclaimer")}
+              </p>
+            </>
+          ) : (
+            <p className="text-caption text-inverse-muted-foreground">
+              {material.band ? t("estimate.disclaimer") : t("estimate.onRequest")}
+            </p>
+          )}
+          <Link
+            href="/contact"
+            className="mt-5 inline-flex items-center justify-center rounded-full bg-accent px-5 py-2.5 text-caption font-semibold text-accent-foreground transition-opacity hover:opacity-90"
+          >
+            {t("estimate.cta")}
+          </Link>
         </section>
       </div>
     </div>
