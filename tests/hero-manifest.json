@@ -1,0 +1,37 @@
+{
+  "note": "Approved hero surface (RC-115). Regenerate ONLY with an intentional, reviewed hero change: npm run verify:hero:update. Derived by walking the import graph from \"roots\" — never edit \"files\" by hand.",
+  "roots": [
+    "src/components/HeroScene.tsx",
+    "src/scenes/rapidconstruct-scene.js"
+  ],
+  "files": {
+    "src/components/HeroScene.tsx": {
+      "sha256": "fd646d2253965db1b8e16000997613d3f9562620ff6ad99f37426110b7e2538b",
+      "lines": 379
+    },
+    "src/config/configurator.ts": {
+      "sha256": "9b2688edf96ab8c74c94094dc2eff4e3120f187565751b80d4963b1dcdd93e9e",
+      "lines": 194
+    },
+    "src/lib/audit.ts": {
+      "sha256": "9ac6df6a5ad601de9c3b9c10acdf2abdf84ec9e89f30a5e696911688bfadcaa9",
+      "lines": 32
+    },
+    "src/scenes/house-kit.js": {
+      "sha256": "34ab920888ffac3552b205b1d79944f556129a2f4fb39aac47434962094b368f",
+      "lines": 399
+    },
+    "src/scenes/houses/cu-fronton.js": {
+      "sha256": "1ce4a9199383e8cd46193057d6ad18c0b1a46b48eafbda8e290d0abcec8e727f",
+      "lines": 241
+    },
+    "src/scenes/houses/index.js": {
+      "sha256": "0c489002b7443f5be5bb2bce16f0d42533ff8e2c566d17984956ed39f8179c3b",
+      "lines": 12
+    },
+    "src/scenes/rapidconstruct-scene.js": {
+      "sha256": "41f78829e113145c8546d03832b0cdb42e779612516782b25380fcc3dc2c9a0f",
+      "lines": 261
+    }
+  }
+}
