@@ -262,6 +262,21 @@ In order. Items 1–3 need no owner input.
   closed. Safe to prune everything except `main` and `feature/3d-hero` — but
   **diff content, not commit counts, before deleting** (see the squash-merge trap
   in `PROJECT-MEMORY.md` §6.1).
+- **Prune candidates (2026-07-24) — DO NOT PRUNE YET, note only.** These local-only
+  branches are already-shipped/stale (their content is on `main` via squash-merged
+  PRs; leaving them unpushed on purpose to avoid re-publishing the orphan trap).
+  Verify content-diff vs `origin/main` before any future prune:
+  `rc/RC-301-slug-reconcile`, `rc/RC-302-faq-expansion`, `rc/RC-303-city-pages`,
+  `rc/RC-304-gbp-reviews`, `rc/RC-305-lighthouse-audit-skip`,
+  `rc/RC-3d-archetype-a-land`, `rc/RC-401-redirects`, `rc/RC-seo-roof-title`,
+  `rc/board-upgrade-hero-console-items`, `rc/hero-build`, `rc/house-lego-build`,
+  `rc/house-polish`, `rc/roof-scroll-build`. Note: `rc/RC-401-redirects` and
+  `rc/RC-seo-roof-title` are checked out in worktrees under `~/Projects/rapid-worktrees/`
+  — remove the worktree before deleting the branch.
+- The genuinely-stranded worker branches were pushed 2026-07-24 with draft PRs
+  (owner merges): RC-113 (#53), RC-402 audit-finish (#54), RC-402 sitemap-merge
+  (#55), RC-402 sitemap-reconcile (#56), indexability tripwire (#57), SEO/GEO
+  sweep (#58). `rc/RC-115-hero-verify-manifest` pushed (live, not stale).
 - `BLENDER-TASK-owner-photomatch.md` still sits in the repo root as "the active 3D
   task" but has been overtaken by the procedural rebuild. Archive it to
   `docs/blender-tasks-done/` or delete it.
