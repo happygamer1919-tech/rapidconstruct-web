@@ -20,10 +20,13 @@
 export function buildScene(THREE, scene, renderer) {
   const B = THREE.BoxGeometry;
   const BRAND = 0xE08039, BLUE = 0x1f4fd6;
-  // GLS deepened 2f4856 → 1a2a34 (LANE B): with the physical glass material
-  // the old blue-grey read as painted panel; the darker tint lets sky
-  // reflections carry the surface instead of albedo.
-  const WHT = 0xf1eee6, STN = 0xc6bfb1, FRM = 0x14181c, GLS = 0x1a2a34;
+  // GLS 1a2a34 → 3e4f5c (LANE C): glass is now a METALLIC mirror (metalness
+  // 1), where the base colour is the reflectance tint, not an albedo — the
+  // near-black value read as a hole into an empty shell at drone distance.
+  // This blue-grey tints the mirrored sky the way real solar-control glazing
+  // does. (history: approved 2f4856 → LANE B 1a2a34 → 3e4f5c → this;
+  // 3e4f5c mirrored too bright — goal is DARK reflective glazing)
+  const WHT = 0xf1eee6, STN = 0xc6bfb1, FRM = 0x14181c, GLS = 0x2e3d49;
   // Quoin-only stone tint — warmer + slightly darker than STN so the corner
   // blocks read against the white stucco. STN is still used by wall bases and
   // columns, so this is a separate constant rather than a change to STN.
@@ -427,15 +430,17 @@ float vNoise(vec3 p) {
     if (envPMREM && !o.glass && (o.m || 0) >= .3) {
       mp.envMap = envPMREM; mp.envMapIntensity = .9 * o.m;
     }
-    // LANE B step 1 — glass gets its own PHYSICAL material: dark tint, tight
-    // roughness, clearcoat. The physical shader's fresnel makes it catch light
-    // at grazing angles; the envMap (step 2) reads strongest here. Per-piece
-    // material (not shared) because the build animation fades each piece's
-    // opacity individually.
+    // LANE C glass — a dark tinted MIRROR, not a pane. The LANE B physical
+    // dielectric (metalness 0, clearcoat fresnel) only reflected at grazing
+    // angles, so camera-facing windows read as see-through holes over the
+    // wall backface. Metalness 1 makes the base colour the reflectance tint:
+    // the window mirrors the env sky at EVERY angle, exactly how
+    // solar-control glazing reads at drone distance. No interiors needed.
+    // Per-piece material (not shared) because the build animation fades each
+    // piece's opacity individually; opacity ends at 1 — fully opaque.
     const mt = o.glass
-      ? new THREE.MeshPhysicalMaterial({
-          color: col, roughness: .06, metalness: 0,
-          clearcoat: 1, clearcoatRoughness: .08,
+      ? new THREE.MeshStandardMaterial({
+          color: col, roughness: .07, metalness: 1,
           envMap: envPMREM || undefined, envMapIntensity: 1.8,
           transparent: true, opacity: 0,
         })
