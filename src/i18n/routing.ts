@@ -57,6 +57,9 @@ export const pathnames = {
   "/cahul": { ro: "/cahul", ru: "/kagul" },
   // Dev aid, noindex, excluded from the sitemap — no localized slug needed.
   "/styleguide": "/styleguide",
+  // Preview shell (project slideshow), noindex, excluded from the sitemap — a
+  // standalone route to decide placement later; not wired into the live hero.
+  "/slideshow-preview": "/slideshow-preview",
 } as const;
 
 export const routing = defineRouting({
