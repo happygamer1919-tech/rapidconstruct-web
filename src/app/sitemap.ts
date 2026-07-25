@@ -7,12 +7,20 @@ import { getPathname } from "@/i18n/navigation";
  * Generated sitemap (RC-006).
  *
  * SITEMAP OPTION: **only currently-resolving routes** (the safer option offered
- * in the RC-006 brief). Right now that is just the home route, emitted for both
- * locales. As the nav pages from SPEC §5 land (RC-1xx/RC-2xx), each page ticket
- * adds its route here. We deliberately do NOT list the 9 intended nav slugs yet,
- * because listing URLs that 404 would be a defect of its own.
+ * in the RC-006 brief). Each page ticket adds its route to `ROUTES` below as it
+ * lands; we never list a URL that would 404, since that is a defect of its own.
  *
- * The temporary `/styleguide` dev aid is intentionally excluded (it is noindex).
+ * The `/styleguide` dev aid is intentionally excluded (it is
+ * `robots: { index: false, follow: false }` in `styleguide/page.tsx`).
+ *
+ * EXPECTED `<loc>` COUNT (self-check for RC-402 — count = ROUTES.length × locales):
+ *   - `main` today: 15 routes × 2 locales = **30** `<loc>` entries.
+ *   - After `feature/configurator` merges: it adds `/configurator` (RO) and
+ *     `/ru/konfigurator` (RU) → 17 routes × 2 = **32**. When you merge that lane,
+ *     re-run the build and confirm the sitemap emits 32, then bump the count in
+ *     `docs/LAUNCH-CHECKLIST.md` §2. If you edit `ROUTES`, update both numbers.
+ * Verify with: `npm run build` then
+ *   `grep -c "<loc>" .next/server/app/sitemap.xml.body`.
  *
  * Every URL is an absolute https URL from SITE_URL (never http — Tilda defect,
  * SPEC §7). Each entry carries reciprocal `alternates.languages` (ro, ru,
