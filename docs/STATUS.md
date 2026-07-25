@@ -59,6 +59,21 @@ environmental (an env var set before cutover), which CI structurally cannot see.
 
 Shipped and verified. PR numbers in brackets.
 
+- **3D hero — LANE C fixes: mirror glass + full perimeter fence**
+  (2026-07-24, `feature/3d-hero`, `fe0442d` + `7b42033`).
+  1. *Glass* — was a physical dielectric that only reflected at grazing
+     angles: camera-facing windows read as clear holes over the wall
+     backface. Now a dark tinted METALLIC mirror (metalness 1, GLS
+     1a2a34→2e3d49 via a too-bright 3e4f5c, envMapIntensity 1.8) — mirrors
+     the env sky at every angle like solar-control glazing; no interiors
+     built.
+  2. *Fence* — enclosed the plot: left/right runs on the front corner-pier
+     lines (x -13.3/15.5), back run at z -8, shared corner piers, same
+     panel/pier/cap recipe; only opening is the front driveway gate.
+     Contact-shadow strips under all three new runs.
+  - *Verified:* tsc, eslint, prod build; hold alive 5.0%/4 s; reduced-motion
+    single frame; `?no3d=1` no canvas.
+
 - **3D hero — LANE B realism pass: glass / reflections / SSAO / wall tone**
   (2026-07-24, `feature/3d-hero`, commits `dca2603`…`ea3bff4`). Procedural
   only — no Blender, no texture maps. Canvas-only before/after per step:
