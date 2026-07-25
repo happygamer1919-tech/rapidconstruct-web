@@ -24,6 +24,9 @@
     "react-dom": "19.2.4",
     "three": "^0.185.1"
   },
+  "overrides": {
+    "three": "$three"
+  },
   "devDependencies": {
     "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.61.1",
