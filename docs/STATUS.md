@@ -184,6 +184,7 @@ Shipped and verified. PR numbers in brackets.
 |---|---|---|
 | **3D hero — owner review** | `feature/3d-hero`, `src/components/HeroScene.tsx` | Ported and live at the owner review URL. Awaiting the owner's verdict. Not merged to `main` by design. `HeroBuild3D.tsx` is now dead code — delete it once the owner signs off on the new scene. |
 | **RC-104 Portfolio** | `/portofoliu` | **Partial.** Page ships with 8 real photos, tags, ItemList JSON-LD, sitemap entry — the nav 404 is gone. Not done: filters, per-project detail pages, before/after sliders. All three need metadata nobody has confirmed (Q-14). |
+| **Homepage project slideshow — shell (LANE B)** | `feature/project-slideshow` @ `521cfca`; preview `/slideshow-preview` (RO + `/ru/slideshow-preview`) | **Shell built + pushed, placeholder content only.** Full-bleed data-driven slideshow (auto-advance/crossfade/pause-on-hover/reduced-motion), scrim + RO/RU headline, data from one array (`src/data/slideshow.ts`), 5 labelled PLACEHOLDER images. **BLOCKED on:** Q-14 owner photos + RO/RU copy, and the **Higgsfield hero decision** (placement decided after that). Not wired into the live hero; noindex; no PR yet by design. |
 
 ---
 
