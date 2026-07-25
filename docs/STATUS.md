@@ -273,6 +273,13 @@ In order. Items 1–3 need no owner input.
   closed. Safe to prune everything except `main` and `feature/3d-hero` — but
   **diff content, not commit counts, before deleting** (see the squash-merge trap
   in `PROJECT-MEMORY.md` §6.1).
+- **Lane-label correction (2026-07-25).** The `feature/3d-hero` realism commits
+  `dca2603` / `ac046b9` / `8054c44` / `ea3bff4` are labeled "LANE B step 1-4" but
+  are actually **LANE A** (serial 3D-hero visual work). Pushed history is **left
+  as-is** (not rewritten); commits from here use the correct `LANE A` label, and
+  every commit subject states its lane + ticket. Lanes: A = `feature/3d-hero`,
+  B = main-line non-hero, C = `feature/configurator`. See
+  `claude-toolkit/CLAUDE.md` → Standing rules (BOARD DISCIPLINE + NAMING).
 - `BLENDER-TASK-owner-photomatch.md` still sits in the repo root as "the active 3D
   task" but has been overtaken by the procedural rebuild. Archive it to
   `docs/blender-tasks-done/` or delete it.
