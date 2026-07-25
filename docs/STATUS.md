@@ -183,6 +183,36 @@ Shipped and verified. PR numbers in brackets.
   **Pending push: `git push origin feature/3d-hero`** — see the note above; this
   STATUS commit rides the same push.
 
+- **CI green again — lint fix** [#59] (`4334021`). ESLint flat-config override
+  allows CommonJS `require()` in `tools/**` (the `board-server.js` from #51 tripped
+  `@typescript-eslint/no-require-imports` and reddened `typecheck·lint·build·smoke`
+  on main and every open PR). Override, not rewrite — the script needs `__dirname`.
+- **RC-113/114 — three.js dedupe + shadow-emitter investigation** [#53]. Deduped
+  duplicate `three` copies (`package.json`/lock); located the `PCFSoftShadowMap`
+  emitter. **Shadow type unchanged by design** (changing it alters the hero look).
+- **RC-402 pre-launch audit — non-host items** [#54]. Route liveness on the 30-URL
+  set (RO+RU, no 301→404), offline structured-data validation, OG completeness.
+  Canonical-host re-verify **deferred to Q-15 → RC-403** (host unset until cutover).
+- **RC-402 sitemap reconcile (merge-aware)** [#55; **#56 closed — superseded**].
+  Sitemap is **30** `<loc>` on main (15 routes × 2); the checklist's stale "28" was
+  corrected. **Target 32** after `feature/configurator` merges (+`/configurator` RO
+  + `/ru/konfigurator`). `rc/RC-402-sitemap-reconcile` (#56) closed in favour of #55.
+- **Indexability tripwire** [#57] — `scripts/check-indexability.mjs` on main: asserts
+  every non-`rapidconstruct.md` host is non-indexable and the real domain must be.
+- **SEO/GEO sweep** [#58] — route-by-route audit (16×2) + mechanical fixes
+  (styleguide / CityPage / LocalBusinessJsonLd); 2 Q-07 claim items flagged (owner).
+- **3D hero — glass + perimeter fence** (2026-07-25, `feature/3d-hero`). Glass now
+  reads as dark reflective glazing, not a see-through pane (`fe0442d`); the plot is
+  enclosed with left/right/back fence runs (`7b42033`).
+- **3D preview terminal freed** (2026-07-25). The `:3801` configurator preview
+  worktree was checked out **detached**, freeing the `feature/configurator` branch
+  ref for the LANE C terminal; the preview keeps serving (fast-forward to refresh).
+
+> **CI note:** `lighthouse (perf budget)` stays red on main and every PR **by
+> design** — the noindex staging safeguard fails Lighthouse's `is-crawlable` SEO
+> audit below the 0.9 gate. Self-clears at RC-403 when `NEXT_PUBLIC_SITE_URL` is
+> set. Not a regression; do not "fix" it, and never add the env var.
+
 ---
 
 ## 🟡 In Progress
@@ -191,7 +221,6 @@ Shipped and verified. PR numbers in brackets.
 |---|---|---|
 | **3D hero — owner review** | `feature/3d-hero`, `src/components/HeroScene.tsx` | Ported and live at the owner review URL. Awaiting the owner's verdict. Not merged to `main` by design. `HeroBuild3D.tsx` is now dead code — delete it once the owner signs off on the new scene. |
 | **RC-104 Portfolio** | `/portofoliu` | **Partial.** Page ships with 8 real photos, tags, ItemList JSON-LD, sitemap entry — the nav 404 is gone. Not done: filters, per-project detail pages, before/after sliders. All three need metadata nobody has confirmed (Q-14). |
-| **RC-402 pre-launch audit** | `docs/LAUNCH-CHECKLIST.md` | Route audit done — all 28 checked routes return 200, canonical + hreflang + JSON-LD + single H1 + og:image present on every page. Remaining: re-verify after the canonical host is settled, and Rich Results / OG debugger passes. |
 
 ---
 
