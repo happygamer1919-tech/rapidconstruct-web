@@ -340,7 +340,10 @@ export function buildScene(THREE, scene, renderer) {
   groundPlane(rimT, -1.5, 1.5, 34.4, 25.4, .018, 1, 2);      // paving perimeter
   groundPlane(contactT, -3.7, -.1, 15.4, 9.4, .455, 1, 2);   // wing + carport
   groundPlane(contactT, 5.9, .7, 12.8, 10.2, .455, 1, 2);    // block + bay
-  groundPlane(contactT, .2, 9.4, 32, 3.4, .285, .85, 2);     // fence line
+  groundPlane(contactT, .2, 9.4, 32, 3.4, .285, .85, 2);     // fence line (front)
+  groundPlane(contactT, -13.3, .5, 3.2, 20, .285, .7, 2);    // fence line (left)
+  groundPlane(contactT, 15.5, .5, 3.2, 20, .285, .7, 2);     // fence line (right)
+  groundPlane(contactT, 1.1, -8, 32, 3.2, .285, .7, 2);      // fence line (back)
   groundPlane(contactT, -7.6, 1.4, 5, 6.8, .46, .7, 2);      // car
 
   const hillM = new THREE.MeshStandardMaterial({ color: 0x929e88, roughness: 1, transparent: true, opacity: 0 });
@@ -659,6 +662,30 @@ float vNoise(vec3 p) {
   }
   add(new B(3.5,1.86,.14), 0xffffff, { x:2.9, y:1.06, z:9, fx:-3, s:2.66, d:.36, map:gateT, r:.55, m:.42 });
   add(new B(3.6,.12,.2), 0x323940, { x:2.9, y:2.05, z:9, fx:-3, s:2.7, d:.3, r:.5, m:.45 });
+
+  /* Perimeter runs (LANE C) — the fence used to stop at the front line, so
+   * the plot read as a stage set. Left/right runs sit on the front fence's
+   * corner-pier lines (x -13.3 / 15.5, piers already there at z 9) and the
+   * back run mirrors the front pitch; the two back corners are shared by the
+   * side and back runs. Same panel/pier/cap recipe as the front. The only
+   * opening stays the front driveway gate. */
+  for (const sx of [-13.3, 15.5]) {
+    const sb = sx < 0 ? 1.5 : 1.54;
+    for (let i = 0; i < 4; i++) {
+      const z = 5.6 - i * 3.4; // 5 spans of 3.4 from z 9 down to the back corner
+      add(new B(.44,2.15,.44), 0xd4d1ca, { x:sx, y:1.35, z, fy:-2.2, s:sb+i*.04, d:.24, map:stT, r:.95 });
+      add(new B(.58,.14,.58), 0xc1beb7, { x:sx, y:2.5, z, fy:-2.2, s:sb+.02+i*.04, d:.2 });
+    }
+    for (let i = 0; i < 5; i++) {
+      add(new B(.13,1.7,2.7), 0xffffff, { x:sx, y:1.15, z:7.3-i*3.4, fy:-2.2, s:sb+.02+i*.04, d:.24, map:fnT, r:.68, m:.3 });
+    }
+  }
+  for (let i = 0; i < 9; i++) {
+    add(new B(.44,2.15,.44), 0xd4d1ca, { x:-13.3+i*3.6, y:1.35, z:-8, fy:-2.2, s:1.52+i*.03, d:.24, map:stT, r:.95 });
+    add(new B(.58,.14,.58), 0xc1beb7, { x:-13.3+i*3.6, y:2.5, z:-8, fy:-2.2, s:1.54+i*.03, d:.2 });
+  }
+  [-11.5,-7.9,-4.3,-0.7,2.9,6.5,10.1,13.7].forEach((bx3, i) =>
+    add(new B(2.9,1.7,.13), 0xffffff, { x:bx3, y:1.15, z:-8, fy:-2.2, s:1.56+i*.03, d:.24, map:fnT, r:.68, m:.3 }));
   add(new B(2.3,.95,4.5), 0x30373d, { x:-7.6, y:.62, z:1.4, fy:-2, s:2.56, d:.3, r:.42, m:.45 });
   add(new B(2.1,.75,2.3), 0x282e33, { x:-7.6, y:1.42, z:.75, fy:-2, s:2.58, d:.3, r:.25, m:.55 });
 
