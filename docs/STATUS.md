@@ -184,6 +184,7 @@ Shipped and verified. PR numbers in brackets.
 |---|---|---|
 | **3D hero — owner review** | `feature/3d-hero`, `src/components/HeroScene.tsx` | Ported and live at the owner review URL. Awaiting the owner's verdict. Not merged to `main` by design. `HeroBuild3D.tsx` is now dead code — delete it once the owner signs off on the new scene. |
 | **RC-104 Portfolio** | `/portofoliu` | **Partial.** Page ships with 8 real photos, tags, ItemList JSON-LD, sitemap entry — the nav 404 is gone. Not done: filters, per-project detail pages, before/after sliders. All three need metadata nobody has confirmed (Q-14). |
+| **Homepage project slideshow — shell (LANE B)** | `feature/project-slideshow` @ `521cfca`; preview `/slideshow-preview` (RO + `/ru/slideshow-preview`) | **Shell built + pushed, placeholder content only.** Full-bleed data-driven slideshow (auto-advance/crossfade/pause-on-hover/reduced-motion), scrim + RO/RU headline, data from one array (`src/data/slideshow.ts`), 5 labelled PLACEHOLDER images. **BLOCKED on:** Q-14 owner photos + RO/RU copy, and the **Higgsfield hero decision** (placement decided after that). Not wired into the live hero; noindex; no PR yet by design. |
 
 ---
 
@@ -273,6 +274,13 @@ In order. Items 1–3 need no owner input.
   closed. Safe to prune everything except `main` and `feature/3d-hero` — but
   **diff content, not commit counts, before deleting** (see the squash-merge trap
   in `PROJECT-MEMORY.md` §6.1).
+- **Lane-label correction (2026-07-25).** The `feature/3d-hero` realism commits
+  `dca2603` / `ac046b9` / `8054c44` / `ea3bff4` are labeled "LANE B step 1-4" but
+  are actually **LANE A** (serial 3D-hero visual work). Pushed history is **left
+  as-is** (not rewritten); commits from here use the correct `LANE A` label, and
+  every commit subject states its lane + ticket. Lanes: A = `feature/3d-hero`,
+  B = main-line non-hero, C = `feature/configurator`. See
+  `claude-toolkit/CLAUDE.md` → Standing rules (BOARD DISCIPLINE + NAMING).
 - `BLENDER-TASK-owner-photomatch.md` still sits in the repo root as "the active 3D
   task" but has been overtaken by the procedural rebuild. Archive it to
   `docs/blender-tasks-done/` or delete it.
