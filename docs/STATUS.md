@@ -57,10 +57,25 @@ Last run **2026-07-24** against `https://rapidconstruct-web.vercel.app` →
 **PASS** (`Disallow: /`, no sitemap advertised, `/`, `/ru` and `/acoperisuri` all
 200 + `noindex`).
 
-⚠️ **The script lives only on `feature/3d-hero`, not on `main`.** Anyone working
-from the default branch cannot run the guard the moment they most need it — right
-after a deploy. Cherry-pick it to `main` (it is a standalone script with no
-dependency on the 3D work).
+**LANE B — 2026-07-24:** the guard has been brought onto a `main`-based branch.
+The standalone script was copied from `feature/3d-hero` (byte-identical, commit
+`aac0e01`) onto `rc/RC-guard-indexability` off `main` — no 3D files touched.
+Re-verified before landing: PASS against `https://rapidconstruct-web.vercel.app`
+(exit 0), and `npm run build` exits 0.
+
+⏳ **Pending push/PR — `git push` was DENIED in this session** (permission not yet
+enabled). The commits are LOCAL on `rc/RC-guard-indexability` (`c1cea7d` script,
+`5108e18` this STATUS note, plus the commit adding this pending note). To land it,
+run from `/Users/sm33xy/Projects/rapidconstruct-web`:
+
+```bash
+git push -u origin rc/RC-guard-indexability
+gh pr create --base main --head rc/RC-guard-indexability \
+  --title "chore(seo): indexability tripwire on main" \
+  --body "Brings the standalone post-deploy indexability guard (scripts/check-indexability.mjs) onto main, where STATUS tells you to run it after every deploy. No 3D changes. Verified: script PASSes against https://rapidconstruct-web.vercel.app (Disallow: /, noindex), npm run build exits 0."
+```
+
+Do not force-push. Once the PR is open, this note can be replaced with the PR link.
 
 ---
 
