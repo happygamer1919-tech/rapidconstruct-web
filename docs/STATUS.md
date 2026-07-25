@@ -6,6 +6,28 @@ file is only *what is true now and what happens next*.
 **Last updated: 2026-07-24** — verified against git, the Vercel API, the
 indexability tripwire and live HTTP checks, not recalled.
 
+### ⏳ Pending push/PR — `rc/RC-seo-geo-sweep` (SEO/GEO sweep)
+
+`git push` was **denied** in the sweep session, so the branch is committed
+**locally only** (3 commits on `rc/RC-seo-geo-sweep`, off `main`). Nothing else is
+pending — the audit + fixes are done and `npm run build` passed. The sweep
+worktree was removed in cleanup, but the branch ref survives in the shared repo,
+so push it from the main checkout:
+
+```bash
+cd "/Users/sm33xy/Projects/rapidconstruct-web"
+git push -u origin rc/RC-seo-geo-sweep
+gh pr create --base main --head rc/RC-seo-geo-sweep \
+  --title "seo: SEO/GEO sweep (16 routes x RO/RU) + fixes" \
+  --body "Route-by-route audit in docs/SEO-AUDIT-2026-07-24.md covering title, meta description, canonical (presence only — Q-15 owns the host), hreflang RO/RU + x-default reciprocity, OG tags, JSON-LD validity, single H1, html lang. Mechanical defects fixed in-PR; Q-07 (claim numbers) and Q-15 (canonical host) items are FLAGGED, not changed. No 3D, no DNS. Verified: npm run build exits 0.
+
+Owner check-through:
+- [ ] skim docs/SEO-AUDIT-2026-07-24.md FLAG rows
+- [ ] CI green"
+```
+
+No force-push; do not re-run the audit before pushing (it is already committed).
+
 ---
 
 ## Current state
@@ -157,6 +179,22 @@ Shipped and verified. PR numbers in brackets.
   standing lesson; and four further stale claims fixed — §2/§3/§4.5 had all
   called `HeroBuild3D.tsx` "the current hero" long after the scene port
   superseded it, plus Q-15 and §10.
+- **SEO/GEO route-by-route sweep** (2026-07-24, `rc/RC-seo-geo-sweep`, LANE B).
+  All **32 route+locale URLs** (16 routes × RO/RU) audited against the real
+  rendered HTML for title / meta description / canonical / hreflang+x-default
+  reciprocity / OG / JSON-LD validity / single H1 / `<html lang>`. **30/32 rows
+  pass all 8 checks; no broken defect on any public route.** Full scorecard in
+  `docs/SEO-AUDIT-2026-07-24.md`; repeatable via `scripts/seo-audit.mjs` +
+  `seo-eval.mjs`. **2 mechanical fixes:** shared `@id` on the sitewide + city
+  LocalBusiness JSON-LD so the city pages' second LocalBusiness node merges into
+  one entity (Q-15-safe, keyed off `SITE_URL`); locale-distinct `/styleguide`
+  title+description (was a duplicate RO/RU pair). **2 items FLAGGED for Q-07** —
+  the `home` (176ch) and `despre-noi` (169ch) RO meta descriptions run just over
+  160 chars but are built around the unverified claim numbers ("30 de ani",
+  "160 lei/m²", "15 ani"), so the copy is left for Max's Q-07 pass, not trimmed.
+  **0 Q-15 changes** — canonical tags are structurally correct on all 32 pages;
+  the host value (apex vs www) stays owner-owned, set at cutover. Staging
+  `noindex` confirmed present sitewide (expected). `npm run build` exit 0.
 
 ---
 

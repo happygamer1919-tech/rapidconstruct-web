@@ -22,6 +22,12 @@ export default function LocalBusinessJsonLd() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "HomeAndConstructionBusiness",
+    // Stable node identity. The city landing pages (CityPage.tsx) also emit a
+    // HomeAndConstructionBusiness with the same NAP but a city-scoped areaServed;
+    // sharing one @id tells consumers those are the SAME business entity, not two
+    // separate businesses at the same address. Keyed off SITE_URL so it follows
+    // the canonical host at cutover — it does not hardcode a domain (Q-15).
+    "@id": `${SITE_URL}/#localbusiness`,
     name: site.name,
     url: SITE_URL,
     image: OG_IMAGE_URL,
