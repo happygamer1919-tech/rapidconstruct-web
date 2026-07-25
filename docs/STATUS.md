@@ -6,30 +6,6 @@ file is only *what is true now and what happens next*.
 **Last updated: 2026-07-24** — verified against git, the Vercel API, the
 indexability tripwire and live HTTP checks, not recalled.
 
-### ⏳ Pending push/PR — `rc/RC-seo-geo-sweep` (SEO/GEO sweep)
-
-`git push` was **denied** in the sweep session, so the branch is committed
-**locally only** (3 commits on `rc/RC-seo-geo-sweep`, off `main`). Nothing else is
-pending — the audit + fixes are done and `npm run build` passed. The sweep
-worktree was removed in cleanup, but the branch ref survives in the shared repo,
-so push it from the main checkout:
-
-```bash
-cd "/Users/sm33xy/Projects/rapidconstruct-web"
-git push -u origin rc/RC-seo-geo-sweep
-gh pr create --base main --head rc/RC-seo-geo-sweep \
-  --title "seo: SEO/GEO sweep (16 routes x RO/RU) + fixes" \
-  --body "Route-by-route audit in docs/SEO-AUDIT-2026-07-24.md covering title, meta description, canonical (presence only — Q-15 owns the host), hreflang RO/RU + x-default reciprocity, OG tags, JSON-LD validity, single H1, html lang. Mechanical defects fixed in-PR; Q-07 (claim numbers) and Q-15 (canonical host) items are FLAGGED, not changed. No 3D, no DNS. Verified: npm run build exits 0.
-
-Owner check-through:
-- [ ] skim docs/SEO-AUDIT-2026-07-24.md FLAG rows
-- [ ] CI green"
-```
-
-No force-push; do not re-run the audit before pushing (it is already committed).
-
----
-
 ## Current state
 
 | | |
@@ -85,19 +61,7 @@ The standalone script was copied from `feature/3d-hero` (byte-identical, commit
 Re-verified before landing: PASS against `https://rapidconstruct-web.vercel.app`
 (exit 0), and `npm run build` exits 0.
 
-⏳ **Pending push/PR — `git push` was DENIED in this session** (permission not yet
-enabled). The commits are LOCAL on `rc/RC-guard-indexability` (`c1cea7d` script,
-`5108e18` this STATUS note, plus the commit adding this pending note). To land it,
-run from `/Users/sm33xy/Projects/rapidconstruct-web`:
-
-```bash
-git push -u origin rc/RC-guard-indexability
-gh pr create --base main --head rc/RC-guard-indexability \
-  --title "chore(seo): indexability tripwire on main" \
-  --body "Brings the standalone post-deploy indexability guard (scripts/check-indexability.mjs) onto main, where STATUS tells you to run it after every deploy. No 3D changes. Verified: script PASSes against https://rapidconstruct-web.vercel.app (Disallow: /, noindex), npm run build exits 0."
-```
-
-Do not force-push. Once the PR is open, this note can be replaced with the PR link.
+**Merged to `main` [#57]** (`c1cea7d`) — `scripts/check-indexability.mjs` is on `main`.
 
 ---
 
@@ -121,15 +85,7 @@ Shipped and verified. PR numbers in brackets.
   `main`**. Located only — shadow type UNCHANGED. Prior STATUS line ref `487–494`
   was stale; anchor on the `applyRenderer` name / `shadowMap.type` grep, not the
   line number. Full findings: `docs/RC-113-three-dedupe.md`.
-  **⏳ Pending push/PR — `git push` was DENIED this session; branch is local only
-  (`rc/RC-113-three-dedupe`, commit `bbd4176`). Run when push is allowed:**
-  ```bash
-  cd /Users/sm33xy/Projects/rapidconstruct-web
-  git push -u origin rc/RC-113-three-dedupe
-  gh pr create --base main --head rc/RC-113-three-dedupe \
-    --title "chore(RC-113/114): three.js dedupe + shadow-emitter location" \
-    --body "RC-113: diagnoses the duplicate three.js (r185 direct vs the copy pulled via @react-three/drei -> stats-gl) with npm ls/why; applies an overrides-based dedupe ONLY if mechanical and green, else documents the plan in docs/RC-113-three-dedupe.md. RC-114: locates the PCFSoftShadowMap emitter (file:line) without changing the shadow type. Non-blocking, no 3D behavior change. Verified: npm run build exits 0; dedupe applied, npm ls three shows one version and npm test stays green."
-  ```
+  **Merged to `main` [#53]** (`bbd4176`) — the overrides dedupe + `docs/RC-113-three-dedupe.md` are on `main`; shadow type located only, unchanged.
 - **Foundation** — Next.js 16 App Router + TS + Tailwind scaffold [#2]; Vercel
   wiring and staging URL [#3]; design tokens, RO/RU routing, layout shell, CI [#6].
 - **SEO plumbing** — metadata helper, LocalBusiness JSON-LD, sitemap, robots,
@@ -179,7 +135,7 @@ Shipped and verified. PR numbers in brackets.
   standing lesson; and four further stale claims fixed — §2/§3/§4.5 had all
   called `HeroBuild3D.tsx` "the current hero" long after the scene port
   superseded it, plus Q-15 and §10.
-- **SEO/GEO route-by-route sweep** (2026-07-24, `rc/RC-seo-geo-sweep`, LANE B).
+- **SEO/GEO route-by-route sweep** [#58] (2026-07-24, `rc/RC-seo-geo-sweep`, LANE B, merged to `main`).
   All **32 route+locale URLs** (16 routes × RO/RU) audited against the real
   rendered HTML for title / meta description / canonical / hreflang+x-default
   reciprocity / OG / JSON-LD validity / single H1 / `<html lang>`. **30/32 rows
@@ -195,6 +151,30 @@ Shipped and verified. PR numbers in brackets.
   **0 Q-15 changes** — canonical tags are structurally correct on all 32 pages;
   the host value (apex vs www) stays owner-owned, set at cutover. Staging
   `noindex` confirmed present sitewide (expected). `npm run build` exit 0.
+- **RC-402 pre-launch audit — non-host items** [#54] (2026-07-25, merged to `main`).
+  Route liveness on the 30-URL set (RO+RU, no 301→404), offline structured-data
+  validation, OG completeness; `docs/LAUNCH-CHECKLIST.md` updated. Canonical-host
+  re-verify **deferred to Q-15 → RC-403** (host unset until cutover, by design).
+- **RC-402 sitemap reconcile (merge-aware)** [#55; **#56 closed — superseded**]
+  (2026-07-25, merged to `main`). Sitemap is **30** `<loc>` on `main` (15 routes ×
+  2); the stale "28" in the checklist was corrected. **Target 32** after
+  `feature/configurator` merges (+`/configurator` RO + `/ru/konfigurator`).
+- **Indexability tripwire** [#57] (2026-07-25, merged to `main`).
+  `scripts/check-indexability.mjs` asserts every non-`rapidconstruct.md` host is
+  non-indexable and the real domain must be — the guard CI structurally can't see.
+- **CI green — lint fix** [#59] (`4334021`, merged to `main`). ESLint flat-config
+  override allows CommonJS `require()` in `tools/**` (the `board-server.js` from
+  #51 tripped `no-require-imports` and reddened `typecheck·lint·build·smoke` on
+  `main` and every PR). Override, not rewrite — the script needs `__dirname`.
+- **3D hero — glass + perimeter fence** (2026-07-25, `feature/3d-hero`). Glass now
+  reads as dark reflective glazing, not a see-through pane (`fe0442d`); the plot is
+  enclosed with left/right/back fence runs (`7b42033`). On `feature/3d-hero`, not
+  merged to `main` — the hero lives on its branch by design.
+
+> **CI note:** `lighthouse (perf budget)` stays red on `main` and every PR **by
+> design** — the noindex staging safeguard fails Lighthouse's `is-crawlable` SEO
+> audit below the 0.9 gate. Self-clears at RC-403 when `NEXT_PUBLIC_SITE_URL` is
+> set. Not a regression; do not "fix" it, and never add the env var.
 
 ---
 
@@ -204,20 +184,6 @@ Shipped and verified. PR numbers in brackets.
 |---|---|---|
 | **3D hero — owner review** | `feature/3d-hero`, `src/components/HeroScene.tsx` | Ported and live at the owner review URL. Awaiting the owner's verdict. Not merged to `main` by design. `HeroBuild3D.tsx` is now dead code — delete it once the owner signs off on the new scene. |
 | **RC-104 Portfolio** | `/portofoliu` | **Partial.** Page ships with 8 real photos, tags, ItemList JSON-LD, sitemap entry — the nav 404 is gone. Not done: filters, per-project detail pages, before/after sliders. All three need metadata nobody has confirmed (Q-14). |
-
-> **⏳ Pending push/PR — `rc/RC-402-audit-finish` (2026-07-24).** The branch is
-> committed locally; `git push` was denied in the automated run. No force-push, no
-> retry loop. Complete it manually from `/Users/sm33xy/Projects/rapidconstruct-web`
-> (or a worktree on this branch):
->
-> ```bash
-> git push -u origin rc/RC-402-audit-finish
-> gh pr create --base main --head rc/RC-402-audit-finish \
->   --title "chore(RC-402): finish pre-launch audit (everything not blocked on Q-15)" \
->   --body "Completes the RC-402 items that do NOT depend on the canonical host: route liveness re-run (RO+RU, no 301->404), offline structured-data validation (Rich-Results-equivalent), OG completeness. docs/LAUNCH-CHECKLIST.md updated; the canonical-host re-verify is explicitly DEFERRED to Q-15/RC-403 (owner). Claim numbers left to Q-07 (flagged, not changed). No 3D, no DNS. Verified: npm run build exits 0."
-> ```
-| **RC-402 pre-launch audit** | `docs/LAUNCH-CHECKLIST.md`, `rc/RC-402-audit-finish` (**local — push/PR pending, see note below**) | **Non-host items DONE (2026-07-24, LANE B).** Verified on the 30-URL route set (15×2): route liveness (RO+RU all 200-shape, single H1, **no 301→404** — 24 redirect targets resolve, `PENDING_PAGES` empty), offline structured-data validation (all JSON-LD valid; LocalBusiness/Service/FAQPage/ItemList required props present; `aggregateRating` correctly absent per Q-07), and OG completeness (all 6 og tags + `og:image` route on every page). `npm run build` exits 0. **Remaining item (a) — canonical-host re-verify — DEFERRED to Q-15 → RC-403** (host unchosen/unset until cutover). Online Rich Results + OG debugger left as an owner cutover step. Q-07/Q-10 flagged, not changed. See checklist "Verified state as of 2026-07-24". |
-| **RC-402 pre-launch audit** | `docs/LAUNCH-CHECKLIST.md` | Route audit done. **Sitemap count reconciled 2026-07-24: 30 `<loc>` on `main` (15 routes × 2), checklist updated from the stale 28 and made merge-aware (→ 32 after `feature/configurator`).** All checked routes return 200, canonical + hreflang + JSON-LD + single H1 + og:image present on every page. Remaining: re-verify after the canonical host is settled, and Rich Results / OG debugger passes. |
 
 ---
 
@@ -280,14 +246,8 @@ In order. Items 1–3 need no owner input.
    `src/app/sitemap.ts`. `npm run build` exits 0. No code logic, host or canonical
    changed. (Supersedes the earlier unmerged `rc/RC-402-sitemap-reconcile`, which
    reached the same 30 but was not merge-aware.)
-   **⏳ Pending push/PR** (push was denied in the automated run — branch is local,
-   2 commits ahead of `main`: `883da9e`, `8f80f36`). Run these to land it:
-   ```bash
-   git push -u origin rc/RC-402-sitemap-merge
-   gh pr create --base main --head rc/RC-402-sitemap-merge \
-     --title "fix(seo): sitemap count reconciliation (merge-aware)" \
-     --body "Reconciles main's sitemap with docs/LAUNCH-CHECKLIST.md and records the expected post-merge count (+2 for the configurator lane's /configurator + /ru/konfigurator). Decision + routes documented in the checklist and STATUS. No 3D, no DNS, no host/canonical change (Q-15 untouched). Verified: npm run build exits 0; sitemap and checklist agree for main today."
-   ```
+   **Merged to `main` [#55]** (`883da9e`, `8f80f36`); `rc/RC-402-sitemap-reconcile`
+   (#56) closed as superseded.
 6. **Close the questions the repo has already answered:** Q-06 and Q-11 (drone
    photos landed), Q-09 (Resend key is set — verify with one real form submit
    end-to-end, then close). **Q-15 needs the owner's decision, not just
