@@ -19,7 +19,14 @@ Form submissions + calculator leads: email only, or email + Telegram/WhatsApp no
 to Max's phone? Which number/chat? **Recommended default:** email to
 rapidconstructmd@gmail.com + Telegram bot message to Max. **Blocks:** RC-105, RC-107.
 
-## Q-04 — PARTIALLY RESOLVED — Domain/DNS + Tilda access
+## Q-04 — RESOLVED 2026-07-25 — Domain/DNS + Tilda access
+**RESOLVED (2026-07-25):** the owner **has the domain/registrar credentials** for
+`rapidconstruct.md`. This is no longer blocked on owner access. It unblocks the
+**RC-403 cutover as a sequencing matter only** — the cutover itself stays the
+**owner's call and timing**, DNS is **not** touched here, and `NEXT_PUBLIC_SITE_URL`
+is **not** added (see the hard rules). The registrar-login details go into the
+RC-403 cutover runbook when the owner chooses to cut over.
+
 Tilda access: WORKS — owner logs into tilda.cc in the browser pane and Claude reads the
 admin (done 2026-07-13 for the page audit; same flow for photo export). Owner should
 change the Tilda password (it was pasted in chat once).
@@ -104,7 +111,12 @@ You have 110 real photos of finished work; a photo of a real house cannot look f
 unique value is the build animation, which a photo can't do. After a week of iterations this
 option deserves a decision.
 **Recommended default**: keep the 3D build animation, but consider leading with a real photo and
-placing the 3D below the fold. STATUS: OPEN
+placing the 3D below the fold.
+**STATUS: RECLASSIFIED 2026-07-25 — INTERNAL / IN PROGRESS, no longer owner-blocked.**
+We are **deliberately not asking the owner yet**: the homepage flow is still being built
+(Higgsfield hero restyle undecided, project-slideshow shell not placed). This decision is
+**gated on the homepage flow being settled**, then it goes to the owner. Nothing here waits
+on the owner today.
 
 ## Q-13 (2026-07-21, 3D agent) — Enable Sketchfab / Hyper3D / Hunyuan3D in BlenderMCP N-panel
 Would give ready-made planting and props instead of modelling them (free tiers; may need a free
@@ -119,9 +131,15 @@ confirmed those facts and inventing them on a proof page would discredit the
 page itself. Real metadata would make each entry rank for local queries
 ("casă la cheie Orhei") and let us add richer JSON-LD.
 **Ask the owner, per photo:** locality, approximate built area (m²), year
-finished, and whether the client agreed to be shown.
+finished, work type, and whether the client agreed to be shown.
 **Recommended default**: ship as-is without metadata (already done); enrich when
-the owner supplies it. STATUS: OPEN
+the owner supplies it.
+**STATUS: PARTIALLY RESOLVED 2026-07-25 — photos in hand, metadata pending.** The
+owner has supplied/has the photos; only the **per-photo metadata** (locality, year,
+m², work type) is still outstanding. **HARD CONSTRAINT: metadata must NOT be
+invented.** Portfolio / slideshow MAY ship now with photos captioned **only by what
+is visibly true** (e.g. "Acoperiș din țiglă metalică", "Fațadă ventilată") — **no
+location, year, or m²** until the owner supplies them. Enrich per-photo once he does.
 
 ## Q-15 (2026-07-22) — Canonical domain: apex or www?
 `NEXT_PUBLIC_SITE_URL` is unset and Vercel has zero env vars, so every canonical
