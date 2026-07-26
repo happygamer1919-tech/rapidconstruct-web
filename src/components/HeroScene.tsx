@@ -134,6 +134,13 @@ export default function HeroScene({
     // Nothing below may override those.
     const api = buildScene(THREE, scene, renderer);
 
+    // Profiling hook (?herostats=1): read-only handles for measuring FPS,
+    // draw calls, triangles and texture memory against the LIVE hero —
+    // dev and prod builds alike. Inert without the query param.
+    if (/[?&]herostats=1/.test(window.location.search)) {
+      (window as unknown as { __hero?: object }).__hero = { renderer, scene, camera, api };
+    }
+
     /**
      * NO post-processing composer — deliberate (LANE B step 3 revert).
      * GTAO via EffectComposer worked, but the composer pipeline blends the
@@ -299,14 +306,21 @@ export default function HeroScene({
             restedFired = true;
             onRestedRef.current?.();
           }
+          // LANE A perf F2 (2026-07-26): at the hold only the sun creeps, so
+          // re-rendering the 2048² shadow map every frame is waste — measured
+          // ~0.9-1.6 ms/frame. Throttle shadow updates to every 4th rendered
+          // frame during the hold; the sun's drift is far too slow to show
+          // stepping. Build keeps per-frame shadows (pieces fly through light).
+          if (renderer.shadowMap.autoUpdate) renderer.shadowMap.autoUpdate = false;
+          holdFrame = (holdFrame + 1) % 8;
+          if (holdFrame % 4 === 0) renderer.shadowMap.needsUpdate = true;
           // Full rate through the deceleration tail + drift ramp (first 3 s
           // of hold) so the handoff never half-steps; half rate after.
           if (t < api.BUILD_END + 3) {
             applyFrame(t);
             return;
           }
-          holdFrame = (holdFrame + 1) % 2;
-          if (holdFrame === 0) applyFrame(t);
+          if (holdFrame % 2 === 0) applyFrame(t);
           return;
         }
         applyFrame(t);
