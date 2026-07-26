@@ -222,9 +222,13 @@ export function buildScene(THREE, scene, renderer) {
   sg.addColorStop(.72, '#e0e0d6'); sg.addColorStop(1, '#eddcba');
   kx.fillStyle = sg; kx.fillRect(0, 0, 4, 256);
   scene.background = new THREE.CanvasTexture(kc);
-  // Back to .0095 (LANE B revert): the .0082 compensation existed only for
-  // the composer's linear-space blending, which is gone with the composer.
-  scene.fog = new THREE.FogExp2(0xd6cfba, .0095);
+  // LANE A env step 1 (2026-07-26, Seedance reference): FogExp2 .0095 greyed
+  // the WHOLE frame — mid trees, lawn, even the house edge sat in haze,
+  // flattening depth. The reference keeps near/mid planes crisp with only a
+  // low mist band at the far ground line. Linear fog does that: nothing
+  // before 120 m, full by 700 m — the far field melts away instead of a
+  // global grey wash. (history: FogExp2 cbcdc9 .0066 → d6cfba .0095 → this)
+  scene.fog = new THREE.Fog(0xd9d6c8, 100, 550);
 
   const domeC = cv(1024, 512), dx2 = domeC.getContext('2d');
   for (let i = 0; i < 30; i++) {
