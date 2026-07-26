@@ -186,13 +186,26 @@ export function buildScene(THREE, scene, renderer) {
   }
   const solT = T(slc, 4, 2);
 
-  const grc = cv(256, 256), gx = grc.getContext('2d');
-  gx.fillStyle = '#71873f'; gx.fillRect(0, 0, 256, 256);
-  for (let i = 0; i < 12000; i++) {
-    gx.fillStyle = `hsl(${64 + Math.random() * 38},34%,${23 + Math.random() * 24}%)`;
-    gx.fillRect(Math.random() * 256, Math.random() * 256, 2.6, 2.6);
+  // LANE A env 4 (2026-07-26): the lawn was one even green — a plane. Now a
+  // meadow: low-frequency olive/dry blotches under the speckle, and a lower
+  // repeat (30→11) so the variation reads at scene scale instead of tiling.
+  const grc = cv(512, 512), gx = grc.getContext('2d');
+  gx.fillStyle = '#6f8440'; gx.fillRect(0, 0, 512, 512);
+  for (let i = 0; i < 26; i++) {
+    // one soft patch: darker olive, dry khaki or lush green
+    const kind = Math.random();
+    const col = kind < .45 ? '84,102,52' : kind < .75 ? '128,126,74' : '96,122,58';
+    const px3 = Math.random() * 512, py3 = Math.random() * 512, pr3 = 40 + Math.random() * 90;
+    const g4 = gx.createRadialGradient(px3, py3, 0, px3, py3, pr3);
+    g4.addColorStop(0, `rgba(${col},${.25 + Math.random() * .25})`);
+    g4.addColorStop(1, `rgba(${col},0)`);
+    gx.fillStyle = g4; gx.beginPath(); gx.arc(px3, py3, pr3, 0, 7); gx.fill();
   }
-  const grT = T(grc, 30, 30);
+  for (let i = 0; i < 30000; i++) {
+    gx.fillStyle = `hsl(${62 + Math.random() * 40},${28 + Math.random() * 14}%,${22 + Math.random() * 26}%)`;
+    gx.fillRect(Math.random() * 512, Math.random() * 512, 2.4, 2.4);
+  }
+  const grT = T(grc, 11, 11);
 
   /* ------------------------------------------------------------- sky/fog -- */
   // LANE A step 3 — depth + sky. Cooler, deeper blue at the zenith falling to
@@ -623,6 +636,10 @@ float vNoise(vec3 p) {
   add(new B(7,.22,15), 0xffffff, { x:14.5, y:.11, z:0, fy:-2, s:3.32, d:.26, r:1, map:gravT, tint:0xd6d0c3 });
   add(new B(26,.2,5), 0xffffff, { x:-1.5, y:.11, z:-8, fy:-2, s:3.36, d:.26, r:1, map:gravT, tint:0xd6d0c3 });
   add(new B(19,.28,10), 0xcdcdc7, { x:-1.6, y:.3, z:0, fy:-2.4, s:.38, d:.3, r:1 });
+  // driveway approach: pale strip from the gate out to the road line, with a
+  // splayed apron at the gate (env 4 — the plot no longer floats in a field)
+  add(new B(4.2,.05,15), 0xffffff, { x:2.9, y:.03, z:17, fy:-1.5, s:3.38, d:.26, r:1, map:gravT, tint:0xd9d2c1 });
+  add(new B(6.2,.05,2.4), 0xffffff, { x:2.9, y:.035, z:10.6, fy:-1.5, s:3.4, d:.24, r:1, map:gravT, tint:0xd9d2c1 });
 
   /* ----------------------------------------------------- WING (left wing) -- */
   add(new B(10.6,1.05,5.2), 0xffffff, { x:-3.7, y:.825, z:-.1, fy:-7, s:.7, d:.3, map:stoneLowT, r:.86, tint:STN });
