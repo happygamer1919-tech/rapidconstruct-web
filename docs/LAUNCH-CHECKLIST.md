@@ -36,6 +36,34 @@ without the variable and succeeds with it.
    ```
 3. Redeploy and re-run §2 below. The value must have no trailing slash.
 
+## 1b. 🔴 BLOCKER — the configurator prices are a COMPETITOR's live prices
+
+**The configurator MUST NOT go live with the current bands, under any circumstances.**
+
+The configurator's roofing bands **450 / 550 / 800 lei/m²** were seeded from
+**Imperlux's LIVE PUBLISHED prices** — a named competitor
+(`imperlux.md/acoperisuri/preturi`: țiglă metalică 450–900, shingle 550–1100, rocă
+vulcanică 800–1450). Shipping a competitor's real prices as our own is a trust/legal
+problem, not a neutral placeholder. Background: `docs/QUESTIONS.md` Q-10.
+
+**GATE — all must pass before the configurator launches (2026-07-25):**
+- [ ] The Imperlux-derived bands **450 / 550 / 800** are **absent** from
+  `src/config/configurator.ts` (and anywhere the configurator reads price bands).
+  Spot-check: `grep -nE '450|550|800' src/config/configurator.ts` returns **no
+  surviving price-band values**.
+- [ ] Every published band is a number the **owner supplied for his own business**
+  (Q-10), or the entry shows **"preț la cerere"** (like the ceramic entry) — never a
+  competitor's.
+- [ ] The "160 lei/m² înghețat 2026" figure is **NOT** used as a band until the owner
+  clarifies its scope (it is below the market labour-only rate 180–280 lei/m²).
+- [ ] No invented fence prices (none exist publicly).
+
+Until this passes, `/configurator` stays a preview/unmerged shell — do not promote it
+to the live homepage flow. *(This gate is documentation today; it should become an
+automated pre-launch check.)*
+
+---
+
 ## 2. Verify after the variable is set
 
 > ⏸️ **DEFERRED to Q-15 / RC-403 (RC-402 remaining item a).** Every check in this

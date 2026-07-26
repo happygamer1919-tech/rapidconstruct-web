@@ -83,10 +83,19 @@ happygamer1919-tech account (github.com/apps/vercel) and grant it
 rapidconstruct-web — then every PR gets its preview URL automatically instead of
 a manual `vercel deploy`.
 
-## Q-07 — OPEN — Are the claimed numbers accurate?
+## Q-07 — OPEN (ESCALATED 2026-07-25) — Are the claimed numbers accurate?
 "500+ case", "250+ recenzii", "15+ ani", "garanție 30 ani", "160 lei/m²" — we will publish
 these as quotable facts (SEO/GEO), so they must be true and defensible. Confirm with Max.
-**Blocks:** none (build with current claims, confirm before launch RC-402).
+
+**ESCALATED 2026-07-25 — the client's OWN live site contradicts itself.** Harvested from
+rapidconstruct.md, the same site states, in different places:
+- **Projects:** "15000+ Proiecte Finalizate" **vs** "Peste 500 de case".
+- **Rating:** "5/5" **vs** "4.9/5 din 250+ recenzii".
+- **Warranty:** "garanție până la 30 ani" **vs** the FAQ's "între 3 și 50 ani".
+**Do NOT copy any of these numbers** into the new site. The owner must **choose ONE
+consistent set** before any of it is published as quotable SEO/GEO fact.
+**Blocks:** none technically (site builds without them), but they must be resolved before
+launch — publishing self-contradictory claims is a trust/legal risk (RC-402).
 
 ## Q-09 — OPEN — Email sending credentials (contact form leads)
 The RC-105 contact form is live and validates leads server-side, but has no email channel
@@ -99,6 +108,31 @@ later (Q-03). **Blocks:** nothing (log fallback in place); improves owner's lead
 
 ## Q-10 — OPEN — Calculator prices need confirmation
 Extracted from your live Tilda calculator (docs/PRICING.md): 13 materials. Confirm: (1) Creaton ceramică 57/58 lei — per BUCATĂ or per m²? (2) what exactly is "160 lei/m² înghețat" (no material matches it)? (3) do prices include jgheaburi/burlane și demontare? **Blocks:** publishing the two ceramic entries; the other 11 ship in the calculator.
+
+**Discrepancy found 2026-07-25 (client's live site).** The live rapidconstruct.md
+advertises **"160 lei/m² înghețat pentru 2026"** for *acoperiș* — but our configurator
+placeholders quote roofing bands of **450 / 550 / 800 lei/m²** (metalică / shingle / rocă
+vulcanică). These don't reconcile: "160 lei/m²" may be a promo floor, a labour-only rate, or
+a different scope entirely. **Owner must clarify what "160 lei/m²" covers** (material?
+labour? which roof?) before either figure is published — do not merge the two.
+
+**🚨 ESCALATED 2026-07-25 — LAUNCH-BLOCKING for the configurator.** The
+configurator's "placeholder" roofing bands **450 / 550 / 800 lei/m²** are **not
+neutral placeholders** — they are **Imperlux's LIVE PUBLISHED price bands**, a named
+competitor (source `imperlux.md/acoperisuri/preturi`):
+- țiglă metalică **450–900**, shingle **550–1100**, rocă vulcanică **800–1450**.
+Our placeholders were seeded from the low end of a competitor's real prices. **The
+configurator MUST NOT go live with these numbers under any circumstances** — a
+pre-launch gate was added to `docs/LAUNCH-CHECKLIST.md` that FAILS if the
+Imperlux-derived bands (450/550/800) are still present.
+
+The client's **only** public price is "160 lei/m² înghețat 2026" for acoperiș, which
+is **below the market manoperă-only (labour-only) rate of 180–280 lei/m²** — so its
+scope is unclear and it **cannot be used as a band** as-is. **No fence prices exist
+publicly** either. **The owner must supply his own real price bands** (roof materials
++ fences) before the configurator can launch.
+**Blocks:** now LAUNCH-BLOCKING for the whole configurator (was: only the 2 ceramic
+roof-calculator entries).
 
 ## Q-11 (2026-07-21, 3D agent) — Pick ONE house to photo-match
 We've been modelling an "average" house. Point at ONE photo from your 110 and say "build that
@@ -141,6 +175,22 @@ invented.** Portfolio / slideshow MAY ship now with photos captioned **only by w
 is visibly true** (e.g. "Acoperiș din țiglă metalică", "Fațadă ventilată") — **no
 location, year, or m²** until the owner supplies them. Enrich per-photo once he does.
 
+**UPDATE 2026-07-25 — 4 projects now have locality + area + work type, harvested from
+the CLIENT'S OWN LIVE SITE (rapidconstruct.md), NOT invented.** Source = client's live
+homepage. **YEAR is still missing for all four** (do not invent it).
+| Locality | Area | Work type |
+|---|---|---|
+| Orhei | 100 m² | acoperiș șindrilă bituminoasă + sistem pluvial |
+| Costești | 320 m² | fațadă piatră naturală + tencuială decorativă |
+| Cahul | 180 m² | acoperiș țiglă metalică + termoizolație mansardă |
+| Chișinău | 280 m² | renovare completă, acoperiș nou + izolare termică |
+
+Notes: the `/portofoliu` page currently carries **no per-project data** — these four can now
+be attached (locality + area + work type; year stays blank). ⚠️ On the source site the
+**image alt-text conflicts with the captions — trust the captions** (above), not the alt
+attributes. Still pending owner: the completion **year** per project, and confirmation the
+client agreed to be shown.
+
 ## Q-15 (2026-07-22) — Canonical domain: apex or www?
 `NEXT_PUBLIC_SITE_URL` is unset and Vercel has zero env vars, so every canonical
 / hreflang / sitemap / og:image URL currently points at the staging host. A
@@ -148,7 +198,12 @@ production build now FAILS rather than shipping that (verified both ways).
 Before cutover the owner must pick the canonical host.
 **Recommended default**: `https://rapidconstruct.md` (apex) — it matches the
 current Tilda URLs, so the 301s from legacy pages land on the same host with no
-extra redirect hop. See docs/LAUNCH-CHECKLIST.md §1. STATUS: OPEN
+extra redirect hop. See docs/LAUNCH-CHECKLIST.md §1.
+**STATUS: RESOLVED 2026-07-25 — APEX `rapidconstruct.md` (no www).** Decision by the
+owner, matching the client's existing canonical `http://rapidconstruct.md`. This only
+fixes the **value** to use; it does **NOT** change anything now — `NEXT_PUBLIC_SITE_URL`
+stays absent and DNS is untouched. The apex value gets set at the **RC-403 cutover**
+(owner's call), where it becomes `https://rapidconstruct.md`.
 
 ## Q-16 (2026-07-22) — Privacy policy: legal entity + retention period
 `/politica-de-confidentialitate` is live in RO + RU and describes exactly what the
