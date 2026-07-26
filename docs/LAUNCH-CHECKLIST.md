@@ -36,9 +36,10 @@ without the variable and succeeds with it.
    ```
 3. Redeploy and re-run §2 below. The value must have no trailing slash.
 
-## 1b. 🔴 BLOCKER — the configurator prices are a COMPETITOR's live prices
+## 1b. 🟡 PARTIAL — configurator prices (ROOFS fixed ✅ · FENCES still blocked)
 
-**The configurator MUST NOT go live with the current bands, under any circumstances.**
+**Roofs: ✅ cleared 2026-07-25** (owner's real bands shipped, `feature/configurator`
+`a32caeb`). **Fences: still blocked** (only jaluzele, in lei/`ml`). History below.
 
 The configurator's roofing bands **450 / 550 / 800 lei/m²** were seeded from
 **Imperlux's LIVE PUBLISHED prices** — a named competitor
@@ -58,28 +59,31 @@ problem, not a neutral placeholder. Background: `docs/QUESTIONS.md` Q-10.
   clarifies its scope (it is below the market labour-only rate 180–280 lei/m²).
 - [ ] No invented fence prices (none exist publicly).
 
-**UPDATE 2026-07-25 — owner supplied real ROOF bands** (montaj inclus, "de la"):
-țiglă metalică **1100**, șindrilă bituminoasă **1200**, rocă vulcanică **1400**, țiglă
-ceramică **1600** lei/m². The roof half of this gate clears **once
-`src/config/configurator.ts` is updated to these** (competitor 450/550/800 gone,
-ceramică in JSON-LD). Fences still open: only `jaluzele = 2900 lei/METRU LINIAR`
-(per-ml, not m² — schema needs a unit field); șipcă/plin/combinat = "preț la cerere".
+**✅ ROOF GATE CLEARED 2026-07-25.** The configurator now uses the owner's real bands
+(montaj inclus, "de la"): metalică **1100**, șindrilă **1200**, rocă vulcanică **1400**,
+țiglă ceramică **1600** lei/m² — shipped on `feature/configurator` (`a32caeb`). The
+Imperlux 450/550/800 numbers are **gone**, ceramică now has a band + is in the JSON-LD
+AggregateOffers, and the estimate reads "de la {total}". `grep '450\|550\|800'
+src/config/configurator.ts` → no surviving bands. **Fences STILL open** (this half of
+the gate stands): only `jaluzele = 2900 lei/METRU LINIAR` (per-`ml`, not m² — the schema
+has no fence price field yet); șipcă/plin/combinat = "preț la cerere".
 
-## 1c. 🔴 BLOCKER — the "160 lei/m²" claim is misleading advertising
+## 1c. ⚠️ OPEN (not blocking) — the "160 lei/m²" banner vs the configurator
 
-The live site advertises **"îngheață prețul de 160 lei/m²"** for acoperiș, but the
-owner's **real starting price is 1100 lei/m²** (Q-10). Carrying "160 lei/m²" while
-charging from 1100 is a misleading-advertising risk.
+**Downgraded 2026-07-25 from a launch-blocker to a normal open question.** The site
+copy carries "160 lei/m²" in many places (promo banner, `/acoperisuri` title + meta,
+several FAQ answers, the price chip), while the configurator now shows the owner's real
+"de la 1100 lei/m²". So the **banner and the configurator disagree on the same page.**
 
-**GATE:**
-- [ ] The string **"160 lei/m²"** (and any "îngheață prețul … 160") appears **nowhere**
-  in the new site's copy, titles, meta, or JSON-LD until the owner explains its scope
-  (promo? labour-only? a specific roof?). Spot-check: `grep -rn "160 lei" src/` returns
-  nothing user-facing.
+**For the owner to decide** — keep, remove, or qualify the "160" (e.g. "montaj **de la**
+160 lei/m²" if 160 is a labour-only floor). Not launch-blocking on its own; it just
+needs a decision so the page tells one story. (The exact copy locations:
+`grep -rn "160 lei" src/ messages/`.)
 
-Until this passes, `/configurator` stays a preview/unmerged shell — do not promote it
-to the live homepage flow. *(These gates are documentation today; they should become an
-automated pre-launch check.)*
+With the roof gate cleared and this downgraded, `/configurator` stays a preview/unmerged
+shell only because the **fence prices** (§1b) and the homepage-flow/hero decision are
+still open — not because of the "160" claim. *(These gates are documentation today; they
+should become an automated pre-launch check.)*
 
 ---
 

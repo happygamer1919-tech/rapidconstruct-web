@@ -161,8 +161,21 @@ Owner's real configurator roof bands, **montaj (installation) inclus**, "de la X
   **"îngheață prețul de 160 lei/m²"** for acoperiș, while the owner's **real starting
   price is 1100 lei/m²**. The new site **must NOT carry the "160 lei/m²" claim** until
   the owner explains its scope — a hard gate is added to `docs/LAUNCH-CHECKLIST.md`.
-**Blocks (still):** fence prices (only jaluzele, and in lei/ml), the "160 lei/m²" scope,
-and the configurator code update to the owner's real bands.
+**✅ ROOFS SHIPPED 2026-07-25.** The configurator now carries the owner's real bands on
+`feature/configurator` (`a32caeb`): metalică 1100, șindrilă 1200, rocă vulcanică 1400,
+țiglă ceramică 1600 lei/m² (montaj inclus, "de la X"). Imperlux 450/550/800 removed;
+ceramică has a band + is in the JSON-LD AggregateOffers; estimate shows "de la {total}",
+disclaimer says "nu o ofertă contractuală". **§1b roof gate CLEARED.**
+
+**"160 lei/m²" DOWNGRADED 2026-07-25** from launch-blocker to a normal open question. It
+sits in the promo banner, `/acoperisuri` title/meta, several FAQ answers and the price
+chip, while the configurator now shows "de la 1100" — they disagree on the same page.
+**Owner decides:** keep / remove / qualify (e.g. "montaj de la 160 lei/m²"). Not blocking.
+
+**Blocks (still):** **fences** — only jaluzele answered (2900 **lei/ml**, not m² — schema
+needs a per-unit field); șipcă/plin/combinat unanswered. Roof-calculator ceramic (Creaton
+57/58) still pending. RU strings added (`estimate.from`, disclaimer) are machine-drafted —
+flag for RU review.
 
 ## Q-11 (2026-07-21, 3D agent) — Pick ONE house to photo-match
 We've been modelling an "average" house. Point at ONE photo from your 110 and say "build that
