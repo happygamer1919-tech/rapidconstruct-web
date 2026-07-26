@@ -58,8 +58,27 @@ problem, not a neutral placeholder. Background: `docs/QUESTIONS.md` Q-10.
   clarifies its scope (it is below the market labour-only rate 180–280 lei/m²).
 - [ ] No invented fence prices (none exist publicly).
 
+**UPDATE 2026-07-25 — owner supplied real ROOF bands** (montaj inclus, "de la"):
+țiglă metalică **1100**, șindrilă bituminoasă **1200**, rocă vulcanică **1400**, țiglă
+ceramică **1600** lei/m². The roof half of this gate clears **once
+`src/config/configurator.ts` is updated to these** (competitor 450/550/800 gone,
+ceramică in JSON-LD). Fences still open: only `jaluzele = 2900 lei/METRU LINIAR`
+(per-ml, not m² — schema needs a unit field); șipcă/plin/combinat = "preț la cerere".
+
+## 1c. 🔴 BLOCKER — the "160 lei/m²" claim is misleading advertising
+
+The live site advertises **"îngheață prețul de 160 lei/m²"** for acoperiș, but the
+owner's **real starting price is 1100 lei/m²** (Q-10). Carrying "160 lei/m²" while
+charging from 1100 is a misleading-advertising risk.
+
+**GATE:**
+- [ ] The string **"160 lei/m²"** (and any "îngheață prețul … 160") appears **nowhere**
+  in the new site's copy, titles, meta, or JSON-LD until the owner explains its scope
+  (promo? labour-only? a specific roof?). Spot-check: `grep -rn "160 lei" src/` returns
+  nothing user-facing.
+
 Until this passes, `/configurator` stays a preview/unmerged shell — do not promote it
-to the live homepage flow. *(This gate is documentation today; it should become an
+to the live homepage flow. *(These gates are documentation today; they should become an
 automated pre-launch check.)*
 
 ---

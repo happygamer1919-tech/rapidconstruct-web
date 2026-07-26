@@ -134,6 +134,36 @@ publicly** either. **The owner must supply his own real price bands** (roof mate
 **Blocks:** now LAUNCH-BLOCKING for the whole configurator (was: only the 2 ceramic
 roof-calculator entries).
 
+**✅ PARTIALLY ANSWERED 2026-07-25 (owner) — ROOFS supplied; fences + "160" still open.**
+Owner's real configurator roof bands, **montaj (installation) inclus**, "de la X"
+(starting price, min only — no max given):
+| Material | Owner band | Replaces (Imperlux) |
+|---|---|---|
+| țiglă metalică | **de la 1100 lei/m²** | ~~450–900~~ |
+| șindrilă bituminoasă (shingle) | **de la 1200 lei/m²** | ~~550–1100~~ |
+| rocă vulcanică | **de la 1400 lei/m²** | ~~800–1450~~ |
+| **țiglă ceramică** | **de la 1600 lei/m²** | ~~preț la cerere~~ (now HAS a band) |
+
+- **Configurator code update required (LANE C, `feature/configurator`, NOT this docs
+  PR):** set these min values in `src/config/configurator.ts` `ROOF_MATERIALS_3D[*].band`
+  (owner gave min only → display "de la X"; the `max` field has no owner value, drop it
+  or make it nullable), mark prices "montaj inclus", and **give țiglă ceramică a band
+  (min 1600), remove "preț la cerere", and INCLUDE it in the JSON-LD AggregateOffers.**
+  Only after that lands does the §1b roof gate clear (the 450/550/800 competitor numbers
+  are gone).
+- **Fences — still open, with a UNIT trap.** Only **gard jaluzele = de la 2900
+  lei/METRU LINIAR** (per linear metre, **NOT lei/m²**), cu fundație de beton. The
+  configurator schema **has no fence price field today** (fences are just type ids);
+  adding jaluzele needs a **new fence price with an explicit unit `lei/ml`** — distinct
+  from roofs' implicit lei/m² — and the estimate step must price fences by linear metre,
+  not area. **șipcă / plin / combinat-cu-piatră still unanswered** → keep "preț la cerere".
+- **🚨 CRITICAL CONTRADICTION (misleading-advertising risk).** The live site advertises
+  **"îngheață prețul de 160 lei/m²"** for acoperiș, while the owner's **real starting
+  price is 1100 lei/m²**. The new site **must NOT carry the "160 lei/m²" claim** until
+  the owner explains its scope — a hard gate is added to `docs/LAUNCH-CHECKLIST.md`.
+**Blocks (still):** fence prices (only jaluzele, and in lei/ml), the "160 lei/m²" scope,
+and the configurator code update to the owner's real bands.
+
 ## Q-11 (2026-07-21, 3D agent) — Pick ONE house to photo-match
 We've been modelling an "average" house. Point at ONE photo from your 110 and say "build that
 one" — matching a single real building beats approximating a genus.
