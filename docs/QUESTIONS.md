@@ -177,6 +177,23 @@ needs a per-unit field); șipcă/plin/combinat unanswered. Roof-calculator ceram
 57/58) still pending. RU strings added (`estimate.from`, disclaimer) are machine-drafted —
 flag for RU review.
 
+**✅ RESOLVED 2026-07-26 (owner) — "160" retired + fence category price approved.**
+- **"160 lei/m²" claim REMOVED site-wide** (LANE B, `rc/RC-402-drop-160-claim`, this PR):
+  promo banner (kept "−10% la programări anticipate" + "Rate 0% la acoperiș"), `/acoperisuri`
+  title + meta, home meta, roof FAQ answers, price chip, the roofing Service JSON-LD `price`,
+  `llms.txt`, and the AGENTS.md example. Where a roof price is genuinely needed the copy now
+  shows the **real "de la 1100 lei/m²"** (owner's metalică floor); nothing invented, and the
+  general home/company meta simply drops the price clause. **§1c gate CLEARED.**
+- **Fences — CATEGORY-level price approved (owner 2026-07-26):** shown **once** for the fence
+  section as **"Garduri — de la 2900 lei/m liniar"** (fundație inclusă) with a contact-sales
+  CTA to pick the type. **Do NOT** stamp 2900 on each type — 2900 is the *jaluzele* price;
+  **șipcă / plin / combinat cu piatră stay "preț la cerere"** (one data point → nothing
+  averaged or invented). Unit renders **`lei/m liniar`**, visually distinct from roofs'
+  `lei/m²`. JSON-LD: fence category `lowPrice` 2900 only, no per-type offers. Configurator
+  code lands on **LANE C (`feature/configurator`), unmerged.**
+- **Still outstanding:** per-type fence prices (3 of 4); roof-calculator ceramic (Creaton
+  57/58 lei — bucată or m²?).
+
 ## Q-11 (2026-07-21, 3D agent) — Pick ONE house to photo-match
 We've been modelling an "average" house. Point at ONE photo from your 110 and say "build that
 one" — matching a single real building beats approximating a genus.

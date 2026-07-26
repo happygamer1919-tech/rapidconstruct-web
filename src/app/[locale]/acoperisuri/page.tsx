@@ -59,7 +59,7 @@ export default async function AcoperisuriPage({ params }: PageProps) {
       "@type": "Offer",
       priceSpecification: {
         "@type": "UnitPriceSpecification",
-        price: 160,
+        price: 1100,
         priceCurrency: "MDL",
         unitText: "m²",
       },

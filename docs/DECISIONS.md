@@ -123,3 +123,17 @@ indexing switches on by itself at cutover with nothing to remember.
 
 Rule going forward: **never re-enable indexing on a host that is not the real
 domain**, and if RC-404 adds analytics, keep it off the staging host too.
+
+## 2026-07-26 — Retire the "160 lei/m²" claim; fence category price approved
+Owner confirmed the advertised "160 lei/m² înghețat 2026" for acoperiș contradicts the
+configurator's real "de la 1100 lei/m²" and must go. The "160" claim was removed from the whole
+new site (promo banner, `/acoperisuri` title + meta, home meta, roof FAQ answers, price chip, the
+roofing Service JSON-LD `price`, `llms.txt`, AGENTS.md) on `rc/RC-402-drop-160-claim`. The two real
+offers stay in the banner ("−10% la programări anticipate", "Rate 0% la acoperiș"). No replacement
+number was invented; where a roof price is required the copy shows the real "de la 1100 lei/m²".
+
+Fences: owner approved a single CATEGORY-level starting price — "Garduri — de la 2900 lei/m liniar"
+(fundație inclusă) — shown once with a contact-sales CTA, NOT stamped per type (2900 is the jaluzele
+price; șipcă / plin / combinat cu piatră stay "preț la cerere", nothing averaged or invented). Unit
+renders `lei/m liniar`, distinct from roofs' `lei/m²`; JSON-LD carries the fence category lowPrice
+2900 only. Fence code lands on LANE C (`feature/configurator`), unmerged.

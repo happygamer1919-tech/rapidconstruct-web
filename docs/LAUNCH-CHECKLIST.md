@@ -36,7 +36,7 @@ without the variable and succeeds with it.
    ```
 3. Redeploy and re-run §2 below. The value must have no trailing slash.
 
-## 1b. 🟡 PARTIAL — configurator prices (ROOFS fixed ✅ · FENCES still blocked)
+## 1b. 🟡 PARTIAL — configurator prices (ROOFS fixed ✅ · FENCES category price approved, per-type open)
 
 **Roofs: ✅ cleared 2026-07-25** (owner's real bands shipped, `feature/configurator`
 `a32caeb`). **Fences: still blocked** (only jaluzele, in lei/`ml`). History below.
@@ -66,26 +66,20 @@ Imperlux 450/550/800 numbers are **gone**, ceramică now has a band + is in the 
 AggregateOffers, and the estimate reads "de la {total}". `grep '450\|550\|800'
 src/config/configurator.ts` → no surviving bands. **Fences STILL open** (this half of
 the gate stands): only `jaluzele = 2900 lei/METRU LINIAR` (per-`ml`, not m² — the schema
-has no fence price field yet); șipcă/plin/combinat = "preț la cerere".
+has no fence price field yet); șipcă/plin/combinat = "preț la cerere". **Owner 2026-07-26 approved a CATEGORY-level "Garduri — de la 2900 lei/m liniar" (fundație inclusă), shown once with a contact-sales CTA; per-type prices stay outstanding, so this half stays PARTIAL until the fence code lands on LANE C.**
 
-## 1c. ⚠️ OPEN (not blocking) — the "160 lei/m²" banner vs the configurator
+## 1c. ✅ CLEARED 2026-07-26 — the "160 lei/m²" claim removed
 
-**Downgraded 2026-07-25 from a launch-blocker to a normal open question.** The site
-copy carries "160 lei/m²" in many places (promo banner, `/acoperisuri` title + meta,
-several FAQ answers, the price chip), while the configurator now shows the owner's real
-"de la 1100 lei/m²". So the **banner and the configurator disagree on the same page.**
+**Owner decision 2026-07-26: retire the "160 lei/m²" claim.** It contradicted the
+configurator's real "de la 1100 lei/m²". Removed everywhere it appeared — promo banner,
+`/acoperisuri` title + meta, home meta, roof FAQ answers, price chip, the roofing Service
+JSON-LD `price: 160`, `llms.txt`, AGENTS.md — on `rc/RC-402-drop-160-claim`. The two
+legitimate offers stay in the banner ("−10% la programări anticipate", "Rate 0% la
+acoperiș"). Where a roof price is needed the copy now shows the real **"de la 1100 lei/m²"**;
+nothing invented. Verify: `grep -rn "160 lei\|160 лей\|înghețat" src/ messages/` → no price hits.
 
-**For the owner to decide** — keep, remove, or qualify the "160" (e.g. "montaj **de la**
-160 lei/m²" if 160 is a labour-only floor). Not launch-blocking on its own; it just
-needs a decision so the page tells one story. (The exact copy locations:
-`grep -rn "160 lei" src/ messages/`.)
-
-With the roof gate cleared and this downgraded, `/configurator` stays a preview/unmerged
-shell only because the **fence prices** (§1b) and the homepage-flow/hero decision are
-still open — not because of the "160" claim. *(These gates are documentation today; they
-should become an automated pre-launch check.)*
-
----
+`/configurator` stays a preview/unmerged shell now only because the **per-type fence prices**
+(§1b) and the homepage-flow/hero decision are still open — not the "160" claim.
 
 ## 2. Verify after the variable is set
 
@@ -274,8 +268,8 @@ on cutover day once the host is set.
 
 ### 🚩 FLAGGED — owner product decisions, NOT changed by this audit
 - **Q-07 — unverified marketing-claim numbers.** Published as quotable
-  SEO/GEO text and left exactly as-is: "de la 160 lei/m²" (in `/acoperisuri`
-  titles RO+RU), plus "15+ ani", "500+ case", "30 ani garanție", "4.9/5 din 250+
+  SEO/GEO text: the "160 lei/m²" figure was RETIRED 2026-07-26 (RC-402) and is no longer
+  published; still as-is are "15+ ani", "500+ case", "30 ani garanție", "4.9/5 din 250+
   recenzii" elsewhere in copy. FLAGGED for owner confirmation; the JSON-LD rating
   fields stay omitted until then. Do not change.
 - **Q-10 — calculator price entries** (roof calculator). Owner-owned; unchanged.

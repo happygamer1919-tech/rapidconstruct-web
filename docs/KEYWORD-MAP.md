@@ -29,8 +29,8 @@ The roof page leaves high-intent `pret` / `ремонт` / `цена` traffic on
 
 | Page | Lang | Current title | Recommended title | Why |
 |---|---|---|---|---|
-| `/acoperisuri` | RO | Acoperișuri la cheie în Chișinău și Moldova | Acoperiș la cheie Chișinău, preț de la 160 lei/m² | Surfaces the price and the high-intent "pret" query in the title |
-| `/acoperisuri` | RU | Крыша под ключ в Кишинёве и по Молдове | Ремонт и монтаж крыши в Кишинёве, цена от 160 лей | Adds "ремонт крыши" (top RU query) + "цена" |
+| `/acoperisuri` | RO | Acoperișuri la cheie în Chișinău și Moldova | Acoperiș la cheie Chișinău, preț de la 1100 lei/m² | Surfaces the price and the high-intent "pret" query in the title |
+| `/acoperisuri` | RU | Крыша под ключ в Кишинёве и по Молдове | Ремонт и монтаж крыши в Кишинёве, цена от 1100 лей | Adds "ремонт крыши" (top RU query) + "цена" |
 
 APPLIED 2026-07-20 (PR: acoperis title quick-wins). Both titles below are live in
 `messages/ro.json` and `messages/ru.json`. No other live page needs a title change.
@@ -39,8 +39,8 @@ APPLIED 2026-07-20 (PR: acoperis title quick-wins). Both titles below are live i
 
 | Page (slug) | Status | RO primary keyword | RO secondary | Current title (RO) | Recommended title (RO) ≤60 | Recommended description (RO) ≤155 | Priority |
 |---|---|---|---|---|---|---|---|
-| Home `/` | LIVE | renovari la cheie chisinau | constructii case chisinau; firma constructii moldova | Construcții și renovări la cheie în Chișinău | Construcții și renovări la cheie în Chișinău | Acoperișuri, fațade, renovări complete în Chișinău și regiuni. Garanție scrisă până la 30 de ani, prețuri de la 160 lei/m². | H |
-| Acoperișuri `/acoperisuri` | LIVE | acoperis chisinau | reparatie acoperis pret; tigla metalica pret moldova | Acoperișuri la cheie în Chișinău și Moldova | Acoperiș la cheie Chișinău, preț de la 160 lei/m² | Montăm acoperișuri din țiglă metalică și șindrilă, cu jgheaburi și burlane. Preț de la 160 lei/m², garanție scrisă până la 30 de ani. | H |
+| Home `/` | LIVE | renovari la cheie chisinau | constructii case chisinau; firma constructii moldova | Construcții și renovări la cheie în Chișinău | Construcții și renovări la cheie în Chișinău | Acoperișuri, fațade, renovări complete în Chișinău și regiuni. Garanție scrisă până la 30 de ani. | H |
+| Acoperișuri `/acoperisuri` | LIVE | acoperis chisinau | reparatie acoperis pret; tigla metalica pret moldova | Acoperișuri la cheie în Chișinău și Moldova | Acoperiș la cheie Chișinău, preț de la 1100 lei/m² | Montăm acoperișuri din țiglă metalică și șindrilă, cu jgheaburi și burlane. Preț de la 1100 lei/m², garanție scrisă până la 30 de ani. | H |
 | Fațade `/fatade` | planned | fatade case chisinau | izolare fatada pret; termoizolatie fatada moldova | (none) | Fațade și termoizolație în Chișinău, preț corect | Fațade și termoizolație pentru case în Chișinău și regiuni. Lucru curat, materiale certificate UE, preț pe care îl vedeți din start. | H |
 | Renovări la cheie `/renovari-la-cheie` | planned | renovari la cheie chisinau | reparatie apartament la cheie; reparatii case chisinau pret | (none) | Renovări la cheie în Chișinău, preț transparent | Renovări complete la cheie pentru case și apartamente în Chișinău. Ce scrie în deviz, aceea plătiți. Predăm lucrarea la termen. | H |
 | Case & construcții `/case-constructii` | planned | constructii case la cheie moldova | construim casa la cheie chisinau; casa la rosu pret | (none) | Construim case la cheie în Moldova, preț clar | Construim case la cheie în Chișinău și regiuni, de la fundație la finisaj. Preț clar din start, garanție scrisă și materiale UE. | M |
@@ -63,8 +63,8 @@ column because it is a real search term.
 
 | Page (slug) | RU slug (RC-201) | RU primary keyword | RU secondary | Current title (RU) | Recommended title (RU) ≤60 | Recommended description (RU) ≤155 | Priority |
 |---|---|---|---|---|---|---|---|
-| Home `/` | `/ru` | ремонт под ключ кишинев | строительная компания кишинев; строительство домов молдова | Строительство и ремонт под ключ в Кишинёве | Строительство и ремонт под ключ в Кишинёве | Крыши, фасады, комплексный ремонт в Кишинёве и по Молдове. Письменная гарантия до 30 лет, цены от 160 лей/м². | H |
-| Акопериш `/acoperisuri` | `/ru/kryshi` | ремонт крыши кишинев | металлочерепица цена молдова; кровля молдова цена | Крыша под ключ в Кишинёве и по Молдове | Ремонт и монтаж крыши в Кишинёве, цена от 160 лей | Монтаж крыши из металлочерепицы и битумной черепицы, с желобами и водостоками. Цена от 160 лей/м², письменная гарантия до 30 лет. | H |
+| Home `/` | `/ru` | ремонт под ключ кишинев | строительная компания кишинев; строительство домов молдова | Строительство и ремонт под ключ в Кишинёве | Строительство и ремонт под ключ в Кишинёве | Крыши, фасады, комплексный ремонт в Кишинёве и по Молдове. Письменная гарантия до 30 лет. | H |
+| Акопериш `/acoperisuri` | `/ru/kryshi` | ремонт крыши кишинев | металлочерепица цена молдова; кровля молдова цена | Крыша под ключ в Кишинёве и по Молдове | Ремонт и монтаж крыши в Кишинёве, цена от 1100 лей | Монтаж крыши из металлочерепицы и битумной черепицы, с желобами и водостоками. Цена от 1100 лей/м², письменная гарантия до 30 лет. | H |
 | Фасады `/fatade` | `/ru/fasady` | фасадные работы кишинев | утепление фасада цена; фасад дома молдова | (none) | Фасады и утепление в Кишинёве, честная цена | Фасады и утепление домов в Кишинёве и по Молдове. Аккуратно, сертифицированные в ЕС материалы, цена понятна сразу. | H |
 | Ремонт под ключ `/renovari-la-cheie` | `/ru/remont-pod-klyuch` | ремонт под ключ кишинев | ремонт квартир под ключ цена; ремонт домов кишинев | (none) | Ремонт под ключ в Кишинёве, честная цена | Комплексный ремонт домов и квартир под ключ в Кишинёве. Что в смете, то и платите. Сдаём работу в срок, с гарантией. | H |
 | Дома и строительство `/case-constructii` | `/ru/stroitelstvo-domov` | строительство домов под ключ молдова | построить дом кишинев цена; дом под ключ молдова | (none) | Строим дома под ключ в Молдове, цена сразу | Строим дома под ключ в Кишинёве и регионах, от фундамента до отделки. Понятная цена сразу, письменная гарантия, материалы из ЕС. | M |
@@ -102,7 +102,7 @@ column because it is a real search term.
   No redirect existed for the old slug, so nothing was broken and nothing needs one.
 - **City pages (RC-303):** only build city pages backed by real portfolio projects (Chișinău,
   Orhei, Cahul, Costești). Thin pages without real work hurt more than help.
-- **GEO surface:** keep the quotable facts (160 lei/m², garanție 30 ani, 500+ case, montaj 7–15
+- **GEO surface:** keep the quotable facts (acoperiș de la 1100 lei/m², garanție 30 ani, 500+ case, montaj 7–15
   zile) in server-rendered text and JSON-LD on every page above, per AGENTS.md.
 - {/* TODO(3d): white session */} the `/proiectare-3d` and `/configurator` pages will host the
   interactive 3D model; no model work happens in this docs ticket.
