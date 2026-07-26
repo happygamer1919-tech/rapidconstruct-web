@@ -740,8 +740,12 @@ float vNoise(vec3 p) {
     dome.rotation.y = t * .0045; // clouds drift ~1°/4s — never a frozen sky
     if (t > BUILD_END) {
       const h = t - BUILD_END;
-      const az = KEY_AZ + .05 * Math.sin(h * .07);
-      key.position.set(Math.cos(az) * KEY_R, 13 + .8 * Math.sin(h * .05 + 1), Math.sin(az) * KEY_R);
+      // LANE A fix 6: same eased ramp as the camera drift — the elevation
+      // sine is non-zero at h=0 and used to step the sun (and every shadow)
+      // the moment the build settled.
+      const r0 = Math.min(1, h / 2.5), r = r0 * r0 * (3 - 2 * r0);
+      const az = KEY_AZ + r * .05 * Math.sin(h * .07);
+      key.position.set(Math.cos(az) * KEY_R, 13 + r * .8 * Math.sin(h * .05 + 1), Math.sin(az) * KEY_R);
     }
     for (const tr of trees) { tr.tm.opacity = e0; tr.lm.opacity = e0; }
     const bp = cl(t/.5, 0, 1);

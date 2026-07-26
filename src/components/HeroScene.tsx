@@ -231,13 +231,21 @@ export default function HeroScene({
      * since the build settled; every period is irrational relative to the
      * others so the loop never visibly repeats.
      */
-    const drift = (h: number) => ({
-      x: 0.16 * Math.sin(h * 0.21) + 0.06 * Math.sin(h * 0.57 + 1.7),
-      y: 0.08 * Math.sin(h * 0.16 + 0.9) + 0.03 * Math.sin(h * 0.43 + 2.1),
-      z: 0.12 * Math.sin(h * 0.12 + 2.6),
-      lx: 0.05 * Math.sin(h * 0.1 + 1.2),
-      ly: 0.035 * Math.sin(h * 0.18 + 0.5),
-    });
+    const drift = (h: number) => {
+      // LANE A fix 6: the phase-offset sines are non-zero at h=0, so the
+      // camera used to JUMP several cm the instant the pull-back ended — the
+      // visible stutter at the handoff. An eased 2.5 s ramp makes the drift
+      // start exactly from the settled pose (C0-continuous).
+      const r0 = Math.min(1, h / 2.5);
+      const r = r0 * r0 * (3 - 2 * r0);
+      return {
+        x: r * (0.16 * Math.sin(h * 0.21) + 0.06 * Math.sin(h * 0.57 + 1.7)),
+        y: r * (0.08 * Math.sin(h * 0.16 + 0.9) + 0.03 * Math.sin(h * 0.43 + 2.1)),
+        z: r * (0.12 * Math.sin(h * 0.12 + 2.6)),
+        lx: r * (0.05 * Math.sin(h * 0.1 + 1.2)),
+        ly: r * (0.035 * Math.sin(h * 0.18 + 0.5)),
+      };
+    };
 
     const applyFrame = (t: number) => {
       api.update(t);
@@ -290,6 +298,12 @@ export default function HeroScene({
           if (!restedFired) {
             restedFired = true;
             onRestedRef.current?.();
+          }
+          // Full rate through the deceleration tail + drift ramp (first 3 s
+          // of hold) so the handoff never half-steps; half rate after.
+          if (t < api.BUILD_END + 3) {
+            applyFrame(t);
+            return;
           }
           holdFrame = (holdFrame + 1) % 2;
           if (holdFrame === 0) applyFrame(t);
