@@ -157,6 +157,25 @@ re-record; (4) page weight — a background video ships megabytes on every visit
 renders instantly. This keeps the build animation, the whole reason the 3D exists (Q-12 lean:
 the live 3D stays the hero; lead-vs-photo + slideshow placement still in progress).
 
+## 2026-07-26 — Park the 3D configurator (LANE C) as a post-launch update
+Owner scope decision: the interactive 3D house configurator is too complex for this launch and
+is **deferred to a future update**. `feature/configurator` (`560b005`) stays a pushed, unmerged
+branch — **nothing is merged and no code is removed**; it is parked, not cancelled.
+
+Already built on the branch (kept for the future update): a 4-type × 4-material roof picker with
+the owner's real prices (țiglă metalică 1100, șindrilă 1200, rocă vulcanică 1400, țiglă ceramică
+1600 lei/m², montaj inclus, "de la X"); fence **category** pricing ("de la 2900 lei/m liniar",
+fundație inclusă, per-linear-metre estimate, no invented per-type prices); a house recipe
+(`cu-fronton`); the interactive 3D configurator UI (on-demand render, reduced-motion + skip-canvas
+fallbacks) and Service/Fence JSON-LD.
+
+Launch consequences: `/configurator` + `/ru/konfigurator` are **out of launch scope** — the launch
+sitemap stays **30** (not 32); LAUNCH-CHECKLIST §1b is no longer a launch gate; and Q-10 / blocker
+B4 are **downgraded to post-launch** (the outstanding per-type fence prices + roof-calc ceramic
+only matter for the parked lane). Launch roof prices already ship on `/acoperisuri` ("de la 1100
+lei/m²") and are unaffected. To revive later: fast-forward/merge `feature/configurator`, confirm the
+sitemap emits 32, and answer the remaining per-type fence prices.
+
 ## 2026-07-28 — Homepage flow: 3D → slideshow handoff (canvas unmounts after cross-fade)
 The homepage hero hands off to the project slideshow: 3D build → settle → copy card → the 3D dims
 and cross-fades into an auto-advancing slideshow of real project photos, card legible on top.

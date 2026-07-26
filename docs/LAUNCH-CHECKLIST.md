@@ -36,7 +36,9 @@ without the variable and succeeds with it.
    ```
 3. Redeploy and re-run §2 below. The value must have no trailing slash.
 
-## 1b. 🟡 PARTIAL — configurator prices (ROOFS fixed ✅ · FENCES category price approved, per-type open)
+## 1b. ✅ NOT A LAUNCH GATE — configurator PARKED post-launch (2026-07-26)
+
+**PARKED 2026-07-26 (owner scope decision).** The 3D configurator (`feature/configurator`, unmerged) is deferred to a post-launch update — too complex for this launch. `/configurator` + `/ru/konfigurator` are **out of launch scope**, so this section is **no longer a launch gate**; it is kept only as the record of what the parked lane already builds. Launch roof prices already ship on `/acoperisuri` ("de la 1100 lei/m²"). The outstanding per-type fence prices matter only for the parked configurator. See DECISIONS.md 2026-07-26.
 
 **Roofs: ✅ cleared 2026-07-25** (owner's real bands shipped, `feature/configurator`
 `a32caeb`). **Fences: still blocked** (only jaluzele, in lei/`ml`). History below.
@@ -107,10 +109,10 @@ Run against the production deployment, not a preview:
       `/ru/politika-konfidencialnosti`) is a real public page and belongs in the
       sitemap — it is the pair that took the count from 28 to 30. See the
       reconciliation note at the bottom of this file.
-      **Merge-aware:** once `feature/configurator` merges to `main` the expected
-      count becomes **32** (17 routes × 2) — that lane adds `/configurator` (RO)
-      and `/ru/konfigurator` (RU). Whoever merges the configurator lane should
-      re-count and confirm **32**, not 30.
+      **Launch stays at 30.** The configurator lane (`feature/configurator`) is
+      **PARKED post-launch** (2026-07-26) — `/configurator` + `/ru/konfigurator` are
+      NOT in launch scope. If that lane is ever revived and merged the count would
+      become 32; for this launch the target is **30**. See DECISIONS.md.
 - [ ] Spot-check three pages: `canonical`, `hrefLang="ro"`, `hrefLang="ru"`,
       `hrefLang="x-default"` all absolute and on the real domain.
 - [ ] `og:image` resolves (open it in a browser, expect an image not a 404).
@@ -277,7 +279,7 @@ on cutover day once the host is set.
 ## Sitemap count reconciliation — 2026-07-24 (RC-402, merge-aware)
 
 **Resolved: `main`'s sitemap is correct at 30; this checklist's "28" was stale.
-After `feature/configurator` merges the target is 32.**
+The configurator lane is PARKED post-launch (2026-07-26), so the launch target stays **30** — the +2 configurator routes are a deferred post-launch addition, not a launch item.**
 
 Re-verified on `main` (worktree off `06fdb88`, not trusting the earlier
 `rc/RC-402-sitemap-reconcile` branch blindly): `npm run build` exits 0 and the
@@ -309,21 +311,19 @@ already right.
 
 ### Merge-aware target (the new part)
 
-The **configurator lane** (`feature/configurator`, not yet merged) adds **2**
-indexable routes to `src/app/sitemap.ts` when it lands:
+The **configurator lane** (`feature/configurator`) is **PARKED post-launch** (2026-07-26). If it is ever revived it would add **2** indexable routes to `src/app/sitemap.ts`:
 
 - `/configurator` (RO)
 - `/ru/konfigurator` (RU)
 
 | State | Indexable routes | `<loc>` count |
 |---|---|---|
-| `main` today | 15 | **30** |
-| After `feature/configurator` merges | 17 | **32** |
+| **Launch scope** (`main`, configurator parked) | 15 | **30** |
+| If the parked lane is ever revived + merged | 17 | 32 (post-launch) |
 
-Whoever merges the configurator lane must re-run the build and confirm the
-sitemap emits **32**, and bump the §2 checkbox above to 32. If the count is not
-exactly 32 after that merge, either the configurator routes did not land in
-`sitemap.ts` or an unrelated route changed — investigate before cutover. A
+The configurator lane is parked (post-launch); nobody merges it for this launch, so
+**the launch sitemap must emit 30**. If the lane is ever revived, re-run the build
+and confirm 32 then. A
 matching self-documenting note lives at the top of `src/app/sitemap.ts` so the
 expected counts are visible right where the `ROUTES` array is edited.
 
