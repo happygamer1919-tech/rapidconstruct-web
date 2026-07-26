@@ -216,11 +216,33 @@ export function buildScene(THREE, scene, renderer) {
   // empirically). The dome carries ONLY the clouds, on a transparent canvas,
   // painted into the few degrees around the horizon the camera can actually
   // see (v = .5 + ε/180 ⇒ canvas rows ~232–258 of 512), and rotates slowly.
-  const kc = cv(4, 256), kx = kc.getContext('2d');
+  // LANE A env 3 (2026-07-26, Seedance reference): the flat 4px gradient
+  // read as a washed white band. Real sky: steel-blue zenith falling through
+  // pale grey to a warm horizon, with soft static cloud streaks painted into
+  // the upper band (screen-mapped, so they read as high cloud; the dome
+  // still carries the MOVING clouds near the horizon).
+  // was: stops 6d9bc8/.38 a9c4de/.72 e0e0d6/1 eddcba on a 4×256 canvas
+  const kc = cv(512, 256), kx = kc.getContext('2d');
   const sg = kx.createLinearGradient(0, 0, 0, 256);
-  sg.addColorStop(0, '#6d9bc8'); sg.addColorStop(.38, '#a9c4de');
-  sg.addColorStop(.72, '#e0e0d6'); sg.addColorStop(1, '#eddcba');
-  kx.fillStyle = sg; kx.fillRect(0, 0, 4, 256);
+  sg.addColorStop(0, '#5d7f9f'); sg.addColorStop(.35, '#93aabb');
+  sg.addColorStop(.7, '#d6d8d2'); sg.addColorStop(1, '#e8dfc6');
+  kx.fillStyle = sg; kx.fillRect(0, 0, 512, 256);
+  for (let i = 0; i < 9; i++) {
+    // one high-cloud streak: stacked soft ellipses, wider than tall
+    const cy2 = 22 + Math.random() * 130, cx3 = Math.random() * 512;
+    const cw = 90 + Math.random() * 150, ch = 5 + Math.random() * 9;
+    for (let p2 = 0; p2 < 6; p2++) {
+      const g3 = kx.createRadialGradient(0, 0, 0, 0, 0, 1);
+      g3.addColorStop(0, 'rgba(246,244,238,' + (.16 + Math.random() * .10).toFixed(2) + ')');
+      g3.addColorStop(1, 'rgba(244,242,236,0)');
+      kx.save();
+      kx.translate((cx3 + (Math.random() - .5) * cw + 512) % 512, cy2 + (Math.random() - .5) * ch);
+      kx.scale(cw * (.4 + Math.random() * .35), ch * (.5 + Math.random() * .5));
+      kx.fillStyle = g3;
+      kx.beginPath(); kx.arc(0, 0, 1, 0, 7); kx.fill();
+      kx.restore();
+    }
+  }
   scene.background = new THREE.CanvasTexture(kc);
   // LANE A env step 1 (2026-07-26, Seedance reference): FogExp2 .0095 greyed
   // the WHOLE frame — mid trees, lawn, even the house edge sat in haze,
