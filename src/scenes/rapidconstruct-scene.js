@@ -652,7 +652,10 @@ float vNoise(vec3 p) {
   // door 1.0×2.15, lamps pulled in beside the jamb, steps door-width.
   add(new B(1.36,2.5,.24), 0xffffff, { x:.4, y:1.69, z:2.46, fz:2.4, s:1.38, d:.3, map:pnT, r:.66 });
   add(new B(1.0,2.15,.3), FRM, { x:.4, y:1.515, z:2.56, fy:-2.6, s:2.36, d:.24, r:.34, m:.5 });
-  for (let i = 0; i < 7; i++) add(new B(1.08,.15,.1), 0x3f4c54, { x:.4, y:.58+i*.3, z:2.7, fy:-2.6, s:2.38+i*.01, d:.2, r:.4, m:.6 });
+  // LANE A fix 3 (2026-07-26): the 7-slat stack that floated in front of the
+  // door face (B(1.08,.15,.1) ×7 at z 2.7) read as a striped pile/post by the
+  // entrance — removed. A handle is all the door needs at this distance.
+  add(new B(.05,.3,.07), 0xc9c4ba, { x:.78, y:1.45, z:2.74, fy:-2.6, s:2.4, d:.2, r:.35, m:.7 });
   add(new B(.16,.36,.14), 0x22282c, { x:-.35, y:2.2, z:2.62, fz:1.6, s:2.62, d:.22, r:.5, m:.4 });
   add(new B(.12,.26,.1), 0xfff0d0, { x:-.35, y:2.2, z:2.7, fz:1.6, s:2.64, d:.22, r:.3, emi:0xffdca8, ei:.55 });
   add(new B(.16,.36,.14), 0x22282c, { x:1.15, y:2.2, z:2.62, fz:1.6, s:2.62, d:.22, r:.5, m:.4 });
