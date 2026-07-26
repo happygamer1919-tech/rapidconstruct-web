@@ -59,6 +59,26 @@ environmental (an env var set before cutover), which CI structurally cannot see.
 
 Shipped and verified. PR numbers in brackets.
 
+- **3D hero — LANE A perf pass: measured, then fixed (60 fps at the hold)**
+  (2026-07-26, `feature/3d-hero`, `08cef38` + `6fe427f` + `f1d1316`).
+  *Environment ruled out first:* prod build (:3900) vs dev (:3800) both
+  60 fps on the dev machine (worst frame <30 ms); 5 idle dev servers ≈
+  negligible CPU. NOTE: `next start` and `next dev` share `.next` — serve a
+  prod build only with the dev server stopped.
+  *Profile at the settled hold (prod):* 1,573 draw calls / 22.5k tris —
+  draw-call-bound, 5× the old ~330 ceiling. Top 3 measured costs: landed
+  blueprint ghosts still drawn at opacity 0 (465 draws, 1.86 ms of a 4.58 ms
+  frame), trees (280 draws, ~1.2 ms), per-frame 2048² shadow updates
+  (~0.9-1.6 ms). The suspected recent additions (split walls, gate leaves,
+  fence plinths, contact shadows) measured negligible.
+  *Fixes, re-measured each:* F1 hide landed ghosts (4.58→3.24 ms); F2 shadow
+  updates every 4th rendered frame at hold only (3.24→1.77 ms probe); F3
+  trees merged into two draws with vertex colours. Result: 485 draw calls
+  (−69%), 60 fps build + hold, no visual change (screenshot-verified), fade
+  behaviour identical. A transparent→opaque flip for landed pieces was
+  measured SLOWER and dropped. `?herostats=1` hook added for future
+  profiling. Reduced-motion + `?no3d=1` re-verified on prod.
+
 - **3D hero — LANE A animation fixes: build order / card timing / gate**
   (2026-07-26, `feature/3d-hero`, `8e3d8e3` + `9194a65` + `f356644`, serial;
   before/after BUILD VIDEOS in ~/Desktop/hero-build-videos/):
