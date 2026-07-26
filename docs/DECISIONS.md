@@ -137,3 +137,22 @@ Fences: owner approved a single CATEGORY-level starting price — "Garduri — d
 price; șipcă / plin / combinat cu piatră stay "preț la cerere", nothing averaged or invented). Unit
 renders `lei/m liniar`, distinct from roofs' `lei/m²`; JSON-LD carries the fence category lowPrice
 2900 only. Fence code lands on LANE C (`feature/configurator`), unmerged.
+
+## 2026-07-26 — Hero background: keep the live three.js, reject the AI restyle
+Tested a Higgsfield AI restyle of the live 3D hero as a candidate homepage background.
+Results: Gemini Omni "pass A" drifted the geometry (30 cr); a Nano Banana Pro single-frame
+probe held (2 cr); Seedance 2.0 Mini held the geometry at 720p (25 cr). Total spend 57 cr.
+A/B at ~/Desktop/hero-ab/.
+
+Decision: KEEP the live three.js hero as the homepage background. The restyle is a
+poster/social asset only. Do NOT upgrade to Higgsfield Pro (the only way to run Seedance full
+at 1080p).
+
+Why: (1) motion truth — the live build is a real deterministic construction sequence; the
+restyle re-interprets it and re-invents frames, which a firm selling construction accuracy
+should not ship; (2) resolution — the live scene is 1080p+ and sharp, the restyle is a soft
+720p (worse on a large desktop hero); (3) iterability — the live scene changes for free
+(quoins, colours, light), a baked video is frozen and every change costs credits + a
+re-record; (4) page weight — a background video ships megabytes on every visit, the canvas
+renders instantly. This keeps the build animation, the whole reason the 3D exists (Q-12 lean:
+the live 3D stays the hero; lead-vs-photo + slideshow placement still in progress).
