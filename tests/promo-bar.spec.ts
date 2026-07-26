@@ -11,16 +11,21 @@ test.describe("promo bar", () => {
     await page.goto("/");
     const bar = page.locator("#promo-bar");
     await expect(bar).toBeVisible();
-    // Concrete, quotable facts must be in the bar copy.
-    await expect(bar).toContainText("160 lei/m²");
-    await expect(bar).toContainText("2026");
+    // The two real offers are in the bar copy; the retired "160 lei/m²"
+    // price-freeze claim (removed 2026-07-26, RC-402) must NOT reappear.
+    await expect(bar).toContainText("programări anticipate");
+    await expect(bar).toContainText("Rate 0% la acoperiș");
+    await expect(bar).not.toContainText("160");
   });
 
   test("is visible on /ru with the RU offer text", async ({ page }) => {
     await page.goto("/ru");
     const bar = page.locator("#promo-bar");
     await expect(bar).toBeVisible();
-    await expect(bar).toContainText("160 лей/м²");
+    // Real offers only; the retired "160 лей/м²" price-freeze claim is gone (RC-402).
+    await expect(bar).toContainText("ранней записи");
+    await expect(bar).toContainText("Рассрочка 0% на крышу");
+    await expect(bar).not.toContainText("160");
     // Copy register: customer text uses "крыша", never the banned "кровля".
     await expect(bar).not.toContainText("кровл");
   });
