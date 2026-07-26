@@ -28,7 +28,9 @@ export function buildScene(THREE, scene, renderer) {
   // This blue-grey tints the mirrored sky the way real solar-control glazing
   // does. (history: approved 2f4856 → LANE B 1a2a34 → 3e4f5c → this;
   // 3e4f5c mirrored too bright — goal is DARK reflective glazing)
-  const WHT = 0xf1eee6, STN = 0xc6bfb1, FRM = 0x14181c, GLS = 0x2e3d49;
+  // WHT f1eee6 → efe5cf (LANE A env 5): clinical white → warm cream per the
+  // Seedance reference; every stucco surface tints through this constant.
+  const WHT = 0xefe5cf, STN = 0xc6bfb1, FRM = 0x14181c, GLS = 0x2e3d49;
   // Quoin-only stone tint — warmer + slightly darker than STN so the corner
   // blocks read against the white stucco. STN is still used by wall bases and
   // columns, so this is a separate constant rather than a change to STN.
@@ -577,7 +579,7 @@ float vNoise(vec3 p) {
     const y = roofBase + h*f, z = roofCz + hz*(1-f);
     const w = 1.7, dp = 1.75, bh = .86;
     add(new B(w, bh, dp), 0xffffff, { x: cx, y: y+bh/2-.24, z, fy: 6, s: st, d: .34, map: stT, r: .93, tint: WHT });
-    add(gable(w/2+.19, dp/2+.2, .5), 0xffffff, { x: cx, y: y+bh-.24, z, fy: 6, s: st+.05, d: .34, map: tileS, bump: bumpT, bs: .07, r: .74, m: .04, tint: 0x757b78, ds: 1 });
+    add(gable(w/2+.19, dp/2+.2, .5), 0xffffff, { x: cx, y: y+bh-.24, z, fy: 6, s: st+.05, d: .34, map: tileS, bump: bumpT, bs: .07, r: .82, m: .02, tint: 0x797b73, ds: 1 });
     add(new B(.13, .36, dp+.44), FRM, { x: cx, y: y+bh-.06, z, fy: 6, s: st+.09, d: .28, r: .6, m: .14 });
     add(new B(w+.4, .11, .15), FRM, { x: cx, y: y+bh-.29, z: z+dp/2+.22, fy: 6, s: st+.11, d: .26, r: .6, m: .14 });
     add(new B(w+.28, .09, .46), 0xffffff, { x: cx, y: y+bh-.2, z: z+dp/2+.39, fy: 6, s: st+.13, d: .26, map: woodT, r: .85, tint: 0xd8b98a });
@@ -646,7 +648,7 @@ float vNoise(vec3 p) {
   add(new B(10.72,.13,5.32), 0xe8e4dc, { x:-3.7, y:1.415, z:-.1, fy:-7, s:.78, d:.24, r:.9 });
   add(new B(10.6,2.32,5.2), 0xffffff, { x:-3.7, y:2.64, z:-.1, fy:-7, s:1.02, d:.34, map:stT, r:.93, tint:WHT });
   quoin(-9.0, 2.5, .3, 3.5, 2.78); quoin(-9.0, -2.7, .3, 3.5, 2.82);
-  add(hipR(5.95,4.15,1.35,2.9), 0xffffff, { x:-3.7, y:3.8, z:.55, fy:10, s:2.25, d:.4, map:tileT, bump:bumpT, bs:.1, r:.74, m:.04, tint:0x757b78 });
+  add(hipR(5.95,4.15,1.35,2.9), 0xffffff, { x:-3.7, y:3.8, z:.55, fy:10, s:2.25, d:.4, map:tileT, bump:bumpT, bs:.1, r:.82, m:.02, tint:0x797b73 });
   eave(-3.7, 3.64, .55, 5.95, 4.15, 1.95, .3);
   cap(-6.6,5.15,.55, -.8,5.15,.55, .15, 2.6, .26);
   cap(-9.65,3.8,4.7, -6.6,5.15,.55, .14, 2.62, .26);
@@ -687,7 +689,7 @@ float vNoise(vec3 p) {
   quoin(cx-bw/2+.05, 3.55, .3, 7.4, 2.84);
   quoin(cx+bw/2-.05, 3.55, .3, 7.4, 2.86);
   quoin(cx+bw/2-.05, -3.15, .3, 7.4, 2.88);
-  add(hipR(hx,4.15,2.05,rx0), 0xffffff, { x:cx, y:7.7, z:.2, fy:10, s:2.32, d:.4, map:tileT, bump:bumpT, bs:.1, r:.74, m:.04, tint:0x757b78 });
+  add(hipR(hx,4.15,2.05,rx0), 0xffffff, { x:cx, y:7.7, z:.2, fy:10, s:2.32, d:.4, map:tileT, bump:bumpT, bs:.1, r:.82, m:.02, tint:0x797b73 });
   eave(cx, 7.54, .2, hx, 4.15, 1.98, .3);
   cap(cx-rx0,9.75,.2, cx+rx0,9.75,.2, .16, 2.7, .26);
   cap(cx-hx,7.7,4.35, cx-rx0,9.75,.2, .15, 2.72, .26);
@@ -711,7 +713,7 @@ float vNoise(vec3 p) {
   add(new B(3.6,3.55,1.6), 0xffffff, { x:cx+1.6, y:5.925, z:4.4, fz:3.4, s:1.55, d:.34, map:stT, r:.93, tint:WHT });
   add(new B(3.72,.16,1.72), 0xe8e4dc, { x:cx+1.6, y:4.15, z:4.4, fz:3, s:1.72, d:.26, r:.9 });
   quoin(cx-.2, 5.15, .3, 7.4, 2.9); quoin(cx+3.4, 5.15, .3, 7.4, 2.92);
-  add(gable(2.05,2.6,1.55), 0xffffff, { x:cx+1.6, y:7.7, z:2.8, fy:9, s:2.42, d:.34, map:tileM, bump:bumpT, bs:.09, r:.74, m:.04, tint:0x757b78, ds:1 });
+  add(gable(2.05,2.6,1.55), 0xffffff, { x:cx+1.6, y:7.7, z:2.8, fy:9, s:2.42, d:.34, map:tileM, bump:bumpT, bs:.09, r:.82, m:.02, tint:0x797b73, ds:1 });
   add(new B(4.4,.28,.24), 0x131719, { x:cx+1.6, y:7.6, z:5.4, fy:9, s:2.02, d:.28, r:.62, m:.12 });
   add(new B(4.1,.18,.5), 0xffffff, { x:cx+1.6, y:7.72, z:5.62, fy:9, s:2.04, d:.26, map:woodT, r:.85, tint:0xd8b98a });
   add(new B(.16,.4,5.4), FRM, { x:cx+1.6, y:9.2, z:2.8, fy:9, s:2.06, d:.26, r:.6, m:.14 });
