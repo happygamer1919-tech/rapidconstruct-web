@@ -59,6 +59,29 @@ environmental (an env var set before cutover), which CI structurally cannot see.
 
 Shipped and verified. PR numbers in brackets.
 
+- **3D hero — LANE A fixes 1-6: geometry bugs the Higgsfield restyle exposed**
+  (2026-07-26, `feature/3d-hero`, `d64f59f`…`5543149`, serial):
+  1. *Two storeys* — block wall 5.32→6.42 (+1.1 m), string course at the true
+     floor line; roof/bay/chimneys/windows follow. Wing untouched (contrast).
+  2. *Entrance* — scaled to door proportions (was a 3.8 m grey tower + 3.5 m
+     steps reading as a wing).
+  3. *Stray pile* — the 7-slat stack floating in front of the door removed;
+     handle added.
+  4. *Blueprint covers the full footprint* — was a FRAMING bug, not missing
+     ghosts: opening keyframe rd 20→25.5 / hy 2.4→5.2; one tree moved off the
+     new sightline. Verified on recorded build video.
+  5. *Fence* — one recipe for all four runs: continuous plinth (split at the
+     gate), slim .38×2.3 piers with two-step caps, panels seated on plinth.
+  6. *Camera continuity* — drift + sun sines were non-zero at handoff (camera
+     jumped ~6-9 cm at settle) and the hold dropped to half-rate at the
+     deceleration tail; eased 2.5 s ramps + full-rate first 3 s. Frame-delta
+     tail now decays smoothly (19.9→3.7%) instead of halting with a blip.
+  - *Verified:* tsc, eslint, prod build; reduced-motion single frame;
+    `?no3d=1` no canvas; before/after PNGs + build videos captured.
+  - Labeling note per toolkit rule: earlier realism commits on this branch
+    say "LANE B" in their subjects — they are LANE A work; labels are correct
+    from here on (history not rewritten).
+
 - **3D hero — LANE C fixes: mirror glass + full perimeter fence**
   (2026-07-24, `feature/3d-hero`, `fe0442d` + `7b42033`).
   1. *Glass* — was a physical dielectric that only reflected at grazing
