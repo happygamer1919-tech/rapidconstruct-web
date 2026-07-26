@@ -456,9 +456,10 @@ float vNoise(vec3 p) {
     const me = new THREE.Mesh(geo, mt); me.castShadow = true; me.receiveShadow = true;
     const pv = new THREE.Group(); pv.add(me); G.add(pv);
     const bm = new THREE.LineBasicMaterial({ color: BLUE, transparent: true, opacity: 0 });
-    GH.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 32), bm));
+    const ln = new THREE.LineSegments(new THREE.EdgesGeometry(geo, 32), bm);
+    GH.add(ln);
     const fr = new THREE.Vector3(o.fx || 0, o.fy || 0, o.fz || 0); pv.position.copy(fr);
-    P.push({ pv, m: mt, bm, fr, s: o.s, d: o.d });
+    P.push({ pv, m: mt, bm, ln, fr, s: o.s, d: o.d });
   }
 
   function quoin(cx, cz, baseY, h, st) {
@@ -775,6 +776,11 @@ float vNoise(vec3 p) {
       p.pv.position.lerpVectors(p.fr, Z, e);
       p.m.opacity = e;
       p.bm.opacity = (1 - q) * .85 * bp;
+      // LANE A perf F1 (2026-07-26): a landed piece's blueprint ghost is
+      // opacity 0 but was still DRAWN — 465 dead line draws costing 1.86 ms
+      // of the 4.58 ms frame at the settled hold (measured). Hide it.
+      const gv = q < 1;
+      if (p.ln.visible !== gv) p.ln.visible = gv;
     }
   }
   function applyRenderer(r) {
