@@ -263,9 +263,9 @@ export function buildScene(THREE, scene, renderer) {
   key.position.set(-24, 13, 16); key.castShadow = true;
   key.shadow.mapSize.set(2048, 2048);
   Object.assign(key.shadow.camera, { left: -34, right: 34, top: 34, bottom: -34, near: 1, far: 100 });
-  key.shadow.bias = -0.0007; key.shadow.radius = 3.5;
+  key.shadow.bias = -0.0007; key.shadow.radius = 5;
   scene.add(key);
-  const fill = new THREE.DirectionalLight(0x93b4d8, .28); // was .32 — cooler frame overall
+  const fill = new THREE.DirectionalLight(0x93b4d8, .24); // was .32 → .28 → .24
   fill.position.set(17, 9, -15); scene.add(fill);
 
   // LANE B step 2 — procedural environment map, assigned per-material to
@@ -298,7 +298,7 @@ export function buildScene(THREE, scene, renderer) {
   // Sun drift during the hold (step 4): the key swings ±~3° azimuth and
   // breathes in elevation, so shadows creep imperceptibly instead of being
   // stamped. Base position preserved exactly at h=0.
-  const KEY_R = Math.hypot(-24, 16), KEY_AZ = Math.atan2(16, -24);
+  const KEY_R = Math.hypot(-24, 16), KEY_AZ = Math.atan2(16, -24), KEY_Y = 9;
 
   const ground = new THREE.Mesh(new THREE.PlaneGeometry(1400, 1400),
     new THREE.MeshStandardMaterial({ map: grT, color: 0xdedbd0, roughness: 1, transparent: true, opacity: 0 }));
@@ -789,7 +789,7 @@ float vNoise(vec3 p) {
       // the moment the build settled.
       const r0 = Math.min(1, h / 2.5), r = r0 * r0 * (3 - 2 * r0);
       const az = KEY_AZ + r * .05 * Math.sin(h * .07);
-      key.position.set(Math.cos(az) * KEY_R, 13 + r * .8 * Math.sin(h * .05 + 1), Math.sin(az) * KEY_R);
+      key.position.set(Math.cos(az) * KEY_R, KEY_Y + r * .8 * Math.sin(h * .05 + 1), Math.sin(az) * KEY_R);
     }
     for (const tr of trees) { tr.tm.opacity = e0; tr.lm.opacity = e0; }
     const bp = cl(t/.5, 0, 1);
@@ -808,7 +808,7 @@ float vNoise(vec3 p) {
   function applyRenderer(r) {
     r.outputEncoding = THREE.sRGBEncoding;
     r.toneMapping = THREE.ACESFilmicToneMapping;
-    r.toneMappingExposure = 0.97;
+    r.toneMappingExposure = 1.04; // was .97 — lower sun needs a lift
     r.shadowMap.enabled = true;
     r.shadowMap.type = THREE.PCFSoftShadowMap;
   }
