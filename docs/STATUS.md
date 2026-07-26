@@ -59,6 +59,24 @@ environmental (an env var set before cutover), which CI structurally cannot see.
 
 Shipped and verified. PR numbers in brackets.
 
+- **3D hero — LANE A animation fixes: build order / card timing / gate**
+  (2026-07-26, `feature/3d-hero`, `8e3d8e3` + `9194a65` + `f356644`, serial;
+  before/after BUILD VIDEOS in ~/Desktop/hero-build-videos/):
+  1. *Bottom-up build order* — full stagger retime to construction sequence:
+     foundation pad first, base courses, ground-floor walls (block + bay
+     walls SPLIT at the floor line so the upper storey arrives as its own
+     lift), upper floor, roof structure before tiles, caps/chimneys, finishes,
+     courtyard paving AFTER the house, fence + gate LAST (gate lands at
+     BUILD_END). Phase captions retimed. Verified frame-by-frame on video.
+  2. *Copy card timing* — the 9 s safety timer could fire mid-build on slow
+     warm-ups (card flashed mid-animation). Reveal now = onRested + 600 ms
+     settle beat; timer is a 16 s true-hang net; one-way reveal (never
+     unsets). Video-verified: card off all build, one ON transition, stays.
+  3. *Driveway gate* — two framed leaves (stiles/rails/louvre infill matching
+     the fence) slide together as the closing beat; flanking stucco piers
+     act as posts. Replaces the flat slab + rail.
+  - *Verified:* tsc, eslint, prod build; recorded videos before/after each.
+
 - **3D hero — LANE A fixes 1-6: geometry bugs the Higgsfield restyle exposed**
   (2026-07-26, `feature/3d-hero`, `d64f59f`…`5543149`, serial):
   1. *Two storeys* — block wall 5.32→6.42 (+1.1 m), string course at the true
