@@ -66,7 +66,7 @@ Imperlux 450/550/800 numbers are **gone**, ceramică now has a band + is in the 
 AggregateOffers, and the estimate reads "de la {total}". `grep '450\|550\|800'
 src/config/configurator.ts` → no surviving bands. **Fences STILL open** (this half of
 the gate stands): only `jaluzele = 2900 lei/METRU LINIAR` (per-`ml`, not m² — the schema
-has no fence price field yet); șipcă/plin/combinat = "preț la cerere". **Owner 2026-07-26 approved a CATEGORY-level "Garduri — de la 2900 lei/m liniar" (fundație inclusă), shown once with a contact-sales CTA; per-type prices stay outstanding, so this half stays PARTIAL until the fence code lands on LANE C.**
+has no fence price field yet); șipcă/plin/combinat = "preț la cerere". **Owner 2026-07-26 approved a CATEGORY-level "Garduri — de la 2900 lei/m liniar" (fundație inclusă), shown once with a contact-sales CTA. The fence code has now **LANDED on `feature/configurator` (`560b005`, unmerged):** category "de la 2900 lei/m liniar" + length estimate (lei/m liniar) + JSON-LD lowPrice 2900. **Per-type prices (șipcă/plin/combinat) still outstanding, so this half stays PARTIAL.**
 
 ## 1c. ✅ CLEARED 2026-07-26 — the "160 lei/m²" claim removed
 
