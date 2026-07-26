@@ -604,39 +604,45 @@ float vNoise(vec3 p) {
   const cx = 5.9, bw = 8.2, hx = bw/2 + .75, rx0 = 3.3;
   add(new B(bw,.85,6.8), 0xffffff, { x:cx, y:.725, z:.2, fy:-7, s:.94, d:.46, map:stoneLowT, r:.86, tint:STN });
   add(new B(bw+.12,.13,6.92), 0xe8e4dc, { x:cx, y:1.215, z:.2, fy:-7, s:.98, d:.34, r:.9 });
-  add(new B(bw,5.32,6.8), 0xffffff, { x:cx, y:3.94, z:.2, fy:-7, s:1, d:.46, map:stT, r:.93, tint:WHT });
-  add(new B(bw+.14,.16,6.94), 0xe8e4dc, { x:cx, y:3.6, z:.2, fy:-7, s:1.44, d:.32, r:.9 });   // string course
-  quoin(cx-bw/2+.05, 3.55, .3, 6.3, 1.14);
-  quoin(cx+bw/2-.05, 3.55, .3, 6.3, 1.18);
-  quoin(cx+bw/2-.05, -3.15, .3, 6.3, 1.22);
-  add(hipR(hx,4.15,2.05,rx0), 0xffffff, { x:cx, y:6.6, z:.2, fy:10, s:1.7, d:.5, map:tileT, bump:bumpT, bs:.1, r:.74, m:.04, tint:0x757b78 });
-  eave(cx, 6.44, .2, hx, 4.15, 1.76, .36);
-  cap(cx-rx0,8.65,.2, cx+rx0,8.65,.2, .16, 1.96, .3);
-  cap(cx-hx,6.6,4.35, cx-rx0,8.65,.2, .15, 1.98, .3);
-  cap(cx+hx,6.6,4.35, cx+rx0,8.65,.2, .15, 2.0, .3);
-  cap(cx-hx,6.6,-3.95, cx-rx0,8.65,.2, .15, 2.02, .3);
-  cap(cx+hx,6.6,-3.95, cx+rx0,8.65,.2, .15, 2.04, .3);
-  add(new B(4.6,.06,3), 0xffffff, { rx:-.46, x:cx, y:7.5, z:-2.1, fy:10, s:2.7, d:.34, map:solT, r:.24, m:.5 });
-  chimney(cx+1.8, -1.3, 9.15, .6, 1.3, 2.1);
-  chimney(cx-1.8, -1.7, 8.8, .52, 1.05, 2.18);
-  add(new B(bw+1.7,.16,.16), 0x1a2022, { x:cx, y:6.28, z:4.42, fy:10, s:1.82, d:.3, r:.55, m:.2 });
-  add(new B(.13,5.2,.13), 0x1a2022, { x:cx+bw/2+.16, y:3.95, z:3.5, fy:-3, s:2.06, d:.28, r:.55, m:.2 });
-  add(new B(1.9,5.32,.24), 0xffffff, { x:cx-bw/2+1.1, y:3.94, z:3.63, fz:2.4, s:1.3, d:.3, map:pnT, r:.66 });
-  add(new B(.24,5.32,2), 0xffffff, { x:cx+bw/2+.02, y:3.94, z:1.5, fx:2.4, s:1.34, d:.3, map:pnT, r:.66 });
-  winZ(cx-bw/2+1.1, 5.05, 3.72, 1.15, 1.7, 2.2, 1);
+  // LANE A fix 1 (2026-07-26): block raised +1.1 m (wall 5.32→6.42) so the
+  // second storey is unmistakable at drone framing — the upper window band
+  // used to sit tight under the eave and the house read single-storey (the
+  // Higgsfield restyle collapsed it to one floor). String course moved to the
+  // true floor line (3.6→4.15); everything above the wall top follows +1.1.
+  // The single-storey wing is untouched, which sharpens the contrast.
+  add(new B(bw,6.42,6.8), 0xffffff, { x:cx, y:4.49, z:.2, fy:-7, s:1, d:.46, map:stT, r:.93, tint:WHT });
+  add(new B(bw+.14,.16,6.94), 0xe8e4dc, { x:cx, y:4.15, z:.2, fy:-7, s:1.44, d:.32, r:.9 });   // string course (floor line)
+  quoin(cx-bw/2+.05, 3.55, .3, 7.4, 1.14);
+  quoin(cx+bw/2-.05, 3.55, .3, 7.4, 1.18);
+  quoin(cx+bw/2-.05, -3.15, .3, 7.4, 1.22);
+  add(hipR(hx,4.15,2.05,rx0), 0xffffff, { x:cx, y:7.7, z:.2, fy:10, s:1.7, d:.5, map:tileT, bump:bumpT, bs:.1, r:.74, m:.04, tint:0x757b78 });
+  eave(cx, 7.54, .2, hx, 4.15, 1.76, .36);
+  cap(cx-rx0,9.75,.2, cx+rx0,9.75,.2, .16, 1.96, .3);
+  cap(cx-hx,7.7,4.35, cx-rx0,9.75,.2, .15, 1.98, .3);
+  cap(cx+hx,7.7,4.35, cx+rx0,9.75,.2, .15, 2.0, .3);
+  cap(cx-hx,7.7,-3.95, cx-rx0,9.75,.2, .15, 2.02, .3);
+  cap(cx+hx,7.7,-3.95, cx+rx0,9.75,.2, .15, 2.04, .3);
+  add(new B(4.6,.06,3), 0xffffff, { rx:-.46, x:cx, y:8.6, z:-2.1, fy:10, s:2.7, d:.34, map:solT, r:.24, m:.5 });
+  chimney(cx+1.8, -1.3, 10.25, .6, 1.3, 2.1);
+  chimney(cx-1.8, -1.7, 9.9, .52, 1.05, 2.18);
+  add(new B(bw+1.7,.16,.16), 0x1a2022, { x:cx, y:7.38, z:4.42, fy:10, s:1.82, d:.3, r:.55, m:.2 });
+  add(new B(.13,6.3,.13), 0x1a2022, { x:cx+bw/2+.16, y:4.5, z:3.5, fy:-3, s:2.06, d:.28, r:.55, m:.2 });
+  add(new B(1.9,6.42,.24), 0xffffff, { x:cx-bw/2+1.1, y:4.49, z:3.63, fz:2.4, s:1.3, d:.3, map:pnT, r:.66 });
+  add(new B(.24,6.42,2), 0xffffff, { x:cx+bw/2+.02, y:4.49, z:1.5, fx:2.4, s:1.34, d:.3, map:pnT, r:.66 });
+  winZ(cx-bw/2+1.1, 5.9, 3.72, 1.15, 1.7, 2.2, 1);
   winZ(cx-bw/2+1.1, 2.5, 3.72, 1.15, 1.5, 2.26, 1);
-  winX(cx+bw/2+.14, 5.0, 1.5, 1.45, 1.8, 2.34, 1);
+  winX(cx+bw/2+.14, 5.85, 1.5, 1.45, 1.8, 2.34, 1);
   winX(cx+bw/2+.14, 2.6, -1.4, 1.2, 1.35, 2.38, 0);
   winZ(cx, 2.6, -3.28, 1.3, 1.4, 2.42, 0);
-  // cross gable bay
-  add(new B(3.6,6.3,1.6), 0xffffff, { x:cx+1.6, y:3.45, z:4.4, fz:3, s:1.06, d:.44, map:stT, r:.93, tint:WHT });
-  add(new B(3.72,.16,1.72), 0xe8e4dc, { x:cx+1.6, y:3.6, z:4.4, fz:3, s:1.46, d:.32, r:.9 });
-  quoin(cx-.2, 5.15, .3, 6.3, 1.26); quoin(cx+3.4, 5.15, .3, 6.3, 1.3);
-  add(gable(2.05,2.6,1.55), 0xffffff, { x:cx+1.6, y:6.6, z:2.8, fy:9, s:1.8, d:.46, map:tileM, bump:bumpT, bs:.09, r:.74, m:.04, tint:0x757b78, ds:1 });
-  add(new B(4.4,.28,.24), 0x131719, { x:cx+1.6, y:6.5, z:5.4, fy:9, s:1.86, d:.34, r:.62, m:.12 });
-  add(new B(4.1,.18,.5), 0xffffff, { x:cx+1.6, y:6.62, z:5.62, fy:9, s:1.9, d:.3, map:woodT, r:.85, tint:0xd8b98a });
-  add(new B(.16,.4,5.4), FRM, { x:cx+1.6, y:8.1, z:2.8, fy:9, s:1.94, d:.3, r:.6, m:.14 });
-  winZ(cx+1.6, 4.9, 5.22, 2, 2.2, 2.3, 1);
+  // cross gable bay (+1.1 with the block)
+  add(new B(3.6,7.4,1.6), 0xffffff, { x:cx+1.6, y:4.0, z:4.4, fz:3, s:1.06, d:.44, map:stT, r:.93, tint:WHT });
+  add(new B(3.72,.16,1.72), 0xe8e4dc, { x:cx+1.6, y:4.15, z:4.4, fz:3, s:1.46, d:.32, r:.9 });
+  quoin(cx-.2, 5.15, .3, 7.4, 1.26); quoin(cx+3.4, 5.15, .3, 7.4, 1.3);
+  add(gable(2.05,2.6,1.55), 0xffffff, { x:cx+1.6, y:7.7, z:2.8, fy:9, s:1.8, d:.46, map:tileM, bump:bumpT, bs:.09, r:.74, m:.04, tint:0x757b78, ds:1 });
+  add(new B(4.4,.28,.24), 0x131719, { x:cx+1.6, y:7.6, z:5.4, fy:9, s:1.86, d:.34, r:.62, m:.12 });
+  add(new B(4.1,.18,.5), 0xffffff, { x:cx+1.6, y:7.72, z:5.62, fy:9, s:1.9, d:.3, map:woodT, r:.85, tint:0xd8b98a });
+  add(new B(.16,.4,5.4), FRM, { x:cx+1.6, y:9.2, z:2.8, fy:9, s:1.94, d:.3, r:.6, m:.14 });
+  winZ(cx+1.6, 5.75, 5.22, 2, 2.2, 2.3, 1);
   winZ(cx+1.6, 2.5, 5.22, 1.7, 1.5, 2.36, 1);
 
   /* ------------------------------------------------------------- entrance -- */
