@@ -1381,8 +1381,9 @@
     "estimate": {
       "title": "Estimare totală",
       "range": "{low} – {high} lei",
+      "from": "de la {total} lei",
       "breakdown": "{area} m² × {material}",
-      "disclaimer": "Estimare orientativă pentru material și montaj. Prețul exact se stabilește după măsurători — devizul este gratuit.",
+      "disclaimer": "Estimare orientativă pentru material și montaj, nu o ofertă contractuală. Prețul exact se stabilește după măsurători — devizul este gratuit.",
       "onRequest": "Pentru țiglă ceramică prețul se confirmă la cerere — cere o ofertă și revenim cu cifra exactă.",
       "cta": "Cere ofertă exactă"
     },

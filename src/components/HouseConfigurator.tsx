@@ -293,7 +293,8 @@ export default function HouseConfigurator() {
     areaValid && material.band
       ? {
           low: material.band.min * areaNum,
-          high: material.band.max * areaNum,
+          high:
+            material.band.max != null ? material.band.max * areaNum : null,
         }
       : null;
 
@@ -492,10 +493,12 @@ export default function HouseConfigurator() {
                 className="font-serif text-2xl"
                 aria-live="polite"
               >
-                {t("estimate.range", {
-                  low: fmt(estimate.low),
-                  high: fmt(estimate.high),
-                })}
+                {estimate.high != null
+                  ? t("estimate.range", {
+                      low: fmt(estimate.low),
+                      high: fmt(estimate.high),
+                    })
+                  : t("estimate.from", { total: fmt(estimate.low) })}
               </p>
               <p className="mt-1 text-caption text-inverse-muted-foreground">
                 {t("estimate.breakdown", {

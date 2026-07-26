@@ -11,9 +11,13 @@
  * ⚠️ PRICES. The four bands below are the category-level "de la X lei/m²"
  * bands supplied by the owner for the configurator (2026-07-24). They are
  * deliberately NOT the per-product install prices in `src/lib/pricing.ts`
- * (RC-107a) — that engine keeps powering the roof calculator. Țiglă ceramică
- * has NO public band: the ceramic entries are owner-blocked (Q-10 / B4), so
- * the UI must show "preț la cerere" and never invent a number.
+ * (RC-107a) — that engine keeps powering the roof calculator.
+ *
+ * Owner's REAL bands (Q-10, 2026-07-25, montaj inclus, "de la X"): țiglă metalică
+ * 1100, șindrilă 1200, rocă vulcanică 1400, țiglă ceramică 1600 lei/m². These
+ * REPLACE the earlier Imperlux-competitor placeholders. `max: null` = open-ended
+ * "de la X". If a material genuinely has no public price, use `band: null` →
+ * "preț la cerere" and never invent a number.
  */
 
 export type RoofTypeId = "2ape" | "4ape" | "mansarda" | "combinat";
@@ -88,8 +92,12 @@ export type RoofTexSpec = {
 
 export type RoofMaterial3D = {
   id: RoofMaterialId;
-  /** Public price band, lei/m² — null = "preț la cerere" (Q-10, ceramic). */
-  band: { min: number; max: number } | null;
+  /**
+   * Public price band, lei/m² (montaj inclus). Owner's real "de la X" starting
+   * prices (Q-10, 2026-07-25) — `max: null` = open-ended "de la X" (no upper).
+   * `band: null` = "preț la cerere" (kept for materials with no public price).
+   */
+  band: { min: number; max: number | null } | null;
   /** Spec sheet strings (unit-free; units live in the message templates). */
   specs: { durability: string; warranty: string; weight: string };
   tex: RoofTexSpec;
@@ -98,7 +106,7 @@ export type RoofMaterial3D = {
 export const ROOF_MATERIALS_3D: Record<RoofMaterialId, RoofMaterial3D> = {
   "tigla-metalica": {
     id: "tigla-metalica",
-    band: { min: 450, max: 900 },
+    band: { min: 1100, max: null }, // Q-10 owner band 2026-07-25 (montaj inclus)
     specs: { durability: "40–50", warranty: "10–15", weight: "4,5–5" },
     tex: {
       profile: "pantile",
@@ -119,7 +127,7 @@ export const ROOF_MATERIALS_3D: Record<RoofMaterialId, RoofMaterial3D> = {
   },
   shingle: {
     id: "shingle",
-    band: { min: 550, max: 1100 },
+    band: { min: 1200, max: null }, // Q-10 owner band 2026-07-25 (montaj inclus)
     specs: { durability: "25–30", warranty: "15–20", weight: "8–12" },
     tex: {
       profile: "shingle",
@@ -138,7 +146,7 @@ export const ROOF_MATERIALS_3D: Record<RoofMaterialId, RoofMaterial3D> = {
   },
   "roca-vulcanica": {
     id: "roca-vulcanica",
-    band: { min: 800, max: 1450 },
+    band: { min: 1400, max: null }, // Q-10 owner band 2026-07-25 (montaj inclus)
     specs: { durability: "50+", warranty: "30–50", weight: "6–7" },
     // EXACT approved values (signed-off scene) — the hero default.
     tex: {
@@ -160,7 +168,7 @@ export const ROOF_MATERIALS_3D: Record<RoofMaterialId, RoofMaterial3D> = {
   },
   "tigla-ceramica": {
     id: "tigla-ceramica",
-    band: null, // Q-10 — owner-blocked; UI shows "preț la cerere"
+    band: { min: 1600, max: null }, // Q-10 owner band 2026-07-25 (montaj inclus) — no longer "preț la cerere"
     specs: { durability: "80–100", warranty: "30+", weight: "40–45" },
     tex: {
       profile: "pantile",

@@ -63,11 +63,11 @@ export default async function ConfiguratorPage({ params }: PageProps) {
           },
           priceCurrency: "MDL",
           lowPrice: m.band!.min,
-          highPrice: m.band!.max,
+          ...(m.band!.max != null ? { highPrice: m.band!.max } : {}),
           priceSpecification: {
             "@type": "UnitPriceSpecification",
             minPrice: m.band!.min,
-            maxPrice: m.band!.max,
+            ...(m.band!.max != null ? { maxPrice: m.band!.max } : {}),
             priceCurrency: "MDL",
             unitText: "m²",
           },
