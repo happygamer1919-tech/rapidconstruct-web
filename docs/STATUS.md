@@ -59,6 +59,27 @@ environmental (an env var set before cutover), which CI structurally cannot see.
 
 Shipped and verified. PR numbers in brackets.
 
+- **3D hero — LANE A environment pass: match the Seedance restyle's light**
+  (2026-07-26, `feature/3d-hero`, `d4b360c`…`8bf9712`, serial; reference
+  ~/Desktop/hero-ab/ — matched its LIGHT/ATMOSPHERE, not geometry):
+  1. *Haze killed* — FogExp2 .0095 → linear Fog 100→550 m: near/mid planes
+     crisp, only the far field melts into the horizon mist band.
+  2. *Golden hour* — key ffcf8f @1.85, lowered y 13→9 (long soft shadows,
+     radius 5), warm ground bounce, cool fill .24, exposure .97→1.04.
+  3. *Real sky* — 512-wide screen-mapped canvas: steel-blue zenith → warm
+     horizon + soft high-cloud streaks; dome keeps the moving clouds.
+  4. *Meadow ground* — low-freq olive/dry blotches, repeat 30→11; gravel
+     driveway from the gate to the road line with splayed apron (+2 draws).
+  5. *Warm materials* — WHT f1eee6→efe5cf cream; roof r .82 / m .02.
+  - *Measured after each step + final prod:* build 60 fps / 0 long frames,
+    hold 60 fps (half-rate window has occasional ~47 ms spikes on the
+    throttled shadow-refresh frames — imperceptible at the 30 fps render
+    cadence). Draw calls 486 base (env pass cost +2); NOTE: renderer.info
+    reads ~955 when the probe lands on a shadow-refresh frame — that's the
+    shadow pass being counted, not a regression (dev always shows ~950
+    because dev shadows update every frame).
+  - Reduced-motion + `?no3d=1` re-verified on the prod build.
+
 - **3D hero — LANE A perf pass: measured, then fixed (60 fps at the hold)**
   (2026-07-26, `feature/3d-hero`, `08cef38` + `6fe427f` + `f1d1316`).
   *Environment ruled out first:* prod build (:3900) vs dev (:3800) both
