@@ -17,6 +17,8 @@
  * Requires three r128+. Lighting/tone-mapping settings are in api.applyRenderer().
  */
 
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+
 export function buildScene(THREE, scene, renderer) {
   const B = THREE.BoxGeometry;
   const BRAND = 0xE08039, BLUE = 0x1f4fd6;
@@ -543,21 +545,36 @@ float vNoise(vec3 p) {
     winZ(cx, y+bh/2-.26, z+dp/2+.03, .98, .6, st+.15, 0);
   }
 
+  // LANE A perf F3 (2026-07-26): trees were 40 groups × 7 meshes = 280 draw
+  // calls, measured ~1.2 ms/frame at the hold. Geometry is now BAKED into two
+  // merged meshes (all trunks / all canopies, per-tree colour as vertex
+  // colours) = 2 draws. The shared fade-in is unchanged — every tree always
+  // faded together with e0, so one material per merge fades identically.
   const trees = [];
+  const trunkGeos = [], leafGeos = [];
   function tree(tx, tz, sc, dark) {
-    const g = new THREE.Group();
-    const tm = new THREE.MeshStandardMaterial({ color: 0x5d4c3a, roughness: 1, transparent: true, opacity: 0 });
-    const tk = new THREE.Mesh(new THREE.CylinderGeometry(.13*sc, .3*sc, 2.6*sc, 7), tm);
-    tk.position.y = 1.3*sc; tk.castShadow = true; g.add(tk);
-    const lm = new THREE.MeshStandardMaterial({
-      color: new THREE.Color().setHSL(.245 + Math.random()*.05, .3, dark ? .17 : .25),
-      roughness: 1, transparent: true, opacity: 0 });
+    const tk = new THREE.CylinderGeometry(.13*sc, .3*sc, 2.6*sc, 7);
+    tk.translate(tx, 1.3*sc, tz);
+    trunkGeos.push(tk);
+    const col = new THREE.Color().setHSL(.245 + Math.random()*.05, .3, dark ? .17 : .25);
     for (let q = 0; q < 6; q++) {
-      const fq = new THREE.Mesh(new THREE.SphereGeometry((1.35 - q*.12 + Math.random()*.35)*sc, 7, 6), lm);
-      fq.position.set((Math.random()-.5)*1.5*sc, (2.7 + Math.random()*2.1)*sc, (Math.random()-.5)*1.5*sc);
-      fq.scale.y = .82 + Math.random()*.3; fq.castShadow = true; g.add(fq);
+      const fq = new THREE.SphereGeometry((1.35 - q*.12 + Math.random()*.35)*sc, 7, 6);
+      fq.scale(1, .82 + Math.random()*.3, 1);
+      fq.translate(tx + (Math.random()-.5)*1.5*sc, (2.7 + Math.random()*2.1)*sc, tz + (Math.random()-.5)*1.5*sc);
+      const n = fq.getAttribute('position').count, ca = new Float32Array(n * 3);
+      for (let i = 0; i < n; i++) { ca[i*3] = col.r; ca[i*3+1] = col.g; ca[i*3+2] = col.b; }
+      fq.setAttribute('color', new THREE.BufferAttribute(ca, 3));
+      leafGeos.push(fq);
     }
-    g.position.set(tx, 0, tz); TR.add(g); trees.push({ tm, lm });
+  }
+  function bakeTrees() {
+    const tm = new THREE.MeshStandardMaterial({ color: 0x5d4c3a, roughness: 1, transparent: true, opacity: 0 });
+    const lm = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, transparent: true, opacity: 0 });
+    const tkM = new THREE.Mesh(mergeGeometries(trunkGeos), tm);
+    const lfM = new THREE.Mesh(mergeGeometries(leafGeos), lm);
+    tkM.castShadow = true; lfM.castShadow = true;
+    TR.add(tkM); TR.add(lfM);
+    trees.push({ tm, lm });
   }
   tree(-22,-8,1.5,0); tree(-27,5,1.2,1); tree(20,-15,1.6,0); tree(26,-4,1.3,1);
   // (-17,17)→(-24,24): the widened opening camera (fix 4) flew through this
@@ -567,6 +584,7 @@ float vNoise(vec3 p) {
     const a = Math.random()*Math.PI*2, rr = 70 + Math.random()*230;
     tree(Math.cos(a)*rr, Math.sin(a)*rr, 1.6 + Math.random()*1.4, i % 2);
   }
+  bakeTrees();
 
   /* ----------------------------------------------------------------- site -- */
   // LANE A build-order fix (2026-07-26): a real house goes up bottom-up. The
