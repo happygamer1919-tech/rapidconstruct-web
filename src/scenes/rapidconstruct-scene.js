@@ -568,105 +568,114 @@ float vNoise(vec3 p) {
   }
 
   /* ----------------------------------------------------------------- site -- */
-  add(new B(26,.26,17), 0xffffff, { x:-1.5, y:.13, z:1.5, fy:-2.4, s:.42, d:.4, r:.94, map:pvT });
-  add(new B(26.4,.16,.22), 0xcecac2, { x:-1.5, y:.08, z:10.05, fy:-2, s:.5, d:.3, r:.95 });
-  add(new B(7,.22,15), 0xffffff, { x:14.5, y:.11, z:0, fy:-2, s:.46, d:.36, r:1, map:gravT, tint:0xd6d0c3 });
-  add(new B(26,.2,5), 0xffffff, { x:-1.5, y:.11, z:-8, fy:-2, s:.48, d:.36, r:1, map:gravT, tint:0xd6d0c3 });
-  add(new B(19,.28,10), 0xcdcdc7, { x:-1.6, y:.3, z:0, fy:-2.4, s:.56, d:.36, r:1 });
+  // LANE A build-order fix (2026-07-26): a real house goes up bottom-up. The
+  // foundation pad leads (s .38); the courtyard paving/gravel moved to a late
+  // phase (3.2+) after the finishes — the yard is dressed once the house
+  // stands, and the fence closes over it last. Nothing appears before the
+  // thing it sits on: every phase starts only after its support has landed.
+  add(new B(26,.26,17), 0xffffff, { x:-1.5, y:.13, z:1.5, fy:-2.4, s:3.2, d:.3, r:.94, map:pvT });
+  add(new B(26.4,.16,.22), 0xcecac2, { x:-1.5, y:.08, z:10.05, fy:-2, s:3.28, d:.24, r:.95 });
+  add(new B(7,.22,15), 0xffffff, { x:14.5, y:.11, z:0, fy:-2, s:3.32, d:.26, r:1, map:gravT, tint:0xd6d0c3 });
+  add(new B(26,.2,5), 0xffffff, { x:-1.5, y:.11, z:-8, fy:-2, s:3.36, d:.26, r:1, map:gravT, tint:0xd6d0c3 });
+  add(new B(19,.28,10), 0xcdcdc7, { x:-1.6, y:.3, z:0, fy:-2.4, s:.38, d:.3, r:1 });
 
   /* ----------------------------------------------------- WING (left wing) -- */
-  add(new B(10.6,1.05,5.2), 0xffffff, { x:-3.7, y:.825, z:-.1, fy:-7, s:.86, d:.44, map:stoneLowT, r:.86, tint:STN });
-  add(new B(10.72,.13,5.32), 0xe8e4dc, { x:-3.7, y:1.415, z:-.1, fy:-7, s:.9, d:.34, r:.9 });
-  add(new B(10.6,2.32,5.2), 0xffffff, { x:-3.7, y:2.64, z:-.1, fy:-7, s:.92, d:.44, map:stT, r:.93, tint:WHT });
-  quoin(-9.0, 2.5, .3, 3.5, 1.06); quoin(-9.0, -2.7, .3, 3.5, 1.1);
-  add(hipR(5.95,4.15,1.35,2.9), 0xffffff, { x:-3.7, y:3.8, z:.55, fy:10, s:1.62, d:.5, map:tileT, bump:bumpT, bs:.1, r:.74, m:.04, tint:0x757b78 });
-  eave(-3.7, 3.64, .55, 5.95, 4.15, 1.68, .36);
-  cap(-6.6,5.15,.55, -.8,5.15,.55, .15, 1.86, .3);
-  cap(-9.65,3.8,4.7, -6.6,5.15,.55, .14, 1.88, .3);
-  cap(2.25,3.8,4.7, -.8,5.15,.55, .14, 1.9, .3);
-  cap(-9.65,3.8,-3.6, -6.6,5.15,.55, .14, 1.92, .3);
-  cap(2.25,3.8,-3.6, -.8,5.15,.55, .14, 1.94, .3);
-  dormer(-6.2, 3.8, .55, 4.15, 1.35, .33, 2.4);
-  dormer(-1.4, 3.8, .55, 4.15, 1.35, .33, 2.5);
+  add(new B(10.6,1.05,5.2), 0xffffff, { x:-3.7, y:.825, z:-.1, fy:-7, s:.7, d:.3, map:stoneLowT, r:.86, tint:STN });
+  add(new B(10.72,.13,5.32), 0xe8e4dc, { x:-3.7, y:1.415, z:-.1, fy:-7, s:.78, d:.24, r:.9 });
+  add(new B(10.6,2.32,5.2), 0xffffff, { x:-3.7, y:2.64, z:-.1, fy:-7, s:1.02, d:.34, map:stT, r:.93, tint:WHT });
+  quoin(-9.0, 2.5, .3, 3.5, 2.78); quoin(-9.0, -2.7, .3, 3.5, 2.82);
+  add(hipR(5.95,4.15,1.35,2.9), 0xffffff, { x:-3.7, y:3.8, z:.55, fy:10, s:2.25, d:.4, map:tileT, bump:bumpT, bs:.1, r:.74, m:.04, tint:0x757b78 });
+  eave(-3.7, 3.64, .55, 5.95, 4.15, 1.95, .3);
+  cap(-6.6,5.15,.55, -.8,5.15,.55, .15, 2.6, .26);
+  cap(-9.65,3.8,4.7, -6.6,5.15,.55, .14, 2.62, .26);
+  cap(2.25,3.8,4.7, -.8,5.15,.55, .14, 2.64, .26);
+  cap(-9.65,3.8,-3.6, -6.6,5.15,.55, .14, 2.66, .26);
+  cap(2.25,3.8,-3.6, -.8,5.15,.55, .14, 2.68, .26);
+  dormer(-6.2, 3.8, .55, 4.15, 1.35, .33, 2.46);
+  dormer(-1.4, 3.8, .55, 4.15, 1.35, .33, 2.52);
   for (let ci = 0; ci < 4; ci++) {
-    const cx = -8.5 + ci*2.6, st = 1.26 + ci*.05;
+    const cx = -8.5 + ci*2.6, st = .92 + ci*.04;
     add(new B(.56,1.15,.56), 0xffffff, { x:cx, y:.875, z:4.3, fy:-3.6, s:st, d:.28, map:stoneColT, r:.86, tint:STN });
     add(new B(.68,.13,.68), 0xe8e4dc, { x:cx, y:1.515, z:4.3, fy:-3.6, s:st+.03, d:.24, r:.9 });
     add(new B(.47,1.95,.47), 0xffffff, { x:cx, y:2.555, z:4.3, fy:-3.6, s:st+.05, d:.26, map:stT, r:.93, tint:WHT });
     add(new B(.62,.12,.62), 0xe8e5dd, { x:cx, y:3.59, z:4.3, fy:-3.6, s:st+.07, d:.22, r:.9 });
   }
-  add(new B(11.6,.14,.14), 0x1a2022, { x:-3.7, y:3.46, z:4.72, fy:10, s:1.8, d:.3, r:.55, m:.2 });
-  add(new B(.13,3.5,.13), 0x1a2022, { x:-9.5, y:1.9, z:2.35, fy:-3, s:2.02, d:.28, r:.55, m:.2 });
-  winX(-9.02, 2.55, 1.2, 1.3, 1.15, 2.6, 0);
-  winX(-9.02, 2.55, -1.4, 1, 1.05, 2.62, 0);
-  winZ(-6.4, 2.6, -2.72, 1.2, 1.2, 2.64, 0);
-  winZ(-1.6, 2.6, -2.72, 1, 1.1, 2.66, 0);
+  add(new B(11.6,.14,.14), 0x1a2022, { x:-3.7, y:3.46, z:4.72, fy:10, s:2.08, d:.26, r:.55, m:.2 });
+  add(new B(.13,3.5,.13), 0x1a2022, { x:-9.5, y:1.9, z:2.35, fy:-3, s:2.14, d:.26, r:.55, m:.2 });
+  winX(-9.02, 2.55, 1.2, 1.3, 1.15, 2.9, 0);
+  winX(-9.02, 2.55, -1.4, 1, 1.05, 2.92, 0);
+  winZ(-6.4, 2.6, -2.72, 1.2, 1.2, 2.94, 0);
+  winZ(-1.6, 2.6, -2.72, 1, 1.1, 2.96, 0);
 
   /* ------------------------------- BLOCK — "cu fronton" (SELECTED DESIGN) -- */
   const cx = 5.9, bw = 8.2, hx = bw/2 + .75, rx0 = 3.3;
-  add(new B(bw,.85,6.8), 0xffffff, { x:cx, y:.725, z:.2, fy:-7, s:.94, d:.46, map:stoneLowT, r:.86, tint:STN });
-  add(new B(bw+.12,.13,6.92), 0xe8e4dc, { x:cx, y:1.215, z:.2, fy:-7, s:.98, d:.34, r:.9 });
+  add(new B(bw,.85,6.8), 0xffffff, { x:cx, y:.725, z:.2, fy:-7, s:.72, d:.3, map:stoneLowT, r:.86, tint:STN });
+  add(new B(bw+.12,.13,6.92), 0xe8e4dc, { x:cx, y:1.215, z:.2, fy:-7, s:.8, d:.24, r:.9 });
   // LANE A fix 1 (2026-07-26): block raised +1.1 m (wall 5.32→6.42) so the
   // second storey is unmistakable at drone framing — the upper window band
   // used to sit tight under the eave and the house read single-storey (the
   // Higgsfield restyle collapsed it to one floor). String course moved to the
   // true floor line (3.6→4.15); everything above the wall top follows +1.1.
   // The single-storey wing is untouched, which sharpens the contrast.
-  add(new B(bw,6.42,6.8), 0xffffff, { x:cx, y:4.49, z:.2, fy:-7, s:1, d:.46, map:stT, r:.93, tint:WHT });
-  add(new B(bw+.14,.16,6.94), 0xe8e4dc, { x:cx, y:4.15, z:.2, fy:-7, s:1.44, d:.32, r:.9 });   // string course (floor line)
-  quoin(cx-bw/2+.05, 3.55, .3, 7.4, 1.14);
-  quoin(cx+bw/2-.05, 3.55, .3, 7.4, 1.18);
-  quoin(cx+bw/2-.05, -3.15, .3, 7.4, 1.22);
-  add(hipR(hx,4.15,2.05,rx0), 0xffffff, { x:cx, y:7.7, z:.2, fy:10, s:1.7, d:.5, map:tileT, bump:bumpT, bs:.1, r:.74, m:.04, tint:0x757b78 });
-  eave(cx, 7.54, .2, hx, 4.15, 1.76, .36);
-  cap(cx-rx0,9.75,.2, cx+rx0,9.75,.2, .16, 1.96, .3);
-  cap(cx-hx,7.7,4.35, cx-rx0,9.75,.2, .15, 1.98, .3);
-  cap(cx+hx,7.7,4.35, cx+rx0,9.75,.2, .15, 2.0, .3);
-  cap(cx-hx,7.7,-3.95, cx-rx0,9.75,.2, .15, 2.02, .3);
-  cap(cx+hx,7.7,-3.95, cx+rx0,9.75,.2, .15, 2.04, .3);
-  add(new B(4.6,.06,3), 0xffffff, { rx:-.46, x:cx, y:8.6, z:-2.1, fy:10, s:2.7, d:.34, map:solT, r:.24, m:.5 });
-  chimney(cx+1.8, -1.3, 10.25, .6, 1.3, 2.1);
-  chimney(cx-1.8, -1.7, 9.9, .52, 1.05, 2.18);
-  add(new B(bw+1.7,.16,.16), 0x1a2022, { x:cx, y:7.38, z:4.42, fy:10, s:1.82, d:.3, r:.55, m:.2 });
-  add(new B(.13,6.3,.13), 0x1a2022, { x:cx+bw/2+.16, y:4.5, z:3.5, fy:-3, s:2.06, d:.28, r:.55, m:.2 });
-  add(new B(1.9,6.42,.24), 0xffffff, { x:cx-bw/2+1.1, y:4.49, z:3.63, fz:2.4, s:1.3, d:.3, map:pnT, r:.66 });
-  add(new B(.24,6.42,2), 0xffffff, { x:cx+bw/2+.02, y:4.49, z:1.5, fx:2.4, s:1.34, d:.3, map:pnT, r:.66 });
-  winZ(cx-bw/2+1.1, 5.9, 3.72, 1.15, 1.7, 2.2, 1);
-  winZ(cx-bw/2+1.1, 2.5, 3.72, 1.15, 1.5, 2.26, 1);
-  winX(cx+bw/2+.14, 5.85, 1.5, 1.45, 1.8, 2.34, 1);
-  winX(cx+bw/2+.14, 2.6, -1.4, 1.2, 1.35, 2.38, 0);
-  winZ(cx, 2.6, -3.28, 1.3, 1.4, 2.42, 0);
+  // wall split at the floor line (4.15) so the GROUND floor builds first and
+  // the UPPER floor arrives as its own lift — bottom-up like a real build.
+  add(new B(bw,2.87,6.8), 0xffffff, { x:cx, y:2.715, z:.2, fy:-7, s:1.05, d:.36, map:stT, r:.93, tint:WHT });
+  add(new B(bw,3.55,6.8), 0xffffff, { x:cx, y:5.925, z:.2, fy:-9, s:1.5, d:.36, map:stT, r:.93, tint:WHT });
+  add(new B(bw+.14,.16,6.94), 0xe8e4dc, { x:cx, y:4.15, z:.2, fy:-7, s:1.7, d:.26, r:.9 });   // string course (floor line)
+  quoin(cx-bw/2+.05, 3.55, .3, 7.4, 2.84);
+  quoin(cx+bw/2-.05, 3.55, .3, 7.4, 2.86);
+  quoin(cx+bw/2-.05, -3.15, .3, 7.4, 2.88);
+  add(hipR(hx,4.15,2.05,rx0), 0xffffff, { x:cx, y:7.7, z:.2, fy:10, s:2.32, d:.4, map:tileT, bump:bumpT, bs:.1, r:.74, m:.04, tint:0x757b78 });
+  eave(cx, 7.54, .2, hx, 4.15, 1.98, .3);
+  cap(cx-rx0,9.75,.2, cx+rx0,9.75,.2, .16, 2.7, .26);
+  cap(cx-hx,7.7,4.35, cx-rx0,9.75,.2, .15, 2.72, .26);
+  cap(cx+hx,7.7,4.35, cx+rx0,9.75,.2, .15, 2.74, .26);
+  cap(cx-hx,7.7,-3.95, cx-rx0,9.75,.2, .15, 2.76, .26);
+  cap(cx+hx,7.7,-3.95, cx+rx0,9.75,.2, .15, 2.78, .26);
+  add(new B(4.6,.06,3), 0xffffff, { rx:-.46, x:cx, y:8.6, z:-2.1, fy:10, s:2.8, d:.3, map:solT, r:.24, m:.5 });
+  chimney(cx+1.8, -1.3, 10.25, .6, 1.3, 2.7);
+  chimney(cx-1.8, -1.7, 9.9, .52, 1.05, 2.74);
+  add(new B(bw+1.7,.16,.16), 0x1a2022, { x:cx, y:7.38, z:4.42, fy:10, s:2.1, d:.26, r:.55, m:.2 });
+  add(new B(.13,6.3,.13), 0x1a2022, { x:cx+bw/2+.16, y:4.5, z:3.5, fy:-3, s:2.16, d:.26, r:.55, m:.2 });
+  add(new B(1.9,6.42,.24), 0xffffff, { x:cx-bw/2+1.1, y:4.49, z:3.63, fz:2.4, s:1.6, d:.3, map:pnT, r:.66 });
+  add(new B(.24,6.42,2), 0xffffff, { x:cx+bw/2+.02, y:4.49, z:1.5, fx:2.4, s:1.63, d:.3, map:pnT, r:.66 });
+  winZ(cx-bw/2+1.1, 5.9, 3.72, 1.15, 1.7, 2.98, 1);
+  winZ(cx-bw/2+1.1, 2.5, 3.72, 1.15, 1.5, 3.0, 1);
+  winX(cx+bw/2+.14, 5.85, 1.5, 1.45, 1.8, 3.02, 1);
+  winX(cx+bw/2+.14, 2.6, -1.4, 1.2, 1.35, 3.04, 0);
+  winZ(cx, 2.6, -3.28, 1.3, 1.4, 3.06, 0);
   // cross gable bay (+1.1 with the block)
-  add(new B(3.6,7.4,1.6), 0xffffff, { x:cx+1.6, y:4.0, z:4.4, fz:3, s:1.06, d:.44, map:stT, r:.93, tint:WHT });
-  add(new B(3.72,.16,1.72), 0xe8e4dc, { x:cx+1.6, y:4.15, z:4.4, fz:3, s:1.46, d:.32, r:.9 });
-  quoin(cx-.2, 5.15, .3, 7.4, 1.26); quoin(cx+3.4, 5.15, .3, 7.4, 1.3);
-  add(gable(2.05,2.6,1.55), 0xffffff, { x:cx+1.6, y:7.7, z:2.8, fy:9, s:1.8, d:.46, map:tileM, bump:bumpT, bs:.09, r:.74, m:.04, tint:0x757b78, ds:1 });
-  add(new B(4.4,.28,.24), 0x131719, { x:cx+1.6, y:7.6, z:5.4, fy:9, s:1.86, d:.34, r:.62, m:.12 });
-  add(new B(4.1,.18,.5), 0xffffff, { x:cx+1.6, y:7.72, z:5.62, fy:9, s:1.9, d:.3, map:woodT, r:.85, tint:0xd8b98a });
-  add(new B(.16,.4,5.4), FRM, { x:cx+1.6, y:9.2, z:2.8, fy:9, s:1.94, d:.3, r:.6, m:.14 });
-  winZ(cx+1.6, 5.75, 5.22, 2, 2.2, 2.3, 1);
-  winZ(cx+1.6, 2.5, 5.22, 1.7, 1.5, 2.36, 1);
+  add(new B(3.6,3.85,1.6), 0xffffff, { x:cx+1.6, y:2.225, z:4.4, fz:3, s:1.12, d:.34, map:stT, r:.93, tint:WHT });
+  add(new B(3.6,3.55,1.6), 0xffffff, { x:cx+1.6, y:5.925, z:4.4, fz:3.4, s:1.55, d:.34, map:stT, r:.93, tint:WHT });
+  add(new B(3.72,.16,1.72), 0xe8e4dc, { x:cx+1.6, y:4.15, z:4.4, fz:3, s:1.72, d:.26, r:.9 });
+  quoin(cx-.2, 5.15, .3, 7.4, 2.9); quoin(cx+3.4, 5.15, .3, 7.4, 2.92);
+  add(gable(2.05,2.6,1.55), 0xffffff, { x:cx+1.6, y:7.7, z:2.8, fy:9, s:2.42, d:.34, map:tileM, bump:bumpT, bs:.09, r:.74, m:.04, tint:0x757b78, ds:1 });
+  add(new B(4.4,.28,.24), 0x131719, { x:cx+1.6, y:7.6, z:5.4, fy:9, s:2.02, d:.28, r:.62, m:.12 });
+  add(new B(4.1,.18,.5), 0xffffff, { x:cx+1.6, y:7.72, z:5.62, fy:9, s:2.04, d:.26, map:woodT, r:.85, tint:0xd8b98a });
+  add(new B(.16,.4,5.4), FRM, { x:cx+1.6, y:9.2, z:2.8, fy:9, s:2.06, d:.26, r:.6, m:.14 });
+  winZ(cx+1.6, 5.75, 5.22, 2, 2.2, 3.08, 1);
+  winZ(cx+1.6, 2.5, 5.22, 1.7, 1.5, 3.1, 1);
 
   /* ------------------------------------------------------------- entrance -- */
   // LANE A fix 2 (2026-07-26): the entrance dominated the facade — a 3.8 m
   // grey tower, a 1.34×2.5 door and 3.5 m-wide steps read as a wing. Scaled
   // to door proportions: surround 1.36×2.5 stopping just above the door,
   // door 1.0×2.15, lamps pulled in beside the jamb, steps door-width.
-  add(new B(1.36,2.5,.24), 0xffffff, { x:.4, y:1.69, z:2.46, fz:2.4, s:1.38, d:.3, map:pnT, r:.66 });
-  add(new B(1.0,2.15,.3), FRM, { x:.4, y:1.515, z:2.56, fy:-2.6, s:2.36, d:.24, r:.34, m:.5 });
+  add(new B(1.36,2.5,.24), 0xffffff, { x:.4, y:1.69, z:2.46, fz:2.4, s:3.1, d:.26, map:pnT, r:.66 });
+  add(new B(1.0,2.15,.3), FRM, { x:.4, y:1.515, z:2.56, fy:-2.6, s:3.14, d:.22, r:.34, m:.5 });
   // LANE A fix 3 (2026-07-26): the 7-slat stack that floated in front of the
   // door face (B(1.08,.15,.1) ×7 at z 2.7) read as a striped pile/post by the
   // entrance — removed. A handle is all the door needs at this distance.
-  add(new B(.05,.3,.07), 0xc9c4ba, { x:.78, y:1.45, z:2.74, fy:-2.6, s:2.4, d:.2, r:.35, m:.7 });
-  add(new B(.16,.36,.14), 0x22282c, { x:-.35, y:2.2, z:2.62, fz:1.6, s:2.62, d:.22, r:.5, m:.4 });
-  add(new B(.12,.26,.1), 0xfff0d0, { x:-.35, y:2.2, z:2.7, fz:1.6, s:2.64, d:.22, r:.3, emi:0xffdca8, ei:.55 });
-  add(new B(.16,.36,.14), 0x22282c, { x:1.15, y:2.2, z:2.62, fz:1.6, s:2.62, d:.22, r:.5, m:.4 });
-  add(new B(.12,.26,.1), 0xfff0d0, { x:1.15, y:2.2, z:2.7, fz:1.6, s:2.64, d:.22, r:.3, emi:0xffdca8, ei:.55 });
-  winZ(-2.4, 2.55, 2.5, 1, 1.2, 2.28, 0);
-  winZ(-5.4, 2.55, 2.5, .9, 1.1, 2.32, 0);
-  add(new B(2.0,.17,1.2), 0xdedad2, { x:.4, y:.36, z:3.35, fy:-1.5, s:1.4, d:.26, r:.95 });
-  add(new B(2.4,.17,1.1), 0xd6d2ca, { x:.4, y:.19, z:4.0, fy:-1.5, s:1.42, d:.26, r:.95 });
-  add(new B(6.6,.14,.14), BRAND, { x:-3.7, y:3.32, z:4.72, fy:10, s:1.96, d:.26, r:.45 });
+  add(new B(.05,.3,.07), 0xc9c4ba, { x:.78, y:1.45, z:2.74, fy:-2.6, s:3.18, d:.18, r:.35, m:.7 });
+  add(new B(.16,.36,.14), 0x22282c, { x:-.35, y:2.2, z:2.62, fz:1.6, s:3.16, d:.2, r:.5, m:.4 });
+  add(new B(.12,.26,.1), 0xfff0d0, { x:-.35, y:2.2, z:2.7, fz:1.6, s:3.18, d:.2, r:.3, emi:0xffdca8, ei:.55 });
+  add(new B(.16,.36,.14), 0x22282c, { x:1.15, y:2.2, z:2.62, fz:1.6, s:3.16, d:.2, r:.5, m:.4 });
+  add(new B(.12,.26,.1), 0xfff0d0, { x:1.15, y:2.2, z:2.7, fz:1.6, s:3.18, d:.2, r:.3, emi:0xffdca8, ei:.55 });
+  winZ(-2.4, 2.55, 2.5, 1, 1.2, 3.12, 0);
+  winZ(-5.4, 2.55, 2.5, .9, 1.1, 3.14, 0);
+  add(new B(2.0,.17,1.2), 0xdedad2, { x:.4, y:.36, z:3.35, fy:-1.5, s:3.2, d:.22, r:.95 });
+  add(new B(2.4,.17,1.1), 0xd6d2ca, { x:.4, y:.19, z:4.0, fy:-1.5, s:3.22, d:.22, r:.95 });
+  add(new B(6.6,.14,.14), BRAND, { x:-3.7, y:3.32, z:4.72, fy:10, s:2.12, d:.24, r:.45 });
 
   /* ------------------------------------------------- fence, gate, garage --- */
   // LANE A fix 5 (2026-07-26): the fence read crude — chunky .44 piers,
@@ -686,33 +695,33 @@ float vNoise(vec3 p) {
       { x:cx2, y:.4, z:cz2, fy:-2, s:st, d:.24, map:stT, r:.96, tint:0xd8d4cb });
   }
   // front run (plinth breaks at the gate: x 1.15…4.65)
-  fencePlinth(-6.17, 9, 14.64, 1, 1.44);
-  fencePlinth(10.17, 9, 11.04, 1, 1.45);
+  fencePlinth(-6.17, 9, 14.64, 1, 3.6);
+  fencePlinth(10.17, 9, 11.04, 1, 3.62);
   const fxs = [-11.5,-7.9,-4.3,-0.7,6.5,10.1,13.7];
-  fxs.forEach((fxv, i) => add(new B(2.9,1.5,.1), 0xffffff, { x:fxv, y:1.29, z:9, fy:-2.2, s:1.48+i*.04, d:.24, map:fnT, r:.68, m:.3 }));
-  for (let i = 0; i < 9; i++) fencePier(-13.3+i*3.6, 9, 1.46+i*.04);
-  add(new B(3.5,1.86,.14), 0xffffff, { x:2.9, y:1.06, z:9, fx:-3, s:2.66, d:.36, map:gateT, r:.55, m:.42 });
-  add(new B(3.6,.12,.2), 0x323940, { x:2.9, y:2.05, z:9, fx:-3, s:2.7, d:.3, r:.5, m:.45 });
+  fxs.forEach((fxv, i) => add(new B(2.9,1.5,.1), 0xffffff, { x:fxv, y:1.29, z:9, fy:-2.2, s:3.82+i*.02, d:.22, map:fnT, r:.68, m:.3 }));
+  for (let i = 0; i < 9; i++) fencePier(-13.3+i*3.6, 9, 3.7+i*.02);
+  add(new B(3.5,1.86,.14), 0xffffff, { x:2.9, y:1.06, z:9, fx:-3, s:4.06, d:.22, map:gateT, r:.55, m:.42 });
+  add(new B(3.6,.12,.2), 0x323940, { x:2.9, y:2.05, z:9, fx:-3, s:4.08, d:.2, r:.5, m:.45 });
   // side runs (x ±: front corner piers shared with the front run)
   for (const sx of [-13.3, 15.5]) {
-    const sb = sx < 0 ? 1.5 : 1.54;
-    fencePlinth(sx, .5, 16.8, 0, sb - .04);
-    for (let i = 0; i < 4; i++) fencePier(sx, 5.6 - i * 3.4, sb + i * .04);
+    const sb = sx < 0 ? 3.72 : 3.74;
+    fencePlinth(sx, .5, 16.8, 0, 3.64);
+    for (let i = 0; i < 4; i++) fencePier(sx, 5.6 - i * 3.4, sb + i * .02);
     for (let i = 0; i < 5; i++)
-      add(new B(.1,1.5,2.7), 0xffffff, { x:sx, y:1.29, z:7.3-i*3.4, fy:-2.2, s:sb+.02+i*.04, d:.24, map:fnT, r:.68, m:.3 });
+      add(new B(.1,1.5,2.7), 0xffffff, { x:sx, y:1.29, z:7.3-i*3.4, fy:-2.2, s:sb+.14+i*.02, d:.22, map:fnT, r:.68, m:.3 });
   }
   // back run
-  fencePlinth(1.1, -8, 29.2, 1, 1.5);
-  for (let i = 0; i < 9; i++) fencePier(-13.3+i*3.6, -8, 1.52+i*.03);
+  fencePlinth(1.1, -8, 29.2, 1, 3.66);
+  for (let i = 0; i < 9; i++) fencePier(-13.3+i*3.6, -8, 3.76+i*.02);
   [-11.5,-7.9,-4.3,-0.7,2.9,6.5,10.1,13.7].forEach((bx3, i) =>
-    add(new B(2.9,1.5,.1), 0xffffff, { x:bx3, y:1.29, z:-8, fy:-2.2, s:1.56+i*.03, d:.24, map:fnT, r:.68, m:.3 }));
-  add(new B(2.3,.95,4.5), 0x30373d, { x:-7.6, y:.62, z:1.4, fy:-2, s:2.56, d:.3, r:.42, m:.45 });
-  add(new B(2.1,.75,2.3), 0x282e33, { x:-7.6, y:1.42, z:.75, fy:-2, s:2.58, d:.3, r:.25, m:.55 });
+    add(new B(2.9,1.5,.1), 0xffffff, { x:bx3, y:1.29, z:-8, fy:-2.2, s:3.88+i*.02, d:.22, map:fnT, r:.68, m:.3 }));
+  add(new B(2.3,.95,4.5), 0x30373d, { x:-7.6, y:.62, z:1.4, fy:-2, s:3.45, d:.26, r:.42, m:.45 });
+  add(new B(2.1,.75,2.3), 0x282e33, { x:-7.6, y:1.42, z:.75, fy:-2, s:3.48, d:.26, r:.25, m:.55 });
 
   /* ------------------------------------------------------------ animation -- */
   const BUILD_END = 4.3, HOLD = 2.1;
-  const PHASES = [[0,'Proiect',BLUE],[.5,'Fundație',0x8a94a0],[.85,'Pereți',0x8a94a0],
-                  [1.7,'Acoperiș',0x8a94a0],[2.3,'Finisaje',0x8a94a0],[3.5,'RapidConstruct',BRAND]];
+  const PHASES = [[0,'Proiect',BLUE],[.35,'Fundație',0x8a94a0],[1.0,'Pereți',0x8a94a0],
+                  [1.95,'Acoperiș',0x8a94a0],[2.85,'Finisaje',0x8a94a0],[3.55,'RapidConstruct',BRAND]];
   const eo = t => 1 - Math.pow(1-t, 3);
   const eq = t => t < .5 ? 2*t*t : 1 - Math.pow(-2*t+2, 4)/2;
   const cl = (v,a,b) => Math.max(a, Math.min(b, v));
