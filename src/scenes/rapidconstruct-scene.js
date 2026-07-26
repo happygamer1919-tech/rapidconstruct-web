@@ -700,8 +700,20 @@ float vNoise(vec3 p) {
   const fxs = [-11.5,-7.9,-4.3,-0.7,6.5,10.1,13.7];
   fxs.forEach((fxv, i) => add(new B(2.9,1.5,.1), 0xffffff, { x:fxv, y:1.29, z:9, fy:-2.2, s:3.82+i*.02, d:.22, map:fnT, r:.68, m:.3 }));
   for (let i = 0; i < 9; i++) fencePier(-13.3+i*3.6, 9, 3.7+i*.02);
-  add(new B(3.5,1.86,.14), 0xffffff, { x:2.9, y:1.06, z:9, fx:-3, s:4.06, d:.22, map:gateT, r:.55, m:.42 });
-  add(new B(3.6,.12,.2), 0x323940, { x:2.9, y:2.05, z:9, fx:-3, s:4.08, d:.2, r:.5, m:.45 });
+  // LANE A gate fix (2026-07-26): the old gate was one flat textured slab +
+  // a rail. Now a real driveway gate, still built LAST: two framed leaves
+  // (stiles + rails + louvre infill matching the fence panels) that slide in
+  // from opposite sides and meet at the centre as the closing beat of the
+  // build. The flanking stucco fence piers (x 1.1 / 4.7) are the gate posts
+  // — dedicated steel posts were tried and sat invisibly inside them.
+  for (const leaf of [{ c:2.055, fx:-2.5 }, { c:3.795, fx:2.5 }]) {
+    const L = leaf.c, F = leaf.fx;
+    add(new B(1.59,.12,.09), 0x2f363d, { x:L, y:.55, z:9, fx:F, s:4.08, d:.18, r:.45, m:.5 });
+    add(new B(1.59,.12,.09), 0x2f363d, { x:L, y:2.02, z:9, fx:F, s:4.08, d:.18, r:.45, m:.5 });
+    add(new B(.1,1.59,.09), 0x2f363d, { x:L-.745, y:1.285, z:9, fx:F, s:4.1, d:.18, r:.45, m:.5 });
+    add(new B(.1,1.59,.09), 0x2f363d, { x:L+.745, y:1.285, z:9, fx:F, s:4.1, d:.18, r:.45, m:.5 });
+    add(new B(1.39,1.35,.06), 0xffffff, { x:L, y:1.285, z:9, fx:F, s:4.12, d:.18, map:fnT, r:.55, m:.4, tint:0xb9bfc6 });
+  }
   // side runs (x ±: front corner piers shared with the front run)
   for (const sx of [-13.3, 15.5]) {
     const sb = sx < 0 ? 3.72 : 3.74;
