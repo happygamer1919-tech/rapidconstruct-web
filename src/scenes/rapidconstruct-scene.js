@@ -669,38 +669,43 @@ float vNoise(vec3 p) {
   add(new B(6.6,.14,.14), BRAND, { x:-3.7, y:3.32, z:4.72, fy:10, s:1.96, d:.26, r:.45 });
 
   /* ------------------------------------------------- fence, gate, garage --- */
-  const fxs = [-11.5,-7.9,-4.3,-0.7,6.5,10.1,13.7];
-  fxs.forEach((fxv, i) => add(new B(2.9,1.7,.13), 0xffffff, { x:fxv, y:1.15, z:9, fy:-2.2, s:1.48+i*.04, d:.24, map:fnT, r:.68, m:.3 }));
-  for (let i = 0; i < 9; i++) {
-    add(new B(.44,2.15,.44), 0xd4d1ca, { x:-13.3+i*3.6, y:1.35, z:9, fy:-2.2, s:1.46+i*.04, d:.24, map:stT, r:.95 });
-    add(new B(.58,.14,.58), 0xc1beb7, { x:-13.3+i*3.6, y:2.5, z:9, fy:-2.2, s:1.48+i*.04, d:.2 });
+  // LANE A fix 5 (2026-07-26): the fence read crude — chunky .44 piers,
+  // panels floating .3 m above ground, blocky single caps. Now every run
+  // shares one deliberate recipe: a continuous concrete PLINTH strip seats
+  // the panels on the ground (split at the driveway gate), slimmer taller
+  // piers (.38 × 2.3) with a two-step tapered cap, louvre panels 1.5 tall
+  // sitting ON the plinth. Pitches unchanged (3.6 front/back, 3.4 sides);
+  // the plot stays fully enclosed; the only opening is the front gate.
+  function fencePier(px, pz, st) {
+    add(new B(.38,2.3,.38), 0xd4d1ca, { x:px, y:1.41, z:pz, fy:-2.2, s:st, d:.24, map:stT, r:.95 });
+    add(new B(.52,.12,.52), 0xc1beb7, { x:px, y:2.62, z:pz, fy:-2.2, s:st+.02, d:.2 });
+    add(new B(.4,.07,.4), 0xb8b5ae, { x:px, y:2.71, z:pz, fy:-2.2, s:st+.03, d:.2 });
   }
+  function fencePlinth(cx2, cz2, w2, alongX, st) {
+    add(alongX ? new B(w2,.28,.18) : new B(.18,.28,w2), 0xcac6bd,
+      { x:cx2, y:.4, z:cz2, fy:-2, s:st, d:.24, map:stT, r:.96, tint:0xd8d4cb });
+  }
+  // front run (plinth breaks at the gate: x 1.15…4.65)
+  fencePlinth(-6.17, 9, 14.64, 1, 1.44);
+  fencePlinth(10.17, 9, 11.04, 1, 1.45);
+  const fxs = [-11.5,-7.9,-4.3,-0.7,6.5,10.1,13.7];
+  fxs.forEach((fxv, i) => add(new B(2.9,1.5,.1), 0xffffff, { x:fxv, y:1.29, z:9, fy:-2.2, s:1.48+i*.04, d:.24, map:fnT, r:.68, m:.3 }));
+  for (let i = 0; i < 9; i++) fencePier(-13.3+i*3.6, 9, 1.46+i*.04);
   add(new B(3.5,1.86,.14), 0xffffff, { x:2.9, y:1.06, z:9, fx:-3, s:2.66, d:.36, map:gateT, r:.55, m:.42 });
   add(new B(3.6,.12,.2), 0x323940, { x:2.9, y:2.05, z:9, fx:-3, s:2.7, d:.3, r:.5, m:.45 });
-
-  /* Perimeter runs (LANE C) — the fence used to stop at the front line, so
-   * the plot read as a stage set. Left/right runs sit on the front fence's
-   * corner-pier lines (x -13.3 / 15.5, piers already there at z 9) and the
-   * back run mirrors the front pitch; the two back corners are shared by the
-   * side and back runs. Same panel/pier/cap recipe as the front. The only
-   * opening stays the front driveway gate. */
+  // side runs (x ±: front corner piers shared with the front run)
   for (const sx of [-13.3, 15.5]) {
     const sb = sx < 0 ? 1.5 : 1.54;
-    for (let i = 0; i < 4; i++) {
-      const z = 5.6 - i * 3.4; // 5 spans of 3.4 from z 9 down to the back corner
-      add(new B(.44,2.15,.44), 0xd4d1ca, { x:sx, y:1.35, z, fy:-2.2, s:sb+i*.04, d:.24, map:stT, r:.95 });
-      add(new B(.58,.14,.58), 0xc1beb7, { x:sx, y:2.5, z, fy:-2.2, s:sb+.02+i*.04, d:.2 });
-    }
-    for (let i = 0; i < 5; i++) {
-      add(new B(.13,1.7,2.7), 0xffffff, { x:sx, y:1.15, z:7.3-i*3.4, fy:-2.2, s:sb+.02+i*.04, d:.24, map:fnT, r:.68, m:.3 });
-    }
+    fencePlinth(sx, .5, 16.8, 0, sb - .04);
+    for (let i = 0; i < 4; i++) fencePier(sx, 5.6 - i * 3.4, sb + i * .04);
+    for (let i = 0; i < 5; i++)
+      add(new B(.1,1.5,2.7), 0xffffff, { x:sx, y:1.29, z:7.3-i*3.4, fy:-2.2, s:sb+.02+i*.04, d:.24, map:fnT, r:.68, m:.3 });
   }
-  for (let i = 0; i < 9; i++) {
-    add(new B(.44,2.15,.44), 0xd4d1ca, { x:-13.3+i*3.6, y:1.35, z:-8, fy:-2.2, s:1.52+i*.03, d:.24, map:stT, r:.95 });
-    add(new B(.58,.14,.58), 0xc1beb7, { x:-13.3+i*3.6, y:2.5, z:-8, fy:-2.2, s:1.54+i*.03, d:.2 });
-  }
+  // back run
+  fencePlinth(1.1, -8, 29.2, 1, 1.5);
+  for (let i = 0; i < 9; i++) fencePier(-13.3+i*3.6, -8, 1.52+i*.03);
   [-11.5,-7.9,-4.3,-0.7,2.9,6.5,10.1,13.7].forEach((bx3, i) =>
-    add(new B(2.9,1.7,.13), 0xffffff, { x:bx3, y:1.15, z:-8, fy:-2.2, s:1.56+i*.03, d:.24, map:fnT, r:.68, m:.3 }));
+    add(new B(2.9,1.5,.1), 0xffffff, { x:bx3, y:1.29, z:-8, fy:-2.2, s:1.56+i*.03, d:.24, map:fnT, r:.68, m:.3 }));
   add(new B(2.3,.95,4.5), 0x30373d, { x:-7.6, y:.62, z:1.4, fy:-2, s:2.56, d:.3, r:.42, m:.45 });
   add(new B(2.1,.75,2.3), 0x282e33, { x:-7.6, y:1.42, z:.75, fy:-2, s:2.58, d:.3, r:.25, m:.55 });
 
