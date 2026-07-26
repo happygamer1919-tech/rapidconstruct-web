@@ -646,17 +646,21 @@ float vNoise(vec3 p) {
   winZ(cx+1.6, 2.5, 5.22, 1.7, 1.5, 2.36, 1);
 
   /* ------------------------------------------------------------- entrance -- */
-  add(new B(1.5,2.32,.24), 0xffffff, { x:.4, y:2.64, z:2.46, fz:2.4, s:1.38, d:.3, map:pnT, r:.66 });
-  add(new B(1.34,2.5,.3), FRM, { x:.4, y:1.5, z:2.56, fy:-2.6, s:2.36, d:.24, r:.34, m:.5 });
+  // LANE A fix 2 (2026-07-26): the entrance dominated the facade — a 3.8 m
+  // grey tower, a 1.34×2.5 door and 3.5 m-wide steps read as a wing. Scaled
+  // to door proportions: surround 1.36×2.5 stopping just above the door,
+  // door 1.0×2.15, lamps pulled in beside the jamb, steps door-width.
+  add(new B(1.36,2.5,.24), 0xffffff, { x:.4, y:1.69, z:2.46, fz:2.4, s:1.38, d:.3, map:pnT, r:.66 });
+  add(new B(1.0,2.15,.3), FRM, { x:.4, y:1.515, z:2.56, fy:-2.6, s:2.36, d:.24, r:.34, m:.5 });
   for (let i = 0; i < 7; i++) add(new B(1.08,.15,.1), 0x3f4c54, { x:.4, y:.58+i*.3, z:2.7, fy:-2.6, s:2.38+i*.01, d:.2, r:.4, m:.6 });
-  add(new B(.16,.36,.14), 0x22282c, { x:-.6, y:2.35, z:2.62, fz:1.6, s:2.62, d:.22, r:.5, m:.4 });
-  add(new B(.12,.26,.1), 0xfff0d0, { x:-.6, y:2.35, z:2.7, fz:1.6, s:2.64, d:.22, r:.3, emi:0xffdca8, ei:.55 });
-  add(new B(.16,.36,.14), 0x22282c, { x:1.4, y:2.35, z:2.62, fz:1.6, s:2.62, d:.22, r:.5, m:.4 });
-  add(new B(.12,.26,.1), 0xfff0d0, { x:1.4, y:2.35, z:2.7, fz:1.6, s:2.64, d:.22, r:.3, emi:0xffdca8, ei:.55 });
+  add(new B(.16,.36,.14), 0x22282c, { x:-.35, y:2.2, z:2.62, fz:1.6, s:2.62, d:.22, r:.5, m:.4 });
+  add(new B(.12,.26,.1), 0xfff0d0, { x:-.35, y:2.2, z:2.7, fz:1.6, s:2.64, d:.22, r:.3, emi:0xffdca8, ei:.55 });
+  add(new B(.16,.36,.14), 0x22282c, { x:1.15, y:2.2, z:2.62, fz:1.6, s:2.62, d:.22, r:.5, m:.4 });
+  add(new B(.12,.26,.1), 0xfff0d0, { x:1.15, y:2.2, z:2.7, fz:1.6, s:2.64, d:.22, r:.3, emi:0xffdca8, ei:.55 });
   winZ(-2.4, 2.55, 2.5, 1, 1.2, 2.28, 0);
   winZ(-5.4, 2.55, 2.5, .9, 1.1, 2.32, 0);
-  add(new B(3.1,.17,1.5), 0xdedad2, { x:.4, y:.36, z:3.5, fy:-1.5, s:1.4, d:.26, r:.95 });
-  add(new B(3.5,.17,1.4), 0xd6d2ca, { x:.4, y:.19, z:4.3, fy:-1.5, s:1.42, d:.26, r:.95 });
+  add(new B(2.0,.17,1.2), 0xdedad2, { x:.4, y:.36, z:3.35, fy:-1.5, s:1.4, d:.26, r:.95 });
+  add(new B(2.4,.17,1.1), 0xd6d2ca, { x:.4, y:.19, z:4.0, fy:-1.5, s:1.42, d:.26, r:.95 });
   add(new B(6.6,.14,.14), BRAND, { x:-3.7, y:3.32, z:4.72, fy:10, s:1.96, d:.26, r:.45 });
 
   /* ------------------------------------------------- fence, gate, garage --- */
