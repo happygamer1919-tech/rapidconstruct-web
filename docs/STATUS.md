@@ -3,7 +3,7 @@
 Living board. Background and reasoning live in `docs/PROJECT-MEMORY.md`; this
 file is only *what is true now and what happens next*.
 
-**Last updated: 2026-07-24** — verified against git, the Vercel API, the
+**Last updated: 2026-07-26** — verified against git, the Vercel API, the
 indexability tripwire and live HTTP checks, not recalled.
 
 ## Current state
@@ -171,6 +171,31 @@ Shipped and verified. PR numbers in brackets.
   enclosed with left/right/back fence runs (`7b42033`). On `feature/3d-hero`, not
   merged to `main` — the hero lives on its branch by design.
 
+- **3D hero — LANE A animation fixes: build order / card timing / gate**
+  (2026-07-26, `feature/3d-hero`, `8e3d8e3`+`9194a65`+`f356644`, recorded on the
+  branch by `ea51a46`; unmerged). Bottom-up build order (foundation → base →
+  ground-floor walls split at the floor line → upper floor → roof structure →
+  tiles/caps/chimneys → finishes → courtyard paving → fence + gate LAST at
+  BUILD_END); copy card reveals once after settle (no mid-build flash); a real
+  two-leaf driveway gate is the closing beat. tsc/eslint/prod build + before/after
+  build videos. On `feature/3d-hero`, not merged by design.
+- **3D hero — LANE A fixes 1-6: geometry bugs the Higgsfield restyle exposed**
+  (2026-07-26, `feature/3d-hero`, `d64f59f`…`5543149`, recorded by `85d4d7d`;
+  unmerged). Two storeys (block wall +1.1 m, string course at the floor line);
+  entrance rescaled to door proportions; stray floating slat-pile removed;
+  blueprint reframed to cover the full footprint; one deliberate fence recipe for
+  all runs; camera continuity through the settle handoff (no jump, no half-rate
+  tail). tsc/eslint/prod build; reduced-motion + `?no3d=1` verified. Not merged by design.
+- **3D hero — Higgsfield restyle experiment + DECISION** (2026-07-26, LANE A).
+  Tested an AI restyle of the live hero as a possible background: Gemini Omni
+  pass A **drifted the geometry** (30 cr); a Nano Banana Pro single-frame probe
+  **held** (2 cr); Seedance 2.0 Mini **held geometry** at 720p (25 cr) — total
+  57 cr. Side-by-side A/B at `~/Desktop/hero-ab/`. **DECISION: keep the live
+  three.js hero as the homepage background; the restyle is a poster/social asset
+  only; do NOT upgrade to Higgsfield Pro.** Reasoning: motion truth, resolution
+  (1080p+ vs 720p), iterability (live changes free vs a frozen paid clip) and page
+  weight. Full rationale in DECISIONS.md.
+
 > **CI note:** `lighthouse (perf budget)` stays red on `main` and every PR **by
 > design** — the noindex staging safeguard fails Lighthouse's `is-crawlable` SEO
 > audit below the 0.9 gate. Self-clears at RC-403 when `NEXT_PUBLIC_SITE_URL` is
@@ -183,9 +208,10 @@ Shipped and verified. PR numbers in brackets.
 | Item | Where | State |
 |---|---|---|
 | **3D hero — owner review** | `feature/3d-hero`, `src/components/HeroScene.tsx` | Ported and live at the owner review URL. Awaiting the owner's verdict. Not merged to `main` by design. `HeroBuild3D.tsx` is now dead code — delete it once the owner signs off on the new scene. |
-| **3D hero direction (Q-12) — internal** | homepage flow | **Internal decision, not owner-blocked** (reclassified from B9, 2026-07-25). Whether the hero leads with the 3D build, a real photo, or a Higgsfield restyle. **Gated on the homepage flow being settled** (Higgsfield hero pass + slideshow placement); then it goes to the owner. Do not ask him yet. |
+| **3D hero — performance investigation (LANE A)** | `feature/3d-hero`, `src/scenes/rapidconstruct-scene.js` | **In progress.** Profiling build/hold render cost. F1 shipped (`08cef38`): stop drawing landed blueprint ghosts (they kept being drawn after settling). Further perf passes to follow; on `feature/3d-hero`, unmerged. |
+| **3D hero direction (Q-12) — internal** | homepage flow | **Internal decision, not owner-blocked** (reclassified from B9, 2026-07-25). Whether the hero leads with the 3D build, a real photo, or a Higgsfield restyle. **Gated on the homepage flow being settled** (Higgsfield hero pass + slideshow placement). **Higgsfield sub-decision MADE 2026-07-26:** the AI restyle is REJECTED as the live background — the live three.js hero stays; the restyle is a poster/social asset only (see Done + DECISIONS). Remaining before the owner: lead with the 3D vs a real photo + slideshow placement. Do not ask him yet. |
 | **RC-104 Portfolio** | `/portofoliu` | **Partial.** Page ships with 8 real photos, tags, ItemList JSON-LD, sitemap entry — the nav 404 is gone. Not done: filters, per-project detail pages, before/after sliders. **Q-14 (2026-07-25): photos in hand; 4 projects now have locality + area + work type harvested from the client's live site** (Orhei 100m² / Costești 320m² / Cahul 180m² / Chișinău 280m² — see QUESTIONS.md Q-14). **YEAR still missing for all; metadata must NOT be invented.** Others caption by visibly-true facts only. |
-| **Homepage project slideshow — shell (LANE B)** | `feature/project-slideshow` @ `521cfca`; preview `/slideshow-preview` (RO + `/ru/slideshow-preview`) | **Shell built + pushed, placeholder content only.** Full-bleed data-driven slideshow (auto-advance/crossfade/pause-on-hover/reduced-motion), scrim + RO/RU headline, data from one array (`src/data/slideshow.ts`), 5 labelled PLACEHOLDER images. **Q-14 partial (2026-07-25): photos in hand** — may swap placeholders for real photos with **visibly-true captions only, no invented location/year/m²**. Still pending: the **Higgsfield hero decision** (placement decided after that). Not wired into the live hero; noindex; no PR yet by design. |
+| **Homepage project slideshow — shell (LANE B)** | `feature/project-slideshow` @ `521cfca`; preview `/slideshow-preview` (RO + `/ru/slideshow-preview`) | **Shell built + pushed, placeholder content only.** Full-bleed data-driven slideshow (auto-advance/crossfade/pause-on-hover/reduced-motion), scrim + RO/RU headline, data from one array (`src/data/slideshow.ts`), 5 labelled PLACEHOLDER images. **Q-14 partial (2026-07-25): photos in hand** — may swap placeholders for real photos with **visibly-true captions only, no invented location/year/m²**. **Higgsfield hero decision MADE 2026-07-26:** the live three.js hero stays as the background and the restyle is poster/social only — so slideshow placement can now be decided. Not wired into the live hero; noindex; no PR yet by design. |
 
 ---
 
@@ -198,7 +224,7 @@ Each row names **exactly what unblocks it** and **who owns it**.
 | ~~B1~~ | ~~Staging host crawlable~~ — **FIXED 2026-07-23.** Env var removed, both hosts verified `Disallow: /` + `noindex`, tripwire added. | — | done |
 | ~~B2~~ | ~~RC-403 DNS cutover — registrar login missing~~ — **RESOLVED 2026-07-25 (Q-04):** the owner **has** the domain/registrar credentials. No longer owner-blocked. RC-403 is now a **sequencing / owner-timing** step, NOT blocked on access — **DNS stays untouched, `NEXT_PUBLIC_SITE_URL` is NOT added, and the cutover stays the owner's call.** | — | done |
 | **B3** | **Q-07 — unverified claims (ESCALATED 2026-07-25)** | **The client's OWN live site contradicts itself:** "15000+ Proiecte" vs "Peste 500 de case"; "5/5" vs "4.9/5 din 250+ recenzii"; "garanție 30 ani" vs FAQ "3–50 ani". **Do NOT copy any of them.** Owner must pick ONE consistent set before publishing. | **Max** |
-| **B4 🟡 (fences only)** | **Q-10 — configurator prices** | **ROOFS SHIPPED 2026-07-25** → `feature/configurator` (`a32caeb`): metalică 1100 · șindrilă 1200 · rocă vulcanică 1400 · **ceramică 1600** lei/m² (montaj inclus, "de la") — Imperlux 450/550/800 removed, ceramică in JSON-LD, estimate "de la {total}", disclaimer "nu o ofertă contractuală". **§1b roof gate CLEARED.** **Still blocked:** **fences** — only jaluzele = **2900 lei/METRU LINIAR** (unit ≠ m² — schema needs a per-`ml` field); șipcă/plin/combinat unanswered. **"160 lei/m²" DOWNGRADED** to a normal open question (banner vs configurator disagree on-page; owner decides keep/remove/qualify — not blocking). Roof-calc ceramic (Creaton 57/58) still pending. | **Max** |
+| **B4 🟡 (fences only)** | **Q-10 — configurator prices** | **ROOFS SHIPPED 2026-07-25** → `feature/configurator` (`a32caeb`): metalică 1100 · șindrilă 1200 · rocă vulcanică 1400 · **ceramică 1600** lei/m² (montaj inclus, "de la") — Imperlux 450/550/800 removed, ceramică in JSON-LD, estimate "de la {total}", disclaimer "nu o ofertă contractuală". **§1b roof gate CLEARED.** **Fences:** owner 2026-07-26 approved a CATEGORY-level **"de la 2900 lei/m liniar"** (fundație inclusă) shown once + contact-sales CTA (jaluzele price; NOT stamped per type); **per-type still open** (șipcă/plin/combinat) — fence code **SHIPPED on `feature/configurator` (`560b005`, unmerged preview):** category price + fence-length estimate in **lei/m liniar** (distinct from roofs' m²), JSON-LD fence AggregateOffer lowPrice 2900 only. **"160 lei/m²" REMOVED site-wide 2026-07-26** (RC-402 content+docs PR) — banner keeps only the two real offers; roof copy now shows real "de la 1100"; **§1c gate CLEARED.** Roof-calc ceramic (Creaton 57/58) still pending. | **Max** |
 | **B5** | **Q-03 — Telegram lead channel** | Owner picks the destination (email only, or email + Telegram, and which chat). Email already works; the Telegram notifier hangs off the same seam in `src/lib/lead.ts`. | **Max** |
 | **B6** | **RC-404 analytics** | Q-03 (above), plus a GA4-vs-Plausible choice. ⚠️ **If GA4 lands, `/politica-de-confidentialitate` must change in the same PR** — the policy currently states there is no analytics. | **Max** decides; Claude implements |
 | ~~B7~~ | ~~Q-15 — canonical host confirmation~~ — **RESOLVED 2026-07-25: APEX `rapidconstruct.md` (no www)**, matching the client's existing canonical. Fixes only the VALUE to use at cutover; `NEXT_PUBLIC_SITE_URL` stays absent and DNS untouched until RC-403 (owner's call). | — | done |
@@ -271,6 +297,7 @@ In order. Items 1–3 need no owner input.
 
 ## Housekeeping
 
+- **Toolkit (claude-toolkit) at 100%** — launcher (`services.json` manifest, safe `up`), statusline, previews, and the `:4300`/`:4302` boards are complete and committed to the `claude-toolkit` repo (source of truth). Infra/tooling, not a rapidconstruct lane.
 - **~18 stale local branches** and several remote ones whose PRs are merged or
   closed. Safe to prune everything except `main` and `feature/3d-hero` — but
   **diff content, not commit counts, before deleting** (see the squash-merge trap

@@ -50,7 +50,7 @@ OG tags + share image, JSON-LD (LocalBusiness sitewide; Service / FAQPage per pa
 correct `lang` and hreflang pair, and real content in server-rendered HTML (no client-only facts —
 numbers like "500+ proiecte" must be in the markup, never rendered as "0+" placeholders).
 Sitemap + robots + llms.txt generated from the route tree. Keep concrete, quotable facts
-(prices from 160 lei/m², 30-year written warranty, 500+ projects) in crawlable text — they are
+(roof prices from 1100 lei/m², 30-year written warranty, 500+ projects) in crawlable text — they are
 what AI engines cite.
 
 ## Language rules

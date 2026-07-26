@@ -29,7 +29,7 @@ proiectare & design 3D, instalații.
 ${address.addressLocality} și regiuni: ${areaServed.join(", ")}.
 
 ## Fapte cheie (verificabile)
-- Prețuri de la 160 lei/m².
+- Acoperiș de la 1100 lei/m².
 - Garanție scrisă până la 30 de ani.
 - Materiale certificate UE.
 - Montaj acoperiș în 7–15 zile.
@@ -42,7 +42,7 @@ Program: Luni–Sâmbătă 08:00–17:00
 
 ## RU
 Строительство и ремонт под ключ в Кишинёве: кровля, фасады, отделка,
-проектирование. Цены от 160 лей/м², письменная гарантия до 30 лет.
+проектирование. Кровля от 1100 лей/м², письменная гарантия до 30 лет.
 `;
 
   return new Response(body, {

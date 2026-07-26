@@ -23,7 +23,7 @@ type ServicePageProps = {
  * (hero + process + FAQ + CTA + Service/FAQPage JSON-LD) minus the 3D cutaway,
  * which each service page marks with a TODO(3d) slot for the white session.
  *
- * These services have no published per-m² price (only roofing does, at 160
+ * These services have no published per-m² price (only roofing does, at 1100
  * lei/m²), so the hero shows a "Deviz gratuit" chip and the Service JSON-LD
  * carries NO UnitPriceSpecification — we never invent a number.
  */
