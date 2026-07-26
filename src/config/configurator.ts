@@ -63,6 +63,38 @@ export const FENCE_TYPES: readonly FenceTypeId[] = [
   "combinat-piatra",
 ] as const;
 
+/**
+ * Fence pricing — CATEGORY level only (owner 2026-07-26, Q-10).
+ *
+ * The owner supplied ONE fence data point: gard jaluzele = de la 2900 lei/METRU
+ * LINIAR (per linear metre — NOT lei/m²), fundație de beton inclusă. The other
+ * three types (șipcă / plin / combinat cu piatră) have no public price and stay
+ * "preț la cerere" — a single point is never averaged into per-type numbers. So
+ * the configurator shows ONE starting price for the whole fence section, plus a
+ * contact-sales CTA to specify the type. The unit is `ml` (metru liniar),
+ * deliberately distinct from the roof bands' lei/m², and the fence estimate is
+ * priced by a fence-length (metri liniari) input, never by area.
+ */
+export type FenceCategoryPrice = {
+  /** Starting price, lei per linear metre (montaj + fundație de beton incluse). */
+  from: number;
+  /** "ml" = metru liniar — distinct from roofs' implicit m². */
+  unit: "ml";
+  foundationIncluded: true;
+  /** The single type this floor came from; other types are "preț la cerere". */
+  fromType: FenceTypeId;
+};
+
+export const FENCE_CATEGORY_PRICE: FenceCategoryPrice = {
+  from: 2900,
+  unit: "ml",
+  foundationIncluded: true,
+  fromType: "jaluzele",
+};
+
+/** Fence run-length presets (metri liniari) for the estimate; free input allowed. */
+export const FENCE_LENGTH_PRESETS: readonly number[] = [20, 40, 60, 80] as const;
+
 export const WALL_FINISHES: readonly WallFinishId[] = ["stucco-alb"] as const;
 
 /** m² presets for the estimate step. Free input is allowed alongside. */

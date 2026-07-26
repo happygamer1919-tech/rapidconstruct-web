@@ -29,6 +29,8 @@ import { skipHeavy3d } from "@/lib/audit";
 import {
   AREA_PRESETS,
   DEFAULT_CONFIG,
+  FENCE_CATEGORY_PRICE,
+  FENCE_LENGTH_PRESETS,
   FENCE_TYPES,
   ROOF_MATERIALS_3D,
   ROOF_MATERIAL_ORDER,
@@ -42,6 +44,10 @@ import {
 /** Sane bounds for the free-input roof area (m²). */
 const MIN_AREA = 30;
 const MAX_AREA = 2000;
+
+/** Sane bounds for the free-input fence length (metri liniari, NOT m²). */
+const MIN_FENCE_LEN = 4;
+const MAX_FENCE_LEN = 500;
 
 /** The engine is plain JS — type the slice of its API the component drives. */
 type SceneApi = {
@@ -99,6 +105,10 @@ export default function HouseConfigurator() {
    *  into the same state — one source of truth for the estimate. */
   const [areaInput, setAreaInput] = useState("150");
   const areaId = useId();
+  /** Fence run length as typed (metri liniari). Priced separately from the roof
+   *  — linear metres, never area. Presets write into the same state. */
+  const [fenceLenInput, setFenceLenInput] = useState("40");
+  const fenceLenId = useId();
 
   /** Apply a config patch to state + scene; rebuilt pieces fly in (~1.2 s). */
   const apply = (patch: Partial<HouseConfig>) => {
@@ -298,6 +308,19 @@ export default function HouseConfigurator() {
         }
       : null;
 
+  // Fence estimate is a CATEGORY floor: length (metri liniari) × the single
+  // owner data point (jaluzele, 2900 lei/ml). It does NOT vary by selected type
+  // — only jaluzele has a price; the rest are "preț la cerere". So this is a
+  // "de la" starting figure for the whole fence category, priced by length.
+  const fenceLenNum = Number(fenceLenInput.replace(",", "."));
+  const fenceLenValid =
+    Number.isFinite(fenceLenNum) &&
+    fenceLenNum >= MIN_FENCE_LEN &&
+    fenceLenNum <= MAX_FENCE_LEN;
+  const fenceFrom = fenceLenValid
+    ? FENCE_CATEGORY_PRICE.from * fenceLenNum
+    : null;
+
   const chip = (selected: boolean) =>
     `rounded-lg border px-3 py-2 text-left text-caption font-medium transition-colors ${
       selected
@@ -418,11 +441,26 @@ export default function HouseConfigurator() {
           </p>
         </section>
 
-        {/* FENCE */}
+        {/* FENCE — category-level price only (owner Q-10). One "de la" figure for
+            the whole section in lei/m LINIAR (distinct from roofs' lei/m²); the
+            per-type buttons carry NO price (only jaluzele is known). */}
         <section aria-label={t("fence.title")}>
           <h2 className="micro-label mb-3 text-muted-foreground">
             {t("fence.title")}
           </h2>
+
+          {/* Category starting price — shown ONCE, not stamped per type */}
+          <div className="mb-4 rounded-xl border border-border bg-muted/40 p-4">
+            <p className="font-serif text-xl text-foreground">
+              {t("fence.categoryPrice", {
+                price: fmt(FENCE_CATEGORY_PRICE.from),
+              })}
+            </p>
+            <p className="mt-1 text-caption text-muted-foreground">
+              {t("fence.foundationIncluded")}
+            </p>
+          </div>
+
           <p className="mb-2 text-caption font-medium text-foreground">
             {t("fence.typeLabel")}
           </p>
@@ -438,6 +476,75 @@ export default function HouseConfigurator() {
                 {t(`fence.types.${id}`)}
               </button>
             ))}
+          </div>
+          <p className="mt-2 text-caption text-muted-foreground">
+            {t("fence.typeNote")}
+          </p>
+
+          {/* Fence length — metri LINIARI, not m² */}
+          <p className="mb-2 mt-5 text-caption font-medium text-foreground">
+            {t("fence.lengthLabel")}
+          </p>
+          <div className="mb-3 grid grid-cols-4 gap-2">
+            {FENCE_LENGTH_PRESETS.map((v) => (
+              <button
+                key={v}
+                type="button"
+                className={`${chip(fenceLenNum === v)} whitespace-nowrap px-2 text-center`}
+                aria-pressed={fenceLenNum === v}
+                onClick={() => setFenceLenInput(String(v))}
+              >
+                {t("fence.lengthPreset", { value: v })}
+              </button>
+            ))}
+          </div>
+          <label
+            htmlFor={fenceLenId}
+            className="mb-1 block text-caption text-muted-foreground"
+          >
+            {t("fence.customLengthLabel")}
+          </label>
+          <input
+            id={fenceLenId}
+            type="text"
+            inputMode="decimal"
+            value={fenceLenInput}
+            onChange={(e) => setFenceLenInput(e.target.value)}
+            placeholder={t("fence.customLengthPlaceholder")}
+            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-body text-foreground outline-none transition-colors focus:border-accent"
+          />
+
+          {/* Fence estimate — explicit lei/m liniar, separate box from the roof */}
+          <div className="mt-4 rounded-xl border border-border p-4">
+            <h3 className="micro-label mb-2 text-muted-foreground">
+              {t("fence.estimateTitle")}
+            </h3>
+            {fenceFrom != null ? (
+              <>
+                <p className="font-serif text-2xl text-foreground" aria-live="polite">
+                  {t("fence.estimateFrom", { total: fmt(fenceFrom) })}
+                </p>
+                <p className="mt-1 text-caption text-muted-foreground">
+                  {t("fence.estimateBreakdown", {
+                    length: fenceLenNum,
+                    price: fmt(FENCE_CATEGORY_PRICE.from),
+                  })}
+                </p>
+                <p className="mt-3 text-caption text-muted-foreground">
+                  {t("fence.disclaimer")}
+                </p>
+              </>
+            ) : (
+              <p className="text-caption text-muted-foreground">
+                {t("fence.lengthHint")}
+              </p>
+            )}
+            <Link
+              href="/contact"
+              className="mt-4 inline-flex items-center justify-center rounded-full bg-accent px-5 py-2.5 text-caption font-semibold text-accent-foreground transition-opacity hover:opacity-90"
+            >
+              {t("fence.cta")}
+            </Link>
           </div>
         </section>
 
