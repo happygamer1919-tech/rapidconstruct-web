@@ -559,7 +559,9 @@ float vNoise(vec3 p) {
     g.position.set(tx, 0, tz); TR.add(g); trees.push({ tm, lm });
   }
   tree(-22,-8,1.5,0); tree(-27,5,1.2,1); tree(20,-15,1.6,0); tree(26,-4,1.3,1);
-  tree(-17,17,1.1,0); tree(29,15,1.4,1); tree(-33,-15,1.35,1); tree(36,-19,1.5,0);
+  // (-17,17)→(-24,24): the widened opening camera (fix 4) flew through this
+  // tree's canopy — moved outward along the same sightline, still frames left.
+  tree(-24,24,1.1,0); tree(29,15,1.4,1); tree(-33,-15,1.35,1); tree(36,-19,1.5,0);
   for (let i = 0; i < 32; i++) {
     const a = Math.random()*Math.PI*2, rr = 70 + Math.random()*230;
     tree(Math.cos(a)*rr, Math.sin(a)*rr, 1.6 + Math.random()*1.4, i % 2);
@@ -717,8 +719,14 @@ float vNoise(vec3 p) {
   }
   function cameraAt(t) {
     const c = eq(cl((t-.08)/(BUILD_END-.3), 0, 1));
-    const rd = lp(20,35,c), hy = lp(2.4,15,c), an = -.78 + c*.66;
-    return { position: [Math.sin(an)*rd, hy, Math.cos(an)*rd], lookAt: [-.5, lp(2.4,3.3,c), .5] };
+    // LANE A fix 4 (2026-07-26): opening keyframe widened rd 20→25.5 and
+    // raised hy 2.4→5.2 (look-at 2.4→3.0). At the old low/close start the
+    // blueprint phase cropped the two-storey block at the frame edge — the
+    // wireframe pass ALWAYS outlined the full footprint (every piece gets a
+    // ghost), but only half of it was in frame. The pull-back destination is
+    // unchanged.
+    const rd = lp(25.5,35,c), hy = lp(5.2,15,c), an = -.78 + c*.66;
+    return { position: [Math.sin(an)*rd, hy, Math.cos(an)*rd], lookAt: [-.5, lp(3.0,3.3,c), .5] };
   }
   function update(t) {
     const e0 = eo(cl(t/.6, 0, 1));
