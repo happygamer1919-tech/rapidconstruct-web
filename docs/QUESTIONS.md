@@ -83,10 +83,19 @@ happygamer1919-tech account (github.com/apps/vercel) and grant it
 rapidconstruct-web — then every PR gets its preview URL automatically instead of
 a manual `vercel deploy`.
 
-## Q-07 — OPEN — Are the claimed numbers accurate?
+## Q-07 — OPEN (ESCALATED 2026-07-25) — Are the claimed numbers accurate?
 "500+ case", "250+ recenzii", "15+ ani", "garanție 30 ani", "160 lei/m²" — we will publish
 these as quotable facts (SEO/GEO), so they must be true and defensible. Confirm with Max.
-**Blocks:** none (build with current claims, confirm before launch RC-402).
+
+**ESCALATED 2026-07-25 — the client's OWN live site contradicts itself.** Harvested from
+rapidconstruct.md, the same site states, in different places:
+- **Projects:** "15000+ Proiecte Finalizate" **vs** "Peste 500 de case".
+- **Rating:** "5/5" **vs** "4.9/5 din 250+ recenzii".
+- **Warranty:** "garanție până la 30 ani" **vs** the FAQ's "între 3 și 50 ani".
+**Do NOT copy any of these numbers** into the new site. The owner must **choose ONE
+consistent set** before any of it is published as quotable SEO/GEO fact.
+**Blocks:** none technically (site builds without them), but they must be resolved before
+launch — publishing self-contradictory claims is a trust/legal risk (RC-402).
 
 ## Q-09 — OPEN — Email sending credentials (contact form leads)
 The RC-105 contact form is live and validates leads server-side, but has no email channel
@@ -99,6 +108,74 @@ later (Q-03). **Blocks:** nothing (log fallback in place); improves owner's lead
 
 ## Q-10 — OPEN — Calculator prices need confirmation
 Extracted from your live Tilda calculator (docs/PRICING.md): 13 materials. Confirm: (1) Creaton ceramică 57/58 lei — per BUCATĂ or per m²? (2) what exactly is "160 lei/m² înghețat" (no material matches it)? (3) do prices include jgheaburi/burlane și demontare? **Blocks:** publishing the two ceramic entries; the other 11 ship in the calculator.
+
+**Discrepancy found 2026-07-25 (client's live site).** The live rapidconstruct.md
+advertises **"160 lei/m² înghețat pentru 2026"** for *acoperiș* — but our configurator
+placeholders quote roofing bands of **450 / 550 / 800 lei/m²** (metalică / shingle / rocă
+vulcanică). These don't reconcile: "160 lei/m²" may be a promo floor, a labour-only rate, or
+a different scope entirely. **Owner must clarify what "160 lei/m²" covers** (material?
+labour? which roof?) before either figure is published — do not merge the two.
+
+**🚨 ESCALATED 2026-07-25 — LAUNCH-BLOCKING for the configurator.** The
+configurator's "placeholder" roofing bands **450 / 550 / 800 lei/m²** are **not
+neutral placeholders** — they are **Imperlux's LIVE PUBLISHED price bands**, a named
+competitor (source `imperlux.md/acoperisuri/preturi`):
+- țiglă metalică **450–900**, shingle **550–1100**, rocă vulcanică **800–1450**.
+Our placeholders were seeded from the low end of a competitor's real prices. **The
+configurator MUST NOT go live with these numbers under any circumstances** — a
+pre-launch gate was added to `docs/LAUNCH-CHECKLIST.md` that FAILS if the
+Imperlux-derived bands (450/550/800) are still present.
+
+The client's **only** public price is "160 lei/m² înghețat 2026" for acoperiș, which
+is **below the market manoperă-only (labour-only) rate of 180–280 lei/m²** — so its
+scope is unclear and it **cannot be used as a band** as-is. **No fence prices exist
+publicly** either. **The owner must supply his own real price bands** (roof materials
++ fences) before the configurator can launch.
+**Blocks:** now LAUNCH-BLOCKING for the whole configurator (was: only the 2 ceramic
+roof-calculator entries).
+
+**✅ PARTIALLY ANSWERED 2026-07-25 (owner) — ROOFS supplied; fences + "160" still open.**
+Owner's real configurator roof bands, **montaj (installation) inclus**, "de la X"
+(starting price, min only — no max given):
+| Material | Owner band | Replaces (Imperlux) |
+|---|---|---|
+| țiglă metalică | **de la 1100 lei/m²** | ~~450–900~~ |
+| șindrilă bituminoasă (shingle) | **de la 1200 lei/m²** | ~~550–1100~~ |
+| rocă vulcanică | **de la 1400 lei/m²** | ~~800–1450~~ |
+| **țiglă ceramică** | **de la 1600 lei/m²** | ~~preț la cerere~~ (now HAS a band) |
+
+- **Configurator code update required (LANE C, `feature/configurator`, NOT this docs
+  PR):** set these min values in `src/config/configurator.ts` `ROOF_MATERIALS_3D[*].band`
+  (owner gave min only → display "de la X"; the `max` field has no owner value, drop it
+  or make it nullable), mark prices "montaj inclus", and **give țiglă ceramică a band
+  (min 1600), remove "preț la cerere", and INCLUDE it in the JSON-LD AggregateOffers.**
+  Only after that lands does the §1b roof gate clear (the 450/550/800 competitor numbers
+  are gone).
+- **Fences — still open, with a UNIT trap.** Only **gard jaluzele = de la 2900
+  lei/METRU LINIAR** (per linear metre, **NOT lei/m²**), cu fundație de beton. The
+  configurator schema **has no fence price field today** (fences are just type ids);
+  adding jaluzele needs a **new fence price with an explicit unit `lei/ml`** — distinct
+  from roofs' implicit lei/m² — and the estimate step must price fences by linear metre,
+  not area. **șipcă / plin / combinat-cu-piatră still unanswered** → keep "preț la cerere".
+- **🚨 CRITICAL CONTRADICTION (misleading-advertising risk).** The live site advertises
+  **"îngheață prețul de 160 lei/m²"** for acoperiș, while the owner's **real starting
+  price is 1100 lei/m²**. The new site **must NOT carry the "160 lei/m²" claim** until
+  the owner explains its scope — a hard gate is added to `docs/LAUNCH-CHECKLIST.md`.
+**✅ ROOFS SHIPPED 2026-07-25.** The configurator now carries the owner's real bands on
+`feature/configurator` (`a32caeb`): metalică 1100, șindrilă 1200, rocă vulcanică 1400,
+țiglă ceramică 1600 lei/m² (montaj inclus, "de la X"). Imperlux 450/550/800 removed;
+ceramică has a band + is in the JSON-LD AggregateOffers; estimate shows "de la {total}",
+disclaimer says "nu o ofertă contractuală". **§1b roof gate CLEARED.**
+
+**"160 lei/m²" DOWNGRADED 2026-07-25** from launch-blocker to a normal open question. It
+sits in the promo banner, `/acoperisuri` title/meta, several FAQ answers and the price
+chip, while the configurator now shows "de la 1100" — they disagree on the same page.
+**Owner decides:** keep / remove / qualify (e.g. "montaj de la 160 lei/m²"). Not blocking.
+
+**Blocks (still):** **fences** — only jaluzele answered (2900 **lei/ml**, not m² — schema
+needs a per-unit field); șipcă/plin/combinat unanswered. Roof-calculator ceramic (Creaton
+57/58) still pending. RU strings added (`estimate.from`, disclaimer) are machine-drafted —
+flag for RU review.
 
 ## Q-11 (2026-07-21, 3D agent) — Pick ONE house to photo-match
 We've been modelling an "average" house. Point at ONE photo from your 110 and say "build that
@@ -141,6 +218,22 @@ invented.** Portfolio / slideshow MAY ship now with photos captioned **only by w
 is visibly true** (e.g. "Acoperiș din țiglă metalică", "Fațadă ventilată") — **no
 location, year, or m²** until the owner supplies them. Enrich per-photo once he does.
 
+**UPDATE 2026-07-25 — 4 projects now have locality + area + work type, harvested from
+the CLIENT'S OWN LIVE SITE (rapidconstruct.md), NOT invented.** Source = client's live
+homepage. **YEAR is still missing for all four** (do not invent it).
+| Locality | Area | Work type |
+|---|---|---|
+| Orhei | 100 m² | acoperiș șindrilă bituminoasă + sistem pluvial |
+| Costești | 320 m² | fațadă piatră naturală + tencuială decorativă |
+| Cahul | 180 m² | acoperiș țiglă metalică + termoizolație mansardă |
+| Chișinău | 280 m² | renovare completă, acoperiș nou + izolare termică |
+
+Notes: the `/portofoliu` page currently carries **no per-project data** — these four can now
+be attached (locality + area + work type; year stays blank). ⚠️ On the source site the
+**image alt-text conflicts with the captions — trust the captions** (above), not the alt
+attributes. Still pending owner: the completion **year** per project, and confirmation the
+client agreed to be shown.
+
 ## Q-15 (2026-07-22) — Canonical domain: apex or www?
 `NEXT_PUBLIC_SITE_URL` is unset and Vercel has zero env vars, so every canonical
 / hreflang / sitemap / og:image URL currently points at the staging host. A
@@ -148,7 +241,12 @@ production build now FAILS rather than shipping that (verified both ways).
 Before cutover the owner must pick the canonical host.
 **Recommended default**: `https://rapidconstruct.md` (apex) — it matches the
 current Tilda URLs, so the 301s from legacy pages land on the same host with no
-extra redirect hop. See docs/LAUNCH-CHECKLIST.md §1. STATUS: OPEN
+extra redirect hop. See docs/LAUNCH-CHECKLIST.md §1.
+**STATUS: RESOLVED 2026-07-25 — APEX `rapidconstruct.md` (no www).** Decision by the
+owner, matching the client's existing canonical `http://rapidconstruct.md`. This only
+fixes the **value** to use; it does **NOT** change anything now — `NEXT_PUBLIC_SITE_URL`
+stays absent and DNS is untouched. The apex value gets set at the **RC-403 cutover**
+(owner's call), where it becomes `https://rapidconstruct.md`.
 
 ## Q-16 (2026-07-22) — Privacy policy: legal entity + retention period
 `/politica-de-confidentialitate` is live in RO + RU and describes exactly what the
