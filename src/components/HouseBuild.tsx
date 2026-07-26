@@ -107,11 +107,29 @@ export default function HouseBuild({
   // that reveals the copy regardless if onDone has not fired in time. The copy
   // is never allowed to depend on WebGL succeeding.
   const [built, setBuilt] = useState(false);
+  // LANE A card-timing fix (2026-07-26): the copy card must appear ONCE,
+  // after the build completes and the camera settles — never mid-build. The
+  // old 9 s safety timer fired DURING the build on devices with a slow shader
+  // warm-up, flashing the card mid-animation. Now: the real reveal is
+  // onRested + a short settle beat (below); the timer is only a true-hang
+  // net at 16 s (a finished build fires onRested at ~6-8 s even on slow
+  // hardware). `built` is one-way — once true it never unsets, so the card
+  // cannot flash out.
+  const revealT = useRef<number | null>(null);
+  const reveal = (delayMs: number) => {
+    if (revealT.current !== null) return; // first signal wins — no re-arming
+    revealT.current = window.setTimeout(() => setBuilt(true), delayMs);
+  };
   useEffect(() => {
-    // 0 = there will be no build to wait for, so reveal on the next tick.
-    const delay = skipHeavy3d() || reduce ? 0 : 9000;
-    const t = window.setTimeout(() => setBuilt(true), delay);
-    return () => window.clearTimeout(t);
+    const t = window.setTimeout(
+      () => reveal(0),
+      skipHeavy3d() || reduce ? 0 : 16000,
+    );
+    return () => {
+      window.clearTimeout(t);
+      if (revealT.current !== null) window.clearTimeout(revealT.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reduce]);
 
   const heroBlock = (
@@ -197,7 +215,10 @@ export default function HouseBuild({
             widens its lens on portrait so the whole site still fits. */}
         {armed && (
           <div className="absolute inset-0">
-            <HeroScene loop={false} onRested={() => setBuilt(true)} />
+            {/* 600 ms after rested: the camera's deceleration tail finishes
+                before the card fades in — "after the build completes and the
+                camera settles". */}
+            <HeroScene loop={false} onRested={() => reveal(600)} />
           </div>
         )}
       </div>
