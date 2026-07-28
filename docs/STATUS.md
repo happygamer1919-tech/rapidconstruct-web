@@ -157,8 +157,9 @@ Shipped and verified. PR numbers in brackets.
   re-verify **deferred to Q-15 → RC-403** (host unset until cutover, by design).
 - **RC-402 sitemap reconcile (merge-aware)** [#55; **#56 closed — superseded**]
   (2026-07-25, merged to `main`). Sitemap is **30** `<loc>` on `main` (15 routes ×
-  2); the stale "28" in the checklist was corrected. **Target 32** after
-  `feature/configurator` merges (+`/configurator` RO + `/ru/konfigurator`).
+  2); the stale "28" in the checklist was corrected. **Launch target 30** — the
+  configurator lane is PARKED post-launch (2026-07-26); `/configurator` + `/ru/konfigurator`
+  are deferred, not a launch item.
 - **Indexability tripwire** [#57] (2026-07-25, merged to `main`).
   `scripts/check-indexability.mjs` asserts every non-`rapidconstruct.md` host is
   non-indexable and the real domain must be — the guard CI structurally can't see.
@@ -225,7 +226,7 @@ Each row names **exactly what unblocks it** and **who owns it**.
 | ~~B1~~ | ~~Staging host crawlable~~ — **FIXED 2026-07-23.** Env var removed, both hosts verified `Disallow: /` + `noindex`, tripwire added. | — | done |
 | ~~B2~~ | ~~RC-403 DNS cutover — registrar login missing~~ — **RESOLVED 2026-07-25 (Q-04):** the owner **has** the domain/registrar credentials. No longer owner-blocked. RC-403 is now a **sequencing / owner-timing** step, NOT blocked on access — **DNS stays untouched, `NEXT_PUBLIC_SITE_URL` is NOT added, and the cutover stays the owner's call.** | — | done |
 | **B3** | **Q-07 — unverified claims (ESCALATED 2026-07-25)** | **The client's OWN live site contradicts itself:** "15000+ Proiecte" vs "Peste 500 de case"; "5/5" vs "4.9/5 din 250+ recenzii"; "garanție 30 ani" vs FAQ "3–50 ani". **Do NOT copy any of them.** Owner must pick ONE consistent set before publishing. | **Max** |
-| **B4 🟡 (fences only)** | **Q-10 — configurator prices** | **ROOFS SHIPPED 2026-07-25** → `feature/configurator` (`a32caeb`): metalică 1100 · șindrilă 1200 · rocă vulcanică 1400 · **ceramică 1600** lei/m² (montaj inclus, "de la") — Imperlux 450/550/800 removed, ceramică in JSON-LD, estimate "de la {total}", disclaimer "nu o ofertă contractuală". **§1b roof gate CLEARED.** **Fences:** owner 2026-07-26 approved a CATEGORY-level **"de la 2900 lei/m liniar"** (fundație inclusă) shown once + contact-sales CTA (jaluzele price; NOT stamped per type); **per-type still open** (șipcă/plin/combinat) — fence code **SHIPPED on `feature/configurator` (`560b005`, unmerged preview):** category price + fence-length estimate in **lei/m liniar** (distinct from roofs' m²), JSON-LD fence AggregateOffer lowPrice 2900 only. **"160 lei/m²" REMOVED site-wide 2026-07-26** (RC-402 content+docs PR) — banner keeps only the two real offers; roof copy now shows real "de la 1100"; **§1c gate CLEARED.** Roof-calc ceramic (Creaton 57/58) still pending. | **Max** |
+| ~~B4~~ | ~~Q-10 — configurator prices~~ | **RECLASSIFIED 2026-07-26 → POST-LAUNCH.** The configurator (LANE C) is **PARKED** post-launch, so its outstanding **per-type fence prices** (șipcă/plin/combinat) and roof-calc ceramic are **no longer launch-blocking** — they only matter for the parked lane. Launch roof prices already ship on `/acoperisuri` ("de la 1100"). History: **ROOFS SHIPPED 2026-07-25** → `feature/configurator` (`a32caeb`): metalică 1100 · șindrilă 1200 · rocă vulcanică 1400 · **ceramică 1600** lei/m² (montaj inclus, "de la") — Imperlux 450/550/800 removed, ceramică in JSON-LD, estimate "de la {total}", disclaimer "nu o ofertă contractuală". **§1b roof gate CLEARED.** **Fences:** owner 2026-07-26 approved a CATEGORY-level **"de la 2900 lei/m liniar"** (fundație inclusă) shown once + contact-sales CTA (jaluzele price; NOT stamped per type); **per-type still open** (șipcă/plin/combinat) — fence code **SHIPPED on `feature/configurator` (`560b005`, unmerged preview):** category price + fence-length estimate in **lei/m liniar** (distinct from roofs' m²), JSON-LD fence AggregateOffer lowPrice 2900 only. **"160 lei/m²" REMOVED site-wide 2026-07-26** (RC-402 content+docs PR) — banner keeps only the two real offers; roof copy now shows real "de la 1100"; **§1c gate CLEARED.** Roof-calc ceramic (Creaton 57/58) still pending (parked lane only). | post-launch |
 | **B5** | **Q-03 — Telegram lead channel** | Owner picks the destination (email only, or email + Telegram, and which chat). Email already works; the Telegram notifier hangs off the same seam in `src/lib/lead.ts`. | **Max** |
 | **B6** | **RC-404 analytics** | Q-03 (above), plus a GA4-vs-Plausible choice. ⚠️ **If GA4 lands, `/politica-de-confidentialitate` must change in the same PR** — the policy currently states there is no analytics. | **Max** decides; Claude implements |
 | ~~B7~~ | ~~Q-15 — canonical host confirmation~~ — **RESOLVED 2026-07-25: APEX `rapidconstruct.md` (no www)**, matching the client's existing canonical. Fixes only the VALUE to use at cutover; `NEXT_PUBLIC_SITE_URL` stays absent and DNS untouched until RC-403 (owner's call). | — | done |
@@ -269,10 +270,9 @@ In order. Items 1–3 need no owner input.
    off `main`). Re-verified on `main`: the sitemap emits **30** `<loc>` (15 routes
    × 2 locales; `/styleguide` correctly `noindex` + excluded), and the checklist's
    "28" was one route stale (the privacy-policy pair from PR #50 was never counted).
-   Checklist §2 updated to 30 and made **merge-aware**: after
-   `feature/configurator` merges the target is **32** (+`/configurator`,
-   +`/ru/konfigurator`). A self-check note with both counts now sits at the top of
-   `src/app/sitemap.ts`. `npm run build` exits 0. No code logic, host or canonical
+   Checklist §2 is **30** for launch; the configurator lane is PARKED post-launch
+   (2026-07-26) so its +2 routes (`/configurator`, `/ru/konfigurator`) are deferred,
+   not a launch item. A self-check note sits at the top of `src/app/sitemap.ts`. `npm run build` exits 0. No code logic, host or canonical
    changed. (Supersedes the earlier unmerged `rc/RC-402-sitemap-reconcile`, which
    reached the same 30 but was not merge-aware.)
    **Merged to `main` [#55]** (`883da9e`, `8f80f36`); `rc/RC-402-sitemap-reconcile`
@@ -282,8 +282,9 @@ In order. Items 1–3 need no owner input.
    end-to-end, then close). **Q-15 needs the owner's decision, not just
    confirmation** — apex vs www is still unanswered, and the value is deliberately
    *not* set in Vercel until cutover.
-7. **Chase the owner on B3 / B4 / B2**, in that order — Q-07 and Q-10 gate
-   published claims and money figures; the registrar login gates the whole launch.
+7. **Chase the owner on B3 / B2**, in that order — Q-07 gates published claims; the
+   registrar login/timing gates the cutover. (Q-10/B4 is now **post-launch** — the
+   configurator is parked, so its fence/ceramic prices no longer gate launch.)
 8. **Unblocked engineering while waiting:** RC-301 (apply the keyword map to
    remaining titles/H1s), RC-202/203 (RU translations for owner review),
    Q-17 a11y fixes (`inert` on the closed drawer, `<dt>`/`<dd>` in the two stat
@@ -298,6 +299,7 @@ In order. Items 1–3 need no owner input.
 
 ## Housekeeping
 
+- **Configurator (LANE C) — PARKED post-launch (2026-07-26).** `feature/configurator` (`560b005`) stays pushed + **unmerged**; nothing removed. Built: 4 roof types × 4 materials with real owner prices (metalică 1100 · șindrilă 1200 · rocă 1400 · ceramică 1600 lei/m²), fence category pricing (de la 2900 lei/m liniar), house recipe (`cu-fronton`), the interactive 3D configurator UI + Service/Fence JSON-LD. Deferred as a future update — see DECISIONS.md.
 - **Toolkit (claude-toolkit) at 100%** — launcher (`services.json` manifest, safe `up`), statusline, previews, and the `:4300`/`:4302` boards are complete and committed to the `claude-toolkit` repo (source of truth). Infra/tooling, not a rapidconstruct lane.
 - **~18 stale local branches** and several remote ones whose PRs are merged or
   closed. Safe to prune everything except `main` and `feature/3d-hero` — but

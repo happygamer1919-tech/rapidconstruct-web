@@ -106,7 +106,7 @@ Vercel project env — leads then email to rapidconstructmd@gmail.com automatica
 seam already wired in src/lib/lead.ts). A Telegram notifier can be added at the same seam
 later (Q-03). **Blocks:** nothing (log fallback in place); improves owner's lead visibility.
 
-## Q-10 — OPEN — Calculator prices need confirmation
+## Q-10 — POST-LAUNCH (not launch-blocking) — Calculator prices (configurator parked)
 Extracted from your live Tilda calculator (docs/PRICING.md): 13 materials. Confirm: (1) Creaton ceramică 57/58 lei — per BUCATĂ or per m²? (2) what exactly is "160 lei/m² înghețat" (no material matches it)? (3) do prices include jgheaburi/burlane și demontare? **Blocks:** publishing the two ceramic entries; the other 11 ship in the calculator.
 
 **Discrepancy found 2026-07-25 (client's live site).** The live rapidconstruct.md
@@ -193,6 +193,15 @@ flag for RU review.
   code lands on **LANE C (`feature/configurator`), unmerged.**
 - **Still outstanding:** per-type fence prices (3 of 4); roof-calculator ceramic (Creaton
   57/58 lei — bucată or m²?).
+
+**⏸️ POST-LAUNCH 2026-07-26 — configurator PARKED, Q-10 no longer launch-blocking.**
+The 3D configurator (LANE C, `feature/configurator`, unmerged) is deferred to a post-launch
+update (owner scope decision — see DECISIONS.md 2026-07-26). The still-open pieces here —
+**per-type fence prices** (șipcă/plin/combinat) and the **roof-calculator ceramic** (Creaton
+57/58) — matter **only for the parked configurator**, so Q-10 is **downgraded from
+launch-blocking to a post-launch item** (B4 reclassified in STATUS). Launch roof prices
+already ship on `/acoperisuri` (real "de la 1100 lei/m²", RC-402) and **stay as-is**; nothing
+here blocks the launch.
 
 ## Q-11 (2026-07-21, 3D agent) — Pick ONE house to photo-match
 We've been modelling an "average" house. Point at ONE photo from your 110 and say "build that
