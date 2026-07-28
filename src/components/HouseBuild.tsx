@@ -2,30 +2,30 @@
 
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { motion, useInView, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Link } from "@/i18n/navigation";
 import { Icon } from "@/components/icons";
 import { skipHeavy3d } from "@/lib/audit";
 
-// Heavy WebGL scene, browser-only.
-const HouseBuildScene = dynamic(() => import("./HouseBuildScene"), {
+// WebGL scene, browser-only.
+//
+// The hero intro is HeroScene, which mounts the APPROVED scene source held
+// verbatim in src/scenes/rapidconstruct-scene.js ("cu fronton": stepped massing
+// — a long single-storey wing plus a two-storey block with a cross gable — hip
+// roofs, white render, stone base and quoins, dormers, carport, paved yard,
+// fence and gate). It builds itself from blueprint lines while the camera pulls
+// back to a drone 3/4. It ships as GEOMETRY rather than a 1 MB glb, so the hero
+// never waits on a model download. HouseBuildScene is untouched and still powers
+// the scroll story (HouseTour) further down the page.
+const HeroScene = dynamic(() => import("./HeroScene"), {
   ssr: false,
   loading: () => <div className="absolute inset-0" />,
 });
 
-// The hero frames the house differently on a phone (below the copy) than on a
-// desktop (beside it) — that is a camera/position change, not just CSS.
-function useIsNarrow() {
-  const [narrow, setNarrow] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 1023px)");
-    const sync = () => setNarrow(mq.matches);
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
-  return narrow;
-}
+// `useIsNarrow` and the `useInView` gate went away with the HouseBuildScene
+// swap: HeroScene drives its own camera (a scripted pull-back to a drone 3/4),
+// so there is no per-breakpoint `layout` prop to feed it. Reinstate them if a
+// future hero needs breakpoint-specific framing.
 
 // Mount WebGL right away when the tab is visible (the hero must build itself on
 // load — owner direction), or on first interaction.
@@ -93,9 +93,7 @@ export default function HouseBuild({
 }) {
   const reduce = useReducedMotion();
   const armed = useArmed();
-  const narrow = useIsNarrow();
   const wrapRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(wrapRef, { margin: "200px 0px" });
 
   // The headline + CTAs are hidden until the build finishes, and `built` is
   // flipped by the scene's onDone. So if the scene never mounts or never
@@ -109,11 +107,29 @@ export default function HouseBuild({
   // that reveals the copy regardless if onDone has not fired in time. The copy
   // is never allowed to depend on WebGL succeeding.
   const [built, setBuilt] = useState(false);
+  // LANE A card-timing fix (2026-07-26): the copy card must appear ONCE,
+  // after the build completes and the camera settles — never mid-build. The
+  // old 9 s safety timer fired DURING the build on devices with a slow shader
+  // warm-up, flashing the card mid-animation. Now: the real reveal is
+  // onRested + a short settle beat (below); the timer is only a true-hang
+  // net at 16 s (a finished build fires onRested at ~6-8 s even on slow
+  // hardware). `built` is one-way — once true it never unsets, so the card
+  // cannot flash out.
+  const revealT = useRef<number | null>(null);
+  const reveal = (delayMs: number) => {
+    if (revealT.current !== null) return; // first signal wins — no re-arming
+    revealT.current = window.setTimeout(() => setBuilt(true), delayMs);
+  };
   useEffect(() => {
-    // 0 = there will be no build to wait for, so reveal on the next tick.
-    const delay = skipHeavy3d() || reduce ? 0 : 9000;
-    const t = window.setTimeout(() => setBuilt(true), delay);
-    return () => window.clearTimeout(t);
+    const t = window.setTimeout(
+      () => reveal(0),
+      skipHeavy3d() || reduce ? 0 : 16000,
+    );
+    return () => {
+      window.clearTimeout(t);
+      if (revealT.current !== null) window.clearTimeout(revealT.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reduce]);
 
   const heroBlock = (
@@ -122,7 +138,14 @@ export default function HouseBuild({
       <h1 className="font-serif text-display-xl text-foreground">{h1}</h1>
       {/* max-w-md, not -xl: the long service list used to run out past the
           scrim onto the beige wall, where muted grey stopped reading. */}
-      <p className="max-w-md text-body-lg text-muted-foreground">{subline}</p>
+      {/* max-w-sm on large screens, not -md: the service list is the one hero
+          line that still ran its tail out of the scrim and onto the house, where
+          muted grey measured 3.0:1. Narrowing the column wraps it earlier and
+          keeps every line inside the strong part of the scrim — which costs the
+          house nothing, unlike pushing the gradient further right. */}
+      <p className="max-w-md text-body-lg text-muted-foreground lg:max-w-sm">
+        {subline}
+      </p>
       {/* max-w-md for the same reason as the subline above: its tail ran past the
           scrim onto the house and dropped to 3.07 contrast. Wrapping keeps it
           over the scrim. */}
@@ -155,7 +178,10 @@ export default function HouseBuild({
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-gutter py-16">
           {heroBlock}
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-neutral-100 to-muted">
-            <HouseBuildScene active={inView} />
+            {/* HeroScene reads prefers-reduced-motion itself and renders the
+                FINISHED house with no animation, which is exactly what this
+                branch wants. */}
+            <HeroScene loop={false} />
           </div>
         </div>
       </section>
@@ -168,22 +194,52 @@ export default function HouseBuild({
       className="relative h-svh w-full overflow-hidden border-b border-border"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-neutral-100 via-muted to-neutral-200">
+        {/* `armed` still gates the mount, so audit robots (?no3d=1) never get a
+            WebGL canvas — the blocking Lighthouse perf budget measures that URL.
+            `loop={false}`: the hero builds ONCE and stays built, matching the
+            existing hero contract that the copy reveal depends on. Looping would
+            also keep a render loop running forever behind the copy, which is the
+            battery/lag problem HouseBuildScene's `rested` flag exists to avoid.
+
+            FRAMING: HeroScene scripts its own camera (it has no `layout` prop),
+            so the composition is set by sizing its BOX rather than the camera.
+            Full-bleed put the house straight through the headline on desktop and
+            over the CTAs on a phone. Instead:
+            FULL-BLEED (2026-07-23). The canvas used to be a sub-box — right 62%
+            on desktop, bottom 52% on a phone — which suited the previous hero.
+            Against the approved scene it failed twice over: that scene is a whole
+            SITE (house, carport, fence, gate, garage, paving, trees), so a cropped
+            box sliced it off mid-building, and the leftover area read as a dead
+            white half with a hard seam down the middle. The scene now gets the
+            entire hero and the scrim alone carries copy legibility. HeroScene
+            widens its lens on portrait so the whole site still fits. */}
         {armed && (
-          <HouseBuildScene
-            active={inView}
-            layout={narrow ? "heroMobile" : "hero"}
-            onDone={() => setBuilt(true)}
-          />
+          <div className="absolute inset-0">
+            {/* 600 ms after rested: the camera's deceleration tail finishes
+                before the card fades in — "after the build completes and the
+                camera settles". */}
+            <HeroScene loop={false} onRested={() => reveal(600)} />
+          </div>
         )}
       </div>
-      {/* Scrim so the copy always reads over the model. Muted grey text on the
-          beige wall measured ~1:1 — invisible. Desktop gets a LEFT scrim (copy
-          left, house right); a phone has no side space, so it gets a TOP-DOWN
-          scrim instead and the copy sits up top, clear of the house. */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-neutral-100 from-38% via-neutral-100/60 via-50% to-transparent to-58% lg:bg-gradient-to-r lg:from-15% lg:via-neutral-100/70 lg:via-45% lg:to-70%" />
+      {/* pt-10 on a phone, not pt-20: with the promo bar and a two-line header
+          above it, the old padding pushed "Solicită ofertă gratuită" under the
+          fold — a hero CTA the visitor could not see. Desktop is unchanged. */}
+      <div className="pointer-events-none relative mx-auto flex h-full w-full max-w-6xl flex-col justify-start px-gutter pb-8 pt-10 lg:justify-center lg:pb-0 lg:pt-0">
+        {/* Hero copy — slides in only once the build has finished, carrying its
+            OWN backdrop rather than a full-screen scrim (owner direction
+            2026-07-23: "the white doesn\'t need to appear on the full
+            background, only on a part, and transparent — just so the text has a
+            normal background and doesn\'t dissolve into the animation, but the
+            animation needs to be seen").
 
-      <div className="pointer-events-none relative mx-auto flex h-full w-full max-w-6xl flex-col justify-start px-gutter pt-20 lg:justify-center lg:pt-0">
-        {/* Hero copy — slides in only once the build has finished. */}
+            The full-bleed gradient that used to live here washed the whole hero
+            to read one column of text. This panel covers only the copy: it is
+            translucent and blurred, so the house keeps moving behind it, while
+            everything outside it — most of the frame — stays completely clear.
+            Blur matters as much as opacity: it removes the high-frequency detail
+            that made text "dissolve" into the roof tiles, so the panel can stay
+            see-through and still read. */}
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           animate={built ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
@@ -192,7 +248,7 @@ export default function HouseBuild({
           // full container width and swallowed every pointer event over the
           // house, so "Trage pentru a roti" did nothing across most of the hero.
           // Only the copy itself should capture clicks.
-          className="pointer-events-auto w-fit"
+          className="pointer-events-auto w-fit rounded-3xl bg-neutral-100/92 p-6 backdrop-blur-md ring-1 ring-ink-950/5 lg:p-7"
         >
           {heroBlock}
         </motion.div>

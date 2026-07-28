@@ -3,18 +3,20 @@
 Living board. Background and reasoning live in `docs/PROJECT-MEMORY.md`; this
 file is only *what is true now and what happens next*.
 
-**Last updated: 2026-07-24** — verified against git, the Vercel API, the
-indexability tripwire and live HTTP checks, not recalled.
+**Last updated: 2026-07-23 (late evening)** — verified against git, the Vercel API and
+live HTTP checks, not recalled.
+
+---
 
 ## Current state
 
 | | |
 |---|---|
 | **Owner review URL** | **https://rapidconstruct-web.vercel.app** — public, no login, **non-indexable** (verified). Shows the new 3D hero. |
-| Immutable build behind it | `https://rapidconstruct-n5c1575vn-sm33xys-projects.vercel.app` |
+| Immutable build behind it | `https://rapidconstruct-i56sj4uo0-sm33xys-projects.vercel.app` |
 | **Production site** | `rapidconstruct.md` — **still Tilda** (`x-tilda-server: 22`, A `194.48.203.138`, NS `ns1/ns2.tildadns.com`). **DNS untouched.** |
-| **Default branch** | `main` @ `c0f3f5b` — carries the Q-08 safeguard (cherry-picked) plus the corrected memory docs and `CLAUDE.md`. No 3D work. |
-| **Working branch** | `feature/3d-hero` @ `6008dee` — the approved scene port. Ahead of `main`; unmerged by design. |
+| **Default branch** | `main` @ `0f6d516` — now carries the Q-08 safeguard (cherry-picked). No 3D work. |
+| **Working branch** | `feature/3d-hero` — the approved scene port. Ahead of `main`; unmerged by design. |
 | **Open PRs** | None. |
 | **Vercel env** | `RESEND_API_KEY` (Production) only. **`NEXT_PUBLIC_SITE_URL` deliberately absent** — see the cutover box below. |
 | **Repo** | `happygamer1919-tech/rapidconstruct-web`, Vercel project `rapidconstruct-web` (org `sm33xys-projects`) |
@@ -43,7 +45,7 @@ re-engage the staging safeguard. Consequences, all verified live:
    node scripts/check-indexability.mjs https://rapidconstruct.md
    ```
 
-### Regression guard
+### Regression guard (new)
 
 `scripts/check-indexability.mjs <url>` asserts that any host which is not
 `rapidconstruct.md` must be non-indexable, and that the real domain must be.
@@ -51,41 +53,171 @@ re-engage the staging safeguard. Consequences, all verified live:
 the CI tests both passed while the live site was indexable — the failure was
 environmental (an env var set before cutover), which CI structurally cannot see.
 
-Last run **2026-07-24** against `https://rapidconstruct-web.vercel.app` →
-**PASS** (`Disallow: /`, no sitemap advertised, `/`, `/ru` and `/acoperisuri` all
-200 + `noindex`).
-
-**LANE B — 2026-07-24:** the guard has been brought onto a `main`-based branch.
-The standalone script was copied from `feature/3d-hero` (byte-identical, commit
-`aac0e01`) onto `rc/RC-guard-indexability` off `main` — no 3D files touched.
-Re-verified before landing: PASS against `https://rapidconstruct-web.vercel.app`
-(exit 0), and `npm run build` exits 0.
-
-**Merged to `main` [#57]** (`c1cea7d`) — `scripts/check-indexability.mjs` is on `main`.
-
 ---
 
 ## 🔴 Done
 
 Shipped and verified. PR numbers in brackets.
 
-- **three.js dedupe (RC-113) + shadow-emitter location (RC-114)** (2026-07-24,
-  `rc/RC-113-three-dedupe`, off `main`). Investigation-first, non-blocking, **no
-  3D behavior changed**. Diagnosis: the tree carried two `three` copies —
-  `three@0.185.1` (direct, r185) and `three@0.170.0` (r170) nested under
-  `stats-gl@2.4.2`, a `@react-three/drei` dep whose `three@^0.170.0` caret (a
-  `0.x` caret = `>=0.170.0 <0.171.0`) r185 can't satisfy. **Dedupe APPLIED** —
-  `overrides: { "three": "$three" }` collapses the tree to one `three@0.185.1`
-  (nested copy gone from `package-lock.json` + `node_modules`); `npm run build`
-  exits 0; all **106 Playwright tests pass**. The dup lives on `main` itself (all
-  4 packages declared there), not only under a 3D lane, so it was safe to fix
-  here. **RC-114:** `PCFSoftShadowMap` is emitted in `applyRenderer` at
-  `src/scenes/rapidconstruct-scene.js:659` on `feature/3d-hero` and `:250` on
-  `feature/configurator` (`r.shadowMap.type = THREE.PCFSoftShadowMap;`); **not on
-  `main`**. Located only — shadow type UNCHANGED. Prior STATUS line ref `487–494`
-  was stale; anchor on the `applyRenderer` name / `shadowMap.type` grep, not the
-  line number. Full findings: `docs/RC-113-three-dedupe.md`.
-  **Merged to `main` [#53]** (`bbd4176`) — the overrides dedupe + `docs/RC-113-three-dedupe.md` are on `main`; shadow type located only, unchanged.
+- **3D hero — LANE A environment pass: match the Seedance restyle's light**
+  (2026-07-26, `feature/3d-hero`, `d4b360c`…`8bf9712`, serial; reference
+  ~/Desktop/hero-ab/ — matched its LIGHT/ATMOSPHERE, not geometry):
+  1. *Haze killed* — FogExp2 .0095 → linear Fog 100→550 m: near/mid planes
+     crisp, only the far field melts into the horizon mist band.
+  2. *Golden hour* — key ffcf8f @1.85, lowered y 13→9 (long soft shadows,
+     radius 5), warm ground bounce, cool fill .24, exposure .97→1.04.
+  3. *Real sky* — 512-wide screen-mapped canvas: steel-blue zenith → warm
+     horizon + soft high-cloud streaks; dome keeps the moving clouds.
+  4. *Meadow ground* — low-freq olive/dry blotches, repeat 30→11; gravel
+     driveway from the gate to the road line with splayed apron (+2 draws).
+  5. *Warm materials* — WHT f1eee6→efe5cf cream; roof r .82 / m .02.
+  - *Measured after each step + final prod:* build 60 fps / 0 long frames,
+    hold 60 fps (half-rate window has occasional ~47 ms spikes on the
+    throttled shadow-refresh frames — imperceptible at the 30 fps render
+    cadence). Draw calls 486 base (env pass cost +2); NOTE: renderer.info
+    reads ~955 when the probe lands on a shadow-refresh frame — that's the
+    shadow pass being counted, not a regression (dev always shows ~950
+    because dev shadows update every frame).
+  - Reduced-motion + `?no3d=1` re-verified on the prod build.
+
+- **3D hero — LANE A perf pass: measured, then fixed (60 fps at the hold)**
+  (2026-07-26, `feature/3d-hero`, `08cef38` + `6fe427f` + `f1d1316`).
+  *Environment ruled out first:* prod build (:3900) vs dev (:3800) both
+  60 fps on the dev machine (worst frame <30 ms); 5 idle dev servers ≈
+  negligible CPU. NOTE: `next start` and `next dev` share `.next` — serve a
+  prod build only with the dev server stopped.
+  *Profile at the settled hold (prod):* 1,573 draw calls / 22.5k tris —
+  draw-call-bound, 5× the old ~330 ceiling. Top 3 measured costs: landed
+  blueprint ghosts still drawn at opacity 0 (465 draws, 1.86 ms of a 4.58 ms
+  frame), trees (280 draws, ~1.2 ms), per-frame 2048² shadow updates
+  (~0.9-1.6 ms). The suspected recent additions (split walls, gate leaves,
+  fence plinths, contact shadows) measured negligible.
+  *Fixes, re-measured each:* F1 hide landed ghosts (4.58→3.24 ms); F2 shadow
+  updates every 4th rendered frame at hold only (3.24→1.77 ms probe); F3
+  trees merged into two draws with vertex colours. Result: 485 draw calls
+  (−69%), 60 fps build + hold, no visual change (screenshot-verified), fade
+  behaviour identical. A transparent→opaque flip for landed pieces was
+  measured SLOWER and dropped. `?herostats=1` hook added for future
+  profiling. Reduced-motion + `?no3d=1` re-verified on prod.
+
+- **3D hero — LANE A animation fixes: build order / card timing / gate**
+  (2026-07-26, `feature/3d-hero`, `8e3d8e3` + `9194a65` + `f356644`, serial;
+  before/after BUILD VIDEOS in ~/Desktop/hero-build-videos/):
+  1. *Bottom-up build order* — full stagger retime to construction sequence:
+     foundation pad first, base courses, ground-floor walls (block + bay
+     walls SPLIT at the floor line so the upper storey arrives as its own
+     lift), upper floor, roof structure before tiles, caps/chimneys, finishes,
+     courtyard paving AFTER the house, fence + gate LAST (gate lands at
+     BUILD_END). Phase captions retimed. Verified frame-by-frame on video.
+  2. *Copy card timing* — the 9 s safety timer could fire mid-build on slow
+     warm-ups (card flashed mid-animation). Reveal now = onRested + 600 ms
+     settle beat; timer is a 16 s true-hang net; one-way reveal (never
+     unsets). Video-verified: card off all build, one ON transition, stays.
+  3. *Driveway gate* — two framed leaves (stiles/rails/louvre infill matching
+     the fence) slide together as the closing beat; flanking stucco piers
+     act as posts. Replaces the flat slab + rail.
+  - *Verified:* tsc, eslint, prod build; recorded videos before/after each.
+
+- **3D hero — LANE A fixes 1-6: geometry bugs the Higgsfield restyle exposed**
+  (2026-07-26, `feature/3d-hero`, `d64f59f`…`5543149`, serial):
+  1. *Two storeys* — block wall 5.32→6.42 (+1.1 m), string course at the true
+     floor line; roof/bay/chimneys/windows follow. Wing untouched (contrast).
+  2. *Entrance* — scaled to door proportions (was a 3.8 m grey tower + 3.5 m
+     steps reading as a wing).
+  3. *Stray pile* — the 7-slat stack floating in front of the door removed;
+     handle added.
+  4. *Blueprint covers the full footprint* — was a FRAMING bug, not missing
+     ghosts: opening keyframe rd 20→25.5 / hy 2.4→5.2; one tree moved off the
+     new sightline. Verified on recorded build video.
+  5. *Fence* — one recipe for all four runs: continuous plinth (split at the
+     gate), slim .38×2.3 piers with two-step caps, panels seated on plinth.
+  6. *Camera continuity* — drift + sun sines were non-zero at handoff (camera
+     jumped ~6-9 cm at settle) and the hold dropped to half-rate at the
+     deceleration tail; eased 2.5 s ramps + full-rate first 3 s. Frame-delta
+     tail now decays smoothly (19.9→3.7%) instead of halting with a blip.
+  - *Verified:* tsc, eslint, prod build; reduced-motion single frame;
+    `?no3d=1` no canvas; before/after PNGs + build videos captured.
+  - Labeling note per toolkit rule: earlier realism commits on this branch
+    say "LANE B" in their subjects — they are LANE A work; labels are correct
+    from here on (history not rewritten).
+
+- **3D hero — LANE C fixes: mirror glass + full perimeter fence**
+  (2026-07-24, `feature/3d-hero`, `fe0442d` + `7b42033`).
+  1. *Glass* — was a physical dielectric that only reflected at grazing
+     angles: camera-facing windows read as clear holes over the wall
+     backface. Now a dark tinted METALLIC mirror (metalness 1, GLS
+     1a2a34→2e3d49 via a too-bright 3e4f5c, envMapIntensity 1.8) — mirrors
+     the env sky at every angle like solar-control glazing; no interiors
+     built.
+  2. *Fence* — enclosed the plot: left/right runs on the front corner-pier
+     lines (x -13.3/15.5), back run at z -8, shared corner piers, same
+     panel/pier/cap recipe; only opening is the front driveway gate.
+     Contact-shadow strips under all three new runs.
+  - *Verified:* tsc, eslint, prod build; hold alive 5.0%/4 s; reduced-motion
+    single frame; `?no3d=1` no canvas.
+
+- **3D hero — LANE B realism pass: glass / reflections / SSAO / wall tone**
+  (2026-07-24, `feature/3d-hero`, commits `dca2603`…`ea3bff4`). Procedural
+  only — no Blender, no texture maps. Canvas-only before/after per step:
+  1. *Glass is glass* — dedicated MeshPhysicalMaterial (dark tint, rough .06,
+     clearcoat fresnel), glass recessed .16 m with real reveal jambs +
+     shadowed head; frames confirmed rings of four bars.
+  2. *Reflections* — procedural equirect env (sky + sun blob) via
+     PMREMGenerator, assigned per-material to glass (1.8) and metals
+     (.9×metalness) ONLY. scene.environment and flat intensity both tried and
+     reverted (washed the frame / mirrored the fence white).
+  3. *SSAO landed, then REVERTED same day* — GTAOPass via EffectComposer
+     worked (SSAOPass renders blank in this scene — use GTAO if revisited,
+     wiring recoverable in `8054c44`), but the composer's linear-space
+     compositing lifted the approved near-black roof +55% luminance
+     (measured 48→74, side-by-side at the settled hold). Decision: the
+     signature grade wins; composer dropped in `b4af02a`, fog compensation
+     restored (.0082→.0095). Targeted AO remains as geometry (contact
+     planes, shadowed window heads, reveal jambs).
+  4. *Wall tone* — onBeforeCompile world-space value noise on plaster/stone:
+     ±5% tint, ±.06 roughness, one shared program.
+  - *Verified:* tsc, eslint, prod build; hold still alive (6.2% pixel change
+    over 4 s — clouds/sun/camera-breathe kept); reduced-motion single frame
+    with all effects; `?no3d=1` no canvas.
+  - ⚠️ **verify:hero / hero-manifest could NOT be updated from this branch**:
+    the RC-115 gate lives on `rc/RC-115-hero-verify-manifest`, which is based
+    on the CONFIGURATOR refactor (hashes house-kit.js etc. — files that don't
+    exist here). Reconciling the two lanes is a merge decision; until then
+    Tier-2 baselines for this pass can't be captured. The old md5 gate is
+    doubly historical.
+
+- **3D hero — LANE A realism pass: light/ground/camera/motion, no textures**
+  (2026-07-24, `feature/3d-hero`, commits `d911bf1`…`a572413`). Five serial
+  steps, each proven with a canvas-only screenshot vs `before.png`; the build
+  intro is untouched (all new motion is hold-only or e0-faded):
+  1. *Grounded* — procedural contact-shadow planes (wing/carport, block/bay,
+     fence line, car), a slab-rim shadow fading outward onto the lawn, and an
+     inverse lawn vignette.
+  2. *Camera alive on hold* — after BUILD_END the loop keeps running at ~30 fps
+     with layered-sine handheld drift (≤16 cm position, hair of look-at).
+     ⚠️ Deliberately amends the old "draw one settled frame and stop" battery
+     rule (owner direction: never dead-still). rAF pauses on hidden tabs;
+     reduced-motion still renders exactly one static frame — re-verified.
+  3. *Depth* — fog cbcdc9·.0066 → d6cfba·.0095 tuned to the settled camera;
+     sky warm at horizon, cooler zenith.
+  4. *Warm light* — key ffe9c9·1.52 → ffd9a3·1.6, hemi cooled sky / warmed
+     ground bounce, fill eased; sun swings ±3° azimuth during hold. Shadow-map
+     type untouched.
+  5. *Ambient loop* — transparent sky-dome sphere with procedural cloud banks
+     rotating ~1°/4 s. Empirical finding recorded in the scene comments: a
+     world-mapped dome gradient is invisible at this framing (top ray clears
+     the horizon by ~1°), so the gradient stays screen-mapped on
+     scene.background and the dome carries only clouds.
+  - *Verified:* tsc, eslint, prod build; hold-motion proof = two canvas frames
+    4 s apart differ 3.4–5.7% of pixels with identical composition;
+    reduced-motion (one static frame, all improvements present) and `?no3d=1`
+    (no canvas) both re-verified in-browser.
+  - ⚠️ **The md5 in the "approved scene ported" entry below is now historical
+    on this branch** — the scene has owner-driven polish (frames/quoins) and
+    this realism pass on top of the byte-identical port.
+  - Pre-existing console noise (not from this pass, worth a look someday): an
+    `isReady` TypeError + hydration warning under reduced-motion emulation,
+    logged from the unmodified hero too.
 - **Foundation** — Next.js 16 App Router + TS + Tailwind scaffold [#2]; Vercel
   wiring and staging URL [#3]; design tokens, RO/RU routing, layout shell, CI [#6].
 - **SEO plumbing** — metadata helper, LocalBusiness JSON-LD, sitemap, robots,
@@ -107,74 +239,73 @@ Shipped and verified. PR numbers in brackets.
 - **Q-08** — Vercel deployment protection disabled; owner can open previews
   without logging in.
 - **Perf budget in CI** [#16] — blocking Lighthouse job on `?no3d=1`.
-- **3D hero — framing, reveal + legibility** (2026-07-23 evening,
-  `feature/3d-hero`). Canvas is full-bleed and the build animation plays
-  edge-to-edge with nothing over it; the copy and its backdrop fade in only once
-  the build settles. The full-screen scrim was replaced by a local translucent,
-  blurred panel behind the copy (34% of the hero on desktop, 58% Pixel 7, 77%
-  iPhone) rather than a full-screen wash. Hero text contrast measured on the live
-  build: lowest 4.61:1, every element clearing WCAG AA on desktop and mobile —
-  was 1.53:1 worst case before this work. Portrait framing holds a constant
-  HORIZONTAL fov plus a small `setViewOffset` lift (1.06), so the site is never
-  cropped through the building. Shader warm-up runs before the clock starts, or
-  the 4.3 s build was ~80% over by the second drawn frame.
+- **3D hero — reveal + legibility (2026-07-23 evening).** Build animation now
+  plays edge-to-edge with nothing over it; the copy and its backdrop fade in
+  only once the build settles. The full-screen scrim was replaced by a local
+  translucent, blurred panel behind the copy (34% of the hero on desktop, 58%
+  Pixel 7, 77% iPhone). Hero text contrast measured on the live build: lowest
+  4.61:1, all AA — was 1.53:1 before this work. Portrait framing uses a small
+  setViewOffset lift (1.06) and a constant horizontal FOV so the site is never
+  cropped through the building.
 - **3D hero — approved scene ported** (2026-07-23, `feature/3d-hero`).
   `src/scenes/rapidconstruct-scene.js` is a byte-identical copy of the supplied
   source (md5 `68a4fb72172b7695a0f067ec261f7c25`); `src/components/HeroScene.tsx`
   mounts it. Build animation, phase captions, reduced-motion and low-end
   fallbacks all verified on the live deployment. Replaces the older
   `HeroBuild3D.tsx`, which is now unused.
-- **Memory docs repaired** (2026-07-24, `main`). `docs/STATUS.md` had been left in
-  the working tree with **literal merge-conflict markers** and an unmerged index
-  entry; resolved by keeping both sides' facts rather than dropping either
-  [`1cc24d0`]. `CLAUDE.md` added as a pointer to PROJECT-MEMORY + STATUS so a
-  fresh session stops re-deriving settled decisions [`702e3c8`].
-  `docs/PROJECT-MEMORY.md` corrected [`c0f3f5b`]: §5 now states that
-  `NEXT_PUBLIC_SITE_URL` is deliberately absent; §9.2 rewritten from "a live
-  defect" into a **dated near-miss** with root cause, what caught it and the
-  standing lesson; and four further stale claims fixed — §2/§3/§4.5 had all
-  called `HeroBuild3D.tsx` "the current hero" long after the scene port
-  superseded it, plus Q-15 and §10.
-- **SEO/GEO route-by-route sweep** [#58] (2026-07-24, `rc/RC-seo-geo-sweep`, LANE B, merged to `main`).
-  All **32 route+locale URLs** (16 routes × RO/RU) audited against the real
-  rendered HTML for title / meta description / canonical / hreflang+x-default
-  reciprocity / OG / JSON-LD validity / single H1 / `<html lang>`. **30/32 rows
-  pass all 8 checks; no broken defect on any public route.** Full scorecard in
-  `docs/SEO-AUDIT-2026-07-24.md`; repeatable via `scripts/seo-audit.mjs` +
-  `seo-eval.mjs`. **2 mechanical fixes:** shared `@id` on the sitewide + city
-  LocalBusiness JSON-LD so the city pages' second LocalBusiness node merges into
-  one entity (Q-15-safe, keyed off `SITE_URL`); locale-distinct `/styleguide`
-  title+description (was a duplicate RO/RU pair). **2 items FLAGGED for Q-07** —
-  the `home` (176ch) and `despre-noi` (169ch) RO meta descriptions run just over
-  160 chars but are built around the unverified claim numbers ("30 de ani",
-  "160 lei/m²", "15 ani"), so the copy is left for Max's Q-07 pass, not trimmed.
-  **0 Q-15 changes** — canonical tags are structurally correct on all 32 pages;
-  the host value (apex vs www) stays owner-owned, set at cutover. Staging
-  `noindex` confirmed present sitewide (expected). `npm run build` exit 0.
-- **RC-402 pre-launch audit — non-host items** [#54] (2026-07-25, merged to `main`).
-  Route liveness on the 30-URL set (RO+RU, no 301→404), offline structured-data
-  validation, OG completeness; `docs/LAUNCH-CHECKLIST.md` updated. Canonical-host
-  re-verify **deferred to Q-15 → RC-403** (host unset until cutover, by design).
-- **RC-402 sitemap reconcile (merge-aware)** [#55; **#56 closed — superseded**]
-  (2026-07-25, merged to `main`). Sitemap is **30** `<loc>` on `main` (15 routes ×
-  2); the stale "28" in the checklist was corrected. **Target 32** after
-  `feature/configurator` merges (+`/configurator` RO + `/ru/konfigurator`).
-- **Indexability tripwire** [#57] (2026-07-25, merged to `main`).
-  `scripts/check-indexability.mjs` asserts every non-`rapidconstruct.md` host is
-  non-indexable and the real domain must be — the guard CI structurally can't see.
-- **CI green — lint fix** [#59] (`4334021`, merged to `main`). ESLint flat-config
-  override allows CommonJS `require()` in `tools/**` (the `board-server.js` from
-  #51 tripped `no-require-imports` and reddened `typecheck·lint·build·smoke` on
-  `main` and every PR). Override, not rewrite — the script needs `__dirname`.
-- **3D hero — glass + perimeter fence** (2026-07-25, `feature/3d-hero`). Glass now
-  reads as dark reflective glazing, not a see-through pane (`fe0442d`); the plot is
-  enclosed with left/right/back fence runs (`7b42033`). On `feature/3d-hero`, not
-  merged to `main` — the hero lives on its branch by design.
-
-> **CI note:** `lighthouse (perf budget)` stays red on `main` and every PR **by
-> design** — the noindex staging safeguard fails Lighthouse's `is-crawlable` SEO
-> audit below the 0.9 gate. Self-clears at RC-403 when `NEXT_PUBLIC_SITE_URL` is
-> set. Not a regression; do not "fix" it, and never add the env var.
+- **3D hero — LANE A polish: frames + quoins** (2026-07-24, `feature/3d-hero`).
+  Owner feedback on the review build: window frames "read too thin", corner
+  quoins "read too pale". In `src/scenes/rapidconstruct-scene.js`: window-frame
+  bars thickened (`winZ`/`winX`) — face `.09 → .13`, depth `.15 → .19` (half-bar
+  offset `.045 → .065`, top/bottom span widened to keep the corners closed);
+  still a RING of four bars, inner edges unchanged so the glass is never covered.
+  Quoins now tint stone with a new `QUOIN` constant (`0xbcae98`, warmer + ~9%
+  darker than the shared `STN 0xc6bfb1`) so the corners read against the white
+  stucco; `STN` is untouched for the wall bases and columns that also use it.
+  `npm run build` exits 0 in the worktree. Note: the scene is no longer
+  byte-identical to the ported source above — this is a deliberate owner-driven
+  polish pass on top of it. Awaiting the owner's visual verdict; iterate if needed.
+  **Pending push: `git push origin feature/3d-hero`** — the commit (`028bb9c`) is
+  local only; push was denied in the automation run (permission not enabled). Push
+  it when able; do not force-push.
+- **3D hero — LANE A: reduced-motion + low-end fallbacks AUDITED (no code change)**
+  (2026-07-24, `feature/3d-hero`). Audit-first task: both fallback paths already
+  exist in the live hero and are correct, so this is a verification, not a rewrite.
+  Findings, with file:line —
+  1. **Reduced-motion static path.** `src/components/HeroScene.tsx` detects
+     `(prefers-reduced-motion: reduce)` via `matchMedia` with a live `change`
+     listener (lazy init L80–90). When it matches, `beginLoop` renders the settled
+     house **once** — `applyFrame(api.BUILD_END)`, no `requestAnimationFrame`, no
+     build/camera loop (L280–288); the pre-warm draw is also posed at `BUILD_END`
+     (L294). No camera motion (a single static `cameraAt(BUILD_END)` pose) and no
+     glow pulse: the window glow is a **static** emissive material
+     (`src/scenes/rapidconstruct-scene.js:254`, `emissiveIntensity` set once), not
+     a time-driven pulse, so a fixed-`t` frame does not animate.
+  2. **Low-end fallback.** `useSkipCanvas` (`HeroScene.tsx` L47–63) skips WebGL
+     **entirely** — before any context is created — on: no WebGL, `?no3d`
+     (`skipHeavy3d()`, `src/lib/audit.ts` — the same flag task 320 / RC-305 gate
+     on, reused not reinvented), `hardwareConcurrency ≤ 2`, or `deviceMemory ≤ 2`.
+     On skip it returns an `aria-hidden` div so the hero's own gradient shows
+     through — **never a black canvas** — and fires `onRested` immediately (L103)
+     so the copy/CTAs never wait on WebGL — **first paint is not blocked**.
+  3. **Render-loop guard** (PROJECT-MEMORY §4.5): `tick()` schedules
+     `requestAnimationFrame` FIRST (L234) then runs the update in `try/catch` — a
+     thrown frame can never leave a permanent black canvas. Present and correct.
+  4. **Task 320 SSAO/DoF are OFF in both paths by construction.** The live hero
+     uses **no postprocessing at all**: the scene's `applyRenderer`
+     (`rapidconstruct-scene.js:487–494`) sets only ACES tone mapping + PCF soft
+     shadows. SSAO + DepthOfField exist ONLY in `src/components/HeroBuild3D.tsx`,
+     which is **unwired dead code** (superseded by the scene port; not mounted),
+     so there are no effects to disable on the fallback paths.
+  `npm run build` exits **0** in the worktree; both branches compile and are
+  reachable by reading the code paths. ⚠️ Headless cannot emulate a real low-end
+  GPU or the OS reduced-motion setting, so this is reasoned from code + build —
+  **owner should spot-check on a phone**: toggle OS "Reduce Motion" (expect the
+  finished house, no build, no camera drift) and load on a low-end/2-core device
+  or with `?no3d=1` (expect the gradient hero + copy, no black canvas). No non-3D
+  file touched; no `HeroScene.tsx` / scene change made.
+  **Pending push: `git push origin feature/3d-hero`** — see the note above; this
+  STATUS commit rides the same push.
 
 ---
 
@@ -184,6 +315,7 @@ Shipped and verified. PR numbers in brackets.
 |---|---|---|
 | **3D hero — owner review** | `feature/3d-hero`, `src/components/HeroScene.tsx` | Ported and live at the owner review URL. Awaiting the owner's verdict. Not merged to `main` by design. `HeroBuild3D.tsx` is now dead code — delete it once the owner signs off on the new scene. |
 | **RC-104 Portfolio** | `/portofoliu` | **Partial.** Page ships with 8 real photos, tags, ItemList JSON-LD, sitemap entry — the nav 404 is gone. Not done: filters, per-project detail pages, before/after sliders. All three need metadata nobody has confirmed (Q-14). |
+| **RC-402 pre-launch audit** | `docs/LAUNCH-CHECKLIST.md` | Route audit done — all 28 checked routes return 200, canonical + hreflang + JSON-LD + single H1 + og:image present on every page. Remaining: re-verify after the canonical host is settled, and Rich Results / OG debugger passes. |
 
 ---
 
@@ -230,40 +362,21 @@ In order. Items 1–3 need no owner input.
 
 1. ~~Fix B1~~ — **done** (2026-07-23).
 2. ~~Cherry-pick the Q-08 safeguard onto `main`~~ — **done** (`249e9ad`, `0f6d516`).
-3. **Cherry-pick `scripts/check-indexability.mjs` onto `main`.** It is the guard
-   STATUS tells you to run after every deploy, and it currently exists only on
-   `feature/3d-hero` — unavailable from the default branch exactly when it is
-   needed. Standalone script, no dependency on the 3D work.
-4. **Owner reviews the new 3D hero** at the review URL. On sign-off: delete the
+3. **Owner reviews the new 3D hero** at the review URL. On sign-off: delete the
    unused `HeroBuild3D.tsx` and decide whether the hero merges to `main`.
-5. ~~**Reconcile the sitemap count**~~ — **done 2026-07-24** (`rc/RC-402-sitemap-merge`,
-   off `main`). Re-verified on `main`: the sitemap emits **30** `<loc>` (15 routes
-   × 2 locales; `/styleguide` correctly `noindex` + excluded), and the checklist's
-   "28" was one route stale (the privacy-policy pair from PR #50 was never counted).
-   Checklist §2 updated to 30 and made **merge-aware**: after
-   `feature/configurator` merges the target is **32** (+`/configurator`,
-   +`/ru/konfigurator`). A self-check note with both counts now sits at the top of
-   `src/app/sitemap.ts`. `npm run build` exits 0. No code logic, host or canonical
-   changed. (Supersedes the earlier unmerged `rc/RC-402-sitemap-reconcile`, which
-   reached the same 30 but was not merge-aware.)
-   **Merged to `main` [#55]** (`883da9e`, `8f80f36`); `rc/RC-402-sitemap-reconcile`
-   (#56) closed as superseded.
-6. **Close the questions the repo has already answered:** Q-06 and Q-11 (drone
-   photos landed), Q-09 (Resend key is set — verify with one real form submit
-   end-to-end, then close). **Q-15 needs the owner's decision, not just
-   confirmation** — apex vs www is still unanswered, and the value is deliberately
-   *not* set in Vercel until cutover.
-7. **Chase the owner on B3 / B4 / B2**, in that order — Q-07 and Q-10 gate
+4. **Reconcile the sitemap count** — the launch checklist expects 28 URLs, the
+   sitemap emits 30. Confirm which is right before cutover.
+4. **Close the questions the repo has already answered:** Q-06 and Q-11
+   (drone photos landed), Q-09 (Resend key is set — verify with one real form
+   submit end-to-end, then close), Q-15 (value is set; needs only confirmation).
+5. **Chase the owner on B3 / B4 / B2**, in that order — Q-07 and Q-10 gate
    published claims and money figures; the registrar login gates the whole launch.
-8. **Unblocked engineering while waiting:** RC-301 (apply the keyword map to
+6. **Unblocked engineering while waiting:** RC-301 (apply the keyword map to
    remaining titles/H1s), RC-202/203 (RU translations for owner review),
    Q-17 a11y fixes (`inert` on the closed drawer, `<dt>`/`<dd>` in the two stat
    blocks), RC-111 construction-story section.
-9. **Housekeeping:** remove the stray `rapidconstruct.md` domain attached to the
-   Vercel project on 2026-07-23. It does not affect DNS or serving (DNS still
-   points at Tilda) but it is undocumented state.
-10. **Launch chain** once B2/B3 clear: RC-402 final audit → RC-403 cutover →
-    RC-404 analytics.
+7. **Launch chain** once B2/B3 clear: RC-402 final audit → RC-403 cutover →
+   RC-404 analytics.
 
 ---
 

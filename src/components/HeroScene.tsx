@@ -1,0 +1,446 @@
+"use client";
+
+/**
+ * HeroScene — mounts the approved RapidConstruct 3D hero.
+ *
+ * The model itself is NOT defined here. It lives verbatim in
+ * `src/scenes/rapidconstruct-scene.js` (byte-identical to the supplied source)
+ * and is treated as read-only: this file only creates a renderer/scene/camera,
+ * calls `buildScene` once, and drives the API it returns.
+ *
+ *   api.update(t)      — per frame
+ *   api.cameraAt(t)    — camera position + lookAt
+ *   api.phaseAt(t)     — Romanian caption + its colour
+ *   api.applyRenderer  — tone mapping, exposure, shadows (called by buildScene
+ *                        when a renderer is passed in; never overridden here)
+ *
+ * Props match the previous hero component exactly so the page layout, copy,
+ * nav and CTAs are untouched by the swap.
+ */
+
+import { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
+import { buildScene } from "@/scenes/rapidconstruct-scene";
+import { skipHeavy3d } from "@/lib/audit";
+
+export type HeroSceneProps = {
+  /** Fired once the build has settled — the page uses it to reveal the copy. */
+  onRested?: () => void;
+  /** Restart the build after BUILD_END + HOLD. The hero passes false. */
+  loop?: boolean;
+  className?: string;
+};
+
+/**
+ * Skip WebGL entirely on machines that cannot do it justice.
+ *
+ * Three separate reasons, all resolved before the canvas is created so a weak
+ * device never pays for a context it will not use:
+ *   1. no WebGL at all (locked-down browsers, some corporate profiles);
+ *   2. `?no3d=1` — the explicit audit opt-out (see src/lib/audit.ts);
+ *   3. low-end hardware — ≤2 logical cores or ≤2 GB reported memory. The scene
+ *      builds several hundred meshes with 2048² shadows, which is exactly the
+ *      class of device where that turns into a frozen tab.
+ * `deviceMemory` is Chromium-only; absent elsewhere, so it is only ever used to
+ * rule a device OUT, never to rule one in.
+ */
+function useSkipCanvas() {
+  return useState(() => {
+    if (typeof window === "undefined") return false;
+    if (skipHeavy3d()) return true;
+    try {
+      const c = document.createElement("canvas");
+      if (!(c.getContext("webgl2") || c.getContext("webgl"))) return true;
+    } catch {
+      return true;
+    }
+    const nav = navigator as Navigator & { deviceMemory?: number };
+    if (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 2)
+      return true;
+    if (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 2) return true;
+    return false;
+  })[0];
+}
+
+export default function HeroScene({
+  onRested,
+  loop = true,
+  className,
+}: HeroSceneProps) {
+  const mountRef = useRef<HTMLDivElement>(null);
+  const [phase, setPhase] = useState<{ label: string; color: number }>({
+    label: "Proiect",
+    color: 0x1f4fd6,
+  });
+
+  const skip = useSkipCanvas();
+
+  // Read reduced-motion lazily: a synchronous setState in an effect trips the
+  // project's lint gate, and lazy init avoids rendering one wrong first frame.
+  const [reduced, setReduced] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
+  useEffect(() => {
+    const rm = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onRm = () => setReduced(rm.matches);
+    rm.addEventListener("change", onRm);
+    return () => rm.removeEventListener("change", onRm);
+  }, []);
+
+  // Kept in a ref so changing the callback identity never tears down the scene.
+  const onRestedRef = useRef(onRested);
+  useEffect(() => {
+    onRestedRef.current = onRested;
+  }, [onRested]);
+
+  // When there will be no build at all (no WebGL, low-end, ?no3d=1), say so
+  // immediately. The page reveals its copy and scrim on this callback, so
+  // staying silent would leave those visitors staring at an empty hero until the
+  // caller's timeout fires — the copy must never wait on WebGL succeeding.
+  useEffect(() => {
+    if (skip) onRestedRef.current?.();
+  }, [skip]);
+
+  useEffect(() => {
+    const mount = mountRef.current;
+    if (skip || !mount) return;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      // The scene file defines camera POSITION and lookAt but not the lens.
+      // 40° / 0.1 / 1200 carries over from the previous hero so the framing the
+      // owner already signed off on is unchanged.
+      40,
+      1,
+      0.1,
+      1200,
+    );
+
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      powerPreference: "high-performance",
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    mount.appendChild(renderer.domElement);
+    Object.assign(renderer.domElement.style, {
+      display: "block",
+      width: "100%",
+      height: "100%",
+    });
+
+    // buildScene calls applyRenderer itself (tone mapping, exposure, shadows).
+    // Nothing below may override those.
+    const api = buildScene(THREE, scene, renderer);
+
+    // Profiling hook (?herostats=1): read-only handles for measuring FPS,
+    // draw calls, triangles and texture memory against the LIVE hero —
+    // dev and prod builds alike. Inert without the query param.
+    if (/[?&]herostats=1/.test(window.location.search)) {
+      (window as unknown as { __hero?: object }).__hero = { renderer, scene, camera, api };
+    }
+
+    /**
+     * NO post-processing composer — deliberate (LANE B step 3 revert).
+     * GTAO via EffectComposer worked, but the composer pipeline blends the
+     * scene's transparent materials in linear space before tone mapping,
+     * which lifted the whole grade: the owner-approved near-black roof
+     * measured +55% luminance and read as matte felt (side-by-side,
+     * 2026-07-24). Screen-space AO wasn't worth the signature. Targeted AO
+     * ships instead as geometry: contact-shadow planes, shadowed window
+     * heads, reveal jambs (scene file, LANE A/B). If AO is revisited, the
+     * working GTAO wiring is in commit 8054c44 — and note SSAOPass renders a
+     * blank canvas in this scene; use GTAOPass.
+     */
+
+    /**
+     * Keep the HORIZONTAL field of view constant instead of the vertical one.
+     *
+     * three.js `fov` is vertical, so a fixed value crops the frame horizontally
+     * as the viewport narrows. This scene is not a single object — it is a site
+     * roughly 30 m wide (house, carport, fence, gate, garage, paving, trees) —
+     * so on a portrait phone a fixed 40° sliced straight through the building.
+     * Widening the lens as the aspect narrows keeps the same horizontal extent
+     * visible at every viewport, which is what makes one fixed camera path work
+     * on both a desktop and a phone.
+     *
+     * The camera POSITION and lookAt still come untouched from api.cameraAt();
+     * only the lens adapts. The scene file never specifies a lens.
+     */
+    const BASE_FOV = 40; // vertical fov at the reference aspect
+    const REF_ASPECT = 16 / 9;
+    const RAD = Math.PI / 180;
+    const H_FOV = 2 * Math.atan(Math.tan((BASE_FOV / 2) * RAD) * REF_ASPECT);
+
+    // Vertical fov that preserves the reference horizontal extent at `aspect`.
+    // Clamped: past ~74° the perspective distortion bows the roof lines, which
+    // reads as a modelling defect rather than a wide shot.
+    const fovFor = (aspect: number) =>
+      aspect >= REF_ASPECT
+        ? BASE_FOV
+        : Math.min(74, (2 * Math.atan(Math.tan(H_FOV / 2) / aspect)) / RAD);
+
+    /**
+     * On a portrait phone the copy block (eyebrow + headline + service list +
+     * guarantee + two CTAs) fills most of the screen, so a centred house lands
+     * directly behind the text — the service list sat on the dark roof at about
+     * 1.5:1 contrast.
+     *
+     * Rather than crop the scene (the old sub-box approach, which sliced the
+     * site in half) we render the TOP slice of a taller virtual frame, which
+     * lowers the house in the canvas. setViewOffset only moves the projection
+     * window — camera position and lookAt still come untouched from
+     * api.cameraAt().
+     *
+     * Kept DELIBERATELY SMALL. At 1.3 the finished house was shoved into the
+     * bottom quarter behind ~60% empty sky, which wrecked the payoff frame of
+     * the build animation. That aggressive a lift was only ever needed because
+     * the copy used to be on screen the whole time; now the copy (and its scrim)
+     * fade in after the build, so this just needs to bias the house down a
+     * little for the final composition, not clear a whole text column.
+     */
+    const PORTRAIT_LIFT = 1.06;
+
+    const resize = () => {
+      const w = mount.clientWidth || 1;
+      const h = mount.clientHeight || 1;
+      renderer.setSize(w, h, false);
+
+      if (w / h < 1) {
+        const virtualH = h * PORTRAIT_LIFT;
+        camera.aspect = w / virtualH;
+        camera.fov = fovFor(camera.aspect);
+        camera.setViewOffset(w, virtualH, 0, 0, w, h);
+      } else {
+        camera.clearViewOffset();
+        camera.aspect = w / h;
+        camera.fov = fovFor(camera.aspect);
+      }
+      camera.updateProjectionMatrix();
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(mount);
+
+    const LOOP_AT = api.BUILD_END + api.HOLD;
+    let raf = 0;
+    let start = 0;
+    let lastLabel = "";
+    let restedFired = false;
+    let cancelled = false;
+
+    /**
+     * Handheld drift during the hold (LANE A step 2 — owner direction: the
+     * settled frame must never be dead-still). Layered non-harmonic sines ≈
+     * cheap Perlin: position wanders a few cm, the look-at a hair, so the
+     * framing breathes without ever re-composing the shot. `h` is seconds
+     * since the build settled; every period is irrational relative to the
+     * others so the loop never visibly repeats.
+     */
+    const drift = (h: number) => {
+      // LANE A fix 6: the phase-offset sines are non-zero at h=0, so the
+      // camera used to JUMP several cm the instant the pull-back ended — the
+      // visible stutter at the handoff. An eased 2.5 s ramp makes the drift
+      // start exactly from the settled pose (C0-continuous).
+      const r0 = Math.min(1, h / 2.5);
+      const r = r0 * r0 * (3 - 2 * r0);
+      return {
+        x: r * (0.16 * Math.sin(h * 0.21) + 0.06 * Math.sin(h * 0.57 + 1.7)),
+        y: r * (0.08 * Math.sin(h * 0.16 + 0.9) + 0.03 * Math.sin(h * 0.43 + 2.1)),
+        z: r * (0.12 * Math.sin(h * 0.12 + 2.6)),
+        lx: r * (0.05 * Math.sin(h * 0.1 + 1.2)),
+        ly: r * (0.035 * Math.sin(h * 0.18 + 0.5)),
+      };
+    };
+
+    const applyFrame = (t: number) => {
+      api.update(t);
+      // Camera path is authored up to BUILD_END; past it the base pose is the
+      // settled drone frame plus drift.
+      const cam = api.cameraAt(Math.min(t, api.BUILD_END));
+      camera.position.set(cam.position[0], cam.position[1], cam.position[2]);
+      if (!reduced && t > api.BUILD_END) {
+        const d = drift(t - api.BUILD_END);
+        camera.position.x += d.x;
+        camera.position.y += d.y;
+        camera.position.z += d.z;
+        camera.lookAt(cam.lookAt[0] + d.lx, cam.lookAt[1] + d.ly, cam.lookAt[2]);
+      } else {
+        camera.lookAt(cam.lookAt[0], cam.lookAt[1], cam.lookAt[2]);
+      }
+      // The scene file's PHASES is an untyped mixed array, so TS widens both
+      // fields to `string | number`. Narrow here rather than edit the scene.
+      const ph = api.phaseAt(Math.min(t, api.BUILD_END));
+      const label = String(ph.label);
+      if (label !== lastLabel) {
+        lastLabel = label;
+        setPhase({ label, color: Number(ph.color) });
+      }
+      renderer.render(scene, camera);
+    };
+
+    let holdFrame = 0;
+    const tick = () => {
+      // §10 render-loop guard: schedule the next frame FIRST, then do the
+      // work in a try/catch. An uncaught throw otherwise kills rAF for good
+      // and leaves a black canvas with no explanation.
+      raf = requestAnimationFrame(tick);
+      try {
+        const t = (performance.now() - start) / 1000;
+        if (loop) {
+          if (t > LOOP_AT) {
+            start = performance.now();
+            applyFrame(0);
+            return;
+          }
+        } else if (t >= api.BUILD_END) {
+          // Build once, then HOLD ALIVE: the loop keeps running at half rate
+          // (~30 fps) so the drift above — and the scene's own hold motion —
+          // stay in play. This deliberately amends the old "draw one settled
+          // frame and stop" rule (owner direction, LANE A): the cost is one
+          // render every other frame of a scene that is already warm, rAF
+          // pauses it whenever the tab is hidden, and reduced-motion still
+          // renders exactly one static frame.
+          if (!restedFired) {
+            restedFired = true;
+            onRestedRef.current?.();
+          }
+          // LANE A perf F2 (2026-07-26): at the hold only the sun creeps, so
+          // re-rendering the 2048² shadow map every frame is waste — measured
+          // ~0.9-1.6 ms/frame. Throttle shadow updates to every 4th rendered
+          // frame during the hold; the sun's drift is far too slow to show
+          // stepping. Build keeps per-frame shadows (pieces fly through light).
+          if (renderer.shadowMap.autoUpdate) renderer.shadowMap.autoUpdate = false;
+          holdFrame = (holdFrame + 1) % 8;
+          if (holdFrame % 4 === 0) renderer.shadowMap.needsUpdate = true;
+          // Full rate through the deceleration tail + drift ramp (first 3 s
+          // of hold) so the handoff never half-steps; half rate after.
+          if (t < api.BUILD_END + 3) {
+            applyFrame(t);
+            return;
+          }
+          if (holdFrame % 2 === 0) applyFrame(t);
+          return;
+        }
+        applyFrame(t);
+      } catch (err) {
+        // Swallow one bad frame rather than kill the loop.
+        if (process.env.NODE_ENV !== "production") console.error("[hero]", err);
+      }
+    };
+
+    /**
+     * Warm the shaders BEFORE the clock starts.
+     *
+     * Measured without this: the first frame after mount took 3.4s, the next
+     * 1.0s, the next 0.5s — three.js compiles a shader program per material
+     * lazily, on the frame that first draws it, and this scene has hundreds.
+     * The clock ran through all of it, so by the second drawn frame the 4.3s
+     * build was already ~80% over and the animation was effectively invisible:
+     * the house simply appeared. Since the build animation is the entire reason
+     * the 3D exists, that is a defect, not a rough edge.
+     *
+     * compileAsync (three r165+) does the work off the critical path; compile()
+     * is the synchronous fallback. Either way `start` is set afterwards, so
+     * t=0 is the first frame the visitor actually sees.
+     */
+    const beginLoop = () => {
+      if (cancelled) return;
+      start = performance.now();
+      if (reduced) {
+        // Reduced motion: the finished house, rendered once. No rAF, no build.
+        applyFrame(api.BUILD_END);
+        if (!restedFired) {
+          restedFired = true;
+          onRestedRef.current?.();
+        }
+        return;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+
+    // Pose the camera at t=0 and draw the opening state once, so the warm-up
+    // compiles the programs the first real frames will need.
+    applyFrame(reduced ? api.BUILD_END : 0);
+
+    const r = renderer as THREE.WebGLRenderer & {
+      compileAsync?: (s: THREE.Object3D, c: THREE.Camera) => Promise<unknown>;
+    };
+    if (typeof r.compileAsync === "function") {
+      r.compileAsync(scene, camera).then(beginLoop, beginLoop);
+    } else {
+      try {
+        renderer.compile(scene, camera);
+      } catch {
+        // A compile failure must not stop the hero from running.
+      }
+      beginLoop();
+    }
+
+    return () => {
+      cancelled = true;
+      if (raf) cancelAnimationFrame(raf);
+      ro.disconnect();
+      scene.traverse((o) => {
+        const m = o as THREE.Mesh;
+        if (m.geometry) m.geometry.dispose();
+        const mat = m.material as THREE.Material | THREE.Material[] | undefined;
+        if (Array.isArray(mat)) mat.forEach((x) => x.dispose());
+        else mat?.dispose();
+      });
+      if (scene.background instanceof THREE.Texture) scene.background.dispose();
+      renderer.dispose();
+      if (renderer.domElement.parentNode === mount)
+        mount.removeChild(renderer.domElement);
+    };
+  }, [skip, reduced, loop]);
+
+  if (skip) {
+    // No canvas at all — the hero's own gradient background shows through, so
+    // the section keeps its exact size and the copy/CTAs are unaffected.
+    return <div className={className} aria-hidden />;
+  }
+
+  const hex = `#${phase.color.toString(16).padStart(6, "0")}`;
+
+  return (
+    <div
+      className={className}
+      style={{ position: "relative", width: "100%", height: "100%" }}
+    >
+      <div ref={mountRef} style={{ position: "absolute", inset: 0 }} />
+
+      {/* Phase caption — bottom-left, clear of the hero copy at every
+          breakpoint. Label and colour both come from api.phaseAt(). */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: 20,
+          left: 26,
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          letterSpacing: "0.14em",
+          textTransform: "uppercase",
+          fontSize: 12,
+          fontWeight: 600,
+          color: "#5a6472",
+          pointerEvents: "none",
+        }}
+      >
+        <span
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: "50%",
+            background: hex,
+            boxShadow: `0 0 0 4px ${hex}2e`,
+            transition: "background .3s, box-shadow .3s",
+          }}
+        />
+        <span>{phase.label}</span>
+      </div>
+    </div>
+  );
+}
