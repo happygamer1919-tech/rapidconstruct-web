@@ -1,82 +1,83 @@
 /**
- * Project slideshow content — the SINGLE source of truth for the shell.
+ * Project slideshow content — the SINGLE source of truth.
  *
- * PLACEHOLDER DATA (2026-07-25, feature/project-slideshow). Everything here is a
- * stand-in. Swapping in the owner's real photos later is a one-line change per
- * slide: replace `src` with the real image path (e.g. `/portofoliu/house-1.jpg`)
- * and fill in `caption`/`location`. Real captions, locations and any project
- * names/numbers are OWNER content (Q-14) — do NOT invent them here.
+ * Real project photos (RC-104 drone set, 1600px webp in `public/portofoliu/`)
+ * paired with the four projects the owner harvested from the live site (Q-14):
+ * locality + built area. Captions carry ONLY those owner-supplied facts plus a
+ * neutral "finished project" descriptor — NO completion years (never confirmed,
+ * never invented) and no work-type claim beyond what a finished-house photo shows.
  *
- * The shell is NOT wired into the live homepage hero; it renders only at the
- * standalone /slideshow-preview route so placement can be decided later.
+ * ⚠️ PHOTO ↔ PROJECT PAIRING IS PROVISIONAL (owner to confirm — Q-14).
+ * The portfolio page deliberately established NO photo→locality mapping (it
+ * captions only what is visible), so which drone still belongs to Orhei vs
+ * Costești vs Cahul vs Chișinău is the OWNER's to confirm. The pairing below is
+ * a best guess so the flow is real and previewable; correcting it is a one-line
+ * `src` swap per slide. Do not treat the pairing as verified until Max signs off
+ * on the preview.
  */
 
 export type Slide = {
   id: string;
-  /** Swap this for a real photo path/URL. Currently a solid-colour placeholder. */
+  /** Real photo under /public/portofoliu (1600px webp). */
   src: string;
-  /** Placeholder — real per-photo caption is Q-14 owner content. */
-  caption: { ro: string; ru: string };
-  /** Placeholder — real location is Q-14 owner content. */
+  /** Locality — owner-harvested fact (Q-14). Shown as a chip. */
   location: string;
+  /** Built area in m² — owner-harvested fact (Q-14). */
+  areaM2: number;
+  /** Neutral, visibly-true descriptor + area. NO year, no unverified work type. */
+  caption: { ro: string; ru: string };
 };
 
-// Solid-colour SVG placeholder as a self-contained data URI — no external file,
-// no licensing, and unmistakably a placeholder (labelled on the image itself).
-function placeholder(bg: string, n: number): string {
-  const svg =
-    `<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900">` +
-    `<rect width="100%" height="100%" fill="${bg}"/>` +
-    `<text x="50%" y="47%" fill="#ffffff" fill-opacity="0.9" font-family="system-ui,sans-serif" font-size="70" font-weight="700" text-anchor="middle">PLACEHOLDER ${n}</text>` +
-    `<text x="50%" y="56%" fill="#ffffff" fill-opacity="0.6" font-family="system-ui,sans-serif" font-size="30" text-anchor="middle">swap for owner photo — Q-14</text>` +
-    `</svg>`;
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+/** Helper: a finished-project caption carrying only the harvested area. */
+function done(areaM2: number): { ro: string; ru: string } {
+  return {
+    ro: `Proiect finalizat · ${areaM2} m²`,
+    ru: `Завершённый проект · ${areaM2} м²`,
+  };
 }
 
 export const SLIDES: Slide[] = [
   {
-    id: "ph-1",
-    src: placeholder("#3a4048", 1),
-    caption: { ro: "Placeholder — descriere proiect (Q-14)", ru: "Заглушка — описание проекта (Q-14)" },
-    location: "[locație — Q-14]",
+    id: "orhei",
+    src: "/portofoliu/p-0018.webp", // pairing provisional — confirm (Q-14)
+    location: "Orhei",
+    areaM2: 100,
+    caption: done(100),
   },
   {
-    id: "ph-2",
-    src: placeholder("#7a5c3e", 2),
-    caption: { ro: "Placeholder — descriere proiect (Q-14)", ru: "Заглушка — описание проекта (Q-14)" },
-    location: "[locație — Q-14]",
+    id: "costesti",
+    src: "/portofoliu/p-0022.webp", // pairing provisional — confirm (Q-14)
+    location: "Costești",
+    areaM2: 320,
+    caption: done(320),
   },
   {
-    id: "ph-3",
-    src: placeholder("#48584f", 3),
-    caption: { ro: "Placeholder — descriere proiect (Q-14)", ru: "Заглушка — описание проекта (Q-14)" },
-    location: "[locație — Q-14]",
+    id: "cahul",
+    src: "/portofoliu/p-0034.webp", // pairing provisional — confirm (Q-14)
+    location: "Cahul",
+    areaM2: 180,
+    caption: done(180),
   },
   {
-    id: "ph-4",
-    src: placeholder("#8a6d4b", 4),
-    caption: { ro: "Placeholder — descriere proiect (Q-14)", ru: "Заглушка — описание проекта (Q-14)" },
-    location: "[locație — Q-14]",
-  },
-  {
-    id: "ph-5",
-    src: placeholder("#565160", 5),
-    caption: { ro: "Placeholder — descriere proiect (Q-14)", ru: "Заглушка — описание проекта (Q-14)" },
-    location: "[locație — Q-14]",
+    id: "chisinau",
+    src: "/portofoliu/p-0037.webp", // pairing provisional — confirm (Q-14)
+    location: "Chișinău",
+    areaM2: 280,
+    caption: done(280),
   },
 ];
 
-// Section headline + subtext overlay. PLACEHOLDER copy, clearly marked — real
-// RO/RU marketing copy is owner content (Q-14). RO is the source of truth; the RU
-// here is a machine-drafted placeholder, not reviewed (see docs/RU-REVIEW.md when
-// real copy lands).
+// Section headline + subtext (used by the STANDALONE /slideshow-preview; the
+// homepage hero keeps its own card, so these are hidden in heroBackground mode).
+// RO is the source of truth; the RU here is machine-drafted — logged in
+// docs/RU-REVIEW.md, owner-reviewed before launch.
 export const COPY = {
   headline: {
-    ro: "Galerie proiecte — titlu (placeholder)",
-    ru: "Галерея проектов — заголовок (заглушка)",
+    ro: "Proiecte finalizate",
+    ru: "Завершённые проекты",
   },
   subtext: {
-    ro: "Subtitlu demonstrativ. Conținutul real (foto, titlu, subtitlu) vine de la proprietar — Q-14.",
-    ru: "Демонстрационный подзаголовок. Реальный контент (фото, заголовок, текст) — от владельца, Q-14.",
+    ro: "Câteva dintre casele pe care le-am construit în Chișinău și regiuni.",
+    ru: "Некоторые из домов, которые мы построили в Кишинёве и регионах.",
   },
 } as const;

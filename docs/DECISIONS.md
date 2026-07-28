@@ -123,3 +123,26 @@ indexing switches on by itself at cutover with nothing to remember.
 
 Rule going forward: **never re-enable indexing on a host that is not the real
 domain**, and if RC-404 adds analytics, keep it off the staging host too.
+
+## 2026-07-28 — Homepage flow: 3D → slideshow handoff (canvas unmounts after cross-fade)
+The homepage hero now hands off to the project slideshow: 3D build completes → camera settles →
+copy card fades in → the 3D dims and cross-fades into an auto-advancing slideshow of real project
+photos, with the copy card staying legible on top throughout.
+
+Architecture decision — **the WebGL canvas stays mounted THROUGH the cross-fade, then unmounts**
+(state `heroGone` in HouseBuild.tsx). Keeping it mounted-and-dimmed forever behind an opaque
+slideshow would burn the ~30 fps hold-render loop (hundreds of meshes + a 2048² shadow map)
+drawing frames nobody sees; unmounting at settle would break the dim-behind cross-fade. So it
+survives the ~1 s transition, then HeroScene's cleanup disposes geometry/materials/renderer/shadow
+map and stops rAF — draw calls go 486 → 0 and the GPU/memory are freed. The 485/486-draw-call build
+optimisation is untouched (the scene and its render loop were not modified).
+
+Constraints: reduced-motion shows the slideshow's single static first frame with no auto-advance and
+no 3D build (the build animation is the only thing the 3D adds, and reduced-motion suppresses it);
+`?no3d=1` mounts no canvas. Content: the 4 owner-harvested projects, captioned with locality + area
+only — NO invented completion years. The photo↔project pairing is provisional (the portfolio
+established no photo→locality mapping) and is flagged in slideshow.ts for owner confirmation (Q-14).
+
+Un-parks `feature/project-slideshow`: it is now the homepage-flow integration branch (LANE A hero
+merged in), previewable and unmerged — it does NOT go to `main` until the hero direction (Q-12) is
+signed off, same gate as the hero itself.

@@ -3,9 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { motion, useReducedMotion } from "motion/react";
+import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Icon } from "@/components/icons";
 import { skipHeavy3d } from "@/lib/audit";
+import ProjectSlideshow from "@/components/ProjectSlideshow";
+import { SLIDES, COPY } from "@/data/slideshow";
 
 // WebGL scene, browser-only.
 //
@@ -93,6 +96,7 @@ export default function HouseBuild({
 }) {
   const reduce = useReducedMotion();
   const armed = useArmed();
+  const locale = useLocale();
   const wrapRef = useRef<HTMLDivElement>(null);
 
   // The headline + CTAs are hidden until the build finishes, and `built` is
@@ -129,8 +133,28 @@ export default function HouseBuild({
       window.clearTimeout(t);
       if (revealT.current !== null) window.clearTimeout(revealT.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reduce]);
+
+  // Homepage flow (2026-07-28): once the copy card is up, dim the 3D and
+  // cross-fade into the project slideshow, then UNMOUNT the canvas. Keeping a
+  // live WebGL render loop behind an opaque slideshow is pure waste — unmounting
+  // disposes the scene (geometry/materials/2048² shadow map) and drops draw calls
+  // to zero. The canvas stays mounted THROUGH the cross-fade so the dim-behind
+  // handoff is smooth, then goes.
+  const [showSlideshow, setShowSlideshow] = useState(false);
+  const [heroGone, setHeroGone] = useState(false);
+  useEffect(() => {
+    if (!built) return;
+    // A beat after the card lands, begin the cross-fade to the slideshow.
+    const t = window.setTimeout(() => setShowSlideshow(true), 1400);
+    return () => window.clearTimeout(t);
+  }, [built]);
+  useEffect(() => {
+    if (!showSlideshow) return;
+    // Once the ~1 s cross-fade is done and the slideshow is opaque, drop the canvas.
+    const t = window.setTimeout(() => setHeroGone(true), 1200);
+    return () => window.clearTimeout(t);
+  }, [showSlideshow]);
 
   const heroBlock = (
     <div className="flex max-w-2xl flex-col gap-5">
@@ -173,15 +197,22 @@ export default function HouseBuild({
   );
 
   if (reduce) {
+    // Reduced motion: no 3D build (the build animation is the only thing the 3D
+    // adds, and it is exactly what reduced-motion suppresses). Show the flow's
+    // endpoint — the project slideshow — directly, as a single static frame with
+    // NO auto-advance (ProjectSlideshow enforces that under reduced-motion), with
+    // the hero card on top.
     return (
-      <section className="border-b border-border">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-gutter py-16">
-          {heroBlock}
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-neutral-100 to-muted">
-            {/* HeroScene reads prefers-reduced-motion itself and renders the
-                FINISHED house with no animation, which is exactly what this
-                branch wants. */}
-            <HeroScene loop={false} />
+      <section className="relative h-svh min-h-[560px] w-full overflow-hidden border-b border-border bg-neutral-900">
+        <ProjectSlideshow
+          variant="heroBackground"
+          slides={SLIDES}
+          copy={COPY}
+          locale={locale}
+        />
+        <div className="pointer-events-none relative z-20 mx-auto flex h-full w-full max-w-6xl flex-col justify-center px-gutter">
+          <div className="pointer-events-auto w-fit rounded-3xl bg-neutral-100/92 p-6 backdrop-blur-md ring-1 ring-ink-950/5 lg:p-7">
+            {heroBlock}
           </div>
         </div>
       </section>
@@ -213,7 +244,7 @@ export default function HouseBuild({
             white half with a hard seam down the middle. The scene now gets the
             entire hero and the scrim alone carries copy legibility. HeroScene
             widens its lens on portrait so the whole site still fits. */}
-        {armed && (
+        {armed && !heroGone && (
           <div className="absolute inset-0">
             {/* 600 ms after rested: the camera's deceleration tail finishes
                 before the card fades in — "after the build completes and the
@@ -222,10 +253,29 @@ export default function HouseBuild({
           </div>
         )}
       </div>
+
+      {/* Project slideshow — cross-fades in over the (dimming) 3D once the copy
+          card has landed, then the canvas above unmounts (heroGone). z-[1] keeps
+          it above the canvas but below the copy card (z-20). */}
+      {showSlideshow && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.0, ease: "easeInOut" }}
+          className="absolute inset-0 z-[1]"
+        >
+          <ProjectSlideshow
+            variant="heroBackground"
+            slides={SLIDES}
+            copy={COPY}
+            locale={locale}
+          />
+        </motion.div>
+      )}
       {/* pt-10 on a phone, not pt-20: with the promo bar and a two-line header
           above it, the old padding pushed "Solicită ofertă gratuită" under the
           fold — a hero CTA the visitor could not see. Desktop is unchanged. */}
-      <div className="pointer-events-none relative mx-auto flex h-full w-full max-w-6xl flex-col justify-start px-gutter pb-8 pt-10 lg:justify-center lg:pb-0 lg:pt-0">
+      <div className="pointer-events-none relative z-20 mx-auto flex h-full w-full max-w-6xl flex-col justify-start px-gutter pb-8 pt-10 lg:justify-center lg:pb-0 lg:pt-0">
         {/* Hero copy — slides in only once the build has finished, carrying its
             OWN backdrop rather than a full-screen scrim (owner direction
             2026-07-23: "the white doesn\'t need to appear on the full
@@ -259,7 +309,7 @@ export default function HouseBuild({
         initial={{ opacity: 0 }}
         animate={built ? { opacity: 1 } : { opacity: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
-        className="pointer-events-none absolute bottom-5 right-6 whitespace-nowrap rounded-full bg-ink-950/60 px-3 py-1 text-micro font-medium text-neutral-50 backdrop-blur-sm"
+        className="pointer-events-none absolute bottom-5 right-6 z-20 whitespace-nowrap rounded-full bg-ink-950/60 px-3 py-1 text-micro font-medium text-neutral-50 backdrop-blur-sm"
       >
         {hint}
       </motion.span>

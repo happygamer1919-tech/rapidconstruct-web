@@ -14,25 +14,33 @@ type Props = {
   locale: string;
   /** Auto-advance interval in ms. */
   intervalMs?: number;
+  /**
+   * `standalone` — full-screen section with its own headline/subtext (the
+   * /slideshow-preview route). `heroBackground` — fills its positioned parent
+   * and shows only the photos + scrim + a compact per-slide caption; the hero
+   * card owns the headline, so it is not repeated here.
+   */
+  variant?: "standalone" | "heroBackground";
 };
 
 /**
- * Full-bleed background project slideshow (SHELL).
+ * Full-bleed background project slideshow.
  *
- * - Auto-advances every `intervalMs` (~5s), smooth opacity crossfade.
+ * - Auto-advances every `intervalMs` (~5s) with an opacity crossfade.
  * - Pauses on hover / focus-within.
  * - Respects prefers-reduced-motion: no auto-advance, no crossfade — a single
  *   static frame (the first slide).
- * - Content (images + copy) is fully data-driven from props; this file has no
- *   hard-coded slide content.
+ * - Content is fully data-driven from props.
  */
 export default function ProjectSlideshow({
   slides,
   copy,
   locale,
   intervalMs = 5000,
+  variant = "standalone",
 }: Props) {
   const lang = locale === "ru" ? "ru" : "ro";
+  const hero = variant === "heroBackground";
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const [reduced, setReduced] = useState(false);
@@ -63,7 +71,11 @@ export default function ProjectSlideshow({
     <section
       aria-roledescription="carousel"
       aria-label={copy.headline[lang]}
-      className="relative h-[100svh] min-h-[600px] w-full overflow-hidden bg-neutral-900"
+      className={
+        hero
+          ? "absolute inset-0 h-full w-full overflow-hidden bg-neutral-900"
+          : "relative h-[100svh] min-h-[600px] w-full overflow-hidden bg-neutral-900"
+      }
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
@@ -71,10 +83,11 @@ export default function ProjectSlideshow({
     >
       {/* Slides — crossfade via opacity (transform/opacity only). */}
       {slides.map((s, i) => (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           key={s.id}
           src={s.src}
-          alt={s.caption[lang]}
+          alt={`${s.location} — ${s.caption[lang]}`}
           aria-hidden={i !== shown}
           className={`absolute inset-0 h-full w-full object-cover ${
             reduced ? "" : "transition-opacity duration-[1200ms] ease-in-out"
@@ -82,60 +95,76 @@ export default function ProjectSlideshow({
         />
       ))}
 
-      {/* Scrim: keeps overlay text legible over any image (top + bottom). */}
+      {/* Scrim: keeps overlay text (and the hero card, in hero mode) legible. */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/45"
+        className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-black/40"
       />
 
-      {/* Placeholder marker — this is a shell, not live content. */}
-      <div className="absolute left-4 top-4 z-10 rounded-full bg-black/60 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-amber-200 ring-1 ring-white/20">
-        Placeholder shell · not live · Q-14
-      </div>
-
-      {/* Copy overlay. */}
-      <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-3 p-6 sm:p-10 md:p-14">
-        <h2 className="max-w-3xl text-3xl font-bold leading-tight text-white drop-shadow sm:text-4xl md:text-5xl">
-          {copy.headline[lang]}
-        </h2>
-        <p className="max-w-2xl text-base text-white/85 sm:text-lg">
-          {copy.subtext[lang]}
-        </p>
-
-        {/* Per-slide caption + location (data-driven), crossfaded with the slide. */}
-        <div className="mt-2 flex items-center gap-2 text-sm text-white/75">
-          <span className="rounded bg-white/10 px-2 py-0.5 ring-1 ring-white/15">
-            {current.location}
-          </span>
-          <span>{current.caption[lang]}</span>
-        </div>
-
-        {/* Dots — manual jump + progress indicator. */}
-        {slides.length > 1 && (
-          <div className="mt-4 flex gap-2" role="tablist" aria-label="Slides">
-            {slides.map((s, i) => (
-              <button
-                key={s.id}
-                type="button"
-                role="tab"
-                aria-selected={i === shown}
-                aria-label={`Slide ${i + 1}`}
-                onClick={() => setActive(i)}
-                className={`h-2.5 rounded-full transition-all ${
-                  i === shown
-                    ? "w-7 bg-amber-300"
-                    : "w-2.5 bg-white/40 hover:bg-white/70"
-                }`}
-              />
-            ))}
+      {hero ? (
+        /* Hero-background mode: no headline (the hero card owns it). A compact
+           per-slide caption + dots sit bottom-right, clear of the hero card. */
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-col items-end gap-2 p-4 sm:p-6">
+          <div className="flex items-center gap-2 text-sm text-white/85 drop-shadow">
+            <span className="rounded bg-black/45 px-2 py-0.5 font-medium ring-1 ring-white/20">
+              {current.location}
+            </span>
+            <span>{current.caption[lang]}</span>
           </div>
-        )}
-      </div>
-
-      {/* Status line for reduced-motion / paused (subtle, dev-preview aid). */}
-      <p className="absolute bottom-2 right-3 z-10 text-[10px] text-white/40">
-        {reduced ? "reduced-motion: single frame" : paused ? "paused (hover)" : "auto-advancing"}
-      </p>
+          {slides.length > 1 && (
+            <div className="pointer-events-auto flex gap-2" role="tablist" aria-label="Proiecte">
+              {slides.map((s, i) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={i === shown}
+                  aria-label={s.location}
+                  onClick={() => setActive(i)}
+                  className={`h-2 rounded-full transition-all ${
+                    i === shown ? "w-6 bg-amber-300" : "w-2 bg-white/45 hover:bg-white/70"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        /* Standalone mode: full copy overlay. */
+        <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-3 p-6 sm:p-10 md:p-14">
+          <h2 className="max-w-3xl text-3xl font-bold leading-tight text-white drop-shadow sm:text-4xl md:text-5xl">
+            {copy.headline[lang]}
+          </h2>
+          <p className="max-w-2xl text-base text-white/85 sm:text-lg">
+            {copy.subtext[lang]}
+          </p>
+          <div className="mt-2 flex items-center gap-2 text-sm text-white/75">
+            <span className="rounded bg-white/10 px-2 py-0.5 ring-1 ring-white/15">
+              {current.location}
+            </span>
+            <span>{current.caption[lang]}</span>
+          </div>
+          {slides.length > 1 && (
+            <div className="mt-4 flex gap-2" role="tablist" aria-label="Proiecte">
+              {slides.map((s, i) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={i === shown}
+                  aria-label={s.location}
+                  onClick={() => setActive(i)}
+                  className={`h-2.5 rounded-full transition-all ${
+                    i === shown
+                      ? "w-7 bg-amber-300"
+                      : "w-2.5 bg-white/40 hover:bg-white/70"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </section>
   );
 }
