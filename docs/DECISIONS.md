@@ -156,3 +156,20 @@ should not ship; (2) resolution — the live scene is 1080p+ and sharp, the rest
 re-record; (4) page weight — a background video ships megabytes on every visit, the canvas
 renders instantly. This keeps the build animation, the whole reason the 3D exists (Q-12 lean:
 the live 3D stays the hero; lead-vs-photo + slideshow placement still in progress).
+
+## 2026-07-28 — Homepage flow: 3D → slideshow handoff (canvas unmounts after cross-fade)
+The homepage hero hands off to the project slideshow: 3D build → settle → copy card → the 3D dims
+and cross-fades into an auto-advancing slideshow of real project photos, card legible on top.
+
+Decision: the WebGL canvas stays mounted THROUGH the cross-fade, then UNMOUNTS. Holding it
+mounted-and-dimmed behind an opaque slideshow would burn the ~30 fps hold-render loop (hundreds of
+meshes + a 2048² shadow map) for frames nobody sees; unmounting at settle would break the dim-behind
+transition. So it survives the ~1 s cross-fade, then disposes (draw calls 486 → 0, GPU/memory freed).
+The 485/486-draw-call build optimisation is untouched — the scene and render loop were not modified.
+
+Constraints held: reduced-motion = slideshow single static frame, no auto-advance, no build;
+`?no3d=1` = no canvas. Content = the 4 owner-harvested projects, captioned locality + area only,
+NO invented years; the photo↔project pairing is provisional (portfolio established none) and flagged
+for owner confirmation (Q-14). Built on `feature/project-slideshow` (un-parked as the homepage-flow
+branch, LANE A hero merged in); previewable + unmerged — it does not reach `main` until the hero
+direction (Q-12) is signed off, the same gate as the hero.
