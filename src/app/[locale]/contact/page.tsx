@@ -166,27 +166,25 @@ function ContactRow({
   href?: string;
 }) {
   return (
-    <div className="flex items-start gap-3">
-      <Icon
-        name={icon}
-        size={20}
-        className="mt-0.5 shrink-0 text-accent-strong"
-      />
-      <div className="flex flex-col">
-        <dt className="micro-label text-muted-foreground">{label}</dt>
-        <dd className="text-body text-foreground">
-          {href ? (
-            <a
-              href={href}
-              className="transition-colors hover:text-accent-strong focus-visible:text-accent-strong focus-visible:outline-none"
-            >
-              {value}
-            </a>
-          ) : (
-            value
-          )}
-        </dd>
-      </div>
+    // A <div> child of <dl> may contain ONLY <dt>/<dd> (axe definition-list /
+    // dlitem, Q-17) — so the icon lives inside the <dt>, not beside the pair.
+    <div className="flex flex-col">
+      <dt className="micro-label flex items-center gap-3 text-muted-foreground">
+        <Icon name={icon} size={20} className="shrink-0 text-accent-strong" />
+        {label}
+      </dt>
+      <dd className="pl-8 text-body text-foreground">
+        {href ? (
+          <a
+            href={href}
+            className="transition-colors hover:text-accent-strong focus-visible:text-accent-strong focus-visible:outline-none"
+          >
+            {value}
+          </a>
+        ) : (
+          value
+        )}
+      </dd>
     </div>
   );
 }

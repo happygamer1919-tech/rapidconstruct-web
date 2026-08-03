@@ -159,4 +159,9 @@ BOTH main and every branch — pre-existing, not introduced by any recent PR:
   `<div>` children instead of `<dt>`/`<dd>` pairs. Fix: wrap each stat's value in
   `<dd>` and label in `<dt>` (or drop the `<dl>` and use plain elements).
 Neither blocks launch (score already clears the gate). Worth a small dedicated
-a11y ticket after cutover. STATUS: OPEN (not blocking)
+a11y ticket after cutover. STATUS: **RESOLVED 2026-08-03** (`rc/lane-2026-08`) —
+`inert={!menuOpen}` added to the drawer in `SiteHeader.tsx`; both `ContactRow`
+copies (home + contact) restructured so the `<dl>`'s div children contain only
+`<dt>`/`<dd>` (icon moved inside the `<dt>`). Verified: Lighthouse accessibility
+**1.0** on `/` and `/contact` (was 0.89), all three audits pass; 106 Playwright
+tests green; drawer verified open (12 links focusable) and closed (0 focusable).

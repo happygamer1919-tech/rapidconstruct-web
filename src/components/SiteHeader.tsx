@@ -154,6 +154,9 @@ export default function SiteHeader() {
         // open (the panel then sits inside inset-0).
         className={`fixed inset-0 z-50 overflow-hidden lg:hidden ${menuOpen ? "" : "pointer-events-none"}`}
         aria-hidden={!menuOpen}
+        // `aria-hidden` alone leaves the drawer's 12 links in the tab order
+        // (Lighthouse aria-hidden-focus, Q-17); `inert` removes them while closed.
+        inert={!menuOpen}
       >
         {/* Backdrop */}
         <div

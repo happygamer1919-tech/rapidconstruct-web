@@ -65,6 +65,18 @@ environmental (an env var set before cutover), which CI structurally cannot see.
 
 Shipped and verified. PR numbers in brackets.
 
+- **Q-17 a11y fixes** (2026-08-03, `rc/lane-2026-08` — the new lane branch that
+  carries everything from `rc/RC-115-hero-verify-manifest`). The two pre-existing
+  homepage audits are fixed: (1) the closed mobile drawer now also gets
+  `inert={!menuOpen}` in `SiteHeader.tsx`, so its 12 links leave the tab order
+  (aria-hidden-focus); (2) both `ContactRow` copies (`[locale]/page.tsx` and
+  `[locale]/contact/page.tsx`) restructured — the `<dl>`'s div children now
+  contain only `<dt>`/`<dd>`, with the icon inside the `<dt>` and the value
+  aligned via `pl-8` (definition-list / dlitem). *Verified:* tsc, eslint, prod
+  build, **106/106 Playwright**, drawer checked live in both states, and
+  Lighthouse accessibility **1.0 on `/` and `/contact`** (was 0.89) with all
+  three audits passing. Layout visually unchanged (mobile screenshots taken).
+
 - **3D configurator — steps 0–3** (2026-07-24, `feature/configurator`, commits
   `d0579f5`…). The house is now DATA-driven:
   - *Refactor (step 0):* `rapidconstruct-scene.js` split into an engine +
