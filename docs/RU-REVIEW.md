@@ -86,3 +86,18 @@ Full RU blocks for the two new services (grid card + service page: seo, hero,
 process, faq, cta) and the rename "Проектирование и 3D-визуализация". Register
 notes: "земляные работы" (not "грунтовые"), "цеха/склады" for hale/depozite,
 "под ключ" kept consistent with existing pages. Owner review pending.
+
+## 2026-08-04 — FAQ hub, configurator promo, hero trust split
+
+| key | RU | note |
+|---|---|---|
+| header.intrebari | Вопросы | nav label |
+| faqPage.seo.title | Частые вопросы о строительстве и ремонте | |
+| faqPage.seo.description | Понятные ответы... Кишинёв и вся Молдова. | |
+| faqPage.title | Что клиенты спрашивают чаще всего | mirrors old home section |
+| faqPage.intro | Короткие ответы по делу... максимум за 2 рабочих часа. | |
+| home.configuratorPromo.* | Соберите свой дом в 3D / Открыть конфигуратор | |
+| home.hero.trustGuarantee | Письменная гарантия до 30 лет | split from old trust line |
+| home.hero.trustMaterials | Материалы с сертификацией ЕС | split from old trust line |
+
+Owner review pending.

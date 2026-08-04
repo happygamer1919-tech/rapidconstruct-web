@@ -163,6 +163,44 @@ test.describe("service pages (RC-103)", () => {
   }
 });
 
+test.describe("FAQ hub (moved off homepage 2026-08-04)", () => {
+  test("/intrebari-frecvente (RO) responds 200 with an H1 and FAQPage JSON-LD", async ({
+    page,
+    request,
+  }) => {
+    const res = await request.get("/intrebari-frecvente");
+    expect(res.status()).toBe(200);
+    await page.goto("/intrebari-frecvente");
+    await expect(page.locator("h1")).toHaveCount(1);
+    const ld = await page
+      .locator('script[type="application/ld+json"]')
+      .allTextContents();
+    expect(ld.some((s) => s.includes('"FAQPage"'))).toBe(true);
+  });
+
+  test("/ru/voprosy (RU) responds 200 with lang=ru and an H1", async ({
+    page,
+    request,
+  }) => {
+    const res = await request.get("/ru/voprosy");
+    expect(res.status()).toBe(200);
+    await page.goto("/ru/voprosy");
+    expect(await page.locator("html").getAttribute("lang")).toBe("ru");
+    await expect(page.locator("h1")).toHaveCount(1);
+  });
+
+  test("homepage no longer renders the FAQ section or FAQPage JSON-LD", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await expect(page.locator("#faq-title")).toHaveCount(0);
+    const ld = await page
+      .locator('script[type="application/ld+json"]')
+      .allTextContents();
+    expect(ld.some((s) => s.includes('"FAQPage"'))).toBe(false);
+  });
+});
+
 test.describe("city pages (RC-303)", () => {
   // Each city landing page must resolve 200 on both locales with a single H1
   // and carry LocalBusiness + FAQPage JSON-LD (the GEO surface this ticket adds).

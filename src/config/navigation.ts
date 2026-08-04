@@ -40,6 +40,7 @@ export const PRIMARY_NAV: readonly NavItem[] = [
   { href: "/despre-noi", key: "despre" },
   { href: "/portofoliu", key: "portofoliu" },
   { href: "/configurator", key: "configurator" },
+  { href: "/intrebari-frecvente", key: "intrebari" },
   { href: "/contact", key: "contact" },
 ] as const;
 

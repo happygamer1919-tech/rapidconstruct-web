@@ -58,6 +58,7 @@ export const pathnames = {
     ro: "/politica-de-confidentialitate",
     ru: "/politika-konfidencialnosti",
   },
+  "/intrebari-frecvente": { ro: "/intrebari-frecvente", ru: "/voprosy" },
   "/chisinau": { ro: "/chisinau", ru: "/kishinev" },
   "/orhei": { ro: "/orhei", ru: "/orgeev" },
   "/cahul": { ro: "/cahul", ru: "/kagul" },

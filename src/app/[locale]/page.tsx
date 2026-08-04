@@ -21,7 +21,6 @@ type Badge = { title: string; desc: string };
 type Stat = { value: string; label: string };
 type Project = { location: string; size: string; work: string; year: string };
 type Testimonial = { quote: string; name: string; meta: string };
-type Faq = { q: string; a: string };
 
 // Icons for the six trust badges, aligned by index to home.badges.items.
 const BADGE_ICONS: IconName[] = [
@@ -64,7 +63,6 @@ export default async function Home({ params }: PageProps) {
   const stats = t.raw("stats.items") as Stat[];
   const projects = t.raw("projects.items") as Project[];
   const testimonials = t.raw("testimonials.items") as Testimonial[];
-  const faqs = t.raw("faq.items") as Faq[];
 
   // Real interim imagery for the project index rows (Q-06 placeholders retired).
   const PROJECT_IMAGES = [
@@ -73,18 +71,6 @@ export default async function Home({ params }: PageProps) {
     "/images/projects/roof-install.jpg",
     "/images/projects/finish-terrace.jpg",
   ];
-
-  // FAQPage structured data (GEO surface, AGENTS.md) — built from the same copy
-  // rendered below so the visible FAQ and the JSON-LD can never diverge.
-  const faqJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqs.map((f) => ({
-      "@type": "Question",
-      name: f.q,
-      acceptedAnswer: { "@type": "Answer", text: f.a },
-    })),
-  };
 
   return (
     <main className="flex-1">
@@ -96,7 +82,8 @@ export default async function Home({ params }: PageProps) {
         eyebrow={t("hero.eyebrow")}
         h1={t("hero.h1")}
         subline={t("hero.subline")}
-        trust={t("hero.trust")}
+        trustGuarantee={t("hero.trustGuarantee")}
+        trustMaterials={t("hero.trustMaterials")}
         ctaCall={t("hero.ctaCall")}
         ctaQuote={t("hero.ctaQuote")}
         phone={site.phone}
@@ -111,6 +98,56 @@ export default async function Home({ params }: PageProps) {
         intro={t("build.intro")}
         phases={t.raw("build.phases") as BuildPhase[]}
       />
+
+      {/* 2b — CONFIGURATOR PROMO (owner direction 2026-08-04): the build
+          story shows the stages; the configurator is where the visitor plays
+          with the OPTIONS (roof, materials, fence) WITH orientative prices —
+          so we present it right here instead of duplicating a type-picker
+          without pricing. Real WebGL screenshot of the scene as the visual. */}
+      <section
+        aria-labelledby="configurator-promo-title"
+        className="border-b border-border"
+      >
+        <div className="mx-auto grid w-full max-w-6xl items-center gap-8 px-gutter py-16 lg:grid-cols-2 lg:gap-12 lg:py-20">
+          <div className="flex flex-col gap-4">
+            <p className="micro-label text-accent-strong">
+              {t("configuratorPromo.eyebrow")}
+            </p>
+            <h2
+              id="configurator-promo-title"
+              className="font-serif text-display-lg text-foreground"
+            >
+              {t("configuratorPromo.title")}
+            </h2>
+            <p className="max-w-md text-body-lg text-muted-foreground">
+              {t("configuratorPromo.intro")}
+            </p>
+            <Link
+              href="/configurator"
+              className="mt-2 inline-flex w-fit items-center gap-2 rounded-full bg-accent px-6 py-3 text-body font-semibold text-accent-foreground transition-colors hover:bg-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong"
+            >
+              {t("configuratorPromo.cta")}
+              <Icon name="arrowRight" size={18} />
+            </Link>
+          </div>
+          <Link
+            href="/configurator"
+            aria-label={t("configuratorPromo.cta")}
+            className="group relative block aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent-strong"
+          >
+            <Image
+              src="/images/configurator-preview.jpg"
+              alt=""
+              fill
+              sizes="(min-width: 1024px) 560px, 100vw"
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            />
+            <span className="absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-ink-950/60 px-3 py-1 text-micro font-medium text-neutral-50 backdrop-blur-sm">
+              {t("configuratorPromo.eyebrow")}
+            </span>
+          </Link>
+        </div>
+      </section>
 
       {/* 3 — TESTIMONIALS, straight after the build story (owner direction
           2026-08-04: proof belongs next to the story it proves). VERBATIM
@@ -342,39 +379,9 @@ export default async function Home({ params }: PageProps) {
         </div>
       </section>
 
-      {/* 8 — FAQ (accessible details/summary + FAQPage JSON-LD) */}
-      <section aria-labelledby="faq-title" className="border-b border-border">
-        <div className="mx-auto w-full max-w-3xl px-gutter py-16 lg:py-20">
-          <div className="mb-8 flex flex-col gap-3">
-            <p className="micro-label text-accent-strong">{t("faq.eyebrow")}</p>
-            <h2
-              id="faq-title"
-              className="font-serif text-display-lg text-foreground"
-            >
-              {t("faq.title")}
-            </h2>
-          </div>
-          <div className="flex flex-col divide-y divide-border border-y border-border">
-            {faqs.map((f) => (
-              <details key={f.q} className="group py-2">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 text-body font-semibold text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong">
-                  {f.q}
-                  <Icon
-                    name="chevronDown"
-                    size={20}
-                    className="shrink-0 text-accent-strong transition-transform duration-200 group-open:rotate-180"
-                  />
-                </summary>
-                <p className="pb-4 text-body text-muted-foreground">{f.a}</p>
-              </details>
-            ))}
-          </div>
-        </div>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-        />
-      </section>
+      {/* The FAQ section moved to /intrebari-frecvente (owner direction
+          2026-08-04: homepage too long). The FAQPage JSON-LD moved with it —
+          Google penalises FAQ structured data on pages without visible FAQs. */}
 
       {/* 9 — CONTACT block */}
       <section

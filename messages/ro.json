@@ -43,7 +43,8 @@
     "quote": "Solicită ofertă",
     "openMenu": "Deschide meniul",
     "closeMenu": "Închide meniul",
-    "skipToContent": "Sari la conținut"
+    "skipToContent": "Sari la conținut",
+    "intrebari": "Întrebări"
   },
   "services": {
     "acoperisuri": {
@@ -96,7 +97,8 @@
       "eyebrow": "Construcții & Renovări · Chișinău și regiuni",
       "h1": "Construcții și Renovări complete",
       "subline": "Case · Renovări · Fațade · Acoperișuri · Finisaje · Instalații · Proiectare 3D · Execuție · Autorizații",
-      "trust": "Garanție scrisă până la 30 de ani • Materiale certificate UE",
+      "trustGuarantee": "Garanție scrisă până la 30 de ani",
+      "trustMaterials": "Materiale certificate UE",
       "ctaCall": "Sună acum",
       "ctaQuote": "Solicită ofertă gratuită",
       "photoLabel": "foto proiect",
@@ -371,6 +373,12 @@
         "name": "Proiectul 3D",
         "desc": "Așa arată casa înainte să punem prima cărămidă."
       }
+    },
+    "configuratorPromo": {
+      "eyebrow": "Configurator 3D",
+      "title": "Configurează-ți casa în 3D",
+      "intro": "Alege tipul de acoperiș, materialele și gardul direct pe modelul 3D și vezi prețuri orientative în timp real.",
+      "cta": "Deschide configuratorul"
     }
   },
   "roofPage": {
@@ -1541,5 +1549,14 @@
         "combinat-piatra": "Combinat cu piatră"
       }
     }
+  },
+  "faqPage": {
+    "seo": {
+      "title": "Întrebări frecvente despre construcții și renovări",
+      "description": "Răspunsuri clare la cele mai frecvente întrebări despre acoperișuri, fațade, renovări, prețuri, garanții și termene. Chișinău și toată Moldova."
+    },
+    "eyebrow": "Întrebări frecvente",
+    "title": "Ce întreabă clienții cel mai des",
+    "intro": "Răspunsuri scurte și la obiect. Nu găsești întrebarea ta? Sună-ne sau scrie-ne, răspundem în maximum 2 ore lucrătoare."
   }
 }

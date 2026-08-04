@@ -34,6 +34,7 @@ const ROUTES: Pathname[] = [
   "/terasamente",
   "/despre-noi",
   "/portofoliu",
+  "/intrebari-frecvente",
   "/contact",
   "/politica-de-confidentialitate",
   "/chisinau",
