@@ -112,6 +112,26 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **RC-124 DONE (V2 refined) + configurator promo + FAQ hub** (2026-08-04
+  evening). (1) Guarantee badge final: owner picked V2; refined so only the
+  guarantee text sits in the orange rounded-md label (one row always, not
+  button-like); `home.hero.trust` split into trustGuarantee/trustMaterials.
+  (2) New configurator promo section after the build story (real WebGL
+  screenshot `public/images/configurator-preview.jpg`, links /configurator) —
+  the owner's read that a type strip without prices duplicates the
+  configurator. (3) FAQ moved off the homepage to `/intrebari-frecvente` +
+  `/ru/voprosy` with the FAQPage JSON-LD (all 20 GEO FAQs, same catalog
+  source so content can't fork); nav+footer link "Întrebări"; sitemap now
+  **38 locs** (RC-402 recount pending). SEO/GEO rationale recorded: FAQ
+  structured data must sit with visible FAQs; a dedicated crawlable hub
+  linked sitewide keeps the GEO surface. (4) negabarit.md reference reviewed:
+  simple structure, REAL fleet photos, lead form right after services —
+  pattern noted for RC-126 ("Flota noastră" ≈ machinery section with owner
+  photos) and a possible mid-page lead form later. *Verified:* tsc, eslint,
+  prod build, **113/113 Playwright** (3 new FAQ-hub tests incl. a
+  homepage-has-no-FAQPage-LD guard), badge/promo/nav browser-checked,
+  tripwire PASS, FAQ pages 200 on the review alias.
+
 - **RC-125 DEMO live (0 credits)** (2026-08-04). Stage-type strip shipped on
   the Fundația stage only, as the owner-requested mechanics preview:
   swipeable labeled cards under the stage box, tap swaps into the box,
