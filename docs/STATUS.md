@@ -112,6 +112,19 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **RC-123 SHIPPED; RC-124 in owner review; RC-126 recon done** (2026-08-04).
+  RC-123: Construcții industriale + Terasamente live end to end (cards, icons,
+  RU slugs + 301s, sitemap +4 → RC-402 recount needed, full RO/RU pages with
+  honest no-numbers copy, interim photos flagged; 110/110 tests). Proiectare
+  renamed to "Proiectare și vizualizare 3D". RC-124: four guarantee
+  treatments live behind `?g=1..4` on the review URL (default = current
+  look); comparison sheet sent to Max; awaiting the owner's pick. RC-126
+  recon: all 47 images on the Tilda service pages are generic STOCK (renders,
+  warehouses, blueprints) — NO machinery photos exist anywhere on the current
+  site; only ~6 look like real site photos (notably a real foundation-formwork
+  shot on /2). Sourcing decision still open (Q-19). RC-125 implementation plan
+  delivered to Max in chat; no generation run.
+
 - **Owner content round LOGGED, not built** (2026-08-04 evening, via Max —
   plan awaiting approval, nothing implemented). New tickets **RC-123..126**
   in BACKLOG P2.5: services grid expansion (industrial + terasament +
