@@ -146,22 +146,6 @@ body {
    its own camera move so the reel never sits still. Transform-only (motion
    guardrails), neutralised by the reduced-motion block below like every
    other animation. Scales stay >=1.08 on the pans so edges never show. */
-@keyframes ken-zoom-in {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.14);
-  }
-}
-@keyframes ken-zoom-out {
-  from {
-    transform: scale(1.14);
-  }
-  to {
-    transform: scale(1);
-  }
-}
 @keyframes ken-pan-left {
   from {
     transform: scale(1.1) translateX(2%);
@@ -178,17 +162,35 @@ body {
     transform: scale(1.1) translateX(2%);
   }
 }
+@keyframes ken-drift-up {
+  from {
+    transform: scale(1.1) translate(-1.2%, 1.5%);
+  }
+  to {
+    transform: scale(1.1) translate(1.2%, -1.5%);
+  }
+}
+@keyframes ken-drift-down {
+  from {
+    transform: scale(1.1) translate(1.2%, -1.5%);
+  }
+  to {
+    transform: scale(1.1) translate(-1.2%, 1.5%);
+  }
+}
+/* No zooms — a pumping lens read as cheap (owner 2026-08-04). All four
+   moves glide at a constant scale, like a drone drifting past. */
 .ken-0 {
-  animation: ken-zoom-in 6.5s linear forwards;
+  animation: ken-pan-right 6.5s linear forwards;
 }
 .ken-1 {
-  animation: ken-pan-left 6.5s linear forwards;
+  animation: ken-drift-up 6.5s linear forwards;
 }
 .ken-2 {
-  animation: ken-zoom-out 6.5s linear forwards;
+  animation: ken-pan-left 6.5s linear forwards;
 }
 .ken-3 {
-  animation: ken-pan-right 6.5s linear forwards;
+  animation: ken-drift-down 6.5s linear forwards;
 }
 
 /* Stage snap for the scroll-build story: the incoming construction stage
