@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Icon, type IconName } from "@/components/icons";
 import Reveal from "@/components/Reveal";
-import HouseBuild from "@/components/HouseBuild";
+import HeroBuildVideo from "@/components/HeroBuildVideo";
 import HouseTour, { type BuildPhase } from "@/components/HouseTour";
 import ConstructionStory, {
   type StoryPhase,
@@ -102,10 +102,11 @@ export default async function Home({ params }: PageProps) {
 
   return (
     <main className="flex-1">
-      {/* 1 — HERO: one screen. The house builds itself once, then the headline
-          + CTAs slide in (owner direction). H1 renders instantly (SSR); the
-          WebGL chunk loads only after first interaction (perf law). */}
-      <HouseBuild
+      {/* 1 — HERO: one screen. The house builds itself once (5s Higgsfield
+          time-lapse of the owner's real house, owner direction 2026-08-03),
+          then the headline + CTAs slide in. H1 renders instantly (SSR); the
+          3D house now lives only on /configurator. */}
+      <HeroBuildVideo
         eyebrow={t("hero.eyebrow")}
         h1={t("hero.h1")}
         subline={t("hero.subline")}

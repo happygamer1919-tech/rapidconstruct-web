@@ -65,6 +65,29 @@ environmental (an env var set before cutover), which CI structurally cannot see.
 
 Shipped and verified. PR numbers in brackets.
 
+- **Homepage hero → Higgsfield build video; 3D stays on /configurator (Q-12
+  resolved by owner)** (2026-08-04, `rc/lane-2026-08`). The WebGL hero is
+  replaced by `src/components/HeroBuildVideo.tsx`: a 5-second time-lapse of the
+  owner's REAL built house assembling itself from a blueprint hologram
+  (Higgsfield: DJI_0018 reference → finished frame → blueprint frame →
+  MiniMax H3 video; ~42 credits total, masters in
+  `~/rc-owner-assets/higgsfield-hero-2026-08-03/`). Assets shipped:
+  `public/videos/hero-build.mp4` (3.0 MB, 1080p60, 2x speed, silent) +
+  `public/images/hero/hero-blueprint.jpg` / `hero-finished.jpg` posters.
+  Same contract as the old hero: H1/CTAs SSR'd instantly; blueprint underlay is
+  the LCP image (priority); copy panel slides in on video `ended` with a 6.5s
+  safety timer; autoplay-refused (`NotAllowedError`) falls back to the finished
+  still (AbortError deliberately ignored — StrictMode); background tabs retry on
+  `visibilitychange`; `prefers-reduced-motion` gets the finished still statically;
+  `?no3d=1` renders NO video element (Lighthouse budget path, RC-305 reused).
+  *Verified:* tsc, eslint, prod build, **106/106 Playwright**, live browser:
+  video plays to `ended` and holds, copy hidden during build on fresh load,
+  `?no3d=1` shows still+copy, mobile 375px crop + settled state screenshotted,
+  zero console errors. ⚠️ `HouseBuild.tsx`/`HeroScene.tsx` are now unmounted on
+  the homepage (dead code alongside `HeroBuild3D.tsx`) — delete all three once
+  the owner signs off on the live hero; the SCENE ENGINE files stay (the
+  configurator uses them).
+
 - **Q-17 a11y fixes** (2026-08-03, `rc/lane-2026-08` — the new lane branch that
   carries everything from `rc/RC-115-hero-verify-manifest`). The two pre-existing
   homepage audits are fixed: (1) the closed mobile drawer now also gets

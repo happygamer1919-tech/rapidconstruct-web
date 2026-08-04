@@ -104,7 +104,14 @@ You have 110 real photos of finished work; a photo of a real house cannot look f
 unique value is the build animation, which a photo can't do. After a week of iterations this
 option deserves a decision.
 **Recommended default**: keep the 3D build animation, but consider leading with a real photo and
-placing the 3D below the fold. STATUS: OPEN
+placing the 3D below the fold. STATUS: **RESOLVED 2026-08-04 (owner decision)** —
+the 3D model stays ONLY on `/configurator`; the homepage hero is now a 5s
+build time-lapse video generated with Higgsfield FROM the owner's real house
+(reference `docs/reference-match/owner-drone-2026-07-22/DJI_0018.jpg`), so the
+intro shows the real product and the build animation survives. Implemented in
+`src/components/HeroBuildVideo.tsx` on `rc/lane-2026-08`; owner approved the
+frames and the video in chat (2026-08-03/04). Masters archived outside git in
+`~/rc-owner-assets/higgsfield-hero-2026-08-03/`.
 
 ## Q-13 (2026-07-21, 3D agent) — Enable Sketchfab / Hyper3D / Hunyuan3D in BlenderMCP N-panel
 Would give ready-made planting and props instead of modelling them (free tiers; may need a free
