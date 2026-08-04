@@ -7,6 +7,15 @@ import { Link } from "@/i18n/navigation";
 import { Icon } from "@/components/icons";
 import { skipHeavy3d } from "@/lib/audit";
 
+// Real drone photos of the company's built projects (owner assets, 2026-07-22).
+// Shown as a darkened slideshow once the hero build settles.
+const SLIDES = [
+  "/images/slideshow/slide-1.jpg",
+  "/images/slideshow/slide-2.jpg",
+  "/images/slideshow/slide-3.jpg",
+  "/images/slideshow/slide-4.jpg",
+];
+
 /**
  * HeroBuildVideo — homepage hero, one screen tall. Replaces the WebGL hero
  * (HouseBuild/HeroScene) with a 5s build time-lapse generated from the owner's
@@ -99,6 +108,22 @@ export default function HeroBuildVideo({
     return () => document.removeEventListener("visibilitychange", onVisible);
   }, [mode, reduce]);
 
+  // After the build settles: darken the hero and start a slow crossfade of
+  // REAL project photos (owner direction 2026-08-04). Runs only after the
+  // video actually ended — never in reduced-motion, ?no3d or autoplay-blocked
+  // paths, which all stay on their static still.
+  const [showReel, setShowReel] = useState(false);
+  const [slide, setSlide] = useState(0);
+  useEffect(() => {
+    if (!showReel) return;
+    const t = window.setInterval(() => {
+      // Don't burn slides (or battery) while the tab is hidden.
+      if (document.visibilityState === "visible")
+        setSlide((s) => (s + 1) % SLIDES.length);
+    }, 5000);
+    return () => window.clearInterval(t);
+  }, [showReel]);
+
   const heroBlock = (
     <div className="flex max-w-2xl flex-col gap-5">
       <p className="micro-label text-accent-strong">{eyebrow}</p>
@@ -182,7 +207,11 @@ export default function HeroBuildVideo({
             muted
             playsInline
             preload="auto"
-            onEnded={() => setBuilt(true)}
+            onEnded={() => {
+              setBuilt(true);
+              // Let the finished house hold for a beat before the reel fades in.
+              window.setTimeout(() => setShowReel(true), 1800);
+            }}
             // No `loop`: the house builds ONCE and stays built (hero contract).
             // The element holds its last frame after `ended`.
             className="absolute inset-0 h-full w-full object-cover"
@@ -190,6 +219,33 @@ export default function HeroBuildVideo({
           >
             <source src="/videos/hero-build.mp4" type="video/mp4" />
           </video>
+        )}
+        {/* Post-build reel: real project photos, darkened so the copy panel
+            stays the brightest thing on screen. Crossfade + a slow drift —
+            transform/opacity only (motion guardrails). Mounted only once the
+            reel starts, so these ~500KB images never compete with the video. */}
+        {showReel && (
+          <motion.div
+            aria-hidden
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.4, ease: "easeInOut" }}
+            className="absolute inset-0"
+          >
+            {SLIDES.map((src, i) => (
+              <Image
+                key={src}
+                src={src}
+                alt=""
+                fill
+                sizes="100vw"
+                className={`object-cover transition-opacity duration-1000 ${
+                  i === slide ? "opacity-100" : "opacity-0"
+                } ${i === slide ? "animate-slow-drift" : ""}`}
+              />
+            ))}
+            <div className="absolute inset-0 bg-ink-950/45" />
+          </motion.div>
         )}
       </div>
 

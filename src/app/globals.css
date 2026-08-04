@@ -142,6 +142,21 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Slow Ken Burns drift for the hero's post-build project reel: transform-only
+   (motion guardrails), one direction per slide cycle, neutralised by the
+   reduced-motion block below like every other animation. */
+@keyframes slow-drift {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.06);
+  }
+}
+.animate-slow-drift {
+  animation: slow-drift 7s linear forwards;
+}
+
 /* Motion guardrail (AGENTS.md / SPEC §3): honour prefers-reduced-motion
    everywhere — neutralise transitions, animations and smooth scroll so no
    effect on the site can trigger motion sickness. */

@@ -117,13 +117,13 @@ export default async function Home({ params }: PageProps) {
         hint={t("hero.scrollHint")}
       />
 
-      {/* 2 — HOUSE TOUR: the scroll story, boxed, directly under the hero. */}
+      {/* 2 — HOUSE TOUR: the scroll story, boxed, directly under the hero.
+          Builds the photoreal house stage by stage as the visitor scrolls. */}
       <HouseTour
         eyebrow={t("build.eyebrow")}
         title={t("build.title")}
         intro={t("build.intro")}
         phases={t.raw("build.phases") as BuildPhase[]}
-        hint={t("design3d.hint")}
       />
 
       {/* 3 — TRUST BADGES */}

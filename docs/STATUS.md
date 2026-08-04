@@ -88,6 +88,30 @@ Shipped and verified. PR numbers in brackets.
   the owner signs off on the live hero; the SCENE ENGINE files stay (the
   configurator uses them).
 
+- **Hero reel + stage-by-stage scroll story** (2026-08-04, `rc/lane-2026-08`).
+  Two owner-directed follow-ups to the video hero:
+  1. *Hero post-build reel:* 1.8s after the build video ends, the hero darkens
+     (`bg-ink-950/45`) and a slow crossfade of 4 REAL drone photos starts
+     (`public/images/slideshow/`, from `~/rc-owner-assets/drone-2026-07-22/`:
+     DJI_0018/0021/0037/0022) with a transform-only Ken Burns drift
+     (`animate-slow-drift`, neutralised by the global reduced-motion block).
+     Reel mounts only after `ended` — never in reduced-motion/`?no3d`/
+     autoplay-blocked paths; interval skips ticks while the tab is hidden.
+  2. *HouseTour rebuilt:* the low-poly 3D box is replaced by 5 photoreal stage
+     frames of the SAME house as the hero (Higgsfield i2i from the finished
+     frame, 10 credits incl. one duplicate from a hung job): slab → block walls
+     → roof → windows/base plaster → finished. Stage images crossfade with the
+     existing scroll-runway segment logic (untouched); `HouseBuildScene` no
+     longer imported there (three.js chunk gone from the homepage);
+     `hint` prop dropped ("drag to rotate" no longer applies).
+  *Verified:* tsc, eslint, prod build, **106/106 Playwright**, DOM-level QA of
+  reel + stage stack + sticky runway in the embedded pane. ⚠️ The pane cannot
+  fire scroll events/rAF, so the scroll-stepping itself (pre-existing logic)
+  needs the owner's real-browser click-through on the review URL — noted in
+  the owner checklist. Known non-blockers: Next dev LCP warning on the reel
+  (mounts post-load by design), pre-existing PromoBar hydration mismatch
+  (spawned as its own task).
+
 - **Q-17 a11y fixes** (2026-08-03, `rc/lane-2026-08` — the new lane branch that
   carries everything from `rc/RC-115-hero-verify-manifest`). The two pre-existing
   homepage audits are fixed: (1) the closed mobile drawer now also gets

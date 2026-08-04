@@ -1,54 +1,50 @@
 "use client";
 
 import { useRef, useState } from "react";
-import dynamic from "next/dynamic";
+import Image from "next/image";
 import {
   AnimatePresence,
   motion,
-  useInView,
   useMotionValueEvent,
   useReducedMotion,
   useScroll,
 } from "motion/react";
-import { skipHeavy3d } from "@/lib/audit";
 
 export type BuildPhase = { name: string; desc: string };
 
-// Heavy WebGL scene, browser-only.
-const HouseBuildScene = dynamic(() => import("./HouseBuildScene"), {
-  ssr: false,
-  loading: () => <div className="absolute inset-0" />,
-});
+// Photoreal stage frames of the SAME house as the hero video (Higgsfield,
+// generated from the owner's real built house — Q-12/2026-08-04), one per
+// phase, index-aligned with home.build.phases. The 3D model this replaces
+// lives on /configurator, where it is interactive.
+const STAGE_IMAGES = [
+  "/images/stages/stage-1.jpg", // Fundația — slab + string lines
+  "/images/stages/stage-2.jpg", // Pereții — block walls, scaffolding
+  "/images/stages/stage-3.jpg", // Acoperișul — roof on bare walls
+  "/images/stages/stage-4.jpg", // Ferestre și uși — joinery in, base plaster
+  "/images/hero/hero-finished.jpg", // Ultimele detalii — the finished frame
+];
 
 /**
- * HouseTour — the scroll story, in a box, below the hero. The house arrives
- * already built (the hero above is where it builds itself); scrolling the
- * runway steps the 5 phases, keeping the active one full-colour while the rest
- * lerp toward the page tone. Reduced motion: finished house + a plain list.
+ * HouseTour — the scroll story, in a box, below the hero. Scrolling the runway
+ * BUILDS the house stage by stage (owner direction 2026-08-04): each phase
+ * crossfades to its photoreal construction frame, so the visitor scrubs
+ * through the build like a time-lapse. No scroll-jacking — the runway is
+ * plain sticky positioning and the pages scroll natively.
+ * Reduced motion: finished house + a plain list.
  */
 export default function HouseTour({
   eyebrow,
   title,
   intro,
   phases,
-  hint,
 }: {
   eyebrow: string;
   title: string;
   intro: string;
   phases: BuildPhase[];
-  hint: string;
 }) {
   const reduce = useReducedMotion();
   const wrapRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(wrapRef, { margin: "200px 0px" });
-  // Lighthouse: this section is below the fold, so don't even DOWNLOAD the
-  // three.js chunk until the visitor scrolls near it. Latch it on so the canvas
-  // is not torn down again once it has been seen. Audit robots skip it outright:
-  // Lighthouse scrolls the page for some audits, which would otherwise pull the
-  // 1.15 MB model in mid-run and crash it (src/lib/audit.ts).
-  const [mounted, setMounted] = useState(false);
-  if (inView && !mounted && !skipHeavy3d()) setMounted(true);
 
   // One runway segment per phase.
   const [segment, setSegment] = useState(0);
@@ -73,8 +69,14 @@ export default function HouseTour({
       >
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-gutter py-16">
           <Heading eyebrow={eyebrow} title={title} intro={intro} />
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-neutral-100 to-muted">
-            <HouseBuildScene active={inView} play={false} layout="box" />
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border">
+            <Image
+              src={STAGE_IMAGES[STAGE_IMAGES.length - 1]}
+              alt={phases[phases.length - 1]?.name ?? ""}
+              fill
+              sizes="(min-width: 1152px) 1152px, 100vw"
+              className="object-cover"
+            />
           </div>
           <PhaseList phases={phases} />
         </div>
@@ -138,19 +140,22 @@ export default function HouseTour({
               </div>
             </div>
 
-            {/* The house, in its box. */}
+            {/* The build, in its box: all five stage frames stacked, the
+                active one opaque. A plain CSS crossfade (opacity only) keyed
+                by the scrolled segment — scrubbing back rewinds the build. */}
             <div className="relative order-1 h-[42svh] w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-neutral-100 to-muted lg:order-2 lg:aspect-square lg:h-auto">
-              {mounted && (
-                <HouseBuildScene
-                  active={inView}
-                  play={false}
-                  layout="box"
-                  highlightPhase={segment}
+              {STAGE_IMAGES.map((src, i) => (
+                <Image
+                  key={src}
+                  src={src}
+                  alt={i === segment ? (phases[i]?.name ?? "") : ""}
+                  fill
+                  sizes="(min-width: 1024px) 560px, 100vw"
+                  className={`object-cover transition-opacity duration-700 ${
+                    i === segment ? "opacity-100" : "opacity-0"
+                  }`}
                 />
-              )}
-              <span className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-ink-950/60 px-3 py-1 text-micro font-medium text-neutral-50 backdrop-blur-sm">
-                {hint}
-              </span>
+              ))}
             </div>
           </div>
         </div>
