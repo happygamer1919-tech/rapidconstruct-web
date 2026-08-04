@@ -112,6 +112,20 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **Scroll story: continuous between-stage blend + duplicate list removed**
+  (2026-08-04, `rc/lane-2026-08`, owner feedback on the live review build —
+  "the scrollable section looks fire"). The stage frames now blend
+  CONTINUOUSLY from the scroll position (`StageFrame` + `useTransform`:
+  crisp plateau per stage, half-segment crossfade window, opacity-only,
+  zero re-renders) so scrolling morphs the construction forward and back.
+  The duplicate 5-item phase list under the runway was removed on owner
+  direction; `PhaseList` remains as the reduced-motion fallback. Slideshow
+  loop confirmed as already-correct (cycles forever, build never replays).
+  *Verified:* tsc, eslint, prod build, 106/106 Playwright, DOM QA (stage 1
+  opaque at runway start, list gone). Blend math hand-checked (neighbour
+  opacities sum to 1 at the midpoint). Scroll-driven visuals still need the
+  owner's real-browser pass (embedded pane fires no scroll/rAF events).
+
 - **Q-17 a11y fixes** (2026-08-03, `rc/lane-2026-08` — the new lane branch that
   carries everything from `rc/RC-115-hero-verify-manifest`). The two pre-existing
   homepage audits are fixed: (1) the closed mobile drawer now also gets
