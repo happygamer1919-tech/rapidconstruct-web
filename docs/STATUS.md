@@ -112,6 +112,16 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **RC-125 DEMO live (0 credits)** (2026-08-04). Stage-type strip shipped on
+  the Fundația stage only, as the owner-requested mechanics preview:
+  swipeable labeled cards under the stage box, tap swaps into the box,
+  stage change restores the story. Card images are PLACEHOLDERS from owned
+  assets, incl. the real formwork photo scraped from the owner's own Tilda
+  /2 page (`public/images/stages/types/fundatie-cofraj.jpg` — their JCB is
+  visible in it, relevant to RC-126). Real lists/images per stage = Q-19;
+  Max says the owner will share which pictures to use. RC-124 full-page
+  screenshots re-sent to Max (the ?g links confused him).
+
 - **RC-123 SHIPPED; RC-124 in owner review; RC-126 recon done** (2026-08-04).
   RC-123: Construcții industriale + Terasamente live end to end (cards, icons,
   RU slugs + 301s, sitemap +4 → RC-402 recount needed, full RO/RU pages with
