@@ -96,6 +96,12 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
     <html
       lang={locale}
       className={`${serif.variable} ${sans.variable} h-full antialiased`}
+      // PromoBar's pre-paint script marks <html> with data-promo-dismissed for
+      // returning dismissers (an attribute React does not render). React 19
+      // diffs root-element attributes at hydration, so that one element needs
+      // the standard next-themes-style suppression. Applies ONLY to <html>'s
+      // own attributes, not to any child.
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
         {/* Sitewide LocalBusiness structured data — carried by every page. */}

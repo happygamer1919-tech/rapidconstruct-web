@@ -112,6 +112,26 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **Owner feedback round 2: snap transitions, polished slideshow, PromoBar fix**
+  (2026-08-04, `rc/lane-2026-08`). Three items from the owner's live review:
+  1. *Stage transitions:* the continuous blend read as "blurry" mid-scroll —
+     replaced with a 300ms snap + scale settle (`animate-stage-snap`); stages
+     now click into place like a model kit. Long overlaps gone.
+  2. *Slideshow polished via Higgsfield* (8 credits): all 4 real drone photos
+     re-graded to golden hour, power lines / people / cars / debris removed,
+     structures untouched (QA'd against originals — note `DJI_0037` is the
+     brick townhouse development, the old doc description was wrong). Masters
+     in `~/rc-owner-assets/higgsfield-hero-2026-08-03/polished-*.png`.
+     ⚠️ These are AI-cleaned versions of real photos — fine for the site, but
+     don't label them "unedited drone shots" anywhere.
+  3. *PromoBar hydration mismatch FIXED* (was pre-existing): the pre-paint
+     dismiss script now marks `<html data-promo-dismissed>` + a constant CSS
+     rule instead of mutating the bar's inline style; `suppressHydrationWarning`
+     added to `<html>` only (next-themes pattern). Verified: dismissed-visitor
+     reload produces zero new hydration errors; bar still hidden pre-paint.
+  *Verified:* tsc, eslint, prod build, 106/106 Playwright. Balance after this
+  round: 402.5 credits.
+
 - **Scroll story: continuous between-stage blend + duplicate list removed**
   (2026-08-04, `rc/lane-2026-08`, owner feedback on the live review build —
   "the scrollable section looks fire"). The stage frames now blend

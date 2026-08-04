@@ -157,6 +157,22 @@ body {
   animation: slow-drift 7s linear forwards;
 }
 
+/* Stage snap for the scroll-build story: the incoming construction stage
+   settles into place with a quick scale ease — reads as the next piece of
+   the model clicking on, not a slow dissolve. Transform-only; neutralised
+   by the reduced-motion block below. */
+@keyframes stage-snap {
+  from {
+    transform: scale(1.045);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+.animate-stage-snap {
+  animation: stage-snap 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 /* Motion guardrail (AGENTS.md / SPEC §3): honour prefers-reduced-motion
    everywhere — neutralise transitions, animations and smooth scroll so no
    effect on the site can trigger motion sickness. */

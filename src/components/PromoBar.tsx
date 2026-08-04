@@ -86,17 +86,22 @@ export default function PromoBar() {
           </button>
         </div>
       </div>
-      {/* Runs synchronously as the parser reaches it (the bar above is already in
-          the DOM), hiding the bar before paint for returning dismissers. Kept
-          constant — it reads the id from data-promo-id — so server and client
-          HTML are byte-identical and hydration never mismatches. */}
+      {/* Runs synchronously as the parser reaches it (the bar above is already
+          in the DOM), hiding the bar before paint for returning dismissers.
+          It marks <html> — an element React does NOT manage — instead of
+          touching the bar's own style: mutating the React-rendered element
+          made React 19 report a hydration attribute mismatch on every load
+          for returning dismissers. The <style> rule is constant, so server
+          and client HTML stay byte-identical; useSyncExternalStore then
+          unmounts the bar for real right after hydration. */}
+      <style>{`html[data-promo-dismissed] #promo-bar{display:none}`}</style>
       <script
         dangerouslySetInnerHTML={{
           __html:
             "(function(){try{var b=document.getElementById('promo-bar');" +
             "if(b&&localStorage.getItem('" +
             STORAGE_KEY +
-            "')===b.dataset.promoId){b.style.display='none';}}catch(e){}})();",
+            "')===b.dataset.promoId){document.documentElement.setAttribute('data-promo-dismissed','');}}catch(e){}})();",
         }}
       />
     </>

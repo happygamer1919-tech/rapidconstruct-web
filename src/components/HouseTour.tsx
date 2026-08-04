@@ -8,8 +8,6 @@ import {
   useMotionValueEvent,
   useReducedMotion,
   useScroll,
-  useTransform,
-  type MotionValue,
 } from "motion/react";
 
 export type BuildPhase = { name: string; desc: string };
@@ -142,23 +140,30 @@ export default function HouseTour({
               </div>
             </div>
 
-            {/* The build, in its box: all five stage frames stacked, blended
-                CONTINUOUSLY from the scroll position (owner direction
-                2026-08-04: "animation between the stages"). Each transition
-                spans half a runway segment, so stages hold crisp plateaus and
-                morph into each other between them — scrub back and the house
-                un-builds. Opacity only (motion guardrails), driven straight
-                from the scroll MotionValue with zero React re-renders. */}
+            {/* The build, in its box: all five stage frames stacked. The
+                active stage SNAPS into place — a fast 300ms fade plus a tiny
+                scale settle (animate-stage-snap) — like the next piece of a
+                model kit clicking on. The first continuous-blend version read
+                as a blurry mush mid-scroll (owner feedback 2026-08-04), so
+                transitions are quick and discrete; long overlaps are gone. */}
             <div className="relative order-1 h-[42svh] w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-neutral-100 to-muted lg:order-2 lg:aspect-square lg:h-auto">
               {STAGE_IMAGES.map((src, i) => (
-                <StageFrame
+                <div
                   key={src}
-                  src={src}
-                  alt={i === segment ? (phases[i]?.name ?? "") : ""}
-                  index={i}
-                  count={STAGE_IMAGES.length}
-                  progress={scrollYProgress}
-                />
+                  className={`absolute inset-0 transition-opacity duration-300 ${
+                    i === segment
+                      ? "animate-stage-snap opacity-100"
+                      : "opacity-0"
+                  }`}
+                >
+                  <Image
+                    src={src}
+                    alt={i === segment ? (phases[i]?.name ?? "") : ""}
+                    fill
+                    sizes="(min-width: 1024px) 560px, 100vw"
+                    className="object-cover"
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -169,43 +174,6 @@ export default function HouseTour({
           owner direction (2026-08-04) — the runway already tells each stage.
           PhaseList remains the reduced-motion fallback above. */}
     </section>
-  );
-}
-
-/**
- * One stage frame whose opacity follows the scroll runway continuously:
- * fully opaque on its own plateau, blending with its neighbour across a
- * half-segment window on either side. Stage 0 stays visible below its
- * plateau and the last stage above it, so the box is never empty.
- */
-function StageFrame({
-  src,
-  alt,
-  index,
-  count,
-  progress,
-}: {
-  src: string;
-  alt: string;
-  index: number;
-  count: number;
-  progress: MotionValue<number>;
-}) {
-  const opacity = useTransform(progress, (v) => {
-    const stage = v * (count - 1); // 0..count-1 as a float
-    const d = Math.abs(stage - index);
-    return Math.min(1, Math.max(0, 1 - (d - 0.25) * 2));
-  });
-  return (
-    <motion.div style={{ opacity }} className="absolute inset-0">
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        sizes="(min-width: 1024px) 560px, 100vw"
-        className="object-cover"
-      />
-    </motion.div>
   );
 }
 
