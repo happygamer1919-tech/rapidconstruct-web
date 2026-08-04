@@ -17,8 +17,8 @@ browser checks and the full Playwright suite, not recalled.
 
 | | |
 |---|---|
-| **Owner review URL** | **https://rapidconstruct-web.vercel.app** — public, no login, **non-indexable** (verified). Shows the new 3D hero. |
-| Immutable build behind it | `https://rapidconstruct-i56sj4uo0-sm33xys-projects.vercel.app` |
+| **Owner review URL** | **https://rapidconstruct-web.vercel.app** — public, no login, **non-indexable** (verified 2026-08-04, tripwire PASS). Shows the **Higgsfield build-video hero** (`rc/lane-2026-08`). |
+| Immutable build behind it | `https://rapidconstruct-1ri8k4eir-sm33xys-projects.vercel.app` |
 | **Production site** | `rapidconstruct.md` — **still Tilda** (`x-tilda-server: 22`, A `194.48.203.138`, NS `ns1/ns2.tildadns.com`). **DNS untouched.** |
 | **Default branch** | `main` @ `0f6d516` — now carries the Q-08 safeguard (cherry-picked). No 3D work. |
 | **Working branch** | `feature/3d-hero` @ `470359c` — approved scene port + LANE A polish/audit. **Pushed to origin 2026-07-24** (the pending push below is resolved). Unmerged by design. |
