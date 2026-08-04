@@ -112,6 +112,35 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **Owner feedback round 3: homepage restructure** (2026-08-04,
+  `rc/lane-2026-08`). Owner verdict: hero video + scroll build approved.
+  Changes: (1) testimonials moved directly under the build story;
+  (2) `ConstructionStory` (old scroll narrative — duplicated the new build
+  story AND is the prime suspect for the reported below-fold mobile scroll
+  jank) and the unapproved editorial-statement dark band REMOVED; page
+  height ~13.8k → ~11.4k px. New order: hero → build → recenzii → badges →
+  stats → services → proiecte → FAQ → contact. *Verified:* tsc, eslint,
+  prod build, 106/106 Playwright, section order + height checked in
+  browser, tripwire PASS, review alias repointed.
+  ⚠️ Owner reports mobile scroll bugs "below the first 2 sections" — the
+  ConstructionStory removal likely fixes it, but needs his re-test; if jank
+  persists, next suspects are the Reveal wrappers and the h-svh runway tail.
+
+- **VIDEO RESEARCH (owner request: more process/review/product videos)**
+  (2026-08-04). Findings: current rapidconstruct.md (Tilda) has ZERO video
+  anywhere; but the company has live social channels — instagram/tiktok
+  @rapid.construct, youtube @RapidConstruct (3 videos, incl. a 0:30 promo
+  "Renovare & Construcții Chișinău… Lucrări la Cheie", 255K views,
+  youtube.com/watch?v=O7BeibkaoMw). References: strong-group.md =
+  click-to-open video popups + results gallery; fatade3d.md = video
+  testimonials section ("Vezi ce spun clienții") + YT channel + big real
+  drone galleries; imperlux.md = the cleanest pattern: lite click-to-play
+  YouTube embed with poster ("producție & montaj"), zero page weight until
+  click. **Proposed tickets** (need owner to pick footage; the 5 DJI drone
+  videos were never synced to this machine): RC-120 "Cum lucrăm" process
+  video section (lite-embed pattern); RC-121 video recenzii; RC-122
+  per-project clips on /portofoliu.
+
 - **Owner feedback round 2: snap transitions, polished slideshow, PromoBar fix**
   (2026-08-04, `rc/lane-2026-08`). Three items from the owner's live review:
   1. *Stage transitions:* the continuous blend read as "blurry" mid-scroll —
