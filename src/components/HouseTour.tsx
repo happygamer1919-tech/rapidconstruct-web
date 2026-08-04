@@ -25,11 +25,11 @@ const STAGE_IMAGES = [
 ];
 
 /**
- * RC-125 DEMO — stage-type strips. Only Fundația is populated, as the
- * mechanics preview the owner asked for (no credits spent): the card images
- * are PLACEHOLDERS from assets we already own (incl. one real formwork photo
- * from the owner's own Tilda page, JCB visible in the background). The real
- * per-stage type lists + images arrive via Q-19; empty stages show no strip.
+ * RC-125 — stage-type strips, one list per stage, labels matched to images
+ * we actually own (incl. one real formwork photo from the owner's own Tilda
+ * page, JCB visible in the background). Sparse stages grow as the owner's
+ * photos arrive (Q-19) or as approved Higgsfield fills land; a stage with an
+ * empty list shows no strip.
  */
 type StageType = { label: string; src: string };
 const STAGE_TYPES: (StageType[] | null)[] = [
@@ -45,10 +45,23 @@ const STAGE_TYPES: (StageType[] | null)[] = [
       src: "/images/projects/phase-foundation.jpg",
     },
   ],
-  null,
-  null,
-  null,
-  null,
+  [{ label: "Zidărie din BCA", src: "/images/stages/stage-2.jpg" }],
+  [
+    { label: "Țiglă metalică", src: "/images/stages/stage-3.jpg" },
+    { label: "Montaj învelitoare", src: "/images/projects/roof-install.jpg" },
+  ],
+  [{ label: "Ferestre și uși montate", src: "/images/stages/stage-4.jpg" }],
+  [
+    { label: "Casa predată", src: "/images/hero/hero-finished.jpg" },
+    {
+      label: "Fațadă cu piatră naturală",
+      src: "/images/projects/facade-stone.jpg",
+    },
+    {
+      label: "Terasă și finisaje exterioare",
+      src: "/images/projects/finish-terrace.jpg",
+    },
+  ],
 ];
 
 /**

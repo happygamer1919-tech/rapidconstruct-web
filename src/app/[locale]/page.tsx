@@ -4,6 +4,7 @@ import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Icon, type IconName } from "@/components/icons";
+import ContactForm from "@/components/ContactForm";
 import HeroBuildVideo from "@/components/HeroBuildVideo";
 import HouseTour, { type BuildPhase } from "@/components/HouseTour";
 import ProcessVideo from "@/components/ProcessVideo";
@@ -99,55 +100,9 @@ export default async function Home({ params }: PageProps) {
         phases={t.raw("build.phases") as BuildPhase[]}
       />
 
-      {/* 2b — CONFIGURATOR PROMO (owner direction 2026-08-04): the build
-          story shows the stages; the configurator is where the visitor plays
-          with the OPTIONS (roof, materials, fence) WITH orientative prices —
-          so we present it right here instead of duplicating a type-picker
-          without pricing. Real WebGL screenshot of the scene as the visual. */}
-      <section
-        aria-labelledby="configurator-promo-title"
-        className="border-b border-border"
-      >
-        <div className="mx-auto grid w-full max-w-6xl items-center gap-8 px-gutter py-16 lg:grid-cols-2 lg:gap-12 lg:py-20">
-          <div className="flex flex-col gap-4">
-            <p className="micro-label text-accent-strong">
-              {t("configuratorPromo.eyebrow")}
-            </p>
-            <h2
-              id="configurator-promo-title"
-              className="font-serif text-display-lg text-foreground"
-            >
-              {t("configuratorPromo.title")}
-            </h2>
-            <p className="max-w-md text-body-lg text-muted-foreground">
-              {t("configuratorPromo.intro")}
-            </p>
-            <Link
-              href="/configurator"
-              className="mt-2 inline-flex w-fit items-center gap-2 rounded-full bg-accent px-6 py-3 text-body font-semibold text-accent-foreground transition-colors hover:bg-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong"
-            >
-              {t("configuratorPromo.cta")}
-              <Icon name="arrowRight" size={18} />
-            </Link>
-          </div>
-          <Link
-            href="/configurator"
-            aria-label={t("configuratorPromo.cta")}
-            className="group relative block aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent-strong"
-          >
-            <Image
-              src="/images/configurator-preview.jpg"
-              alt=""
-              fill
-              sizes="(min-width: 1024px) 560px, 100vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-            />
-            <span className="absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-ink-950/60 px-3 py-1 text-micro font-medium text-neutral-50 backdrop-blur-sm">
-              {t("configuratorPromo.eyebrow")}
-            </span>
-          </Link>
-        </div>
-      </section>
+      {/* The configurator promo that briefly lived here was removed on owner
+          direction (2026-08-04) — idea saved to the backlog pool (RC-505);
+          the preview asset stays at /images/configurator-preview.jpg. */}
 
       {/* 3 — TESTIMONIALS, straight after the build story (owner direction
           2026-08-04: proof belongs next to the story it proves). VERBATIM
@@ -303,6 +258,33 @@ export default async function Home({ params }: PageProps) {
           statement band were REMOVED here (owner direction 2026-08-04): the
           photoreal build story above now tells the same phases, the page was
           too long, and a second scroll-driven section made phones janky. */}
+
+      {/* 4b — LEAD FORM straight after the services (negabarit.md reference,
+          owner direction 2026-08-04): the visitor who just read what we build
+          gets the ask right there, not at the bottom of the page. Same
+          ContactForm as /contact — one lead pipeline, one set of tests. */}
+      <section
+        aria-labelledby="lead-form-title"
+        className="border-b border-border bg-muted"
+      >
+        <div className="mx-auto w-full max-w-3xl px-gutter py-16 lg:py-20">
+          <div className="mb-8 flex flex-col gap-3 text-center">
+            <p className="micro-label text-accent-strong">
+              {t("leadForm.eyebrow")}
+            </p>
+            <h2
+              id="lead-form-title"
+              className="font-serif text-display-lg text-foreground"
+            >
+              {t("leadForm.title")}
+            </h2>
+            <p className="mx-auto max-w-xl text-body-lg text-muted-foreground">
+              {t("leadForm.intro")}
+            </p>
+          </div>
+          <ContactForm locale={locale} />
+        </div>
+      </section>
 
       {/* 5b — CUM LUCRĂM: real site-work video (RC-120, owner direction
           2026-08-04). Lite click-to-play embed; YouTube loads only on click. */}

@@ -379,6 +379,11 @@
       "title": "Configurează-ți casa în 3D",
       "intro": "Alege tipul de acoperiș, materialele și gardul direct pe modelul 3D și vezi prețuri orientative în timp real.",
       "cta": "Deschide configuratorul"
+    },
+    "leadForm": {
+      "eyebrow": "Cere ofertă",
+      "title": "Solicită ofertă gratuită",
+      "intro": "Completează formularul și te contactăm în maximum 2 ore lucrătoare cu un răspuns concret."
     }
   },
   "roofPage": {

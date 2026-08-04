@@ -164,3 +164,7 @@ _Services + galleries lane (owner voice notes, 2026-08-04):_
 - [ ] **RC-502** Project case studies with cost breakdowns (strong GEO material).
 - [ ] **RC-503** Instagram feed integration on portfolio page.
 - [ ] **RC-504** EN locale if commercial clients ask for it (decision Q-05).
+- [ ] **RC-505** Configurator promo section on the homepage (built 2026-08-04,
+      removed same day on owner direction — "save the idea for future projects").
+      The section JSX lives in git history (`47d0b7b`), the WebGL preview asset
+      remains at `public/images/configurator-preview.jpg`. Revisit post-launch.
