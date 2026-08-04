@@ -112,6 +112,24 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **RC-120 "Cum lucrăm" video section + hero dim/motion fixes** (2026-08-04,
+  `rc/lane-2026-08`). (1) New `ProcessVideo` component between services and
+  projects: the owner's real 0:30 site-work promo (YT `O7BeibkaoMw`, 255K
+  views) as a lite click-to-play embed — self-hosted poster
+  (`public/images/video/cum-lucram-poster.jpg`, cropped from the YT thumb),
+  brand play chip, youtube-nocookie iframe created ONLY on click. RO+RU
+  strings under `home.processVideo` (logged in RU-REVIEW.md). New `play`
+  icon. (2) Hero fixes from owner review: the dark wash is now its OWN layer
+  above video+reel and fades in ~0.7s after the build ends — the scene
+  visibly dims BEFORE the first slide (was: dark arrived glued to the reel);
+  the reel got real Ken Burns motion — per-slide camera moves (`.ken-0..3`:
+  zoom in / pan left / zoom out / pan right, 6.5s, transform-only) and a
+  slower 1.5s crossfade, replacing the too-subtle single drift that read as
+  static. *Verified:* tsc, eslint, prod build, 106/106 Playwright; browser:
+  dim reaches opacity 1 independently, ken classes cycle per slide,
+  click-to-play swaps in the iframe, section screenshotted. Still waiting on
+  owner footage picks for RC-121 video recenzii + RC-122 portfolio clips.
+
 - **Owner feedback round 3: homepage restructure** (2026-08-04,
   `rc/lane-2026-08`). Owner verdict: hero video + scroll build approved.
   Changes: (1) testimonials moved directly under the build story;

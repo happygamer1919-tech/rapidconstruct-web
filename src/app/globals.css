@@ -142,19 +142,53 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Slow Ken Burns drift for the hero's post-build project reel: transform-only
-   (motion guardrails), one direction per slide cycle, neutralised by the
-   reduced-motion block below like every other animation. */
-@keyframes slow-drift {
+/* Ken Burns passes for the hero's post-build project reel: every slide gets
+   its own camera move so the reel never sits still. Transform-only (motion
+   guardrails), neutralised by the reduced-motion block below like every
+   other animation. Scales stay >=1.08 on the pans so edges never show. */
+@keyframes ken-zoom-in {
   from {
     transform: scale(1);
   }
   to {
-    transform: scale(1.06);
+    transform: scale(1.14);
   }
 }
-.animate-slow-drift {
-  animation: slow-drift 7s linear forwards;
+@keyframes ken-zoom-out {
+  from {
+    transform: scale(1.14);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes ken-pan-left {
+  from {
+    transform: scale(1.1) translateX(2%);
+  }
+  to {
+    transform: scale(1.1) translateX(-2%);
+  }
+}
+@keyframes ken-pan-right {
+  from {
+    transform: scale(1.1) translateX(-2%);
+  }
+  to {
+    transform: scale(1.1) translateX(2%);
+  }
+}
+.ken-0 {
+  animation: ken-zoom-in 6.5s linear forwards;
+}
+.ken-1 {
+  animation: ken-pan-left 6.5s linear forwards;
+}
+.ken-2 {
+  animation: ken-zoom-out 6.5s linear forwards;
+}
+.ken-3 {
+  animation: ken-pan-right 6.5s linear forwards;
 }
 
 /* Stage snap for the scroll-build story: the incoming construction stage

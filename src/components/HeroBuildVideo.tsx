@@ -108,10 +108,13 @@ export default function HeroBuildVideo({
     return () => document.removeEventListener("visibilitychange", onVisible);
   }, [mode, reduce]);
 
-  // After the build settles: darken the hero and start a slow crossfade of
-  // REAL project photos (owner direction 2026-08-04). Runs only after the
-  // video actually ended — never in reduced-motion, ?no3d or autoplay-blocked
-  // paths, which all stay on their static still.
+  // After the build settles: FIRST the hero dims over the finished house
+  // (owner feedback 2026-08-04: the darkening must be visible before the
+  // slides, not arrive glued to them), THEN the reel of real project photos
+  // starts under that same dark wash. Runs only after the video actually
+  // ended — never in reduced-motion, ?no3d or autoplay-blocked paths, which
+  // all stay on their static still.
+  const [dimmed, setDimmed] = useState(false);
   const [showReel, setShowReel] = useState(false);
   const [slide, setSlide] = useState(0);
   useEffect(() => {
@@ -209,8 +212,9 @@ export default function HeroBuildVideo({
             preload="auto"
             onEnded={() => {
               setBuilt(true);
-              // Let the finished house hold for a beat before the reel fades in.
-              window.setTimeout(() => setShowReel(true), 1800);
+              // Sequence: hold the finished house a beat -> dim -> reel.
+              window.setTimeout(() => setDimmed(true), 700);
+              window.setTimeout(() => setShowReel(true), 2400);
             }}
             // No `loop`: the house builds ONCE and stays built (hero contract).
             // The element holds its last frame after `ended`.
@@ -220,10 +224,12 @@ export default function HeroBuildVideo({
             <source src="/videos/hero-build.mp4" type="video/mp4" />
           </video>
         )}
-        {/* Post-build reel: real project photos, darkened so the copy panel
-            stays the brightest thing on screen. Crossfade + a slow drift —
-            transform/opacity only (motion guardrails). Mounted only once the
-            reel starts, so these ~500KB images never compete with the video. */}
+        {/* Post-build reel: real project photos with a LIVING Ken Burns pass —
+            each slide gets its own camera move (zoom in / zoom out / pan left
+            / pan right, .ken-0..3) so the reel never sits still (owner
+            feedback 2026-08-04: static slides looked cheap). Transform and
+            opacity only (motion guardrails). Mounted only once the reel
+            starts, so these ~500KB images never compete with the video. */}
         {showReel && (
           <motion.div
             aria-hidden
@@ -239,14 +245,23 @@ export default function HeroBuildVideo({
                 alt=""
                 fill
                 sizes="100vw"
-                className={`object-cover transition-opacity duration-1000 ${
-                  i === slide ? "opacity-100" : "opacity-0"
-                } ${i === slide ? "animate-slow-drift" : ""}`}
+                className={`object-cover transition-opacity duration-[1500ms] ${
+                  i === slide ? `opacity-100 ken-${i % 4}` : "opacity-0"
+                }`}
               />
             ))}
-            <div className="absolute inset-0 bg-ink-950/45" />
           </motion.div>
         )}
+        {/* The dark wash lives ABOVE both the held video frame and the reel:
+            it fades in on its own, right after the build settles, so the
+            scene visibly dims before the first slide arrives. */}
+        <motion.div
+          aria-hidden
+          initial={{ opacity: 0 }}
+          animate={{ opacity: dimmed ? 1 : 0 }}
+          transition={{ duration: 1.2, ease: "easeInOut" }}
+          className="pointer-events-none absolute inset-0 bg-ink-950/45"
+        />
       </div>
 
       <div className="pointer-events-none relative mx-auto flex h-full w-full max-w-6xl flex-col justify-start px-gutter pb-8 pt-10 lg:justify-center lg:pb-0 lg:pt-0">

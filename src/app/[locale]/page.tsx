@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { Icon, type IconName } from "@/components/icons";
 import HeroBuildVideo from "@/components/HeroBuildVideo";
 import HouseTour, { type BuildPhase } from "@/components/HouseTour";
+import ProcessVideo from "@/components/ProcessVideo";
 import { SERVICES } from "@/config/navigation";
 import { site } from "@/config/site";
 import { routing } from "@/i18n/routing";
@@ -265,6 +266,17 @@ export default async function Home({ params }: PageProps) {
           statement band were REMOVED here (owner direction 2026-08-04): the
           photoreal build story above now tells the same phases, the page was
           too long, and a second scroll-driven section made phones janky. */}
+
+      {/* 5b — CUM LUCRĂM: real site-work video (RC-120, owner direction
+          2026-08-04). Lite click-to-play embed; YouTube loads only on click. */}
+      <ProcessVideo
+        eyebrow={t("processVideo.eyebrow")}
+        title={t("processVideo.title")}
+        intro={t("processVideo.intro")}
+        play={t("processVideo.play")}
+        caption={t("processVideo.caption")}
+        videoId="O7BeibkaoMw"
+      />
 
       {/* 6 — RECENT PROJECTS as editorial index rows */}
       <section
