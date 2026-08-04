@@ -30,6 +30,8 @@ const ROUTES: Pathname[] = [
   "/finisaje",
   "/proiectare-3d",
   "/instalatii",
+  "/constructii-industriale",
+  "/terasamente",
   "/despre-noi",
   "/portofoliu",
   "/contact",

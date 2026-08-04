@@ -30,7 +30,9 @@ export type IconName =
   | "brush"
   | "cube"
   | "plug"
-  | "play";
+  | "play"
+  | "industrial"
+  | "excavator";
 
 type IconProps = SVGProps<SVGSVGElement> & {
   name: IconName;
@@ -81,6 +83,23 @@ const PATHS: Record<IconName, React.ReactNode> = {
   ),
   play: (
     <path d="M8 5.5v13l11-6.5z" fill="currentColor" stroke="none" />
+  ),
+  // Factory silhouette: base + two sawtooth roofs + chimney.
+  industrial: (
+    <>
+      <path d="M3 21V10l5 3v-3l5 3v-3l8 4v7z" />
+      <path d="M17 10V4h3v7" />
+      <path d="M7 17h2M12 17h2M16.5 17h2" />
+    </>
+  ),
+  // Excavator: tracks, cab, boom arm with bucket.
+  excavator: (
+    <>
+      <rect x="3" y="16" width="10" height="4" rx="2" />
+      <path d="M5 16v-5h6v5" />
+      <path d="M11 12l5-4 4 2" />
+      <path d="M20 10v4l-2 1" />
+    </>
   ),
   certificate: (
     <>

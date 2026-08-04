@@ -85,6 +85,18 @@ const nextConfig: NextConfig = {
         destination: "/ru/proekt-3d",
         permanent: true,
       },
+      // RC-123 services follow the same pattern from day one, so the RO-shaped
+      // RU path can never be shared or indexed.
+      {
+        source: "/ru/constructii-industriale",
+        destination: "/ru/promyshlennoe-stroitelstvo",
+        permanent: true,
+      },
+      {
+        source: "/ru/terasamente",
+        destination: "/ru/zemlyanye-raboty",
+        permanent: true,
+      },
       { source: "/ru/despre-noi", destination: "/ru/o-nas", permanent: true },
       {
         source: "/ru/portofoliu",

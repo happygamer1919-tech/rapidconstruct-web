@@ -29,6 +29,8 @@ export const SERVICES: readonly ServiceItem[] = [
   { slug: "/finisaje", key: "finisaje", icon: "brush" },
   { slug: "/proiectare-3d", key: "proiectare", icon: "cube" },
   { slug: "/instalatii", key: "instalatii", icon: "plug" },
+  { slug: "/constructii-industriale", key: "industriale", icon: "industrial" },
+  { slug: "/terasamente", key: "terasamente", icon: "excavator" },
 ] as const;
 
 /** Primary content nav (excludes Home, which is the wordmark link). */

@@ -79,3 +79,10 @@ city names). Check tone + terminology, especially construction terms.
 | caption | Ремонт и строительство в Кишинёве, работы под ключ | mirrors the YT video's own framing |
 
 Owner review pending, like all RU strings in this file.
+
+## 2026-08-04 — RC-123: services.{industriale,terasamente} + servicePages.{industriale,terasamente} + proiectare rename
+
+Full RU blocks for the two new services (grid card + service page: seo, hero,
+process, faq, cta) and the rename "Проектирование и 3D-визуализация". Register
+notes: "земляные работы" (not "грунтовые"), "цеха/склады" for hale/depozite,
+"под ключ" kept consistent with existing pages. Owner review pending.

@@ -41,6 +41,11 @@ export const pathnames = {
   "/finisaje": { ro: "/finisaje", ru: "/otdelka" },
   "/instalatii": { ro: "/instalatii", ru: "/elektrika-santehnika" },
   "/proiectare-3d": { ro: "/proiectare-3d", ru: "/proekt-3d" },
+  "/constructii-industriale": {
+    ro: "/constructii-industriale",
+    ru: "/promyshlennoe-stroitelstvo",
+  },
+  "/terasamente": { ro: "/terasamente", ru: "/zemlyanye-raboty" },
   "/despre-noi": { ro: "/despre-noi", ru: "/o-nas" },
   "/portofoliu": { ro: "/portofoliu", ru: "/portfolio" },
   "/contact": { ro: "/contact", ru: "/kontakty" },

@@ -134,6 +134,8 @@ test.describe("service pages (RC-103)", () => {
     "/finisaje",
     "/proiectare-3d",
     "/instalatii",
+    "/constructii-industriale",
+    "/terasamente",
   ];
 
   for (const slug of SERVICE_SLUGS) {

@@ -63,12 +63,20 @@
       "desc": "Gips-carton, glet, vopsit, podele și plăci, totul lucrat curat, la milimetru."
     },
     "proiectare": {
-      "title": "Proiectare 3D",
+      "title": "Proiectare și vizualizare 3D",
       "desc": "Vezi casa în 3D și planurile pe hârtie înainte să începem lucrul, ca să știi exact ce primești."
     },
     "instalatii": {
       "title": "Instalații",
       "desc": "Curent, apă și căldură, calculate corect și pornite cu garanție."
+    },
+    "industriale": {
+      "title": "Construcții industriale",
+      "desc": "Hale, depozite și spații comerciale, structură și finisaje executate la cheie."
+    },
+    "terasamente": {
+      "title": "Lucrări de terasament",
+      "desc": "Excavații, nivelare și pregătirea terenului cu utilaje specializate."
     }
   },
   "footer": {
@@ -926,6 +934,136 @@
       },
       "cta": {
         "title": "Vrei instalații care nu-ți dau bătăi de cap?",
+        "intro": "Programează evaluarea gratuită. Primești devizul în maximum 2 ore lucrătoare.",
+        "ctaQuote": "Solicită ofertă gratuită",
+        "ctaCall": "Sună acum"
+      }
+    },
+    "industriale": {
+      "seo": {
+        "title": "Construcții industriale în Chișinău și Moldova",
+        "description": "Hale de producție, depozite și spații comerciale construite la cheie: structură, închideri, instalații și finisaje, cu termene clare și garanție scrisă."
+      },
+      "hero": {
+        "eyebrow": "Construcții industriale · Chișinău și regiuni",
+        "h1": "Construcții industriale, de la proiect la predare",
+        "intro": "Hale de producție, depozite și spații comerciale. Un singur contract acoperă structura, închiderile, instalațiile și finisajele, cu termene stabilite de la început.",
+        "chip": "preț la cerere",
+        "trust": "Garanție scrisă în contract · Materiale certificate UE",
+        "ctaCall": "Sună acum",
+        "ctaQuote": "Solicită ofertă gratuită"
+      },
+      "process": {
+        "eyebrow": "Cum lucrăm",
+        "title": "De la teren gol la spațiu funcțional",
+        "steps": [
+          {
+            "title": "Consultare și evaluare",
+            "desc": "Discutăm destinația spațiului, terenul și bugetul. Venim la fața locului."
+          },
+          {
+            "title": "Proiect și autorizații",
+            "desc": "Pregătim proiectul tehnic și documentația, ne ocupăm de avize."
+          },
+          {
+            "title": "Execuție",
+            "desc": "Structură, închideri, instalații și finisaje, cu grafic de lucru comunicat clar."
+          },
+          {
+            "title": "Predare",
+            "desc": "Predăm spațiul funcțional, cu garanția scrisă în contract."
+          }
+        ]
+      },
+      "faq": {
+        "eyebrow": "Întrebări frecvente",
+        "title": "Ce întreabă clienții despre construcțiile industriale",
+        "items": [
+          {
+            "q": "Ce tipuri de construcții industriale executați?",
+            "a": "Hale de producție, depozite, spații comerciale și anexe tehnice. Structuri metalice sau din beton, în funcție de proiect."
+          },
+          {
+            "q": "Vă ocupați și de autorizații?",
+            "a": "Da. Pregătim documentația tehnică și ne ocupăm de avizele necesare, ca să nu pierzi timp cu drumuri."
+          },
+          {
+            "q": "Cât durează construcția unei hale?",
+            "a": "Depinde de suprafață și complexitate. După evaluare primești un grafic de lucru cu termene clare, pe etape."
+          },
+          {
+            "q": "Cum se stabilește prețul?",
+            "a": "Pe bază de proiect și deviz. Nu publicăm un preț pe m² la nimereală: fiecare hală are cerințe diferite. Evaluarea și devizul sunt gratuite."
+          }
+        ]
+      },
+      "cta": {
+        "title": "Ai un proiect industrial în plan?",
+        "intro": "Programează o consultare gratuită. Primești răspuns în maximum 2 ore lucrătoare.",
+        "ctaQuote": "Solicită ofertă gratuită",
+        "ctaCall": "Sună acum"
+      }
+    },
+    "terasamente": {
+      "seo": {
+        "title": "Lucrări de terasament în Chișinău și Moldova",
+        "description": "Excavații, nivelare, compactare și pregătirea terenului pentru fundație, cu utilaje specializate și operatori cu experiență. Chișinău și toată Moldova."
+      },
+      "hero": {
+        "eyebrow": "Lucrări de terasament · Chișinău și regiuni",
+        "h1": "Pregătim terenul corect, de la prima cupă",
+        "intro": "Excavații, nivelare, compactare și evacuarea pământului. Pregătim terenul pentru fundație sau amenajare cu utilaje specializate, pe grafic clar.",
+        "chip": "preț la cerere",
+        "trust": "Garanție scrisă în contract · Utilaje specializate",
+        "ctaCall": "Sună acum",
+        "ctaQuote": "Solicită ofertă gratuită"
+      },
+      "process": {
+        "eyebrow": "Cum lucrăm",
+        "title": "Teren pregătit, fundație fără surprize",
+        "steps": [
+          {
+            "title": "Evaluare la fața locului",
+            "desc": "Vedem terenul, accesul pentru utilaje și volumul de lucru."
+          },
+          {
+            "title": "Trasare și excavare",
+            "desc": "Trasăm după proiect și excavăm la cotele stabilite."
+          },
+          {
+            "title": "Nivelare și compactare",
+            "desc": "Pregătim patul pentru fundație, cu straturi compactate corect."
+          },
+          {
+            "title": "Evacuare și curățenie",
+            "desc": "Evacuăm pământul în exces și lăsăm șantierul ordonat."
+          }
+        ]
+      },
+      "faq": {
+        "eyebrow": "Întrebări frecvente",
+        "title": "Ce întreabă clienții despre terasamente",
+        "items": [
+          {
+            "q": "Ce lucrări de terasament executați?",
+            "a": "Excavații pentru fundații și subsoluri, nivelarea terenului, compactare, șanțuri pentru rețele și evacuarea pământului."
+          },
+          {
+            "q": "Aveți utilajele necesare?",
+            "a": "Da, lucrăm cu excavatoare și utilaje specializate, cu operatori cu experiență, dimensionate după accesul și volumul șantierului."
+          },
+          {
+            "q": "Cât durează pregătirea unui teren?",
+            "a": "Un teren obișnuit pentru o casă se pregătește în câteva zile. După evaluare primești un termen clar."
+          },
+          {
+            "q": "Evacuați și pământul rezultat?",
+            "a": "Da, evacuarea pământului în exces face parte din lucrare, cu tot cu transport."
+          }
+        ]
+      },
+      "cta": {
+        "title": "Ai un teren de pregătit?",
         "intro": "Programează evaluarea gratuită. Primești devizul în maximum 2 ore lucrătoare.",
         "ctaQuote": "Solicită ofertă gratuită",
         "ctaCall": "Sună acum"

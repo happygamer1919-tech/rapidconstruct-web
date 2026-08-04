@@ -56,14 +56,22 @@ export default function HeroBuildVideo({
   // Client-only facts (URL param, autoplay ability) must not influence the
   // first render, or hydration mismatches. Decide after mount.
   const [mode, setMode] = useState<"pending" | "video" | "still">("pending");
+  // RC-124 review aid: ?g=1..4 previews guarantee-highlight variants so the
+  // owner can pick one from screenshots. Default (no param) = variant 1, the
+  // shipped look — nothing changes until the owner chooses. Once a variant is
+  // chosen the others get deleted along with this param.
+  const [gv, setGv] = useState(1);
   useEffect(() => {
     // Deferred a tick (same pattern as the 3D hero's useArmed): the lint rule
     // bans synchronous setState in an effect body, and nothing here needs to
     // beat first paint — the blueprint underlay is already correct for both.
-    const t = window.setTimeout(
-      () => setMode(skipHeavy3d() ? "still" : "video"),
-      0,
-    );
+    const t = window.setTimeout(() => {
+      setMode(skipHeavy3d() ? "still" : "video");
+      const g = Number(
+        new URLSearchParams(window.location.search).get("g") ?? "2",
+      );
+      if (g >= 1 && g <= 4) setGv(g);
+    }, 0);
     return () => window.clearTimeout(t);
   }, []);
 
@@ -136,10 +144,41 @@ export default function HeroBuildVideo({
       <p className="max-w-md text-body-lg text-muted-foreground lg:max-w-sm">
         {subline}
       </p>
-      <p className="flex max-w-md items-center gap-2 text-caption font-medium text-foreground">
-        <Icon name="shield" size={18} className="shrink-0 text-accent-strong" />
-        {trust}
-      </p>
+      {/* RC-124: guarantee highlight, four candidate treatments (?g=1..4). */}
+      {gv === 1 && (
+        <p className="flex max-w-md items-center gap-2 text-caption font-medium text-foreground">
+          <Icon
+            name="shield"
+            size={18}
+            className="shrink-0 text-accent-strong"
+          />
+          {trust}
+        </p>
+      )}
+      {gv === 2 && (
+        <p className="inline-flex w-fit max-w-md items-center gap-2 rounded-full bg-accent px-4 py-2 text-caption font-semibold text-accent-foreground shadow-sm">
+          <Icon name="shield" size={18} className="shrink-0" />
+          {trust}
+        </p>
+      )}
+      {gv === 3 && (
+        <p className="inline-flex w-fit max-w-md items-center gap-2 rounded-full border-2 border-accent-strong bg-brand-50 px-4 py-2 text-caption font-bold text-accent-strong">
+          <Icon name="shield" size={18} className="shrink-0" />
+          {trust}
+        </p>
+      )}
+      {gv === 4 && (
+        <p className="flex max-w-md items-center gap-2 text-body font-bold text-foreground">
+          <Icon
+            name="shield"
+            size={22}
+            className="shrink-0 text-accent-strong"
+          />
+          <span className="underline decoration-accent-strong decoration-2 underline-offset-4">
+            {trust}
+          </span>
+        </p>
+      )}
       <div className="mt-2 flex flex-wrap gap-3">
         <a
           href={`tel:${phone}`}
