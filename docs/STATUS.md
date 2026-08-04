@@ -112,6 +112,17 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **Owner content round LOGGED, not built** (2026-08-04 evening, via Max —
+  plan awaiting approval, nothing implemented). New tickets **RC-123..126**
+  in BACKLOG P2.5: services grid expansion (industrial + terasament +
+  "Proiectare și vizualizare 3D" rename), hero guarantee highlight,
+  stage-type galleries (4-5 labeled photos per stage, scroll-right strip),
+  machinery section. New questions **Q-18** (service copy/prices) and
+  **Q-19** (image sourcing — owner archive vs Higgsfield; NO Google image
+  lifting; machinery must be logo-free if generated). Hero reel zooms
+  already replaced with constant-scale drifts on owner feedback (shipped,
+  `a122b88`).
+
 - **RC-120 "Cum lucrăm" video section + hero dim/motion fixes** (2026-08-04,
   `rc/lane-2026-08`). (1) New `ProcessVideo` component between services and
   projects: the owner's real 0:30 site-work promo (YT `O7BeibkaoMw`, 255K

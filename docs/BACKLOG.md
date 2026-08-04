@@ -129,6 +129,35 @@ _RC-003/004/005/007 shipped together in PR #6 (squash). RC-006 next._
 - [ ] **RC-404** Analytics + lead tracking: GA4 or Plausible, call-click / form / chat events,
       weekly plain-language report for Max.
 
+## P2.5 — Owner content round (2026-08-04 feedback, via Max)
+
+_Video lane (researched 2026-08-04, see STATUS):_
+
+- [x] **RC-120** "Cum lucrăm" process-video section — lite click-to-play embed of the
+      owner's 0:30 YT promo (255K views). Shipped on `rc/lane-2026-08`.
+- [B] **RC-121** Video recenzii — client clips beside the text quotes (fatade3d pattern).
+      BLOCKED: owner must pick footage (TikTok/IG @rapid.construct) or supply clips.
+- [B] **RC-122** Per-project clips on /portofoliu. BLOCKED: same footage dependency.
+
+_Services + galleries lane (owner voice notes, 2026-08-04):_
+
+- [ ] **RC-123** Services grid expansion: add **Construcții industriale** and **Lucrări de
+      terasament** cards + service pages (RO/RU slugs, redirects, sitemap + RC-402 count
+      reconcile, nav, JSON-LD); rename "Proiectare 3D" → "Proiectare și vizualizare 3D".
+      Terasament card/page needs machinery imagery (see RC-126 sourcing decision).
+      OPEN: service-page copy + prices for both (owner input, logged as Q-18).
+- [ ] **RC-124** Hero: make "Garanție scrisă până la 30 de ani" visibly highlighted after
+      the build settles (accent chip/larger type, AA contrast kept).
+- [ ] **RC-125** Stage-type galleries in the scroll-build section: each stage gets a
+      right-scrolling strip of 4-5 labeled type photos (foundation types: radier, fundație
+      continuă, piloni, soclu…; same A-to-Z treatment for walls/roof/windows/finishes).
+      OPEN: image sourcing (Q-19) — owner archive first, Higgsfield for gaps; NO Google
+      image lifting (copyright).
+- [ ] **RC-126** Machinery section ("Terasament în lucru"): excavators/bulldozers working —
+      because the company executes these works. OPEN: does the owner have photos/video of
+      HIS machines? Otherwise Higgsfield-generate logo-free machinery (JCB/CAT/Bobcat are
+      trademarks — no brand marks in generated images).
+
 ## P5 — Post-launch (nice-to-have pool)
 
 - [ ] **RC-501** Blog/article system for seasonal content ("pregătirea acoperișului pentru iarnă").

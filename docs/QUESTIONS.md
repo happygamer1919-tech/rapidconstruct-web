@@ -172,3 +172,22 @@ copies (home + contact) restructured so the `<dl>`'s div children contain only
 `<dt>`/`<dd>` (icon moved inside the `<dt>`). Verified: Lighthouse accessibility
 **1.0** on `/` and `/contact` (was 0.89), all three audits pass; 106 Playwright
 tests green; drawer verified open (12 links focusable) and closed (0 focusable).
+
+## Q-18 (2026-08-04) — New services: Construcții industriale + Lucrări de terasament
+The owner asked for both as new cards in "Ce construim pentru tine" (plus service pages to
+keep the grid pattern). Needed from the owner: 2-3 sentences per service on what exactly is
+offered, any prices/bands to publish, and whether there are finished industrial/terasament
+projects for the portfolio. Also confirm the rename "Proiectare 3D" → "Proiectare și
+vizualizare 3D" applies everywhere (nav, service page H1, JSON-LD).
+**Recommended default**: ship the two cards + minimal honest pages (no invented prices,
+"preț la cerere"), enrich when the owner supplies specifics. STATUS: OPEN
+
+## Q-19 (2026-08-04) — Image sourcing for stage-type galleries + machinery section
+The owner said "tipurile de fundații le găsești pe Google" — we cannot lift Google images
+(copyright). Options per gallery slot: (a) owner's own archive (best, authentic),
+(b) Higgsfield-generated photoreal type images (~2 credits each, logo-free machinery only —
+JCB/CAT/Bobcat are trademarks), (c) licensed stock (costs money). Ask the owner: which
+foundation/wall/roof types does he actually build (so galleries match reality), and does he
+have photos or video of his own machines for RC-126?
+**Recommended default**: owner archive first, Higgsfield for the gaps, generic machinery.
+STATUS: OPEN
