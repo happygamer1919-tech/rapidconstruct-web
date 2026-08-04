@@ -25,6 +25,33 @@ const STAGE_IMAGES = [
 ];
 
 /**
+ * RC-125 DEMO — stage-type strips. Only Fundația is populated, as the
+ * mechanics preview the owner asked for (no credits spent): the card images
+ * are PLACEHOLDERS from assets we already own (incl. one real formwork photo
+ * from the owner's own Tilda page, JCB visible in the background). The real
+ * per-stage type lists + images arrive via Q-19; empty stages show no strip.
+ */
+type StageType = { label: string; src: string };
+const STAGE_TYPES: (StageType[] | null)[] = [
+  [
+    { label: "Trasare și săpătură", src: "/images/hero/hero-blueprint.jpg" },
+    {
+      label: "Fundație în cofraj",
+      src: "/images/stages/types/fundatie-cofraj.jpg",
+    },
+    { label: "Radier (placă monolită)", src: "/images/stages/stage-1.jpg" },
+    {
+      label: "Fundație finisată",
+      src: "/images/projects/phase-foundation.jpg",
+    },
+  ],
+  null,
+  null,
+  null,
+  null,
+];
+
+/**
  * HouseTour — the scroll story, in a box, below the hero. Scrolling the runway
  * BUILDS the house stage by stage (owner direction 2026-08-04): each phase
  * crossfades to its photoreal construction frame, so the visitor scrubs
@@ -48,6 +75,11 @@ export default function HouseTour({
 
   // One runway segment per phase.
   const [segment, setSegment] = useState(0);
+  // RC-125: a tapped type card temporarily replaces the stage frame; leaving
+  // the stage clears the pick so the runway always resumes its own story.
+  const [typePick, setTypePick] = useState<{ seg: number; src: string } | null>(
+    null,
+  );
   const { scrollYProgress } = useScroll({
     target: wrapRef,
     offset: ["start start", "end end"],
@@ -58,6 +90,7 @@ export default function HouseTour({
       Math.floor(v * phases.length * 1.001),
     );
     setSegment((prev) => (prev === s ? prev : s));
+    setTypePick((p) => (p && p.seg !== s ? null : p));
   });
   const active = phases[segment];
 
@@ -146,25 +179,74 @@ export default function HouseTour({
                 model kit clicking on. The first continuous-blend version read
                 as a blurry mush mid-scroll (owner feedback 2026-08-04), so
                 transitions are quick and discrete; long overlaps are gone. */}
-            <div className="relative order-1 h-[42svh] w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-neutral-100 to-muted lg:order-2 lg:aspect-square lg:h-auto">
-              {STAGE_IMAGES.map((src, i) => (
-                <div
-                  key={src}
-                  className={`absolute inset-0 transition-opacity duration-300 ${
-                    i === segment
-                      ? "animate-stage-snap opacity-100"
-                      : "opacity-0"
-                  }`}
-                >
-                  <Image
-                    src={src}
-                    alt={i === segment ? (phases[i]?.name ?? "") : ""}
-                    fill
-                    sizes="(min-width: 1024px) 560px, 100vw"
-                    className="object-cover"
-                  />
+            <div className="order-1 flex w-full flex-col gap-3 lg:order-2">
+              <div className="relative h-[38svh] w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-neutral-100 to-muted lg:aspect-square lg:h-auto">
+                {STAGE_IMAGES.map((src, i) => (
+                  <div
+                    key={src}
+                    className={`absolute inset-0 transition-opacity duration-300 ${
+                      i === segment
+                        ? "animate-stage-snap opacity-100"
+                        : "opacity-0"
+                    }`}
+                  >
+                    <Image
+                      src={src}
+                      alt={i === segment ? (phases[i]?.name ?? "") : ""}
+                      fill
+                      sizes="(min-width: 1024px) 560px, 100vw"
+                      className="object-cover"
+                    />
+                  </div>
+                ))}
+                {/* A tapped type card takes over the box until the visitor
+                    scrolls to another stage. */}
+                {typePick && typePick.seg === segment && (
+                  <div className="animate-stage-snap absolute inset-0">
+                    <Image
+                      src={typePick.src}
+                      alt=""
+                      fill
+                      sizes="(min-width: 1024px) 560px, 100vw"
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* RC-125: type strip for the active stage — a plain swipeable
+                  row, no scroll-jacking. Rendered only for stages that have
+                  a type list (demo: Fundația only, placeholder images). */}
+              {STAGE_TYPES[segment] && (
+                <div className="flex gap-2.5 overflow-x-auto pb-1">
+                  {STAGE_TYPES[segment].map((t) => (
+                    <button
+                      key={t.label}
+                      type="button"
+                      onClick={() =>
+                        setTypePick({ seg: segment, src: t.src })
+                      }
+                      className={`group relative h-16 w-28 shrink-0 cursor-pointer overflow-hidden rounded-lg border transition-colors lg:h-20 lg:w-36 ${
+                        typePick?.src === t.src && typePick.seg === segment
+                          ? "border-accent-strong ring-2 ring-accent-strong"
+                          : "border-border hover:border-accent-strong"
+                      }`}
+                      aria-label={t.label}
+                    >
+                      <Image
+                        src={t.src}
+                        alt=""
+                        fill
+                        sizes="144px"
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                      <span className="absolute inset-x-0 bottom-0 bg-ink-950/65 px-1.5 py-0.5 text-left text-[10px] font-medium leading-tight text-neutral-50">
+                        {t.label}
+                      </span>
+                    </button>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>
