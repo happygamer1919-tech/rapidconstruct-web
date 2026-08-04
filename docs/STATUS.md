@@ -112,6 +112,16 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **negabarit restructure round** (2026-08-04, late). Configurator promo
+  REMOVED same day on owner direction (idea saved as RC-505; JSX in git
+  history `47d0b7b`, asset kept). Lead form (shared ContactForm) now sits
+  directly after the services grid — the negabarit.md pattern. Stage-type
+  strips now on ALL five stages, honest labels only from owned images
+  (Pereții/Ferestre sparse at 1 card until Q-19 photos or approved fills);
+  generation proposal (~9 images ≈ 18 credits) presented to Max, prompts
+  revealed, awaiting go. *Verified:* tsc, eslint, prod build, 113/113
+  Playwright, order+form browser-checked, tripwire PASS, alias repointed.
+
 - **RC-124 DONE (V2 refined) + configurator promo + FAQ hub** (2026-08-04
   evening). (1) Guarantee badge final: owner picked V2; refined so only the
   guarantee text sits in the orange rounded-md label (one row always, not
