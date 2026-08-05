@@ -20,7 +20,7 @@ type PageProps = {
 // Shapes read from the message catalog via t.raw (RO source of truth).
 type Badge = { title: string; desc: string };
 type Stat = { value: string; label: string };
-type Project = { location: string; size: string; work: string; year: string };
+type PortfolioItem = { tag: string; title: string; desc: string; alt: string };
 type Testimonial = { quote: string; name: string; meta: string };
 
 // Icons for the six trust badges, aligned by index to home.badges.items.
@@ -59,23 +59,24 @@ export default async function Home({ params }: PageProps) {
 
   const t = await getTranslations("home");
   const tServices = await getTranslations("services");
+  const tPortfolio = await getTranslations("portfolioPage");
 
   const badges = t.raw("badges.items") as Badge[];
   const stats = t.raw("stats.items") as Stat[];
-  const projects = t.raw("projects.items") as Project[];
   const testimonials = t.raw("testimonials.items") as Testimonial[];
 
-  // REAL drone photos from the owner's portfolio set (same files /portofoliu
-  // serves). The set contains only THREE distinct buildings (six shots are
-  // the same white house — owner flagged the duplication 2026-08-05), so we
-  // show the three project entries whose copy best fits a distinct photo:
-  // Costești (stone-look facade) → the duplex, Cahul (țiglă metalică) → the
-  // white house aerial, Chișinău (renovare) → the courtyard angle. The
-  // Orhei/șindrilă entry returns when the owner sends its real photo (Q-14).
+  // Four REAL, visually distinct works from the owner's drone set, described
+  // by the owner-safe portfolio captions (tag/title/desc — no invented
+  // locations, sizes or years; Q-14 still owns that metadata). The old
+  // Orhei/Costești/Cahul/Chișinău rows forced wrong photo pairings because
+  // the set only contains three distinct buildings (owner flagged the
+  // duplicates twice, 2026-08-05).
+  const pfItems = tPortfolio.raw("projects.items") as PortfolioItem[];
   const RECENT_PROJECTS = [
-    { item: projects[1], img: "/portofoliu/p-0034.webp" },
-    { item: projects[2], img: "/portofoliu/p-0018.webp" },
-    { item: projects[3], img: "/portofoliu/p-0024.webp" },
+    { item: pfItems[0], img: "/portofoliu/p-0018.webp" }, // casă parter+etaj
+    { item: pfItems[1], img: "/portofoliu/p-0020.webp" }, // acoperiș solar
+    { item: pfItems[6], img: "/portofoliu/p-0034.webp" }, // duplex modern
+    { item: pfItems[7], img: "/portofoliu/p-0037.webp" }, // ansamblu la roșu
   ].filter((r) => r.item);
 
   return (
@@ -138,9 +139,9 @@ export default async function Home({ params }: PageProps) {
               <Icon name="arrowUpRight" size={16} />
             </Link>
           </div>
-          <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid gap-6 sm:grid-cols-2">
             {RECENT_PROJECTS.map(({ item: p, img }) => (
-              <li key={`${p.location}-${p.work}`}>
+              <li key={p.title}>
                 <Link
                   href="/portofoliu"
                   className="group block overflow-hidden rounded-2xl border border-border bg-surface transition-shadow hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent-strong"
@@ -148,26 +149,21 @@ export default async function Home({ params }: PageProps) {
                   <span className="relative block aspect-[4/3] overflow-hidden">
                     <Image
                       src={img}
-                      alt={`${p.location} · ${p.work}`}
+                      alt={p.alt}
                       fill
-                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      sizes="(min-width: 640px) 50vw, 100vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                     />
                   </span>
-                  <span className="flex flex-col gap-1 p-5">
-                    <span className="flex items-baseline justify-between gap-2">
-                      <span className="flex items-baseline gap-2 font-serif text-h3 text-foreground">
-                        {p.location}
-                        <span className="text-caption font-sans text-muted-foreground">
-                          {p.size}
-                        </span>
-                      </span>
-                      <span className="micro-label shrink-0 text-muted-foreground">
-                        {p.year}
-                      </span>
+                  <span className="flex flex-col gap-1.5 p-5">
+                    <span className="micro-label text-accent-strong">
+                      {p.tag}
+                    </span>
+                    <span className="font-serif text-h3 text-foreground">
+                      {p.title}
                     </span>
                     <span className="text-caption text-muted-foreground">
-                      {p.work}
+                      {p.desc}
                     </span>
                   </span>
                 </Link>
