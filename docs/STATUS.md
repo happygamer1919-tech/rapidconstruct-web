@@ -112,6 +112,21 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **Projects: one card per DISTINCT building (owner corrected me 3x)**
+  (2026-08-05). Frame-by-frame verification settles it: `p-0018/0020/0021/
+  0022/0023/0024` are ALL the same white house (identical grey vertical
+  bands, stucco, dark hip roof) — including the two "detail" cards I argued
+  were separate works. **Detail crops of one building still read as that
+  building again**; do not try this again. Honest inventory = FOUR distinct
+  subjects: white house (0018), duplex (0034), brick complex (0037),
+  travertine terrace (Tilda — ⚠️ provenance unconfirmed, much of that site
+  is stock; flagged in code). Grid 4-up on desktop, cards stay small.
+  **Six cards needs six BUILDINGS → owner photo dump is now the #1 blocker
+  (Q-14/Q-06).** Candidate sheet of 3 more Tilda real-looking photos
+  (fundație+JCB, structură cărămidă, termoizolație) sent to Max for owner
+  confirmation — if confirmed as their work, that reaches 6 with zero
+  generation. Verified: 115/115, browser 4 cards/4 unique, tripwire PASS.
+
 - **Projects: 6 smaller cards, 5 categories** (2026-08-05, owner). 3-col
   desktop grid, 3:2 images, tighter padding/smaller serif title. Six unique
   images: casă parter+etaj (0018), terasă travertin (Tilda), duplex (0034),
