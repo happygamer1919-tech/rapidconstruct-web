@@ -112,3 +112,15 @@ Owner review pending.
 | alt | Терраса, облицованная травертином, с раздвижными окнами и уличным камином из камня |
 
 Photo recovered from the owner's own Tilda site. Owner review pending.
+
+## 2026-08-05 — portfolioPage items 10 & 11 (photos sourced from rapidconstruct.md)
+
+| field | RU (item 10 — șindrilă) | RU (item 11 — renovare acoperiș) |
+|---|---|---|
+| tag | Кровля | Ремонт |
+| title | Крыша из битумной черепицы | Новая крыша на существующем доме |
+| desc | Четырёхскатная крыша из антрацитовой битумной черепицы… | Полная замена кровли на металлочерепицу… |
+
+⚠️ Both photos come from the owner's own live Tilda site. Most of that site is
+stock; these two were hand-picked as genuine site photography. Owner must
+confirm they are his company's works before launch (Q-14).

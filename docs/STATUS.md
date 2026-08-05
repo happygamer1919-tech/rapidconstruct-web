@@ -112,6 +112,21 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **6 distinct cards — full rapidconstruct.md crawl** (2026-08-05). Crawled
+  the WHOLE live site (70 unique images: home, /portofoliu, /despre-noi and
+  the six service subpages — the first two had never been scraped). The
+  library is mostly STOCK (renders, foreign interiors, texture swatches);
+  two images are unmistakably genuine Moldovan site photography and now ship
+  as cards: `acoperis-sindrila.jpg` (drone, bituminous-shingle hip roof on a
+  new suburban house) and `acoperis-renovare.jpg` (drone, full metal-tile
+  re-roof on an older village house). Homepage now shows SIX distinct
+  subjects across five categories. Rejected on purpose: the painters-on-
+  ladders shot (matching uniforms + Mediterranean villa = stock) and every
+  interior/render. ⚠️ **Owner must confirm the three Tilda-sourced photos
+  (terrace + these two) are his company's own works before launch** —
+  logged in code, RU-REVIEW and Q-14. Verified: 115/115, browser 6/6 unique
+  images decoding, no overflow, tripwire PASS.
+
 - **Projects: one card per DISTINCT building (owner corrected me 3x)**
   (2026-08-05). Frame-by-frame verification settles it: `p-0018/0020/0021/
   0022/0023/0024` are ALL the same white house (identical grey vertical
