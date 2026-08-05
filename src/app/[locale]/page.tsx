@@ -65,12 +65,14 @@ export default async function Home({ params }: PageProps) {
   const projects = t.raw("projects.items") as Project[];
   const testimonials = t.raw("testimonials.items") as Testimonial[];
 
-  // Real interim imagery for the project index rows (Q-06 placeholders retired).
+  // REAL drone photos from the owner's portfolio set (same files /portofoliu
+  // serves). Interim pairing with the four project rows — the photos are all
+  // genuinely the company's builds, but per-project matching awaits Q-14.
   const PROJECT_IMAGES = [
-    "/images/projects/hero-house.jpg",
-    "/images/projects/facade-stone.jpg",
-    "/images/projects/roof-install.jpg",
-    "/images/projects/finish-terrace.jpg",
+    "/portofoliu/p-0018.webp",
+    "/portofoliu/p-0021.webp",
+    "/portofoliu/p-0020.webp",
+    "/portofoliu/p-0034.webp",
   ];
 
   return (
@@ -103,6 +105,74 @@ export default async function Home({ params }: PageProps) {
       {/* The configurator promo that briefly lived here was removed on owner
           direction (2026-08-04) — idea saved to the backlog pool (RC-505);
           the preview asset stays at /images/configurator-preview.jpg. */}
+
+      {/* 2b — RECENT PROJECTS as LARGE photo cards, straight after the build
+          story (owner reorder 2026-08-05: "more real projects, bigger").
+          Real drone photos of the company's builds; per-project metadata
+          pairing stays interim until Q-14. */}
+      <section
+        aria-labelledby="projects-title"
+        className="border-b border-border"
+      >
+        <div className="mx-auto w-full max-w-6xl px-gutter py-16 lg:py-20">
+          <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+            <div className="flex flex-col gap-3">
+              <p className="micro-label text-accent-strong">
+                {t("projects.eyebrow")}
+              </p>
+              <h2
+                id="projects-title"
+                className="font-serif text-display-lg text-foreground"
+              >
+                {t("projects.title")}
+              </h2>
+            </div>
+            <Link
+              href="/portofoliu"
+              className="inline-flex items-center gap-1 text-caption font-semibold text-accent-strong hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong"
+            >
+              {t("projects.cta")}
+              <Icon name="arrowUpRight" size={16} />
+            </Link>
+          </div>
+          <ul className="grid gap-6 sm:grid-cols-2">
+            {projects.map((p, i) => (
+              <li key={`${p.location}-${p.work}`}>
+                <Link
+                  href="/portofoliu"
+                  className="group block overflow-hidden rounded-2xl border border-border bg-surface transition-shadow hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent-strong"
+                >
+                  <span className="relative block aspect-[4/3] overflow-hidden">
+                    <Image
+                      src={PROJECT_IMAGES[i % PROJECT_IMAGES.length]}
+                      alt={`${p.location} · ${p.work}`}
+                      fill
+                      sizes="(min-width: 640px) 50vw, 100vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                    />
+                  </span>
+                  <span className="flex flex-col gap-1 p-5">
+                    <span className="flex items-baseline justify-between gap-2">
+                      <span className="flex items-baseline gap-2 font-serif text-h3 text-foreground">
+                        {p.location}
+                        <span className="text-caption font-sans text-muted-foreground">
+                          {p.size}
+                        </span>
+                      </span>
+                      <span className="micro-label shrink-0 text-muted-foreground">
+                        {p.year}
+                      </span>
+                    </span>
+                    <span className="text-caption text-muted-foreground">
+                      {p.work}
+                    </span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
       {/* 3 — TESTIMONIALS, straight after the build story (owner direction
           2026-08-04: proof belongs next to the story it proves). VERBATIM
@@ -270,69 +340,8 @@ export default async function Home({ params }: PageProps) {
         videoId="O7BeibkaoMw"
       />
 
-      {/* 6 — RECENT PROJECTS as editorial index rows */}
-      <section
-        aria-labelledby="projects-title"
-        className="border-b border-border"
-      >
-        <div className="mx-auto w-full max-w-6xl px-gutter py-16 lg:py-20">
-          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-            <div className="flex flex-col gap-3">
-              <p className="micro-label text-accent-strong">
-                {t("projects.eyebrow")}
-              </p>
-              <h2
-                id="projects-title"
-                className="font-serif text-display-lg text-foreground"
-              >
-                {t("projects.title")}
-              </h2>
-            </div>
-            <Link
-              href="/portofoliu"
-              className="inline-flex items-center gap-1 text-caption font-semibold text-accent-strong hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong"
-            >
-              {t("projects.cta")}
-              <Icon name="arrowUpRight" size={16} />
-            </Link>
-          </div>
-          <ul className="border-t border-border">
-            {projects.map((p, i) => (
-              <li key={`${p.location}-${p.work}`}>
-                <Link
-                  href="/portofoliu"
-                  className="group grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-border py-5 transition-colors hover:bg-muted focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent-strong sm:gap-6"
-                >
-                  {/* Interim real project thumbnail (Q-06) */}
-                  <span className="relative h-14 w-20 shrink-0 overflow-hidden rounded-md border border-border sm:h-16 sm:w-24">
-                    <Image
-                      src={PROJECT_IMAGES[i % PROJECT_IMAGES.length]}
-                      alt=""
-                      fill
-                      sizes="96px"
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </span>
-                  <div className="flex flex-col gap-1">
-                    <span className="flex items-baseline gap-2 font-serif text-h3 text-foreground">
-                      {p.location}
-                      <span className="text-caption font-sans text-muted-foreground">
-                        {p.size}
-                      </span>
-                    </span>
-                    <span className="text-caption text-muted-foreground">
-                      {p.work}
-                    </span>
-                  </div>
-                  <span className="micro-label hidden shrink-0 text-muted-foreground sm:block">
-                    {p.year}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      {/* Recent projects moved up, directly after the build story (owner
+          reorder 2026-08-05) — rendered there as large photo cards. */}
 
       {/* 6b — LEAD FORM after the video + recent projects (owner reorder
           2026-08-05): the visitor sees what we build, how we work and the

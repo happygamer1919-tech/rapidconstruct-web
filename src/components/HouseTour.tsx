@@ -45,21 +45,50 @@ const STAGE_TYPES: (StageType[] | null)[] = [
       src: "/images/projects/phase-foundation.jpg",
     },
   ],
-  [{ label: "Zidărie din BCA", src: "/images/stages/stage-2.jpg" }],
+  [
+    { label: "Zidărie din BCA", src: "/images/stages/stage-2.jpg" },
+    {
+      label: "Zidărie din cărămidă",
+      src: "/images/stages/types/caramida.jpg",
+    },
+    {
+      label: "Beton armat în cofraj",
+      src: "/images/stages/types/beton-cofraj.jpg",
+    },
+    {
+      label: "Termoizolație fațadă",
+      src: "/images/stages/types/termoizolatie.jpg",
+    },
+  ],
   [
     { label: "Țiglă metalică", src: "/images/stages/stage-3.jpg" },
+    {
+      label: "Șindrilă bituminoasă",
+      src: "/images/stages/types/sindrila.jpg",
+    },
     { label: "Montaj învelitoare", src: "/images/projects/roof-install.jpg" },
   ],
-  [{ label: "Ferestre și uși montate", src: "/images/stages/stage-4.jpg" }],
+  [
+    { label: "Ferestre și uși montate", src: "/images/stages/stage-4.jpg" },
+    {
+      label: "Ușă de intrare",
+      src: "/images/stages/types/usa-intrare.jpg",
+    },
+    {
+      label: "Ferestre panoramice",
+      src: "/images/stages/types/ferestre-panoramice.jpg",
+    },
+  ],
   [
     { label: "Casa predată", src: "/images/hero/hero-finished.jpg" },
     {
-      label: "Fațadă cu piatră naturală",
-      src: "/images/projects/facade-stone.jpg",
+      label: "Jgheaburi și burlane",
+      src: "/images/stages/types/jgheaburi.jpg",
     },
+    { label: "Pavaj și alee", src: "/images/stages/types/pavaj.jpg" },
     {
-      label: "Terasă și finisaje exterioare",
-      src: "/images/projects/finish-terrace.jpg",
+      label: "Gard și poartă",
+      src: "/images/stages/types/gard-poarta.jpg",
     },
   ],
 ];
