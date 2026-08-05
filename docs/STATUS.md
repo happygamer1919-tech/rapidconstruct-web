@@ -131,6 +131,33 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **FAQ consolidated into one hub** (2026-08-05, owner). Every service FAQ
+  moved to `/intrebari-frecvente`: **9 groups, 58 questions**, sorted
+  alphabetically by localised label, each with a stable #anchor and a
+  jump-list. Service pages lost their accordion AND their FAQPage JSON-LD
+  (markup without visible FAQs is a penalty) and gained a signpost card to
+  their group. Copy still lives in each service namespace — the hub reads it
+  from there, so nothing forked. City FAQs deliberately stayed put
+  (location-specific = the GEO point of those pages).
+
+- **RC-127 /proiectare-3d rebuilt around the owner's REAL offer**
+  (2026-08-05). Their live Tilda page sells four things under Proiectare &
+  Design — arhitectură, design interior/exterior, fațade 3D, autorizații —
+  each with deliverables; ours had flattened it to one generic process list.
+  Now a bespoke page (first to leave the ServicePage template) with:
+  **FacadeCompare**, an interactive A/B wipe of the SAME house in two facade
+  schemes (2 renders from the approved finished frame, 4 credits, balance
+  **372.5**) — their "compari variante" promise made usable; the four offers
+  as cards with real bullets/badges, mirrored into Service JSON-LD as an
+  OfferCatalog; their own promise strip (consultare gratuită · deviz 24–48h ·
+  garanție în contract); sharper CTA "Cere fațada ta în 3D".
+  A11y: the wipe is a real range input (keyboard + screen reader), clip-path
+  for smooth dragging, pointer events for mouse+touch, reduced-motion drops
+  the easing. Verified: 115/115, slider tracked live (15→inset 85%,
+  85→inset 15%), no overflow, tripwire PASS.
+  **Also found:** their mega-menu lists ~40 sub-services vs our 8 — a
+  services-taxonomy gap worth its own plan (SEO + completeness).
+
 - **SERVICII PASS — step 1: real photography on all 8 pages** (2026-08-05).
   First page group after the homepage freeze. Audit found imagery was the
   weak point, including two embarrassments: `/proiectare-3d` shipped a STOCK
