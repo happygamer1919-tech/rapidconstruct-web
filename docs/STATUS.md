@@ -131,6 +131,26 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **SERVICII PASS — step 1: real photography on all 8 pages** (2026-08-05).
+  First page group after the homepage freeze. Audit found imagery was the
+  weak point, including two embarrassments: `/proiectare-3d` shipped a STOCK
+  AMERICAN blueprint (labels "KITCHEN", "2 CAR GARAGE") and `/finisaje` an
+  abstract grey texture swatch; `/instalatii` had NO photo; `/acoperisuri`
+  and `/renovari-la-cheie` shared one. Now each page shows its own service:
+  acoperișuri → drone shingle roof · fațade → mineral-wool insulation
+  mid-application · renovări → brick house with new roof · finisaje →
+  travertine terrace · proiectare 3D → our blueprint-hologram frame ·
+  instalații → real heating manifold · terasamente → formed-up foundation
+  with their JCB in frame. Sources: the 70-image crawl of rapidconstruct.md,
+  hand-picked as genuine site photography.
+  ⚠️ `/constructii-industriale` STAYS INTERIM (residential townhouse photo):
+  the crawl found **zero** real hall/warehouse photography — every industrial
+  image on their site is stock. Needs an owner photo (Q-18).
+  Verified: tsc, eslint, prod build, 115/115, all 8 routes 200 with exactly
+  one H1 and the expected hero, tripwire PASS.
+  **Next in this lane:** copy/price honesty per page (Q-10), process-step and
+  FAQ quality, RU parity, internal linking between services.
+
 - **6 distinct cards — full rapidconstruct.md crawl** (2026-08-05). Crawled
   the WHOLE live site (70 unique images: home, /portofoliu, /despre-noi and
   the six service subpages — the first two had never been scraped). The
