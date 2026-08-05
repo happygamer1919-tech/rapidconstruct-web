@@ -112,6 +112,16 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **Mobile sideways-scroll bug FIXED** (2026-08-05, owner report from
+  iPhone). The stage-type strip's grid column kept `min-width:auto`, so the
+  strip's intrinsic width widened the document to 498px on a 375px viewport
+  (page dragged left/right). Fix: `min-w-0` on the column; strip stays
+  internally swipeable. TWO new regression tests pin
+  `document.scrollWidth === viewport` at 375px on `/` and
+  `/intrebari-frecvente` — this bug class shipped twice (drawer 2026-07,
+  strip now), so it is now machine-guarded. Verified on the live alias:
+  scrollWidth 375/375, strip swipeable. 115/115 Playwright, tripwire PASS.
+
 - **Stage cards made label-true; blueprint card retired** (2026-08-05, owner
   feedback). Fundația: "Săpătură și trasare" is now a realistic excavated-
   trenches shot (hologram removed), "Fundație finisată" a cured raised
