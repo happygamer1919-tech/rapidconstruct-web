@@ -13,6 +13,25 @@ browser checks and the full Playwright suite, not recalled.
 
 ---
 
+## 🔒 HOMEPAGE FROZEN — 2026-08-05
+
+The owner signed off on the homepage. **Do not change `/` (RO or RU) without
+an explicit new instruction from Max**, including "small" tweaks: order,
+copy, imagery, motion. Anything discovered while working elsewhere goes to
+BACKLOG as a ticket instead of being applied.
+
+Frozen state = `rc/lane-2026-08` @ homepage sections in this order:
+hero (build video → dim → real-project reel) · scroll-build story with stage
+strips · **6 distinct project cards** · recenzii · badges · stats · servicii
+(8 cards) · Cum lucrăm video · lead form · contact.
+
+Open follow-ups that do NOT unfreeze it (queued, owner-gated):
+- Q-14 owner photo dump → richer project cards + portfolio.
+- Owner confirmation that the 3 Tilda-sourced photos are his own work.
+- RC-126 machinery section (needs his machine photos).
+
+---
+
 ## Current state
 
 | | |
@@ -580,7 +599,29 @@ Fix applied, in order:
 
 DNS was not touched at any point.
 
-## 🟢 Next
+## 🟢 Next — PAGE-BY-PAGE PASS (started 2026-08-05)
+
+Homepage is frozen; work moves through the remaining pages ONE AT A TIME,
+each with the same loop: audit live → propose → build → verify (tsc, eslint,
+build, Playwright, browser at 375px + desktop) → deploy → tripwire → update
+this board.
+
+| # | Page | RO / RU route | State | First thing to check |
+|---|---|---|---|---|
+| 1 | Servicii (6 pages) | `/acoperisuri` … `/terasamente` | shipped, unreviewed | copy quality, real photos, price honesty (Q-10) |
+| 2 | Portofoliu | `/portofoliu` · `/ru/portfolio` | 8 photos, no filters | the same-house duplication problem lives here too |
+| 3 | Despre noi | `/despre-noi` · `/ru/o-nas` | shipped, unreviewed | Q-07 unverified claims (15+ ani, 500+ case) |
+| 4 | Contact | `/contact` · `/ru/kontakty` | form works | lead delivery (Q-03/Q-09), map, hours |
+| 5 | Întrebări frecvente | `/intrebari-frecvente` · `/ru/voprosy` | new hub | is 20 FAQs the right set post-freeze |
+| 6 | Calculator acoperiș | `/calculator-acoperis` | live | blocked on Q-10 prices |
+| 7 | City pages ×3 | `/chisinau`, `/orhei`, `/cahul` | live | thin content, GEO opportunity |
+| 8 | Politica de confidențialitate | `/politica-de-confidentialitate` | live | Q-16 legal entity + retention |
+
+**Order recommendation:** Servicii first (highest commercial value, most
+traffic intent), then Portofoliu (proof), then Despre noi (trust), then the
+rest. Awaiting Max's pick.
+
+## 🟢 Next (launch chain, unchanged)
 
 In order. Items 1–3 need no owner input.
 
