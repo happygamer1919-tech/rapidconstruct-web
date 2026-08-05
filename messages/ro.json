@@ -1434,6 +1434,18 @@
           "title": "Terasă cu bucătărie de vară",
           "desc": "Terasă placată cu travertin, geamuri glisante mari și șemineu exterior din piatră, chiar lângă casă.",
           "alt": "Terasă placată cu travertin, cu geamuri glisante și șemineu exterior din piatră"
+        },
+        {
+          "tag": "Acoperișuri",
+          "title": "Acoperiș din șindrilă bituminoasă",
+          "desc": "Acoperiș în patru ape din șindrilă bituminoasă antracit, cu dolii și coșuri finisate, pe o casă nouă din suburbie.",
+          "alt": "Acoperiș în patru ape din șindrilă bituminoasă antracit pe o casă nouă"
+        },
+        {
+          "tag": "Renovări",
+          "title": "Acoperiș nou pe casă existentă",
+          "desc": "Înlocuirea completă a acoperișului cu țiglă metalică antracit, pe o casă mai veche din zona colinară.",
+          "alt": "Casă cu acoperiș nou din țiglă metalică antracit, văzută din dronă"
         }
       ]
     },
