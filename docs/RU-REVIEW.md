@@ -125,11 +125,11 @@ Photo recovered from the owner's own Tilda site. Owner review pending.
 stock; these two were hand-picked as genuine site photography. Owner must
 confirm they are his company's works before launch (Q-14).
 
-## 2026-08-05 — RC-127 servicePages.proiectare (compare / offers / promise)
+## 2026-08-05 — RC-127 servicePages.proiectare (plan / offers / promise)
 
-New RU blocks for the rebuilt 3D page: `compare` (Вариант A / B, «Сравните
-фасад до начала работ», labels + hint + CTA «Запросить свой фасад в 3D»),
-`offers` (Архитектура · Дизайн интерьера и экстерьера · Фасады в 3D ·
+New RU blocks for the rebuilt 3D page: `plan` (Проект, а не картинка · «От
+плана к 3D-модели» · План 1-го этажа / 3D-модель · 7 room labels with areas
+in м² · sample disclaimer), `offers` (Архитектура · Дизайн интерьера и экстерьера · Фасады в 3D ·
 Разрешения и согласования — each with 3 bullets + 3 badges) and `promise`
 (Бесплатная консультация · Смета за 24–48 ч · Гарантия в договоре).
 Copy mirrors the owner's own live RO wording. Owner review pending.

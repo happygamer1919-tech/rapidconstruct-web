@@ -886,16 +886,6 @@
         "ctaQuote": "Solicită ofertă gratuită",
         "ctaCall": "Sună acum"
       },
-      "compare": {
-        "eyebrow": "Variantă A / B",
-        "title": "Compară fațada înainte s-o execuți",
-        "intro": "Aceeași casă, două concepte de fațadă. Trage de mâner și vezi diferența — exact așa lucrăm cu tine înainte de execuție.",
-        "labelA": "Varianta A · tencuială caldă + lemn",
-        "labelB": "Varianta B · alb + piatră naturală",
-        "aria": "Trage pentru a compara varianta A cu varianta B",
-        "hint": "Trage de mâner",
-        "cta": "Cere fațada ta în 3D"
-      },
       "offers": {
         "eyebrow": "Ce facem",
         "title": "Patru servicii, un singur proiect",
@@ -963,6 +953,55 @@
           "Consultare gratuită",
           "Deviz în 24–48h",
           "Garanție în contract"
+        ]
+      },
+      "plan": {
+        "eyebrow": "Proiectul, nu poza",
+        "title": "Din plan în model 3D",
+        "intro": "Așa arată un proiect livrat de noi: plan cu camere și suprafețe, apoi același proiect în 3D. Treci cu mouse-ul peste camere.",
+        "view2d": "Plan parter",
+        "view3d": "Model 3D",
+        "hint": "Treci peste o cameră ca să-i vezi suprafața.",
+        "sampleNote": "Exemplu de proiect. Al tău se face după terenul și nevoile tale.",
+        "renderAlt": "Modelul 3D al casei proiectate",
+        "totalLabel": "Suprafață construită parter:",
+        "totalArea": "118 m²",
+        "rooms": [
+          {
+            "id": "living",
+            "name": "Living + dining",
+            "area": "34 m²"
+          },
+          {
+            "id": "bucatarie",
+            "name": "Bucătărie",
+            "area": "14 m²"
+          },
+          {
+            "id": "baie",
+            "name": "Baie",
+            "area": "6 m²"
+          },
+          {
+            "id": "terasa",
+            "name": "Terasă acoperită",
+            "area": "18 m²"
+          },
+          {
+            "id": "hol",
+            "name": "Hol + scări",
+            "area": "12 m²"
+          },
+          {
+            "id": "dormitor",
+            "name": "Dormitor",
+            "area": "16 m²"
+          },
+          {
+            "id": "garaj",
+            "name": "Garaj / carport",
+            "area": "18 m²"
+          }
         ]
       }
     },

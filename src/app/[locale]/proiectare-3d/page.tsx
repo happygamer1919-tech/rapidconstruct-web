@@ -4,7 +4,7 @@ import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link, getPathname } from "@/i18n/navigation";
 import { Icon } from "@/components/icons";
-import FacadeCompare from "@/components/FacadeCompare";
+import PlanViewer, { type PlanRoom } from "@/components/PlanViewer";
 import Reveal from "@/components/Reveal";
 import { site } from "@/config/site";
 import { routing } from "@/i18n/routing";
@@ -29,10 +29,11 @@ type Offer = {
  * design interior/exterior, fațade 3D, autorizații), each with its own
  * deliverables — one generic process list threw all of that away.
  *
- * The centrepiece is FacadeCompare: their published promise is "compari
- * variante" for facades, so the page lets the visitor actually do it on the
- * same house instead of describing it. Both renders derive from the approved
- * finished-house frame, so the A/B reads as one building with two schemes.
+ * The centrepiece is PlanViewer, an interactive floor plan that flips to the
+ * 3D view of the same project. An earlier A/B facade wipe was built and
+ * REJECTED (owner, 2026-08-05): comparing finished facades sells the
+ * building, and this page sells the PROJECTING — plans, room programs,
+ * areas, documentation. Keep that distinction when editing this page.
  */
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -65,6 +66,20 @@ export default async function Proiectare3dPage({ params }: PageProps) {
   const tRoot = await getTranslations();
 
   const steps = t.raw("process.steps") as Step[];
+  // Room geometry lives in code (it is layout, not copy); names and areas come
+  // from the catalog so RO/RU stay translatable.
+  const PLAN_GEOMETRY: Record<string, Omit<PlanRoom, "id" | "name" | "area">> = {
+    living: { x: 60, y: 60, w: 370, h: 240 },
+    bucatarie: { x: 430, y: 60, w: 270, h: 240 },
+    baie: { x: 700, y: 60, w: 240, h: 240 },
+    terasa: { x: 60, y: 300, w: 270, h: 260, outdoor: true },
+    hol: { x: 330, y: 300, w: 230, h: 260 },
+    dormitor: { x: 560, y: 300, w: 190, h: 260 },
+    garaj: { x: 750, y: 300, w: 190, h: 260, outdoor: true },
+  };
+  const planRooms = (
+    t.raw("plan.rooms") as { id: string; name: string; area: string }[]
+  ).map((r) => ({ ...r, ...PLAN_GEOMETRY[r.id] }));
   const offers = t.raw("offers.items") as Offer[];
   const promises = t.raw("promise.items") as string[];
 
@@ -149,45 +164,34 @@ export default async function Proiectare3dPage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* A/B FACADE COMPARE — the "Variantă A/B" promise, made usable. */}
-      <section
-        aria-labelledby="compare-title"
-        className="border-b border-border"
-      >
+      {/* THE DELIVERABLE — plan first, then the same project in 3D. */}
+      <section aria-labelledby="plan-title" className="border-b border-border">
         <div className="mx-auto w-full max-w-5xl px-gutter py-16 lg:py-20">
           <div className="mb-8 flex flex-col gap-3">
             <p className="micro-label text-accent-strong">
-              {t("compare.eyebrow")}
+              {t("plan.eyebrow")}
             </p>
             <h2
-              id="compare-title"
+              id="plan-title"
               className="font-serif text-display-lg text-foreground"
             >
-              {t("compare.title")}
+              {t("plan.title")}
             </h2>
             <p className="max-w-2xl text-body-lg text-muted-foreground">
-              {t("compare.intro")}
+              {t("plan.intro")}
             </p>
           </div>
-          <FacadeCompare
-            beforeSrc="/images/projects/fatada-varianta-a.jpg"
-            afterSrc="/images/projects/fatada-varianta-b.jpg"
-            beforeLabel={t("compare.labelA")}
-            afterLabel={t("compare.labelB")}
-            ariaLabel={t("compare.aria")}
+          <PlanViewer
+            rooms={planRooms}
+            view2dLabel={t("plan.view2d")}
+            view3dLabel={t("plan.view3d")}
+            hint={t("plan.hint")}
+            sampleNote={t("plan.sampleNote")}
+            renderSrc="/images/hero/hero-finished.jpg"
+            renderAlt={t("plan.renderAlt")}
+            totalLabel={t("plan.totalLabel")}
+            totalArea={t("plan.totalArea")}
           />
-          <div className="mt-5 flex flex-wrap items-center gap-4">
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-body font-semibold text-accent-foreground transition-colors hover:bg-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong"
-            >
-              {t("compare.cta")}
-              <Icon name="arrowRight" size={18} />
-            </Link>
-            <span className="text-caption text-muted-foreground">
-              {t("compare.hint")}
-            </span>
-          </div>
         </div>
       </section>
 
