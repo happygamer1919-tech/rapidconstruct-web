@@ -11,7 +11,6 @@ import { buildMetadata } from "@/lib/seo";
 import { SITE_URL } from "@/i18n/metadata";
 
 type PageProps = { params: Promise<{ locale: string }> };
-type Step = { title: string; desc: string };
 type Offer = {
   title: string;
   desc: string;
@@ -29,6 +28,11 @@ type Offer = {
  * owner's own live site sells FOUR distinct things under it (arhitectură,
  * design interior/exterior, fațade 3D, autorizații), each with its own
  * deliverables — one generic process list threw all of that away.
+ *
+ * The four-step "process" block was removed on owner direction (2026-08-05):
+ * oversized and redundant once each offer lists its own deliverables. Its
+ * copy stays in the catalog (servicePages.proiectare.process) if it is ever
+ * wanted back in a compact form.
  *
  * LAYOUT RULE (owner, 2026-08-05, after two rejected attempts): mirror the
  * pattern that already works on their own live page — image, card, image,
@@ -67,7 +71,6 @@ export default async function Proiectare3dPage({ params }: PageProps) {
   const t = await getTranslations("servicePages.proiectare");
   const tRoot = await getTranslations();
 
-  const steps = t.raw("process.steps") as Step[];
   const offers = t.raw("offers.items") as Offer[];
   const promises = t.raw("promise.items") as string[];
 
@@ -214,42 +217,6 @@ export default async function Proiectare3dPage({ params }: PageProps) {
               </li>
             ))}
           </ul>
-        </div>
-      </section>
-
-      {/* PROCESS */}
-      <section
-        aria-labelledby="process-title"
-        className="border-b border-border"
-      >
-        <div className="mx-auto w-full max-w-6xl px-gutter py-16 lg:py-20">
-          <div className="mb-10 flex flex-col gap-3">
-            <p className="micro-label text-accent-strong">
-              {t("process.eyebrow")}
-            </p>
-            <h2
-              id="process-title"
-              className="font-serif text-display-lg text-foreground"
-            >
-              {t("process.title")}
-            </h2>
-          </div>
-          <ol className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {steps.map((s, i) => (
-              <li
-                key={s.title}
-                className="flex flex-col gap-2 rounded-xl border border-border bg-surface p-5"
-              >
-                <span className="font-serif text-display-lg leading-none text-accent-strong">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="text-body font-semibold text-foreground">
-                  {s.title}
-                </h3>
-                <p className="text-caption text-muted-foreground">{s.desc}</p>
-              </li>
-            ))}
-          </ol>
         </div>
       </section>
 
