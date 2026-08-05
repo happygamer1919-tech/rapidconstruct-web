@@ -144,17 +144,25 @@ Shipped and verified. PR numbers in brackets.
   (2026-08-05). Their live Tilda page sells four things under Proiectare &
   Design — arhitectură, design interior/exterior, fațade 3D, autorizații —
   each with deliverables; ours had flattened it to one generic process list.
-  Now a bespoke page (first to leave the ServicePage template) with:
-  **FacadeCompare**, an interactive A/B wipe of the SAME house in two facade
-  schemes (2 renders from the approved finished frame, 4 credits, balance
-  **372.5**) — their "compari variante" promise made usable; the four offers
-  as cards with real bullets/badges, mirrored into Service JSON-LD as an
-  OfferCatalog; their own promise strip (consultare gratuită · deviz 24–48h ·
-  garanție în contract); sharper CTA "Cere fațada ta în 3D".
-  A11y: the wipe is a real range input (keyboard + screen reader), clip-path
-  for smooth dragging, pointer events for mouse+touch, reduced-motion drops
-  the easing. Verified: 115/115, slider tracked live (15→inset 85%,
-  85→inset 15%), no overflow, tripwire PASS.
+  Now a bespoke page (first to leave the ServicePage template) with the four
+  offers as cards (real bullets + badges, mirrored into Service JSON-LD as an
+  OfferCatalog), their own promise strip (consultare gratuită · deviz 24–48h ·
+  garanție în contract), and a sharper CTA.
+  **Centrepiece = `PlanViewer`**: an interactive architectural floor plan in
+  SVG (thick walls, hatched terrace/carport, room program with areas,
+  dimension line, built-area figure) that flips via tabs to the same project
+  in 3D. Hover or keyboard-focus a room → it highlights and the readout names
+  it. SVG on purpose: image models write gibberish on technical sheets, and
+  this keeps real RO/RU labels, stays crisp, costs nothing, and is
+  keyboard/screen-reader navigable. Geometry in code, names/areas in the
+  catalog.
+  ⚠️ **REJECTED and removed the same day: a FacadeCompare A/B wipe** of two
+  finished facade schemes (2 renders, 4 credits, balance **372.5**). Owner:
+  *"it's not about the building, it's about the projecting."* Rule for this
+  page: it sells DESIGN OUTPUT (plans, room programs, areas, documentation),
+  not finished-house beauty shots. The two renders survive at
+  `public/images/projects/fatada-varianta-{a,b}.jpg` — reuse candidates for
+  `/fatade`, not here.
   **Also found:** their mega-menu lists ~40 sub-services vs our 8 — a
   services-taxonomy gap worth its own plan (SEO + completeness).
 
