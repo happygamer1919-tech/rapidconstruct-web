@@ -140,6 +140,20 @@ Shipped and verified. PR numbers in brackets.
   from there, so nothing forked. City FAQs deliberately stayed put
   (location-specific = the GEO point of those pages).
 
+- **RC-127 final pass: image-led, mobile-first** (2026-08-05). Owner rejected
+  BOTH interactive attempts and called out the text density. Checked their own
+  live page at 375px: it alternates **image → card → image → card**, every
+  offer with a full-width visual, nothing hover-dependent. Mirrored exactly.
+  `PlanViewer` and `FacadeCompare` both DELETED. Two new page-specific
+  visuals (4 credits, balance **368.5**): `design-interior-3d.jpg` (photoreal
+  interior render — we had none) and `autorizatii-dosar.jpg` (rolled drawings
+  + stamp, no legible text by design). `design-blueprint.jpg` (stock AMERICAN
+  plan: "KITCHEN", "2 CAR GARAGE") deleted for good.
+  **LAYOUT RULE for service pages, recorded in the page header:** images
+  carry the page, text stays short, and no interaction may depend on hover —
+  most visitors are on phones. Verified at 375px: 4 cards each with its own
+  image, zero hover-dependent elements, no overflow, tripwire PASS.
+
 - **RC-127 /proiectare-3d rebuilt around the owner's REAL offer**
   (2026-08-05). Their live Tilda page sells four things under Proiectare &
   Design — arhitectură, design interior/exterior, fațade 3D, autorizații —
