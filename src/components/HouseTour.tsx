@@ -227,7 +227,11 @@ export default function HouseTour({
                 model kit clicking on. The first continuous-blend version read
                 as a blurry mush mid-scroll (owner feedback 2026-08-04), so
                 transitions are quick and discrete; long overlaps are gone. */}
-            <div className="order-1 flex w-full flex-col gap-3 lg:order-2">
+            {/* min-w-0 is load-bearing: without it this grid item refuses to
+                shrink below the strip's intrinsic width (min-width:auto), the
+                strip's overflow-x never engages, and the whole PAGE scrolls
+                sideways on phones (owner bug report 2026-08-05). */}
+            <div className="order-1 flex w-full min-w-0 flex-col gap-3 lg:order-2">
               <div className="relative h-[38svh] w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-neutral-100 to-muted lg:aspect-square lg:h-auto">
                 {STAGE_IMAGES.map((src, i) => (
                   <div

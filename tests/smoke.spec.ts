@@ -163,6 +163,27 @@ test.describe("service pages (RC-103)", () => {
   }
 });
 
+test.describe("no horizontal page scroll on mobile", () => {
+  // This class of bug shipped twice: the mobile drawer (2026-07, fixed with
+  // overflow-hidden) and the stage-type strip (2026-08-05, fixed with
+  // min-w-0 on its grid column — min-width:auto let the strip's intrinsic
+  // width widen the document). Google flags it as "content wider than
+  // screen" and the page drags sideways on phones. Guard the homepage and
+  // the FAQ hub at iPhone width for good.
+  for (const path of ["/", "/intrebari-frecvente"]) {
+    test(`${path} does not scroll sideways at 375px`, async ({ page }) => {
+      await page.setViewportSize({ width: 375, height: 812 });
+      await page.goto(path);
+      await page.waitForTimeout(500);
+      const { vw, sw } = await page.evaluate(() => ({
+        vw: document.documentElement.clientWidth,
+        sw: document.documentElement.scrollWidth,
+      }));
+      expect(sw, `document ${sw}px wider than viewport ${vw}px`).toBe(vw);
+    });
+  }
+});
+
 test.describe("FAQ hub (moved off homepage 2026-08-04)", () => {
   test("/intrebari-frecvente (RO) responds 200 with an H1 and FAQPage JSON-LD", async ({
     page,
