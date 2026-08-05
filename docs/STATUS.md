@@ -3,13 +3,13 @@
 Living board. Background and reasoning live in `docs/PROJECT-MEMORY.md`; this
 file is only *what is true now and what happens next*.
 
-**Last updated: 2026-07-24 (configurator lane)** — verified against git, live
+**Last updated: 2026-08-05 (homepage freeze)** — verified against git, live
 browser checks and the full Playwright suite, not recalled.
 
-> ⚠️ This copy of STATUS lives on `feature/configurator` (branched from
-> `feature/3d-hero`). `main`'s STATUS has newer launch-state facts (verified
-> 2026-07-24: tripwire PASS, main @ `c0f3f5b`); this copy adds the configurator
-> lane on top of the 3d-hero state it branched from.
+> This copy of STATUS lives on **`rc/lane-2026-08`**, the active lane that
+> carries every 2026-08 change (video hero, scroll-build story, services
+> expansion, FAQ hub, project cards). It is ahead of `main` and unmerged by
+> design until the owner signs off on the whole site.
 
 ---
 
@@ -37,16 +37,16 @@ Open follow-ups that do NOT unfreeze it (queued, owner-gated):
 | | |
 |---|---|
 | **Owner review URL** | **https://rapidconstruct-web.vercel.app** — public, no login, **non-indexable** (verified 2026-08-04, tripwire PASS). Shows the **Higgsfield build-video hero** (`rc/lane-2026-08`). |
-| Immutable build behind it | `https://rapidconstruct-1ri8k4eir-sm33xys-projects.vercel.app` |
+| Immutable build behind it | `https://rapidconstruct-49oiejyru-sm33xys-projects.vercel.app` (2026-08-05) |
 | **Production site** | `rapidconstruct.md` — **still Tilda** (`x-tilda-server: 22`, A `194.48.203.138`, NS `ns1/ns2.tildadns.com`). **DNS untouched.** |
 | **Default branch** | `main` @ `0f6d516` — now carries the Q-08 safeguard (cherry-picked). No 3D work. |
-| **Working branch** | `feature/3d-hero` @ `470359c` — approved scene port + LANE A polish/audit. **Pushed to origin 2026-07-24** (the pending push below is resolved). Unmerged by design. |
-| **Configurator branch** | `feature/configurator` (this branch, from `feature/3d-hero`) — 3D house configurator: data-driven scene engine + `/configurator` page. ⚠️ Here `rapidconstruct-scene.js` is a refactored engine, no longer byte-identical to the port — default output verified visually identical; the verbatim copy still lives on `feature/3d-hero`. |
+| **Working branch** | **`rc/lane-2026-08`** @ `8ccdf9a` — the active lane (all 2026-08 work). Pushed; unmerged by design. |
+| **Configurator 3D** | **SHELVED 2026-08-05** (owner). Route/nav/sitemap entries removed, `/configurator` 404s; engine + components stay dormant in-repo. Revival recipe in BACKLOG RC-505. |
 | **Open PRs** | None. |
 | **Vercel env** | `RESEND_API_KEY` (Production) only. **`NEXT_PUBLIC_SITE_URL` deliberately absent** — see the cutover box below. |
 | **Repo** | `happygamer1919-tech/rapidconstruct-web`, Vercel project `rapidconstruct-web` (org `sm33xys-projects`) |
 | **Dev server** | `npm run dev` → port 3800 |
-| **Pages** | 16 routes × RO/RU |
+| **Pages** | 18 routes × RO/RU — **36 sitemap locs** (verified live 2026-08-05; RC-402 checklist still says 28/30/32 → recount at audit) |
 
 ### 🔴 CUTOVER-DAY REQUIREMENT — do not lose this
 
