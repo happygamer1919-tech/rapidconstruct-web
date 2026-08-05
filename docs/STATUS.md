@@ -112,6 +112,14 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **Stage cards made label-true; blueprint card retired** (2026-08-05, owner
+  feedback). Fundația: "Săpătură și trasare" is now a realistic excavated-
+  trenches shot (hologram removed), "Fundație finisată" a cured raised
+  plinth (was near-duplicating the cofraj photo). Acoperișul: "Montaj
+  învelitoare" now shows exposed battens + partial tile (was a dark texture
+  reading as a gate). 3 i2i images, 6 credits, balance **378.5**. Verified:
+  113/113, strips browser-checked, assets 200 on alias, tripwire PASS.
+
 - **RC-125 COMPLETE + projects as big cards** (2026-08-05). All five stage
   strips filled: 4/4/3/3/4 labeled cards. 9 new type images generated (18
   credits, balance 384.5): caramida / beton-cofraj / termoizolatie /
