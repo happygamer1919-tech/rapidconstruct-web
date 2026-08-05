@@ -885,6 +885,85 @@
         "intro": "Programează o discuție gratuită. Îți arătăm cum lucrăm în 3D.",
         "ctaQuote": "Solicită ofertă gratuită",
         "ctaCall": "Sună acum"
+      },
+      "compare": {
+        "eyebrow": "Variantă A / B",
+        "title": "Compară fațada înainte s-o execuți",
+        "intro": "Aceeași casă, două concepte de fațadă. Trage de mâner și vezi diferența — exact așa lucrăm cu tine înainte de execuție.",
+        "labelA": "Varianta A · tencuială caldă + lemn",
+        "labelB": "Varianta B · alb + piatră naturală",
+        "aria": "Trage pentru a compara varianta A cu varianta B",
+        "hint": "Trage de mâner",
+        "cta": "Cere fațada ta în 3D"
+      },
+      "offers": {
+        "eyebrow": "Ce facem",
+        "title": "Patru servicii, un singur proiect",
+        "items": [
+          {
+            "title": "Arhitectură",
+            "desc": "Proiectăm case și spații cu un concept corect: planuri eficiente, circulație logică, lumină naturală și soluții adaptate terenului.",
+            "bullets": [
+              "Concept și planuri arhitecturale",
+              "Optimizare suprafețe și costuri",
+              "Consultanță pentru materiale și etape"
+            ],
+            "badges": [
+              "Plan clar",
+              "Funcțional",
+              "Optimizare buget"
+            ]
+          },
+          {
+            "title": "Design interior și exterior",
+            "desc": "Creăm conceptul de design cu randări 3D și selecții de materiale, ca să vezi rezultatul final înainte de execuție.",
+            "bullets": [
+              "Randări 3D și moodboard",
+              "Palete de culori, materiale și lumină",
+              "Recomandări practice, ușor de întreținut"
+            ],
+            "badges": [
+              "3D vizual",
+              "Stil modern",
+              "Coerență"
+            ]
+          },
+          {
+            "title": "Fațade 3D",
+            "desc": "Îți prezentăm fațada în 3D înainte de execuție: vezi cum arată, compari variante și alegi în siguranță, fără surprize pe șantier.",
+            "bullets": [
+              "Randări de fațadă cu culori și materiale",
+              "Propuneri de volumetrie și detalii",
+              "Recomandări pentru eficiență și cost"
+            ],
+            "badges": [
+              "Look premium",
+              "Variantă A/B",
+              "Decizie rapidă"
+            ]
+          },
+          {
+            "title": "Autorizații și avize",
+            "desc": "Te ajutăm să pregătești și să depui actele necesare, ca să nu pierzi timp cu pași greșiți și drumuri inutile.",
+            "bullets": [
+              "Verificare dosar și cerințe",
+              "Îndrumare pentru avize și aprobări",
+              "Coordonarea documentației până la final"
+            ],
+            "badges": [
+              "Documente corecte",
+              "Fără stres",
+              "Ghidare"
+            ]
+          }
+        ]
+      },
+      "promise": {
+        "items": [
+          "Consultare gratuită",
+          "Deviz în 24–48h",
+          "Garanție în contract"
+        ]
       }
     },
     "instalatii": {
