@@ -71,15 +71,21 @@ export default async function Home({ params }: PageProps) {
   // Orhei/Costești/Cahul/Chișinău rows forced wrong photo pairings because
   // the set only contains three distinct buildings (owner flagged the
   // duplicates twice, 2026-08-05).
+  // Six works, each visually distinct at a glance and spanning six service
+  // categories (owner: 6 cards, no repeated-looking buildings). Three
+  // different buildings + a terrace + two close-up detail shots — the
+  // details read as their own work, not as "that house again".
   const pfItems = tPortfolio.raw("projects.items") as PortfolioItem[];
   const RECENT_PROJECTS = [
     { item: pfItems[0], img: "/portofoliu/p-0018.webp" }, // casă parter+etaj
-    // Item 8 = the travertine summer-kitchen terrace, recovered from the
-    // owner's own Tilda site (the solar-roof shot it replaces was the same
-    // building as card 1 — owner flagged the duplicate twice).
+    // Item 8 = travertine summer-kitchen terrace, recovered from the owner's
+    // own Tilda site (the solar-roof shot it replaced was the same building
+    // as card 1 — owner flagged that duplicate twice).
     { item: pfItems[8], img: "/images/projects/terasa-travertin.jpg" },
     { item: pfItems[6], img: "/portofoliu/p-0034.webp" }, // duplex modern
     { item: pfItems[7], img: "/portofoliu/p-0037.webp" }, // ansamblu la roșu
+    { item: pfItems[5], img: "/portofoliu/p-0024.webp" }, // pompă de căldură
+    { item: pfItems[4], img: "/portofoliu/p-0023.webp" }, // detaliu acoperiș
   ].filter((r) => r.item);
 
   return (
@@ -142,27 +148,27 @@ export default async function Home({ params }: PageProps) {
               <Icon name="arrowUpRight" size={16} />
             </Link>
           </div>
-          <ul className="grid gap-6 sm:grid-cols-2">
+          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {RECENT_PROJECTS.map(({ item: p, img }) => (
               <li key={p.title}>
                 <Link
                   href="/portofoliu"
-                  className="group block overflow-hidden rounded-2xl border border-border bg-surface transition-shadow hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent-strong"
+                  className="group block h-full overflow-hidden rounded-xl border border-border bg-surface transition-shadow hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent-strong"
                 >
-                  <span className="relative block aspect-[4/3] overflow-hidden">
+                  <span className="relative block aspect-[3/2] overflow-hidden">
                     <Image
                       src={img}
                       alt={p.alt}
                       fill
-                      sizes="(min-width: 640px) 50vw, 100vw"
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                     />
                   </span>
-                  <span className="flex flex-col gap-1.5 p-5">
+                  <span className="flex flex-col gap-1 p-4">
                     <span className="micro-label text-accent-strong">
                       {p.tag}
                     </span>
-                    <span className="font-serif text-h3 text-foreground">
+                    <span className="font-serif text-body-lg leading-snug text-foreground">
                       {p.title}
                     </span>
                     <span className="text-caption text-muted-foreground">
