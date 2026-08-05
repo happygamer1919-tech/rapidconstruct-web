@@ -112,6 +112,20 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **RC-125 COMPLETE + projects as big cards** (2026-08-05). All five stage
+  strips filled: 4/4/3/3/4 labeled cards. 9 new type images generated (18
+  credits, balance 384.5): caramida / beton-cofraj / termoizolatie /
+  sindrila / usa-intrare / ferestre-panoramice / jgheaburi / pavaj /
+  gard-poarta, i2i from the existing stage frames (masters archived).
+  ⚠️ A zsh 1-based-array bug shifted every filename on first commit
+  (`c6262f0`) — fixed in `8c55866` with explicit pairs, caramida verified
+  visually, all assets 200 on the alias. "Proiecte recente" moved directly
+  after the build story and rebuilt as LARGE 2-col photo cards using the
+  REAL /portofoliu drone webps (owner: "more real projects, bigger");
+  pairing interim until Q-14. Homepage order now: hero → build → proiecte →
+  recenzii → badges → stats → servicii → video → formular → contact.
+  Verified: 113/113 Playwright, browser order/card checks, tripwire PASS.
+
 - **Homepage order tweak** (2026-08-05): lead form moved BELOW "Cum lucrăm"
   and "Proiecte recente" (owner direction) — see what we build, how we work,
   the finished projects, then the ask. Final order: hero → build → recenzii →
