@@ -39,7 +39,7 @@ export default async function Proiectare3dPage({ params }: PageProps) {
       {/* TODO(3d): white session — interactive concept model (rotate + pick finishes on the 3D house) */}
       <ServicePage
         namespace="servicePages.proiectare"
-        photo="/images/projects/design-blueprint.jpg"
+        photo="/images/hero/hero-blueprint.jpg"
         serviceType="Architectural design and 3D modelling"
       />
     </>

@@ -80,7 +80,7 @@ export default async function AcoperisuriPage({ params }: PageProps) {
       {/* HERO — real roofing photo, instant render */}
       <section className="relative isolate overflow-hidden border-b border-border">
         <Image
-          src="/images/projects/hero-house.jpg"
+          src="/images/projects/acoperis-sindrila.jpg"
           alt=""
           fill
           priority

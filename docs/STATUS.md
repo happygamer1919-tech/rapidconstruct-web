@@ -608,7 +608,7 @@ this board.
 
 | # | Page | RO / RU route | State | First thing to check |
 |---|---|---|---|---|
-| 1 | Servicii (6 pages) | `/acoperisuri` … `/terasamente` | shipped, unreviewed | copy quality, real photos, price honesty (Q-10) |
+| 1 | Servicii (**8 pages**) | `/acoperisuri` … `/terasamente` | IN REVIEW 2026-08-05 | copy quality, real photos, price honesty (Q-10) |
 | 2 | Portofoliu | `/portofoliu` · `/ru/portfolio` | 8 photos, no filters | the same-house duplication problem lives here too |
 | 3 | Despre noi | `/despre-noi` · `/ru/o-nas` | shipped, unreviewed | Q-07 unverified claims (15+ ani, 500+ case) |
 | 4 | Contact | `/contact` · `/ru/kontakty` | form works | lead delivery (Q-03/Q-09), map, hours |

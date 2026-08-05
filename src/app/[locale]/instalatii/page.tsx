@@ -39,7 +39,7 @@ export default async function InstalatiiPage({ params }: PageProps) {
   return (
     <ServicePage
       namespace="servicePages.instalatii"
-      photo={null}
+      photo="/images/projects/instalatii-termoficare.jpg"
       serviceType="Electrical and plumbing installation"
     />
   );
