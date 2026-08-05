@@ -112,6 +112,14 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **4 project cards, 4 distinct works** (2026-08-05, owner insisted on four).
+  The cards now reuse the owner-safe PORTFOLIO captions (tag/title/desc,
+  RO+RU, no invented metadata): casă parter+etaj (0018), acoperiș cu panouri
+  solare (0020), duplex modern (0034), ansamblu rezidențial la roșu (0037).
+  The old Orhei/Costești/Cahul/Chișinău rows (m²/year from Tilda) come back
+  when Q-14 lands per-project photos + metadata. Verified: 115/115, browser
+  card check, no overflow, tripwire PASS.
+
 - **Distinct project cards + Configurator 3D shelved** (2026-08-05, owner).
   (1) Owner flagged that 3 of 4 project cards showed the same house — true:
   the drone set holds only THREE distinct buildings (0018/0020/0021/0022/
