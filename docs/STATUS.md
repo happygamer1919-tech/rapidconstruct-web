@@ -112,6 +112,20 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **Distinct project cards + Configurator 3D shelved** (2026-08-05, owner).
+  (1) Owner flagged that 3 of 4 project cards showed the same house — true:
+  the drone set holds only THREE distinct buildings (0018/0020/0021/0022/
+  0023/0024 = the white house; 0034 = flat-roof duplex; 0037 = brick complex
+  in construction). Cards now: Costești → duplex 0034, Cahul (țiglă
+  metalică) → white house 0018, Chișinău (renovare) → courtyard 0024;
+  the Orhei/șindrilă card is hidden until its real photo arrives (Q-14 —
+  need owner photos to grow past 3 distinct projects). (2) Configurator 3D
+  removed sitewide (owner: "save it for future"): route deleted, nav/
+  sitemap/pathnames entries dropped, /configurator 404s, sitemap 38 → 36
+  locs (RC-402 recount), engine + components dormant in repo; RC-505 holds
+  the revival recipe. Verified: fresh build, 115/115 Playwright, browser
+  checks, tripwire PASS.
+
 - **Mobile sideways-scroll bug FIXED** (2026-08-05, owner report from
   iPhone). The stage-type strip's grid column kept `min-width:auto`, so the
   strip's intrinsic width widened the document to 498px on a 375px viewport
