@@ -3,7 +3,6 @@
 import { useRef, useState } from "react";
 import Image from "next/image";
 import {
-  AnimatePresence,
   motion,
   useMotionValueEvent,
   useReducedMotion,
@@ -26,9 +25,12 @@ const STAGE_IMAGES = [
 
 /**
  * RC-125 — stage-type strips, one list per stage, labels matched to images
- * we actually own (incl. one real formwork photo from the owner's own Tilda
- * page, JCB visible in the background). Sparse stages grow as the owner's
- * photos arrive (Q-19) or as approved Higgsfield fills land; a stage with an
+ * we actually own. Every card is now the SAME plot in the same golden-hour
+ * light: the real Tilda formwork photo was swapped for a generated one on
+ * 2026-08-05 because its flat cloudy light and different house stood out
+ * against the rest (it survives in git history and the Tilda scrape, and
+ * its background JCB is still the best machinery reference for RC-126).
+ * Real owner photos replace these as they arrive (Q-19); a stage with an
  * empty list shows no strip.
  */
 type StageType = { label: string; src: string };
@@ -187,27 +189,31 @@ export default function HouseTour({
             {/* The story copy for the phase you are on. Second on a phone so the
                 house leads; left column on desktop. */}
             <div className="order-2 flex flex-col gap-5 lg:order-1">
+              {/* No AnimatePresence/mode="wait" here: it queued an exit
+                  animation before every entry, so scrolling the runway fast
+                  backed the queue up and the heading fell out of sync with
+                  the image and the dots (owner bug report 2026-08-05 — the
+                  photo showed Fundația while the title read "3 Acoperișul").
+                  A keyed motion.div animates on mount only: whatever segment
+                  the scroll lands on renders immediately, no queue to drain. */}
               <div className="min-h-32">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={segment}
-                    initial={{ opacity: 0, y: 18 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -14 }}
-                    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                    className="flex flex-col gap-2"
-                  >
-                    <p className="font-serif text-display-lg leading-tight text-foreground">
-                      <span className="mr-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 align-middle text-h3 font-semibold lining-nums text-accent-strong">
-                        {segment + 1}
-                      </span>
-                      {active.name}
-                    </p>
-                    <p className="max-w-md text-body-lg text-muted-foreground">
-                      {active.desc}
-                    </p>
-                  </motion.div>
-                </AnimatePresence>
+                <motion.div
+                  key={segment}
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                  className="flex flex-col gap-2"
+                >
+                  <p className="font-serif text-display-lg leading-tight text-foreground">
+                    <span className="mr-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 align-middle text-h3 font-semibold lining-nums text-accent-strong">
+                      {segment + 1}
+                    </span>
+                    {active.name}
+                  </p>
+                  <p className="max-w-md text-body-lg text-muted-foreground">
+                    {active.desc}
+                  </p>
+                </motion.div>
               </div>
               <div className="flex gap-2">
                 {phases.map((p, d) => (

@@ -74,7 +74,10 @@ export default async function Home({ params }: PageProps) {
   const pfItems = tPortfolio.raw("projects.items") as PortfolioItem[];
   const RECENT_PROJECTS = [
     { item: pfItems[0], img: "/portofoliu/p-0018.webp" }, // casă parter+etaj
-    { item: pfItems[1], img: "/portofoliu/p-0020.webp" }, // acoperiș solar
+    // Item 8 = the travertine summer-kitchen terrace, recovered from the
+    // owner's own Tilda site (the solar-roof shot it replaces was the same
+    // building as card 1 — owner flagged the duplicate twice).
+    { item: pfItems[8], img: "/images/projects/terasa-travertin.jpg" },
     { item: pfItems[6], img: "/portofoliu/p-0034.webp" }, // duplex modern
     { item: pfItems[7], img: "/portofoliu/p-0037.webp" }, // ansamblu la roșu
   ].filter((r) => r.item);
