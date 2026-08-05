@@ -71,21 +71,25 @@ export default async function Home({ params }: PageProps) {
   // Orhei/Costești/Cahul/Chișinău rows forced wrong photo pairings because
   // the set only contains three distinct buildings (owner flagged the
   // duplicates twice, 2026-08-05).
-  // Six works, each visually distinct at a glance and spanning six service
-  // categories (owner: 6 cards, no repeated-looking buildings). Three
-  // different buildings + a terrace + two close-up detail shots — the
-  // details read as their own work, not as "that house again".
+  // ONE CARD PER DISTINCT BUILDING — verified by comparing the set frame by
+  // frame (2026-08-05, after the owner flagged repeats three times):
+  // p-0018/0020/0021/0022/0023/0024 are ALL the same white house (same grey
+  // vertical bands, same stucco, same dark hip roof) from different angles
+  // and zoom levels. Detail crops of it still read as "that house again",
+  // so they are out. The honest inventory is:
+  //   • white house      → p-0018 (best full view)
+  //   • modern duplex    → p-0034
+  //   • brick complex    → p-0037
+  //   • travertine terrace → from the owner's own Tilda site
+  // More cards need more BUILDINGS, not more crops (Q-14: owner photo dump).
   const pfItems = tPortfolio.raw("projects.items") as PortfolioItem[];
   const RECENT_PROJECTS = [
-    { item: pfItems[0], img: "/portofoliu/p-0018.webp" }, // casă parter+etaj
-    // Item 8 = travertine summer-kitchen terrace, recovered from the owner's
-    // own Tilda site (the solar-roof shot it replaced was the same building
-    // as card 1 — owner flagged that duplicate twice).
+    { item: pfItems[0], img: "/portofoliu/p-0018.webp" },
+    { item: pfItems[6], img: "/portofoliu/p-0034.webp" },
+    { item: pfItems[7], img: "/portofoliu/p-0037.webp" },
+    // ⚠️ Provenance: published on the owner's own Tilda site, but much of
+    // that site is stock imagery — owner must confirm this is their work.
     { item: pfItems[8], img: "/images/projects/terasa-travertin.jpg" },
-    { item: pfItems[6], img: "/portofoliu/p-0034.webp" }, // duplex modern
-    { item: pfItems[7], img: "/portofoliu/p-0037.webp" }, // ansamblu la roșu
-    { item: pfItems[5], img: "/portofoliu/p-0024.webp" }, // pompă de căldură
-    { item: pfItems[4], img: "/portofoliu/p-0023.webp" }, // detaliu acoperiș
   ].filter((r) => r.item);
 
   return (
@@ -148,7 +152,7 @@ export default async function Home({ params }: PageProps) {
               <Icon name="arrowUpRight" size={16} />
             </Link>
           </div>
-          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {RECENT_PROJECTS.map(({ item: p, img }) => (
               <li key={p.title}>
                 <Link
@@ -160,7 +164,7 @@ export default async function Home({ params }: PageProps) {
                       src={img}
                       alt={p.alt}
                       fill
-                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                     />
                   </span>
