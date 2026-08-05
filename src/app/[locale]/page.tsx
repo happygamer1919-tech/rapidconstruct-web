@@ -259,33 +259,6 @@ export default async function Home({ params }: PageProps) {
           photoreal build story above now tells the same phases, the page was
           too long, and a second scroll-driven section made phones janky. */}
 
-      {/* 4b — LEAD FORM straight after the services (negabarit.md reference,
-          owner direction 2026-08-04): the visitor who just read what we build
-          gets the ask right there, not at the bottom of the page. Same
-          ContactForm as /contact — one lead pipeline, one set of tests. */}
-      <section
-        aria-labelledby="lead-form-title"
-        className="border-b border-border bg-muted"
-      >
-        <div className="mx-auto w-full max-w-3xl px-gutter py-16 lg:py-20">
-          <div className="mb-8 flex flex-col gap-3 text-center">
-            <p className="micro-label text-accent-strong">
-              {t("leadForm.eyebrow")}
-            </p>
-            <h2
-              id="lead-form-title"
-              className="font-serif text-display-lg text-foreground"
-            >
-              {t("leadForm.title")}
-            </h2>
-            <p className="mx-auto max-w-xl text-body-lg text-muted-foreground">
-              {t("leadForm.intro")}
-            </p>
-          </div>
-          <ContactForm locale={locale} />
-        </div>
-      </section>
-
       {/* 5b — CUM LUCRĂM: real site-work video (RC-120, owner direction
           2026-08-04). Lite click-to-play embed; YouTube loads only on click. */}
       <ProcessVideo
@@ -358,6 +331,33 @@ export default async function Home({ params }: PageProps) {
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      {/* 6b — LEAD FORM after the video + recent projects (owner reorder
+          2026-08-05): the visitor sees what we build, how we work and the
+          finished projects, THEN gets the ask. Same ContactForm as /contact —
+          one lead pipeline, one set of tests. */}
+      <section
+        aria-labelledby="lead-form-title"
+        className="border-b border-border bg-muted"
+      >
+        <div className="mx-auto w-full max-w-3xl px-gutter py-16 lg:py-20">
+          <div className="mb-8 flex flex-col gap-3 text-center">
+            <p className="micro-label text-accent-strong">
+              {t("leadForm.eyebrow")}
+            </p>
+            <h2
+              id="lead-form-title"
+              className="font-serif text-display-lg text-foreground"
+            >
+              {t("leadForm.title")}
+            </h2>
+            <p className="mx-auto max-w-xl text-body-lg text-muted-foreground">
+              {t("leadForm.intro")}
+            </p>
+          </div>
+          <ContactForm locale={locale} />
         </div>
       </section>
 
