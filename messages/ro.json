@@ -1580,6 +1580,10 @@
     },
     "eyebrow": "Întrebări frecvente",
     "title": "Ce întreabă clienții cel mai des",
-    "intro": "Răspunsuri scurte și la obiect. Nu găsești întrebarea ta? Sună-ne sau scrie-ne, răspundem în maximum 2 ore lucrătoare."
+    "intro": "Răspunsuri scurte și la obiect. Nu găsești întrebarea ta? Sună-ne sau scrie-ne, răspundem în maximum 2 ore lucrătoare.",
+    "groups": {
+      "general": "Întrebări generale"
+    },
+    "seeAll": "Vezi toate întrebările despre {service}"
   }
 }

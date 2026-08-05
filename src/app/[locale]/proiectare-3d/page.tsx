@@ -41,6 +41,8 @@ export default async function Proiectare3dPage({ params }: PageProps) {
         namespace="servicePages.proiectare"
         photo="/images/hero/hero-blueprint.jpg"
         serviceType="Architectural design and 3D modelling"
+      faqAnchor="proiectare"
+      serviceLabelKey="services.proiectare.title"
       />
     </>
   );

@@ -44,6 +44,8 @@ export default async function IndustrialePage({ params }: PageProps) {
       // of an actual industrial job (Q-18).
       photo="/images/slideshow/slide-4.jpg"
       serviceType="Industrial construction"
+      faqAnchor="industriale"
+      serviceLabelKey="services.industriale.title"
     />
   );
 }

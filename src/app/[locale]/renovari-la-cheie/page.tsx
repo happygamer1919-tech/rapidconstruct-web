@@ -39,6 +39,8 @@ export default async function RenovariPage({ params }: PageProps) {
       namespace="servicePages.renovari"
       photo="/images/projects/hero-house.jpg"
       serviceType="Turnkey renovation"
+      faqAnchor="renovari"
+      serviceLabelKey="services.renovari.title"
     />
   );
 }

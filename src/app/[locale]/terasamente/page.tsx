@@ -42,6 +42,8 @@ export default async function TerasamentePage({ params }: PageProps) {
       // exactly this service. Owner to confirm provenance (Q-14).
       photo="/images/projects/terasament-fundatie.jpg"
       serviceType="Earthworks"
+      faqAnchor="terasamente"
+      serviceLabelKey="services.terasamente.title"
     />
   );
 }

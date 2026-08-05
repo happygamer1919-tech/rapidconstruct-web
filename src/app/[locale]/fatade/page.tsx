@@ -41,6 +41,8 @@ export default async function FatadePage({ params }: PageProps) {
         namespace="servicePages.fatade"
         photo="/images/projects/fatada-termoizolatie.jpg"
         serviceType="Facade insulation and rendering"
+      faqAnchor="fatade"
+      serviceLabelKey="services.fatade.title"
       />
     </>
   );

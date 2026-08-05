@@ -9,11 +9,30 @@ type PageProps = { params: Promise<{ locale: string }> };
 type Faq = { q: string; a: string };
 
 /**
- * FAQ hub (moved off the homepage 2026-08-04, owner direction: the homepage
- * carried too much). All 20 answer-shaped FAQs (RC-302 GEO program) live here
- * with the FAQPage JSON-LD; the copy still comes from `home.faq.items` so the
- * move could not fork the content. Linked from header+footer on every page.
+ * FAQ hub — the ONE place questions live (owner direction 2026-08-05).
+ *
+ * Every service page used to carry its own FAQ block; they are consolidated
+ * here, grouped by service and sorted alphabetically by the group label, so a
+ * visitor scanning for "Fațade" finds every facade question in one spot.
+ * City-page FAQs deliberately stay put: they are location-specific ("veniți la
+ * măsurători în Orhei?") and are the whole GEO point of those pages.
+ *
+ * `anchor` gives each group a stable #id, which the service pages link to.
+ * The FAQPage JSON-LD is built from the same arrays rendered below, so the
+ * visible copy and the structured data can never drift apart.
  */
+const GROUPS = [
+  { anchor: "general", key: "home.faq.items", labelKey: "faqPage.groups.general" },
+  { anchor: "acoperisuri", key: "roofPage.faq.items", labelKey: "services.acoperisuri.title" },
+  { anchor: "fatade", key: "servicePages.fatade.faq.items", labelKey: "services.fatade.title" },
+  { anchor: "renovari", key: "servicePages.renovari.faq.items", labelKey: "services.renovari.title" },
+  { anchor: "finisaje", key: "servicePages.finisaje.faq.items", labelKey: "services.finisaje.title" },
+  { anchor: "proiectare", key: "servicePages.proiectare.faq.items", labelKey: "services.proiectare.title" },
+  { anchor: "instalatii", key: "servicePages.instalatii.faq.items", labelKey: "services.instalatii.title" },
+  { anchor: "industriale", key: "servicePages.industriale.faq.items", labelKey: "services.industriale.title" },
+  { anchor: "terasamente", key: "servicePages.terasamente.faq.items", labelKey: "services.terasamente.title" },
+] as const;
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
@@ -42,19 +61,28 @@ export default async function FaqPage({ params }: PageProps) {
   setRequestLocale(locale);
 
   const t = await getTranslations("faqPage");
-  const tHome = await getTranslations("home");
-  const faqs = tHome.raw("faq.items") as Faq[];
+  const tRoot = await getTranslations();
 
-  // Built from the same copy rendered below so the visible FAQ and the
-  // JSON-LD can never diverge (same rule as the homepage section it replaces).
+  // Resolve, then sort by the localized label so RO and RU each read
+  // alphabetically in their own language.
+  const groups = GROUPS.map((g) => ({
+    anchor: g.anchor,
+    label: tRoot(g.labelKey),
+    items: tRoot.raw(g.key) as Faq[],
+  }))
+    .filter((g) => g.items?.length)
+    .sort((a, b) => a.label.localeCompare(b.label, locale));
+
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: faqs.map((f) => ({
-      "@type": "Question",
-      name: f.q,
-      acceptedAnswer: { "@type": "Answer", text: f.a },
-    })),
+    mainEntity: groups.flatMap((g) =>
+      g.items.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    ),
   };
 
   return (
@@ -73,19 +101,55 @@ export default async function FaqPage({ params }: PageProps) {
               {t("intro")}
             </p>
           </div>
-          <div className="flex flex-col divide-y divide-border border-y border-border">
-            {faqs.map((f) => (
-              <details key={f.q} className="group py-2">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 text-body font-semibold text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong">
-                  {f.q}
-                  <Icon
-                    name="chevronDown"
-                    size={20}
-                    className="shrink-0 text-accent-strong transition-transform duration-200 group-open:rotate-180"
-                  />
-                </summary>
-                <p className="pb-4 text-body text-muted-foreground">{f.a}</p>
-              </details>
+
+          {/* Jump list — with 58 questions the page needs a way in. */}
+          <nav aria-label={t("title")} className="mb-10 flex flex-wrap gap-2">
+            {groups.map((g) => (
+              <a
+                key={g.anchor}
+                href={`#${g.anchor}`}
+                className="rounded-full border border-border px-3 py-1.5 text-caption font-medium text-foreground transition-colors hover:border-accent-strong hover:text-accent-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong"
+              >
+                {g.label}
+                <span className="ml-1.5 text-muted-foreground">
+                  {g.items.length}
+                </span>
+              </a>
+            ))}
+          </nav>
+
+          <div className="flex flex-col gap-12">
+            {groups.map((g) => (
+              <section
+                key={g.anchor}
+                id={g.anchor}
+                aria-labelledby={`faq-${g.anchor}`}
+                className="scroll-mt-24"
+              >
+                <h2
+                  id={`faq-${g.anchor}`}
+                  className="mb-4 font-serif text-h3 text-foreground"
+                >
+                  {g.label}
+                </h2>
+                <div className="flex flex-col divide-y divide-border border-y border-border">
+                  {g.items.map((f) => (
+                    <details key={f.q} className="group py-2">
+                      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 text-body font-semibold text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong">
+                        {f.q}
+                        <Icon
+                          name="chevronDown"
+                          size={20}
+                          className="shrink-0 text-accent-strong transition-transform duration-200 group-open:rotate-180"
+                        />
+                      </summary>
+                      <p className="pb-4 text-body text-muted-foreground">
+                        {f.a}
+                      </p>
+                    </details>
+                  ))}
+                </div>
+              </section>
             ))}
           </div>
         </div>
