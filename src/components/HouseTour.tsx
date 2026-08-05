@@ -34,7 +34,10 @@ const STAGE_IMAGES = [
 type StageType = { label: string; src: string };
 const STAGE_TYPES: (StageType[] | null)[] = [
   [
-    { label: "Trasare și săpătură", src: "/images/hero/hero-blueprint.jpg" },
+    {
+      label: "Săpătură și trasare",
+      src: "/images/stages/types/sapatura-trasare.jpg",
+    },
     {
       label: "Fundație în cofraj",
       src: "/images/stages/types/fundatie-cofraj.jpg",
@@ -42,7 +45,7 @@ const STAGE_TYPES: (StageType[] | null)[] = [
     { label: "Radier (placă monolită)", src: "/images/stages/stage-1.jpg" },
     {
       label: "Fundație finisată",
-      src: "/images/projects/phase-foundation.jpg",
+      src: "/images/stages/types/fundatie-finisata.jpg",
     },
   ],
   [
@@ -66,7 +69,10 @@ const STAGE_TYPES: (StageType[] | null)[] = [
       label: "Șindrilă bituminoasă",
       src: "/images/stages/types/sindrila.jpg",
     },
-    { label: "Montaj învelitoare", src: "/images/projects/roof-install.jpg" },
+    {
+      label: "Montaj învelitoare",
+      src: "/images/stages/types/montaj-invelitoare.jpg",
+    },
   ],
   [
     { label: "Ferestre și uși montate", src: "/images/stages/stage-4.jpg" },
