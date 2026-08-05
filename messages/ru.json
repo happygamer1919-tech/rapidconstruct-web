@@ -919,8 +919,8 @@
               "Современный стиль",
               "Целостность"
             ],
-            "img": "/images/configurator-preview.jpg",
-            "alt": "3D-модель дома, вид снаружи"
+            "img": "/images/projects/design-interior-3d.jpg",
+            "alt": "3D-визуализация современной гостиной с открытой кухней"
           },
           {
             "title": "Фасады в 3D",
@@ -951,8 +951,8 @@
               "Без стресса",
               "Сопровождение"
             ],
-            "img": "/images/projects/design-blueprint.jpg",
-            "alt": "Планы и документация для разрешения"
+            "img": "/images/projects/autorizatii-dosar.jpg",
+            "alt": "Планы и техническое досье, подготовленные для разрешения"
           }
         ]
       },
