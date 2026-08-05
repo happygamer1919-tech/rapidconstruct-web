@@ -39,7 +39,9 @@ export type NavItem = { href: Pathname; key: string };
 export const PRIMARY_NAV: readonly NavItem[] = [
   { href: "/despre-noi", key: "despre" },
   { href: "/portofoliu", key: "portofoliu" },
-  { href: "/configurator", key: "configurator" },
+  // Configurator 3D removed from the site 2026-08-05 (owner: "save it for
+  // future") — route deleted, engine + page components stay dormant in the
+  // repo; revive via git history and RC-505.
   { href: "/intrebari-frecvente", key: "intrebari" },
   { href: "/contact", key: "contact" },
 ] as const;

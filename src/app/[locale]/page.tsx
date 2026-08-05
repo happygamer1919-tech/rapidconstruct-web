@@ -66,14 +66,17 @@ export default async function Home({ params }: PageProps) {
   const testimonials = t.raw("testimonials.items") as Testimonial[];
 
   // REAL drone photos from the owner's portfolio set (same files /portofoliu
-  // serves). Interim pairing with the four project rows — the photos are all
-  // genuinely the company's builds, but per-project matching awaits Q-14.
-  const PROJECT_IMAGES = [
-    "/portofoliu/p-0018.webp",
-    "/portofoliu/p-0021.webp",
-    "/portofoliu/p-0020.webp",
-    "/portofoliu/p-0034.webp",
-  ];
+  // serves). The set contains only THREE distinct buildings (six shots are
+  // the same white house — owner flagged the duplication 2026-08-05), so we
+  // show the three project entries whose copy best fits a distinct photo:
+  // Costești (stone-look facade) → the duplex, Cahul (țiglă metalică) → the
+  // white house aerial, Chișinău (renovare) → the courtyard angle. The
+  // Orhei/șindrilă entry returns when the owner sends its real photo (Q-14).
+  const RECENT_PROJECTS = [
+    { item: projects[1], img: "/portofoliu/p-0034.webp" },
+    { item: projects[2], img: "/portofoliu/p-0018.webp" },
+    { item: projects[3], img: "/portofoliu/p-0024.webp" },
+  ].filter((r) => r.item);
 
   return (
     <main className="flex-1">
@@ -135,8 +138,8 @@ export default async function Home({ params }: PageProps) {
               <Icon name="arrowUpRight" size={16} />
             </Link>
           </div>
-          <ul className="grid gap-6 sm:grid-cols-2">
-            {projects.map((p, i) => (
+          <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {RECENT_PROJECTS.map(({ item: p, img }) => (
               <li key={`${p.location}-${p.work}`}>
                 <Link
                   href="/portofoliu"
@@ -144,10 +147,10 @@ export default async function Home({ params }: PageProps) {
                 >
                   <span className="relative block aspect-[4/3] overflow-hidden">
                     <Image
-                      src={PROJECT_IMAGES[i % PROJECT_IMAGES.length]}
+                      src={img}
                       alt={`${p.location} · ${p.work}`}
                       fill
-                      sizes="(min-width: 640px) 50vw, 100vw"
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                     />
                   </span>
