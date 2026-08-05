@@ -902,7 +902,9 @@
               "Plan clar",
               "Funcțional",
               "Optimizare buget"
-            ]
+            ],
+            "img": "/images/hero/hero-blueprint.jpg",
+            "alt": "Plan și model 3D al casei proiectate"
           },
           {
             "title": "Design interior și exterior",
@@ -916,7 +918,9 @@
               "3D vizual",
               "Stil modern",
               "Coerență"
-            ]
+            ],
+            "img": "/images/configurator-preview.jpg",
+            "alt": "Model 3D al casei, vedere exterioară"
           },
           {
             "title": "Fațade 3D",
@@ -930,7 +934,9 @@
               "Look premium",
               "Variantă A/B",
               "Decizie rapidă"
-            ]
+            ],
+            "img": "/images/projects/fatada-varianta-a.jpg",
+            "alt": "Randare 3D de fațadă cu materiale alese"
           },
           {
             "title": "Autorizații și avize",
@@ -944,7 +950,9 @@
               "Documente corecte",
               "Fără stres",
               "Ghidare"
-            ]
+            ],
+            "img": "/images/projects/design-blueprint.jpg",
+            "alt": "Planuri și documentație pentru autorizație"
           }
         ]
       },
@@ -953,55 +961,6 @@
           "Consultare gratuită",
           "Deviz în 24–48h",
           "Garanție în contract"
-        ]
-      },
-      "plan": {
-        "eyebrow": "Proiectul, nu poza",
-        "title": "Din plan în model 3D",
-        "intro": "Așa arată un proiect livrat de noi: plan cu camere și suprafețe, apoi același proiect în 3D. Treci cu mouse-ul peste camere.",
-        "view2d": "Plan parter",
-        "view3d": "Model 3D",
-        "hint": "Treci peste o cameră ca să-i vezi suprafața.",
-        "sampleNote": "Exemplu de proiect. Al tău se face după terenul și nevoile tale.",
-        "renderAlt": "Modelul 3D al casei proiectate",
-        "totalLabel": "Suprafață construită parter:",
-        "totalArea": "118 m²",
-        "rooms": [
-          {
-            "id": "living",
-            "name": "Living + dining",
-            "area": "34 m²"
-          },
-          {
-            "id": "bucatarie",
-            "name": "Bucătărie",
-            "area": "14 m²"
-          },
-          {
-            "id": "baie",
-            "name": "Baie",
-            "area": "6 m²"
-          },
-          {
-            "id": "terasa",
-            "name": "Terasă acoperită",
-            "area": "18 m²"
-          },
-          {
-            "id": "hol",
-            "name": "Hol + scări",
-            "area": "12 m²"
-          },
-          {
-            "id": "dormitor",
-            "name": "Dormitor",
-            "area": "16 m²"
-          },
-          {
-            "id": "garaj",
-            "name": "Garaj / carport",
-            "area": "18 m²"
-          }
         ]
       }
     },

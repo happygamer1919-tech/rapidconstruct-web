@@ -4,7 +4,6 @@ import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link, getPathname } from "@/i18n/navigation";
 import { Icon } from "@/components/icons";
-import PlanViewer, { type PlanRoom } from "@/components/PlanViewer";
 import Reveal from "@/components/Reveal";
 import { site } from "@/config/site";
 import { routing } from "@/i18n/routing";
@@ -18,6 +17,8 @@ type Offer = {
   desc: string;
   bullets: string[];
   badges: string[];
+  img: string;
+  alt: string;
 };
 
 /**
@@ -29,11 +30,12 @@ type Offer = {
  * design interior/exterior, fațade 3D, autorizații), each with its own
  * deliverables — one generic process list threw all of that away.
  *
- * The centrepiece is PlanViewer, an interactive floor plan that flips to the
- * 3D view of the same project. An earlier A/B facade wipe was built and
- * REJECTED (owner, 2026-08-05): comparing finished facades sells the
- * building, and this page sells the PROJECTING — plans, room programs,
- * areas, documentation. Keep that distinction when editing this page.
+ * LAYOUT RULE (owner, 2026-08-05, after two rejected attempts): mirror the
+ * pattern that already works on their own live page — image, card, image,
+ * card. Every offer carries a full-width visual, text stays short, and
+ * NOTHING depends on hover: most visitors are on a phone, where hover does
+ * not exist. Rejected here: an A/B facade wipe (sells the building, not the
+ * design) and an interactive hover floor plan (mouse-only).
  */
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -66,20 +68,6 @@ export default async function Proiectare3dPage({ params }: PageProps) {
   const tRoot = await getTranslations();
 
   const steps = t.raw("process.steps") as Step[];
-  // Room geometry lives in code (it is layout, not copy); names and areas come
-  // from the catalog so RO/RU stay translatable.
-  const PLAN_GEOMETRY: Record<string, Omit<PlanRoom, "id" | "name" | "area">> = {
-    living: { x: 60, y: 60, w: 370, h: 240 },
-    bucatarie: { x: 430, y: 60, w: 270, h: 240 },
-    baie: { x: 700, y: 60, w: 240, h: 240 },
-    terasa: { x: 60, y: 300, w: 270, h: 260, outdoor: true },
-    hol: { x: 330, y: 300, w: 230, h: 260 },
-    dormitor: { x: 560, y: 300, w: 190, h: 260 },
-    garaj: { x: 750, y: 300, w: 190, h: 260, outdoor: true },
-  };
-  const planRooms = (
-    t.raw("plan.rooms") as { id: string; name: string; area: string }[]
-  ).map((r) => ({ ...r, ...PLAN_GEOMETRY[r.id] }));
   const offers = t.raw("offers.items") as Offer[];
   const promises = t.raw("promise.items") as string[];
 
@@ -164,37 +152,6 @@ export default async function Proiectare3dPage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* THE DELIVERABLE — plan first, then the same project in 3D. */}
-      <section aria-labelledby="plan-title" className="border-b border-border">
-        <div className="mx-auto w-full max-w-5xl px-gutter py-16 lg:py-20">
-          <div className="mb-8 flex flex-col gap-3">
-            <p className="micro-label text-accent-strong">
-              {t("plan.eyebrow")}
-            </p>
-            <h2
-              id="plan-title"
-              className="font-serif text-display-lg text-foreground"
-            >
-              {t("plan.title")}
-            </h2>
-            <p className="max-w-2xl text-body-lg text-muted-foreground">
-              {t("plan.intro")}
-            </p>
-          </div>
-          <PlanViewer
-            rooms={planRooms}
-            view2dLabel={t("plan.view2d")}
-            view3dLabel={t("plan.view3d")}
-            hint={t("plan.hint")}
-            sampleNote={t("plan.sampleNote")}
-            renderSrc="/images/hero/hero-finished.jpg"
-            renderAlt={t("plan.renderAlt")}
-            totalLabel={t("plan.totalLabel")}
-            totalArea={t("plan.totalArea")}
-          />
-        </div>
-      </section>
-
       {/* THE FOUR OFFERS */}
       <section
         aria-labelledby="offers-title"
@@ -212,38 +169,48 @@ export default async function Proiectare3dPage({ params }: PageProps) {
               {t("offers.title")}
             </h2>
           </div>
-          <ul className="grid gap-6 lg:grid-cols-2">
+          <ul className="flex flex-col gap-8 lg:grid lg:grid-cols-2">
             {offers.map((o) => (
               <li
                 key={o.title}
-                className="flex flex-col gap-4 rounded-2xl border border-border bg-surface p-6"
+                className="overflow-hidden rounded-2xl border border-border bg-surface"
               >
-                <div className="flex flex-wrap gap-2">
-                  {o.badges.map((b) => (
-                    <span
-                      key={b}
-                      className="rounded-full bg-brand-50 px-3 py-1 text-micro font-semibold text-accent-strong"
-                    >
-                      {b}
-                    </span>
-                  ))}
+                <span className="relative block aspect-[16/10] w-full">
+                  <Image
+                    src={o.img}
+                    alt={o.alt}
+                    fill
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    className="object-cover"
+                  />
+                </span>
+                <div className="flex flex-col gap-3 p-5">
+                  <div className="flex flex-wrap gap-2">
+                    {o.badges.map((b) => (
+                      <span
+                        key={b}
+                        className="rounded-full bg-brand-50 px-3 py-1 text-micro font-semibold text-accent-strong"
+                      >
+                        {b}
+                      </span>
+                    ))}
+                  </div>
+                  <h3 className="font-serif text-h3 text-foreground">
+                    {o.title}
+                  </h3>
+                  <ul className="flex flex-col gap-2">
+                    {o.bullets.map((b) => (
+                      <li key={b} className="flex items-start gap-2.5">
+                        <Icon
+                          name="shield"
+                          size={16}
+                          className="mt-0.5 shrink-0 text-accent-strong"
+                        />
+                        <span className="text-caption text-foreground">{b}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <h3 className="font-serif text-h3 text-foreground">
-                  {o.title}
-                </h3>
-                <p className="text-body text-muted-foreground">{o.desc}</p>
-                <ul className="flex flex-col gap-2">
-                  {o.bullets.map((b) => (
-                    <li key={b} className="flex items-start gap-2.5">
-                      <Icon
-                        name="shield"
-                        size={16}
-                        className="mt-1 shrink-0 text-accent-strong"
-                      />
-                      <span className="text-caption text-foreground">{b}</span>
-                    </li>
-                  ))}
-                </ul>
               </li>
             ))}
           </ul>
