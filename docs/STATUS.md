@@ -112,6 +112,12 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **Homepage order tweak** (2026-08-05): lead form moved BELOW "Cum lucrăm"
+  and "Proiecte recente" (owner direction) — see what we build, how we work,
+  the finished projects, then the ask. Final order: hero → build → recenzii →
+  badges → stats → servicii → video → proiecte → formular → contact.
+  Verified: 113/113 Playwright, order browser-checked, tripwire PASS.
+
 - **negabarit restructure round** (2026-08-04, late). Configurator promo
   REMOVED same day on owner direction (idea saved as RC-505; JSX in git
   history `47d0b7b`, asset kept). Lead form (shared ContactForm) now sits
