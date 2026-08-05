@@ -101,3 +101,14 @@ notes: "земляные работы" (not "грунтовые"), "цеха/с�
 | home.hero.trustMaterials | Материалы с сертификацией ЕС | split from old trust line |
 
 Owner review pending.
+
+## 2026-08-05 — portfolioPage item 9 (terasă travertin, used as homepage card 2)
+
+| field | RU |
+|---|---|
+| tag | Отделка |
+| title | Терраса с летней кухней |
+| desc | Терраса, облицованная травертином, с большими раздвижными окнами и уличным камином из камня, рядом с домом. |
+| alt | Терраса, облицованная травертином, с раздвижными окнами и уличным камином из камня |
+
+Photo recovered from the owner's own Tilda site. Owner review pending.

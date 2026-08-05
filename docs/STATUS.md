@@ -112,6 +112,22 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **Fast-scroll desync FIXED + card consistency** (2026-08-05, owner reports).
+  (1) `AnimatePresence mode="wait"` in HouseTour queued an exit animation
+  before every entry, so a fast wheel sweep backed the queue up and the
+  heading fell behind image+dots (owner screenshot: Fundația photo under a
+  "3 Acoperișul" title). Now a keyed `motion.div` (mount animation only, no
+  exit queue); verified in sync at 5 runway positions AND after a 6-jump
+  fast sweep. (2) "Fundație în cofraj" regenerated (2 credits, balance
+  **376.5**) — the real Tilda photo's flat cloudy light + different house
+  stood out from every other card; the original survives in git history and
+  the Tilda scrape (background JCB = RC-126 machinery reference).
+  (3) 4th distinct project card recovered from the owner's OWN Tilda site:
+  travertine summer-kitchen terrace (`public/images/projects/
+  terasa-travertin.jpg`, new RO+RU portfolio item), replacing the solar-roof
+  shot that was the same building as card 1. Verified: 115/115, browser
+  sync + asset checks, tripwire PASS.
+
 - **4 project cards, 4 distinct works** (2026-08-05, owner insisted on four).
   The cards now reuse the owner-safe PORTFOLIO captions (tag/title/desc,
   RO+RU, no invented metadata): casă parter+etaj (0018), acoperiș cu panouri
