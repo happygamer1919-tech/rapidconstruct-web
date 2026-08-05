@@ -112,6 +112,15 @@ Shipped and verified. PR numbers in brackets.
   (mounts post-load by design), pre-existing PromoBar hydration mismatch
   (spawned as its own task).
 
+- **Projects: 6 smaller cards, 5 categories** (2026-08-05, owner). 3-col
+  desktop grid, 3:2 images, tighter padding/smaller serif title. Six unique
+  images: casă parter+etaj (0018), terasă travertin (Tilda), duplex (0034),
+  ansamblu la roșu (0037) + two close-up DETAIL shots — pompă de căldură
+  (0024, actually a different house: green roof, gravel yard) and detaliu de
+  acoperiș (0023) — so no card reads as a repeat. Tags span Case la cheie /
+  Finisaje / Structură / Instalații / Acoperișuri. Verified: 115/115,
+  browser (6 cards / 6 unique imgs / no overflow), tripwire PASS.
+
 - **Fast-scroll desync FIXED + card consistency** (2026-08-05, owner reports).
   (1) `AnimatePresence mode="wait"` in HouseTour queued an exit animation
   before every entry, so a fast wheel sweep backed the queue up and the
