@@ -140,6 +140,11 @@ Shipped and verified. PR numbers in brackets.
   from there, so nothing forked. City FAQs deliberately stayed put
   (location-specific = the GEO point of those pages).
 
+- **RC-127 process block removed** (2026-08-05, owner: "too big and not
+  really needed") — the four numbered cards restated what each offer card
+  already lists. Final page: hero → promise strip → four image-led offers →
+  FAQ signpost → CTA. Copy kept in the catalog for a possible compact revival.
+
 - **RC-127 final pass: image-led, mobile-first** (2026-08-05). Owner rejected
   BOTH interactive attempts and called out the text density. Checked their own
   live page at 375px: it alternates **image → card → image → card**, every
