@@ -11,19 +11,29 @@ import {
 
 export type BuildPhase = { name: string; desc: string };
 
-// Photoreal stage frames of the SAME house as the hero video (Higgsfield,
-// generated from the owner's real built house — Q-12/2026-08-04), one per
-// phase, index-aligned with home.build.phases. The 3D model this replaces
-// lives on /configurator, where it is interactive.
+// Stage frames, index-aligned with home.build.phases. See the note below on
+// why these are 3D renders rather than photoreal generations.
 const STAGE_IMAGES = [
   "/images/stages/stage-1.jpg", // Fundația — slab + string lines
   "/images/stages/stage-2.jpg", // Pereții — block walls, scaffolding
   "/images/stages/stage-3.jpg", // Acoperișul — roof on bare walls
   "/images/stages/stage-4.jpg", // Ferestre și uși — joinery in, base plaster
-  "/images/hero/hero-finished.jpg", // Ultimele detalii — the finished frame
+  "/images/stages/stage-5.jpg", // Ultimele detalii — the finished house
 ];
 
 /**
+ * STAGE FRAMES ARE 3D RENDERS, ON PURPOSE (RC-128, 2026-08-06).
+ *
+ * They were photoreal generations and the house JUMPED between stages: each
+ * image was generated independently, so the model redrew the whole scene —
+ * different neighbours, horizon and zoom (proof: same corner shows a chimney
+ * in stage 2, empty sky in stage 3). Feature alignment made it worse; a
+ * "locked camera" video (40 credits) still drifted 73px after stabilisation.
+ * These are rendered from the in-repo 3D scene through ONE fixed camera pose,
+ * so the background is pixel-identical (MAD 0.00–2.54 vs 24–39 before) and
+ * only the construction changes. Re-render with `stage-shots.mjs` + the
+ * temporary /stagerender-tmp route (both in git history) if stages change.
+ *
  * RC-125 — stage-type strips, one list per stage, labels matched to images
  * we actually own. Every card is now the SAME plot in the same golden-hour
  * light: the real Tilda formwork photo was swapped for a generated one on
@@ -88,7 +98,7 @@ const STAGE_TYPES: (StageType[] | null)[] = [
     },
   ],
   [
-    { label: "Casa predată", src: "/images/hero/hero-finished.jpg" },
+    { label: "Casa predată", src: "/images/stages/stage-5.jpg" },
     {
       label: "Jgheaburi și burlane",
       src: "/images/stages/types/jgheaburi.jpg",
