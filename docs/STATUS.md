@@ -140,6 +140,22 @@ Shipped and verified. PR numbers in brackets.
   from there, so nothing forked. City FAQs deliberately stayed put
   (location-specific = the GEO point of those pages).
 
+- **HERO PHONE BUG FIXED — dim + slideshow no longer need the video**
+  (2026-08-05, owner report). Reproduced live at 375px: video fully loaded
+  (readyState 4) but PAUSED at 0.13s after 9s, dim 0, zero reel images —
+  because `dimmed`/`showReel` were set ONLY in the video's `onEnded`, and the
+  autoplay guard only caught `NotAllowedError` while power-saving pauses
+  reject with `AbortError` (deliberately ignored). Fixes: (1) one `settled`
+  signal drives copy+dim+reel — fires on `ended`, a 9s ceiling, or ~0.4s in
+  still mode; (2) **stall detector** judges behaviour not error names (no
+  progress 1.6s after `play()` → fall back to the finished still);
+  (3) data-saver / 2G-3G skips the 3 MB video entirely; (4) dim and reel
+  fades moved from JS animation to **CSS transitions** — phones throttle rAF
+  and froze the JS fade at opacity 0.038. Verified on the live alias at
+  375px: still-mode engaged, dim 1, reel 1, one slide visible, copy 1, zero
+  overflow. ⚠️ Note for future work: the homepage freeze still stands; this
+  was a defect fix, not a redesign.
+
 - **RC-127 process block removed** (2026-08-05, owner: "too big and not
   really needed") — the four numbered cards restated what each offer card
   already lists. Final page: hero → promise strip → four image-led offers →
