@@ -32,8 +32,14 @@ regenerated from stage-2 on 2026-08-06, 2 credits, MAD 6.76 ≈ sibling 6.08).
 @0.85× ✗** · new `tigla-metalica` −12/+6px ✓ (shipped; the card used to be a
 copy of stage-3). A regenerated `sapatura` measured WORSE (dy+35) and was
 discarded — 2 of the 4 credits that round bought nothing.
-NEXT (needs owner approval, 6 credits): regenerate cofraj, sindrila,
-montaj-invelitoare from their parents.
+**Round 2 (6 credits, 2026-08-06):** regenerated cofraj / sindrila / montaj.
+Only **sindrila improved** (0.862→1.002 scale, +141px→−13px) and shipped.
+`cofraj` (new 0.922/+138px vs old 0.982/+70px) and `montaj` (new 0.821/+224px
+vs old 0.853/+141px) came back WORSE and were discarded.
+**Hit rate is ~1 in 3** — budget accordingly, and always measure before
+shipping (`estimateAffinePartial2D` vs the parent frame; script pattern in
+scratchpad/align_stages.py). STILL MISALIGNED: `fundatie-cofraj` (+70px),
+`montaj-invelitoare` (+141px @0.85×). Retry = 2 credits each, coin flip.
 
 The 5 MAIN stages still do not align with each other — that needs them
 regenerated from one common parent (~8 credits, untested).
