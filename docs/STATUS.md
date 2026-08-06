@@ -140,6 +140,31 @@ Shipped and verified. PR numbers in brackets.
   from there, so nothing forked. City FAQs deliberately stayed put
   (location-specific = the GEO point of those pages).
 
+- **"House must stay in place" — INVESTIGATED, not solved by generation**
+  (2026-08-06, owner: the stage frames jump). Evidence and dead ends, so this
+  is not re-attempted blindly:
+  1. **Separate stills cannot be aligned.** The generator redrew the whole
+     scene per frame — the same top-left corner shows a neighbour's chimney in
+     stage 2, empty sky in stage 3, a different skyline in stage 4. There is no
+     common scene to register.
+  2. **Feature alignment made it worse.** ORB + RANSAC similarity fit on the
+     background: background MAD got 9% and 11% WORSE on two pairs. Script kept
+     at `scratchpad/align_stages.py`; repo images were never modified.
+  3. **A dedicated "locked camera" video does not hold either** (MiniMax H3,
+     10s, **40 credits**, balance **328.5**). The model added a slow zoom: the
+     neighbouring house leaves frame, and after two-pass `vidstab`
+     stabilisation the horizon still drifts **73 px / 720** with 83% of the
+     frame changing end-to-end. Clip archived at
+     `~/rc-owner-assets/higgsfield-hero-2026-08-03/build-scrub{,-stab}.mp4`
+     — usable as a future hero/process clip, NOT as a registered build.
+  4. `BuildScrubVideo.tsx` (scroll-scrub component, written and working) was
+     removed rather than shipped on top of unstable footage.
+  **The only approach that guarantees registration is a 3D render** — a
+  virtual camera cannot drift. The scene still exists in-repo (shelved with
+  RC-505). Proposal: render the 5 stages offline from ONE camera to static
+  PNGs; pixel-perfect lock, no WebGL on the page, 0 credits, stylised-3D look
+  instead of photoreal. Awaiting owner's call; current stills stay live.
+
 - **HERO PHONE BUG FIXED — dim + slideshow no longer need the video**
   (2026-08-05, owner report). Reproduced live at 375px: video fully loaded
   (readyState 4) but PAUSED at 0.13s after 9s, dim 0, zero reel images —
