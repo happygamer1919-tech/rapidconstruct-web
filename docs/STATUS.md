@@ -26,6 +26,15 @@ Group parents: Fundația → stage-1 · Pereții → stage-2 · Acoperișul → 
 Ferestre → stage-4 · Ultimele detalii → hero-finished. A card generated from
 the wrong parent visibly shifts (termoizolatie was made from stage-4 →
 regenerated from stage-2 on 2026-08-06, 2 credits, MAD 6.76 ≈ sibling 6.08).
+**Measured shifts vs parent (ORB/RANSAC, 2026-08-06)** — the reliable test:
+`sapatura-trasare` 0px ✓ · `fundatie-finisata` 0px ✓ · **`fundatie-cofraj`
++70px ✗** · **`sindrila` +141px @0.86× ✗** · **`montaj-invelitoare` +141px
+@0.85× ✗** · new `tigla-metalica` −12/+6px ✓ (shipped; the card used to be a
+copy of stage-3). A regenerated `sapatura` measured WORSE (dy+35) and was
+discarded — 2 of the 4 credits that round bought nothing.
+NEXT (needs owner approval, 6 credits): regenerate cofraj, sindrila,
+montaj-invelitoare from their parents.
+
 The 5 MAIN stages still do not align with each other — that needs them
 regenerated from one common parent (~8 credits, untested).
 

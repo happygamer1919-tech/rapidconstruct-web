@@ -66,7 +66,7 @@ const STAGE_TYPES: (StageType[] | null)[] = [
     },
   ],
   [
-    { label: "Țiglă metalică", src: "/images/stages/stage-3.jpg" },
+    { label: "Țiglă metalică", src: "/images/stages/types/tigla-metalica.jpg" },
     {
       label: "Șindrilă bituminoasă",
       src: "/images/stages/types/sindrila.jpg",
