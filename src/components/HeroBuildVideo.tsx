@@ -62,37 +62,23 @@ export default function HeroBuildVideo({
     // Deferred a tick (same pattern as the 3D hero's useArmed): the lint rule
     // bans synchronous setState in an effect body, and nothing here needs to
     // beat first paint — the blueprint underlay is already correct for both.
-    const t = window.setTimeout(() => {
-      // ONLY honour an explicit data-saver request. An earlier version also
-      // skipped the video when `effectiveType` reported 2g/3g — that killed
-      // the hero video for everyone, because browsers hand out that estimate
-      // freely even on wifi (this very machine reports "3g" at 1.4 Mbps).
-      // Never gate content on that signal again.
-      const conn = (navigator as Navigator & { connection?: { saveData?: boolean } })
-        .connection;
-      setMode(skipHeavy3d() || conn?.saveData ? "still" : "video");
-    }, 0);
+    const t = window.setTimeout(
+      () => setMode(skipHeavy3d() ? "still" : "video"),
+      0,
+    );
     return () => window.clearTimeout(t);
   }, []);
 
-  // ONE settle signal drives everything downstream: copy reveal, dim, reel.
-  //
-  // It used to be three independent paths, and `dimmed`/`showReel` were set
-  // ONLY inside the video's `onEnded`. On a phone that meant: autoplay gets
-  // refused (Low Power Mode, power-saving pause, data saver), `ended` never
-  // fires, and the hero sat on a static blueprint with the copy on top — no
-  // darkening, no slideshow, forever (owner report 2026-08-05, reproduced:
-  // video loaded, paused at 0.13s, reel never mounted).
-  //
-  // Now: whatever happens to the video, the hero settles and the reel runs.
-  const [settled, setSettled] = useState(false);
+  // Copy reveal: video `ended` flips it; the timer is the safety net for the
+  // cases the 3D hero already taught us about — media that never loads, data
+  // saver, autoplay denied. The copy must never depend on playback succeeding.
+  const [built, setBuilt] = useState(false);
   useEffect(() => {
     if (mode === "pending") return;
-    // Video path: the clip is 5s, so 9s is a generous ceiling for a slow
-    // start. Still path: nothing to wait for beyond first paint.
-    const t = window.setTimeout(() => setSettled(true), mode === "still" ? 400 : 9000);
+    const delay = mode === "still" || reduce ? 0 : 6500;
+    const t = window.setTimeout(() => setBuilt(true), delay);
     return () => window.clearTimeout(t);
-  }, [mode]);
+  }, [mode, reduce]);
 
   // If autoplay is refused (Low Power Mode, data saver), don't leave the hero
   // frozen on the blueprint frame: show the finished house instead.
@@ -112,21 +98,6 @@ export default function HeroBuildVideo({
         });
     };
     tryPlay();
-    // Error names are not enough. Browsers also pause "video-only background
-    // media to save power" and reject with AbortError, which we must ignore
-    // (StrictMode raises the same one). So judge by BEHAVIOUR: if the clip has
-    // not advanced ~1.6s after we asked, it is not going to play — fall back
-    // to the finished still so the reel can take over.
-    // Only judge a stall once the element actually has data to play
-    // (readyState >= 3). Otherwise a slow first byte looks identical to a
-    // blocked autoplay and we would drop the video while it is still loading.
-    const stall = window.setInterval(() => {
-      if (v.readyState >= 3 && v.paused && v.currentTime < 0.3) {
-        window.clearInterval(stall);
-        setMode("still");
-      }
-    }, 800);
-    window.setTimeout(() => window.clearInterval(stall), 12000);
     // A tab loaded in the background keeps the video paused at frame 0 (the
     // one-shot play() above fires while hidden and never retries; some
     // embedders suspend media outright). Retry when the tab becomes visible
@@ -136,36 +107,18 @@ export default function HeroBuildVideo({
         tryPlay();
     };
     document.addEventListener("visibilitychange", onVisible);
-    return () => {
-      window.clearInterval(stall);
-      document.removeEventListener("visibilitychange", onVisible);
-    };
+    return () => document.removeEventListener("visibilitychange", onVisible);
   }, [mode, reduce]);
 
-  // Once settled: FIRST the hero dims over the finished house (owner feedback
-  // 2026-08-04: the darkening must be visible before the slides, not arrive
-  // glued to them), THEN the reel of real project photos starts under that
-  // same dark wash. Driven by `settled`, so it runs whether the video played,
-  // stalled or was never offered — the reel is the payoff for phone visitors
-  // who never see the build at all.
+  // After the build settles: FIRST the hero dims over the finished house
+  // (owner feedback 2026-08-04: the darkening must be visible before the
+  // slides, not arrive glued to them), THEN the reel of real project photos
+  // starts under that same dark wash. Runs only after the video actually
+  // ended — never in reduced-motion, ?no3d or autoplay-blocked paths, which
+  // all stay on their static still.
   const [dimmed, setDimmed] = useState(false);
   const [showReel, setShowReel] = useState(false);
-  const [reelIn, setReelIn] = useState(false);
   const [slide, setSlide] = useState(0);
-  useEffect(() => {
-    if (!showReel) return;
-    const t = window.setTimeout(() => setReelIn(true), 30);
-    return () => window.clearTimeout(t);
-  }, [showReel]);
-  useEffect(() => {
-    if (!settled) return;
-    const t1 = window.setTimeout(() => setDimmed(true), 700);
-    const t2 = window.setTimeout(() => setShowReel(true), 2400);
-    return () => {
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
-    };
-  }, [settled]);
   useEffect(() => {
     if (!showReel) return;
     const t = window.setInterval(() => {
@@ -268,7 +221,12 @@ export default function HeroBuildVideo({
             muted
             playsInline
             preload="auto"
-            onEnded={() => setSettled(true)}
+            onEnded={() => {
+              setBuilt(true);
+              // Sequence: hold the finished house a beat -> dim -> reel.
+              window.setTimeout(() => setDimmed(true), 700);
+              window.setTimeout(() => setShowReel(true), 2400);
+            }}
             // No `loop`: the house builds ONCE and stays built (hero contract).
             // The element holds its last frame after `ended`.
             className="absolute inset-0 h-full w-full object-cover"
@@ -284,16 +242,12 @@ export default function HeroBuildVideo({
             opacity only (motion guardrails). Mounted only once the reel
             starts, so these ~500KB images never compete with the video. */}
         {showReel && (
-          <div
+          <motion.div
             aria-hidden
-            // CSS transition, not a JS-driven one: browsers throttle
-            // requestAnimationFrame on phones (background tabs, low power),
-            // which froze this fade part-way. Compositor transitions keep
-            // running regardless. `reelIn` flips one tick after mount so the
-            // browser has an initial opacity-0 frame to animate from.
-            className={`absolute inset-0 transition-opacity duration-[1400ms] ease-in-out ${
-              reelIn ? "opacity-100" : "opacity-0"
-            }`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.4, ease: "easeInOut" }}
+            className="absolute inset-0"
           >
             {SLIDES.map((src, i) => (
               <Image
@@ -307,16 +261,17 @@ export default function HeroBuildVideo({
                 }`}
               />
             ))}
-          </div>
+          </motion.div>
         )}
         {/* The dark wash lives ABOVE both the held video frame and the reel:
             it fades in on its own, right after the build settles, so the
             scene visibly dims before the first slide arrives. */}
-        <div
+        <motion.div
           aria-hidden
-          className={`pointer-events-none absolute inset-0 bg-ink-950/45 transition-opacity duration-[1200ms] ease-in-out ${
-            dimmed ? "opacity-100" : "opacity-0"
-          }`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: dimmed ? 1 : 0 }}
+          transition={{ duration: 1.2, ease: "easeInOut" }}
+          className="pointer-events-none absolute inset-0 bg-ink-950/45"
         />
       </div>
 
@@ -325,7 +280,7 @@ export default function HeroBuildVideo({
             legibility treatment from the 3D hero (2026-07-23). */}
         <motion.div
           initial={{ opacity: 0, y: 18 }}
-          animate={settled ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+          animate={built ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="pointer-events-auto w-fit rounded-3xl bg-neutral-100/92 p-6 backdrop-blur-md ring-1 ring-ink-950/5 lg:p-7"
         >
@@ -335,7 +290,7 @@ export default function HeroBuildVideo({
 
       <motion.span
         initial={{ opacity: 0 }}
-        animate={settled ? { opacity: 1 } : { opacity: 0 }}
+        animate={built ? { opacity: 1 } : { opacity: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
         className="pointer-events-none absolute bottom-5 right-6 whitespace-nowrap rounded-full bg-ink-950/60 px-3 py-1 text-micro font-medium text-neutral-50 backdrop-blur-sm"
       >

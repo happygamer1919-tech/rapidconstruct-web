@@ -39,10 +39,8 @@ export default async function FatadePage({ params }: PageProps) {
       {/* TODO(3d): white session — facade layer cutaway (termoizolatie / tencuiala / piatra) */}
       <ServicePage
         namespace="servicePages.fatade"
-        photo="/images/projects/fatada-termoizolatie.jpg"
+        photo="/images/projects/facade-stone.jpg"
         serviceType="Facade insulation and rendering"
-      faqAnchor="fatade"
-      serviceLabelKey="services.fatade.title"
       />
     </>
   );

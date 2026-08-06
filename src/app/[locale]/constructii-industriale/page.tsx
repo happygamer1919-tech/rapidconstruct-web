@@ -37,15 +37,11 @@ export default async function IndustrialePage({ params }: PageProps) {
   return (
     <ServicePage
       namespace="servicePages.industriale"
-      // ⚠️ STILL INTERIM: the townhouse development is the closest
-      // development-scale REAL photo we have. The whole-site crawl
-      // (2026-08-05) found no genuine hall/warehouse photography — every
-      // industrial image on rapidconstruct.md is stock. Needs an owner photo
-      // of an actual industrial job (Q-18).
+      // INTERIM photo (RC-123): the townhouse development from the owner's
+      // drone set is the closest development-scale shot we have. Swap for a
+      // real hall/warehouse photo when the owner supplies one (Q-18).
       photo="/images/slideshow/slide-4.jpg"
       serviceType="Industrial construction"
-      faqAnchor="industriale"
-      serviceLabelKey="services.industriale.title"
     />
   );
 }

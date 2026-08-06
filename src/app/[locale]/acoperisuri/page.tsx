@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Link, getPathname } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { Icon } from "@/components/icons";
 import Reveal from "@/components/Reveal";
 import RoofCutaway, { type RoofLayer } from "@/components/RoofCutaway";
@@ -14,6 +14,7 @@ import { SITE_URL } from "@/i18n/metadata";
 type PageProps = { params: Promise<{ locale: string }> };
 
 type Step = { title: string; desc: string };
+type Faq = { q: string; a: string };
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -42,10 +43,10 @@ export default async function AcoperisuriPage({ params }: PageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("roofPage");
-  const tRoot = await getTranslations();
 
   const layers = t.raw("cutaway.layers") as RoofLayer[];
   const steps = t.raw("process.steps") as Step[];
+  const faqs = t.raw("faq.items") as Faq[];
 
   const serviceJsonLd = {
     "@context": "https://schema.org",
@@ -64,13 +65,22 @@ export default async function AcoperisuriPage({ params }: PageProps) {
       },
     },
   };
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
 
   return (
     <main className="flex-1">
       {/* HERO — real roofing photo, instant render */}
       <section className="relative isolate overflow-hidden border-b border-border">
         <Image
-          src="/images/projects/acoperis-sindrila.jpg"
+          src="/images/projects/hero-house.jpg"
           alt=""
           fill
           priority
@@ -172,30 +182,35 @@ export default async function AcoperisuriPage({ params }: PageProps) {
       </section>
 
       {/* FAQ */}
-      {/* FAQ moved to the /intrebari-frecvente hub (owner direction
-          2026-08-05) — 14 roofing questions now live under #acoperisuri. */}
-      <section className="border-b border-border">
-        <div className="mx-auto w-full max-w-3xl px-gutter py-12">
-          <a
-            href={`${getPathname({ href: "/intrebari-frecvente", locale })}#acoperisuri`}
-            className="group flex items-center justify-between gap-4 rounded-xl border border-border bg-surface px-5 py-4 transition-colors hover:border-accent-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong"
-          >
-            <span className="flex flex-col gap-0.5">
-              <span className="micro-label text-accent-strong">
-                {tRoot("faqPage.eyebrow")}
-              </span>
-              <span className="text-body font-semibold text-foreground">
-                {tRoot("faqPage.seeAll", {
-                  service: tRoot("services.acoperisuri.title"),
-                })}
-              </span>
-            </span>
-            <Icon
-              name="arrowRight"
-              size={20}
-              className="shrink-0 text-accent-strong transition-transform duration-200 group-hover:translate-x-1"
-            />
-          </a>
+      <section
+        aria-labelledby="roof-faq-title"
+        className="border-b border-border"
+      >
+        <div className="mx-auto w-full max-w-3xl px-gutter py-16 lg:py-20">
+          <div className="mb-8 flex flex-col gap-3">
+            <p className="micro-label text-accent-strong">{t("faq.eyebrow")}</p>
+            <h2
+              id="roof-faq-title"
+              className="font-serif text-display-lg text-foreground"
+            >
+              {t("faq.title")}
+            </h2>
+          </div>
+          <div className="flex flex-col divide-y divide-border border-y border-border">
+            {faqs.map((f) => (
+              <details key={f.q} className="group py-2">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 text-body font-semibold text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong">
+                  {f.q}
+                  <Icon
+                    name="chevronDown"
+                    size={20}
+                    className="shrink-0 text-accent-strong transition-transform duration-200 group-open:rotate-180"
+                  />
+                </summary>
+                <p className="pb-4 text-body text-muted-foreground">{f.a}</p>
+              </details>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -230,6 +245,10 @@ export default async function AcoperisuriPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
     </main>
   );

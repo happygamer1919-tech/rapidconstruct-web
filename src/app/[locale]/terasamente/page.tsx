@@ -37,13 +37,11 @@ export default async function TerasamentePage({ params }: PageProps) {
   return (
     <ServicePage
       namespace="servicePages.terasamente"
-      // REAL earthworks photo from the owner's own site (crawl 2026-08-05):
-      // formed-up foundation on a cleared plot, with their JCB in frame —
-      // exactly this service. Owner to confirm provenance (Q-14).
-      photo="/images/projects/terasament-fundatie.jpg"
+      // INTERIM photo (RC-123): the graded plot with the fresh slab is the
+      // closest earthworks shot we have. Swap for a machinery-at-work photo
+      // when RC-126 sourcing lands (Q-19).
+      photo="/images/stages/stage-1.jpg"
       serviceType="Earthworks"
-      faqAnchor="terasamente"
-      serviceLabelKey="services.terasamente.title"
     />
   );
 }

@@ -1,12 +1,13 @@
 import Image from "next/image";
-import { getLocale, getTranslations } from "next-intl/server";
-import { Link, getPathname } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { Icon } from "@/components/icons";
 import Reveal from "@/components/Reveal";
 import { site } from "@/config/site";
 import { SITE_URL } from "@/i18n/metadata";
 
 type Step = { title: string; desc: string };
+type Faq = { q: string; a: string };
 
 type ServicePageProps = {
   /** Message namespace holding this page's copy, e.g. "servicePages.fatade". */
@@ -15,10 +16,6 @@ type ServicePageProps = {
   photo: string | null;
   /** schema.org Service.serviceType (freeform text). */
   serviceType: string;
-  /** #id of this service's group on the FAQ hub (questions live there now). */
-  faqAnchor: string;
-  /** Message key for this service's display name, e.g. "services.fatade.title". */
-  serviceLabelKey: string;
 };
 
 /**
@@ -34,18 +31,11 @@ export default async function ServicePage({
   namespace,
   photo,
   serviceType,
-  faqAnchor,
-  serviceLabelKey,
 }: ServicePageProps) {
   const t = await getTranslations(namespace);
-  const tRoot = await getTranslations();
-  const locale = await getLocale();
 
   const steps = t.raw("process.steps") as Step[];
-  // FAQs moved to the /intrebari-frecvente hub (owner direction 2026-08-05).
-  // The copy still lives in this namespace — the hub reads it from there — so
-  // nothing forked. The FAQPage JSON-LD moved with it: structured data on a
-  // page with no visible FAQs is a Google penalty, not a bonus.
+  const faqs = t.raw("faq.items") as Faq[];
 
   const serviceJsonLd = {
     "@context": "https://schema.org",
@@ -55,6 +45,16 @@ export default async function ServicePage({
     provider: { "@type": "LocalBusiness", name: site.name, url: SITE_URL },
     areaServed: site.areaServed,
   };
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+
   const heroTitle = photo ? "text-neutral-50" : "text-inverse-foreground";
   const heroIntro = photo
     ? "text-neutral-200"
@@ -166,29 +166,36 @@ export default async function ServicePage({
         </div>
       </section>
 
-      {/* FAQ lives on the hub now — this is the signpost to the right group. */}
-      <section className="border-b border-border">
-        <div className="mx-auto w-full max-w-3xl px-gutter py-12">
-          <a
-            href={`${getPathname({ href: "/intrebari-frecvente", locale })}#${faqAnchor}`}
-            className="group flex items-center justify-between gap-4 rounded-xl border border-border bg-surface px-5 py-4 transition-colors hover:border-accent-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong"
-          >
-            <span className="flex flex-col gap-0.5">
-              <span className="micro-label text-accent-strong">
-                {tRoot("faqPage.eyebrow")}
-              </span>
-              <span className="text-body font-semibold text-foreground">
-                {tRoot("faqPage.seeAll", {
-                  service: tRoot(serviceLabelKey),
-                })}
-              </span>
-            </span>
-            <Icon
-              name="arrowRight"
-              size={20}
-              className="shrink-0 text-accent-strong transition-transform duration-200 group-hover:translate-x-1"
-            />
-          </a>
+      {/* FAQ */}
+      <section
+        aria-labelledby="service-faq-title"
+        className="border-b border-border"
+      >
+        <div className="mx-auto w-full max-w-3xl px-gutter py-16 lg:py-20">
+          <div className="mb-8 flex flex-col gap-3">
+            <p className="micro-label text-accent-strong">{t("faq.eyebrow")}</p>
+            <h2
+              id="service-faq-title"
+              className="font-serif text-display-lg text-foreground"
+            >
+              {t("faq.title")}
+            </h2>
+          </div>
+          <div className="flex flex-col divide-y divide-border border-y border-border">
+            {faqs.map((f) => (
+              <details key={f.q} className="group py-2">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-3 text-body font-semibold text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-strong">
+                  {f.q}
+                  <Icon
+                    name="chevronDown"
+                    size={20}
+                    className="shrink-0 text-accent-strong transition-transform duration-200 group-open:rotate-180"
+                  />
+                </summary>
+                <p className="pb-4 text-body text-muted-foreground">{f.a}</p>
+              </details>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -223,6 +230,10 @@ export default async function ServicePage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
     </main>
   );

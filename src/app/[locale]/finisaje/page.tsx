@@ -37,10 +37,8 @@ export default async function FinisajePage({ params }: PageProps) {
   return (
     <ServicePage
       namespace="servicePages.finisaje"
-      photo="/images/projects/terasa-travertin.jpg"
+      photo="/images/projects/finish-terrace.jpg"
       serviceType="Interior finishing"
-      faqAnchor="finisaje"
-      serviceLabelKey="services.finisaje.title"
     />
   );
 }

@@ -39,10 +39,8 @@ export default async function InstalatiiPage({ params }: PageProps) {
   return (
     <ServicePage
       namespace="servicePages.instalatii"
-      photo="/images/projects/instalatii-termoficare.jpg"
+      photo={null}
       serviceType="Electrical and plumbing installation"
-      faqAnchor="instalatii"
-      serviceLabelKey="services.instalatii.title"
     />
   );
 }

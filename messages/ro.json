@@ -885,83 +885,6 @@
         "intro": "Programează o discuție gratuită. Îți arătăm cum lucrăm în 3D.",
         "ctaQuote": "Solicită ofertă gratuită",
         "ctaCall": "Sună acum"
-      },
-      "offers": {
-        "eyebrow": "Ce facem",
-        "title": "Patru servicii, un singur proiect",
-        "items": [
-          {
-            "title": "Arhitectură",
-            "desc": "Proiectăm case și spații cu un concept corect: planuri eficiente, circulație logică, lumină naturală și soluții adaptate terenului.",
-            "bullets": [
-              "Concept și planuri arhitecturale",
-              "Optimizare suprafețe și costuri",
-              "Consultanță pentru materiale și etape"
-            ],
-            "badges": [
-              "Plan clar",
-              "Funcțional",
-              "Optimizare buget"
-            ],
-            "img": "/images/hero/hero-blueprint.jpg",
-            "alt": "Plan și model 3D al casei proiectate"
-          },
-          {
-            "title": "Design interior și exterior",
-            "desc": "Creăm conceptul de design cu randări 3D și selecții de materiale, ca să vezi rezultatul final înainte de execuție.",
-            "bullets": [
-              "Randări 3D și moodboard",
-              "Palete de culori, materiale și lumină",
-              "Recomandări practice, ușor de întreținut"
-            ],
-            "badges": [
-              "3D vizual",
-              "Stil modern",
-              "Coerență"
-            ],
-            "img": "/images/projects/design-interior-3d.jpg",
-            "alt": "Randare 3D a unui living modern, cu bucătărie deschisă"
-          },
-          {
-            "title": "Fațade 3D",
-            "desc": "Îți prezentăm fațada în 3D înainte de execuție: vezi cum arată, compari variante și alegi în siguranță, fără surprize pe șantier.",
-            "bullets": [
-              "Randări de fațadă cu culori și materiale",
-              "Propuneri de volumetrie și detalii",
-              "Recomandări pentru eficiență și cost"
-            ],
-            "badges": [
-              "Look premium",
-              "Variantă A/B",
-              "Decizie rapidă"
-            ],
-            "img": "/images/projects/fatada-varianta-a.jpg",
-            "alt": "Randare 3D de fațadă cu materiale alese"
-          },
-          {
-            "title": "Autorizații și avize",
-            "desc": "Te ajutăm să pregătești și să depui actele necesare, ca să nu pierzi timp cu pași greșiți și drumuri inutile.",
-            "bullets": [
-              "Verificare dosar și cerințe",
-              "Îndrumare pentru avize și aprobări",
-              "Coordonarea documentației până la final"
-            ],
-            "badges": [
-              "Documente corecte",
-              "Fără stres",
-              "Ghidare"
-            ],
-            "img": "/images/projects/autorizatii-dosar.jpg",
-            "alt": "Planuri și dosar tehnic pregătite pentru autorizație"
-          }
-        ]
-      },
-      "promise": {
-        "items": [
-          "Consultare gratuită",
-          "Deviz în 24–48h",
-          "Garanție în contract"
-        ]
       }
     },
     "instalatii": {
@@ -1657,10 +1580,6 @@
     },
     "eyebrow": "Întrebări frecvente",
     "title": "Ce întreabă clienții cel mai des",
-    "intro": "Răspunsuri scurte și la obiect. Nu găsești întrebarea ta? Sună-ne sau scrie-ne, răspundem în maximum 2 ore lucrătoare.",
-    "groups": {
-      "general": "Întrebări generale"
-    },
-    "seeAll": "Vezi toate întrebările despre {service}"
+    "intro": "Răspunsuri scurte și la obiect. Nu găsești întrebarea ta? Sună-ne sau scrie-ne, răspundem în maximum 2 ore lucrătoare."
   }
 }
