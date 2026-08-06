@@ -63,17 +63,14 @@ export default function HeroBuildVideo({
     // bans synchronous setState in an effect body, and nothing here needs to
     // beat first paint — the blueprint underlay is already correct for both.
     const t = window.setTimeout(() => {
-      // Data saver or a 2G/3G estimate: a 3 MB hero video is the wrong
-      // trade on that connection — go straight to the still + reel.
-      const conn = (
-        navigator as Navigator & {
-          connection?: { saveData?: boolean; effectiveType?: string };
-        }
-      ).connection;
-      const stingy = Boolean(
-        conn?.saveData || /(^|-)[23]g$/.test(conn?.effectiveType ?? ""),
-      );
-      setMode(skipHeavy3d() || stingy ? "still" : "video");
+      // ONLY honour an explicit data-saver request. An earlier version also
+      // skipped the video when `effectiveType` reported 2g/3g — that killed
+      // the hero video for everyone, because browsers hand out that estimate
+      // freely even on wifi (this very machine reports "3g" at 1.4 Mbps).
+      // Never gate content on that signal again.
+      const conn = (navigator as Navigator & { connection?: { saveData?: boolean } })
+        .connection;
+      setMode(skipHeavy3d() || conn?.saveData ? "still" : "video");
     }, 0);
     return () => window.clearTimeout(t);
   }, []);
@@ -120,9 +117,16 @@ export default function HeroBuildVideo({
     // (StrictMode raises the same one). So judge by BEHAVIOUR: if the clip has
     // not advanced ~1.6s after we asked, it is not going to play — fall back
     // to the finished still so the reel can take over.
-    const stall = window.setTimeout(() => {
-      if (v.paused && v.currentTime < 0.5) setMode("still");
-    }, 1600);
+    // Only judge a stall once the element actually has data to play
+    // (readyState >= 3). Otherwise a slow first byte looks identical to a
+    // blocked autoplay and we would drop the video while it is still loading.
+    const stall = window.setInterval(() => {
+      if (v.readyState >= 3 && v.paused && v.currentTime < 0.3) {
+        window.clearInterval(stall);
+        setMode("still");
+      }
+    }, 800);
+    window.setTimeout(() => window.clearInterval(stall), 12000);
     // A tab loaded in the background keeps the video paused at frame 0 (the
     // one-shot play() above fires while hidden and never retries; some
     // embedders suspend media outright). Retry when the tab becomes visible
@@ -133,7 +137,7 @@ export default function HeroBuildVideo({
     };
     document.addEventListener("visibilitychange", onVisible);
     return () => {
-      window.clearTimeout(stall);
+      window.clearInterval(stall);
       document.removeEventListener("visibilitychange", onVisible);
     };
   }, [mode, reduce]);
