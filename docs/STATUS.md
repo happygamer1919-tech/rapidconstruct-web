@@ -1,6 +1,7 @@
 # STATUS — RapidConstruct website
 
-Living board. Background and reasoning live in `docs/PROJECT-MEMORY.md`; this
+Living board. Background and reasoning live in `docs/PROJECT-MEMORY.md`; the
+full session story and dead ends are in **`docs/HANDOFF-2026-08-06.md`**; this
 file is only *what is true now and what happens next*.
 
 **Last updated: 2026-08-05 (homepage freeze)** — verified against git, live
