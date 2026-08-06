@@ -13,6 +13,31 @@ browser checks and the full Playwright suite, not recalled.
 
 ---
 
+## ⚠️ STANDING RULES (owner, 2026-08-06)
+
+1. **NEVER spend Higgsfield credits without explicit approval.** Reveal the
+   prompt AND the cost, wait for a yes. Report the balance after.
+2. **Update this dashboard on every change.** It is the owner's brain.
+3. Keep chat answers SHORT. Detail belongs here, not in chat.
+
+### Scroll-story alignment — the rule that actually works
+Cards stay locked when they are generated from the **same PARENT image**.
+Group parents: Fundația → stage-1 · Pereții → stage-2 · Acoperișul → stage-3 ·
+Ferestre → stage-4 · Ultimele detalii → hero-finished. A card generated from
+the wrong parent visibly shifts (termoizolatie was made from stage-4 →
+regenerated from stage-2 on 2026-08-06, 2 credits, MAD 6.76 ≈ sibling 6.08).
+The 5 MAIN stages still do not align with each other — that needs them
+regenerated from one common parent (~8 credits, untested).
+
+**Reverted 2026-08-06:** everything after the freeze was rolled back on owner
+direction (site had got worse). Backup branch:
+`backup/before-revert-2026-08-06`. Undone: services photo swaps, FAQ hub,
+/proiectare-3d rebuild, 3D-rendered stage frames, hero settle/stall rework.
+Docs kept. The 40-credit locked-camera video experiment failed (drifted) —
+do not repeat.
+
+---
+
 ## 🔒 HOMEPAGE FROZEN — 2026-08-05
 
 The owner signed off on the homepage. **Do not change `/` (RO or RU) without
